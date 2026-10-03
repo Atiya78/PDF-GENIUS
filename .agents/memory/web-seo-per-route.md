@@ -11,6 +11,12 @@ Keep the working React SPA and its tools; public pages also need complete HTML b
 
 **How to apply:** Rebuild public snapshots when public content or route metadata changes. Keep private/account content out of snapshots. A new public route needs matching canonical navigation, server handling and sitemap inclusion; an unknown route must remain a real 404, not a homepage fallback.
 
+Keep canonical tool anchors in the rendered homepage and footer when simplifying their presentation; a mobile disclosure may collapse visually but must not remove the links from the HTML.
+
+**Why:** The SEO requirements explicitly include every tool linked from the homepage and a PDF Tools footer directory. A shorter visual footer must preserve that coverage.
+
+**How to apply:** Reorganize or collapse the directory instead of replacing it with only a few popular tools. Verify links remain in pre-rendered HTML as well as the interactive layout.
+
 - `src/lib/useSeo.ts` is a dependency-free hook (uses wouter `useLocation`) that, on
   each route, updates `document.title`, meta description, canonical link, OG/Twitter
   tags, robots directive, and optional JSON-LD. It creates head tags if missing and
