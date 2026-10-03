@@ -35,6 +35,14 @@ Imported non-secret settings do not imply that external service credentials were
 
 **How to apply:** request missing credentials through the secure environment flow and check supported integrations first. Preserve the existing database and storage providers; see the Supabase and Railway storage memory topics for the product's decisions.
 
+## Imported billing project identity
+
+When restoring RevenueCat access, verify that the attached account can access the imported project before proceeding. Do not replace its project ID or reseed its catalog just because credentials were missing.
+
+**Why:** an imported billing project can already hold store links, products, and customer purchases; a new project or duplicate seed would not restore that history.
+
+**How to apply:** use a standalone read-only catalog check, keep the existing mobile public SDK keys and app IDs, and preserve direct-key transport for the project's external-host deployments.
+
 # Firewall-blocked lock entries
 
 A parent package patch upgrade can still retain a blocked transitive version if the parent's accepted range has not changed.

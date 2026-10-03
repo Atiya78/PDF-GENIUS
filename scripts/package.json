@@ -12,6 +12,7 @@
     "tsx": "catalog:"
   },
   "dependencies": {
+    "@replit/connectors-sdk": "^0.4.3",
     "@replit/revenuecat-sdk": "^4.2.0"
   }
 }

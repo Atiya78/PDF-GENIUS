@@ -1,24 +1,20 @@
 import { createClient } from "@replit/revenuecat-sdk/client";
+import { ReplitConnectors } from "@replit/connectors-sdk";
 
 /**
- * Creates an authenticated RevenueCat v2 REST client using the secret API key
- * stored in the REVENUECAT_API_KEY environment variable.
+ * Creates an authenticated RevenueCat v2 REST client using a direct secret key
+ * for external hosting or Replit's attached connection.
  *
  * This is for server-side / script use ONLY. The secret key must never be
  * shipped to the mobile client.
  */
 export function getUncachableRevenueCatClient() {
-  const apiKey = process.env.REVENUECAT_API_KEY;
-  if (!apiKey) {
-    throw new Error(
-      "REVENUECAT_API_KEY is not set. Add your RevenueCat v2 secret API key (starts with sk_) to the environment.",
-    );
-  }
+  const apiKey = process.env.REVENUECAT_API_KEY?.trim();
 
   return createClient({
     baseUrl: "https://api.revenuecat.com/v2",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
+    ...(apiKey
+      ? { headers: { Authorization: `Bearer ${apiKey}` } }
+      : { fetch: new ReplitConnectors().createProxyFetch("revenuecat") }),
   });
 }

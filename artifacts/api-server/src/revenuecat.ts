@@ -1,4 +1,5 @@
 import { createClient } from "@replit/revenuecat-sdk/client";
+import { ReplitConnectors } from "@replit/connectors-sdk";
 import {
   listCustomerActiveEntitlements,
   listPurchases,
@@ -58,19 +59,16 @@ function getProjectId(): string {
 }
 
 /**
- * Builds an authenticated RevenueCat v2 REST client from the secret API key.
- * Server-side only — the secret key must never reach the mobile client.
+ * Builds a server-only RevenueCat v2 client. Direct keys support external
+ * hosting; Replit's attached connection manages credentials in connector mode.
  */
 export function getRevenueCatServerClient(): RevenueCatClient {
-  const apiKey = process.env.REVENUECAT_API_KEY;
-  if (!apiKey) {
-    throw new Error(
-      "REVENUECAT_API_KEY is not set. Add your RevenueCat v2 secret API key (starts with sk_) to the environment.",
-    );
-  }
+  const apiKey = process.env.REVENUECAT_API_KEY?.trim();
   return createClient({
     baseUrl: "https://api.revenuecat.com/v2",
-    headers: { Authorization: `Bearer ${apiKey}` },
+    ...(apiKey
+      ? { headers: { Authorization: `Bearer ${apiKey}` } }
+      : { fetch: new ReplitConnectors().createProxyFetch("revenuecat") }),
   });
 }
 

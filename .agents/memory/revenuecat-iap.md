@@ -54,8 +54,6 @@ require a separate payment provider (Stripe/Whop), not Google Play.
 - No webhooks → no automatic downgrade when a sub lapses.
 - Real Play billing needs a Play Console internal-testing upload + Google
   service-account link + a fresh EAS build; the RC Test Store works in Expo Go now.
-- Uses secret `REVENUECAT_API_KEY` directly (no Replit connector); public
-  EXPO_PUBLIC_REVENUECAT_* keys are inlined at bundle time.
 - **EAS builds:** the store app only gets purchases if `eas.json` build env sets
   `EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY` / `_IOS_API_KEY` (public keys, safe to
   commit; fetchable via RC v2 `/apps/{id}/public_api_keys`). Missing key → init

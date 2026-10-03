@@ -28,7 +28,7 @@ GitHub imports do not carry private credentials. Enter secrets using Replit Secr
 - Optional admin access: `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
 - Optional AI tools: Replicate connection or `REPLICATE_API_TOKEN`; background removal needs `REMOVE_BG_API_KEY`.
 - Existing web billing: `DODO_PAYMENTS_API_KEY`, `DODO_PAYMENTS_WEBHOOK_KEY`, `DODO_PAYMENTS_ENVIRONMENT`, and the `DODO_PRODUCT_*` product IDs.
-- Existing mobile billing: `REVENUECAT_API_KEY`, `REVENUECAT_PROJECT_ID`, the `REVENUECAT_*_APP_ID` values, and `EXPO_PUBLIC_REVENUECAT_*_API_KEY` public SDK keys.
+- Existing mobile billing: connect RevenueCat (or set `REVENUECAT_API_KEY` for external hosting); preserve `REVENUECAT_PROJECT_ID`, the `REVENUECAT_*_APP_ID` values, and `EXPO_PUBLIC_REVENUECAT_*_API_KEY` public SDK keys. Check read-only access with `pnpm --filter @workspace/scripts exec tsx src/checkRevenueCat.ts`.
 - The mobile development command points `EXPO_PUBLIC_DOMAIN` to this Replit's API automatically. Native release builds need the intended published API domain.
 - `PUBLIC_APP_URL` is scoped separately for development and production. Google OAuth must also authorize the relevant origins and callback URLs in Google Cloud.
 - `SESSION_SECRET` does not replace the application's required `JWT_SECRET`. Do not publish using the development-only JWT fallback.
