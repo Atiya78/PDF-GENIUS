@@ -66,12 +66,18 @@ test("real scanned-page OCR fallback reads a synthetic image, without persisting
 });
 
 test("strict AI parsing retries once, merges chunks, enforces grounded pages and answer choices", async () => {
-  let requests = 0, invalidRemaining = 1, badPages = false;
+  let requests = 0, invalidRemaining = 1, badPages = false, openrouterMode = false;
   const mock = createServer(async (req, res) => {
     let raw = ""; for await (const chunk of req) raw += chunk;
     const input = JSON.parse(raw), prompt = input.messages[1].content as string;
     assert.equal(input.response_format.json_schema.strict, true);
-    assert.equal(input.store, false);
+    if (openrouterMode) {
+      assert.equal(input.model, "openai/gpt-5-mini");
+      assert.equal(input.provider.require_parameters, true);
+      assert.equal(input.reasoning_effort, "low");
+      assert.equal(input.store, undefined);
+      assert.equal(req.headers.authorization, "Bearer openrouter-fixture-not-a-secret");
+    } else assert.equal(input.store, false);
     requests++;
     let result: unknown;
     if (invalidRemaining-- > 0) result = "not-json";
@@ -96,8 +102,11 @@ test("strict AI parsing retries once, merges chunks, enforces grounded pages and
   await new Promise<void>(resolve => mock.listen(0, "127.0.0.1", resolve));
   const address = mock.address() as { port: number };
   const oldKey = process.env.OPENAI_API_KEY, oldBase = process.env.EDUCATION_AI_BASE_URL;
+  const savedConfig = Object.fromEntries(["EDUCATION_AI_PROVIDER", "EDUCATION_AI_MODEL", "OPENROUTER_API_KEY"].map(name => [name, process.env[name]]));
   // Isolated test process only; never changes workspace Secrets/configuration.
   process.env.OPENAI_API_KEY = "fixture-not-a-secret";
+  process.env.EDUCATION_AI_PROVIDER = "openai";
+  process.env.EDUCATION_AI_MODEL = "gpt-5-mini";
   process.env.EDUCATION_AI_BASE_URL = `http://127.0.0.1:${address.port}`;
   try {
     const result = await generateQuiz({ ...quizInput, questionTypes: [...quizInput.questionTypes] });
@@ -112,9 +121,22 @@ test("strict AI parsing retries once, merges chunks, enforces grounded pages and
     assert.equal(requests - before, 2);
     delete process.env.OPENAI_API_KEY;
     assert.throws(assertAiReady, /not configured/);
+    openrouterMode = true; badPages = false;
+    process.env.EDUCATION_AI_PROVIDER = "openrouter";
+    process.env.EDUCATION_AI_MODEL = "openai/gpt-5-mini";
+    process.env.OPENROUTER_API_KEY = "openrouter-fixture-not-a-secret";
+    assert.equal((await generateQuiz({ ...quizInput, questionTypes: [...quizInput.questionTypes] })).questions.length, 5);
+    assert.equal((await generateFlashcards({ pages, count: 10, style: "term-definition", language: "english" })).cards.length, 10);
+    delete process.env.OPENROUTER_API_KEY;
+    // A selected provider never silently borrows another provider's credential.
+    process.env.OPENAI_API_KEY = "fixture-not-a-secret";
+    assert.throws(assertAiReady, /not configured/);
   } finally {
     if (oldKey === undefined) delete process.env.OPENAI_API_KEY; else process.env.OPENAI_API_KEY = oldKey;
     if (oldBase === undefined) delete process.env.EDUCATION_AI_BASE_URL; else process.env.EDUCATION_AI_BASE_URL = oldBase;
+    for (const [name, value] of Object.entries(savedConfig)) {
+      if (value === undefined) delete process.env[name]; else process.env[name] = value;
+    }
     await new Promise<void>(resolve => mock.close(() => resolve()));
   }
 });

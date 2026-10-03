@@ -104,7 +104,7 @@ No existing conversion routes or conversion implementations were edited. Existin
 The existing prerender script reads `publicPageSeo.json`, so it required no changes. It generates education page snapshots, metadata/FAQ schemas and the production `dist/public/sitemap.xml` alongside all existing public pages. Build output is not source-controlled.
 
 ## Verification boundaries
-Real PDF extraction, scanned OCR, upload/page limits, persistent daily quotas/refunds, DOCX/PDF exports and Bengali PDF font output have automated coverage. Strict AI JSON/retry/chunk tests use a local provider fixture. Live provider generation still requires `OPENAI_API_KEY`; no demo/fake response is installed in the application.
+Real PDF extraction, scanned OCR, upload/page limits, persistent daily quotas/refunds, DOCX/PDF exports and Bengali PDF font output have automated coverage. Strict AI JSON/retry/chunk and OpenRouter routing tests use a local provider fixture. Live provider generation still requires the selected provider credential (currently `OPENROUTER_API_KEY`); no demo/fake response is installed in the application.
 
 Browser checks passed for the hub upload shortcut, quiz scoring/retry/review/edit/delete, separate question/answer PDFs and DOCX, flashcard flip/keyboard/swipe/marks/review/edit/add/delete/shuffle, local deck/progress restoration and clearing, and real export downloads. Only the browser test's generation POST responses were fixture-backed. An unmocked 503 confirmed that source and all selected options remain intact. Copy reported success; clipboard reads and native print-dialog invocation were not verified.
 

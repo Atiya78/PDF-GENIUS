@@ -73,6 +73,9 @@ S3_ENDPOINT = "https://s3.us-east-005.backblazeb2.com"
 S3_REGION = "us-east-005"
 DODO_PRODUCT_BUSINESS_YEARLY = "pdt_0Njn2hNfFNTxKRyXe2ERM"
 DODO_PRODUCT_PRO_YEARLY = "pdt_0Njn2hJUs5OWJURxRxYWJ"
+EDUCATION_AI_BASE_URL = "https://openrouter.ai/api/v1"
+EDUCATION_AI_MODEL = "openai/gpt-5-mini"
+EDUCATION_AI_PROVIDER = "openrouter"
 
 [userenv.development]
 PUBLIC_APP_URL = "https://033d96ef-b973-4c8b-b8c9-9a5ac3019373-00-i2vwwuqbeon7.pike.replit.dev"

@@ -6,10 +6,23 @@ import { randomUUID } from "node:crypto";
 import { EducationError } from "./config";
 import { chunkSource, validateSource } from "./source";
 
-// OpenAI-compatible providers can be switched here via these three variables.
+// Provider configuration stays server-side and works on Replit or Railway.
 // Never import this module into browser code or expose the key in a response.
+function providerConfig() {
+  const provider = process.env.EDUCATION_AI_PROVIDER || (process.env.OPENROUTER_API_KEY ? "openrouter" : "openai");
+  if (provider !== "openai" && provider !== "openrouter")
+    throw new EducationError("Education AI provider configuration is invalid. Please contact support.", 503);
+  const openrouter = provider === "openrouter";
+  return {
+    openrouter,
+    key: openrouter ? process.env.OPENROUTER_API_KEY : process.env.OPENAI_API_KEY,
+    base: (process.env.EDUCATION_AI_BASE_URL || (openrouter ? "https://openrouter.ai/api/v1" : "https://api.openai.com/v1")).replace(/\/$/, ""),
+    model: process.env.EDUCATION_AI_MODEL || (openrouter ? "openai/gpt-5-mini" : "gpt-5-mini"),
+  };
+}
+
 export function assertAiReady() {
-  if (!process.env.OPENAI_API_KEY)
+  if (!providerConfig().key)
     throw new EducationError("Education AI is not configured yet. Please contact support.", 503);
 }
 
@@ -41,16 +54,16 @@ page number supporting the item, or null for pasted text. Return only the reques
 
 async function completion(kind: "quiz" | "flashcards", prompt: string, retry: boolean): Promise<unknown> {
   assertAiReady();
-  const base = (process.env.EDUCATION_AI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
-  const model = process.env.EDUCATION_AI_MODEL || "gpt-5-mini";
+  const { base, model, key, openrouter } = providerConfig();
   let response: Response;
   try {
     response = await fetch(`${base}/chat/completions`, {
       method: "POST", signal: AbortSignal.timeout(120_000),
-      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model, max_completion_tokens: 16_000, store: false,
-        ...(/^gpt-5/.test(model) ? { reasoning_effort: "low" } : {}),
+        model, max_completion_tokens: 16_000,
+        ...(openrouter ? { provider: { require_parameters: true } } : { store: false }),
+        ...(/^(?:openai\/)?gpt-5/.test(model) ? { reasoning_effort: "low" } : {}),
         messages: [
           { role: "system", content: documentPrompt },
           { role: "user", content: prompt + (retry ? "\nYour prior output was invalid. Follow every schema, count, source-page and answer constraint exactly." : "") },
