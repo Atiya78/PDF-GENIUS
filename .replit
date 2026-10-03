@@ -78,4 +78,3 @@ DODO_PRODUCT_PRO_YEARLY = "pdt_0Njn2hJUs5OWJURxRxYWJ"
 PUBLIC_APP_URL = "https://033d96ef-b973-4c8b-b8c9-9a5ac3019373-00-i2vwwuqbeon7.pike.replit.dev"
 
 [userenv.production]
-PUBLIC_APP_URL = "https://pdfgenius.app"
