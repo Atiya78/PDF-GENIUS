@@ -11,15 +11,18 @@ id = "N34neGBOwag1MhkAIiDvt"
 uri = "file://store-assets/PDF-Genius-Data-Safety.csv"
 type = "table"
 title = "PDF Genius — Google Play Data Safety (official import format)"
+logical_id = "3d062470-6a50-4d26-a5c7-2a804f7e041d"
 
 [[outputs]]
 id = "6SoaTwaXpH63C7ROg8cR6"
 uri = "file://play-store/data-safety.csv"
 type = "table"
 title = "Google Play Data Safety (import-ready) — PDF Genius"
+logical_id = "53db0347-5e3c-4acf-a9df-afb4a4ce0fe8"
 
 [[outputs]]
 id = "f2QFbrpFEGFgVLaECS-sj"
 uri = "file://docs/PDF-Genius-TestSprite-PRD.md"
 type = "text"
 title = "PDF Genius — TestSprite PRD"
+logical_id = "1a15123b-f892-40a6-987f-6e7c5607fec1"

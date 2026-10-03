@@ -27,14 +27,21 @@ api-server and vite both hard-fail / mis-bind without it):
 - Web: `PORT=21027 BASE_PATH=/ pnpm --filter @workspace/pdf-convert-master run dev` (webview, waitForPort 21027) — localPort 21027, serves `/`.
 Verify via `https://$REPLIT_DEV_DOMAIN/` (200) and `/api/health` (JSON), not the screenshot tool.
 
-# Secrets the app needs (full inventory)
-- Required (user-provided): `SUPABASE_DB_URL`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `JWT_SECRET`.
-  Google login here uses RAW OAuth creds read from env (not a Replit connector) — see google-oauth-web.
-- Object storage (Replit-provisioned via `setupObjectStorage()`): `PRIVATE_OBJECT_DIR`, `PUBLIC_OBJECT_SEARCH_PATHS`, `DEFAULT_OBJECT_STORAGE_BUCKET_ID`.
-- Optional connectors (Replit credential proxy, no raw key stored): Resend (password-reset / verification emails — soft-fails silently if not connected), Replicate (some AI conversions; falls back to `REPLICATE_API_TOKEN`).
-- Optional external: `REMOVE_BG_API_KEY` (remove.bg) — only the background-removal tool needs it.
-- Auto/runtime-managed: PORT, BASE_PATH, REPL_ID, REPLIT_DOMAINS, REPLIT_CONNECTORS_HOSTNAME, etc.
-- Mobile (EAS build-time only, baked into eas.json → Railway): `EXPO_PUBLIC_DOMAIN`, `EXPO_PUBLIC_REPL_ID`.
+# Credentials on a fresh import
+
+Imported non-secret settings do not imply that external service credentials were imported. Inspect the current environment and source for the active providers rather than relying on an old credential inventory.
+
+**Why:** public defaults can survive an import while the private database, storage, email, and billing credentials do not. API health may succeed through a development fallback without proving access to the original account data.
+
+**How to apply:** request missing credentials through the secure environment flow and check supported integrations first. Preserve the existing database and storage providers; see the Supabase and Railway storage memory topics for the product's decisions.
+
+# Firewall-blocked lock entries
+
+A parent package patch upgrade can still retain a blocked transitive version if the parent's accepted range has not changed.
+
+**Why:** during import setup, pnpm reused a blocked child lock entry even after upgrading its parent within the existing SDK major.
+
+**How to apply:** check the resolved child version, not just the parent's version. Refresh eligible transitive lock entries explicitly, keep the existing SDK major, and check the safe replacement tools' Node engine requirements. Never bypass the package firewall.
 
 # Manual workflows collide with platform-managed ones (after registry sync)
 Once the artifact registry syncs (artifacts appear in `listArtifacts`), the platform auto-creates its

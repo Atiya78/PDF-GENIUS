@@ -1,4 +1,4 @@
-modules = ["nodejs-20", "web", "bash"]
+modules = ["web", "bash", "nodejs-24"]
 
 [deployment]
 router = "application"
@@ -9,28 +9,6 @@ args = ["pnpm", "store", "prune"]
 env = { "CI" = "true" }
 
 [workflows]
-runButton = "Project"
-
-[[workflows.workflow]]
-name = "Project"
-mode = "parallel"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "workflow.run"
-args = "Start application"
-
-[[workflows.workflow]]
-name = "Start application"
-author = "agent"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "PORT=5000 pnpm --filter @workspace/pdf-convert-master run dev"
-waitForPort = 5000
-
-[workflows.workflow.metadata]
-outputType = "webview"
 
 [agent]
 stack = "PNPM_WORKSPACE"
@@ -89,7 +67,6 @@ DODO_PAYMENTS_ENVIRONMENT = "live_mode"
 DODO_PRODUCT_CREDITS = "pdt_0NhywP7rc749Akyr6iwSA"
 GOOGLE_CLIENT_ID = "65996258521-fuhjvisdpm2k79bbuufghpe6ffgl4cn6.apps.googleusercontent.com"
 LOG_LEVEL = "info"
-PUBLIC_APP_URL = "https://pdfgenius.app"
 RESEND_FROM = "noreply@pdfgenius.app"
 S3_BUCKET = "pdf-genius"
 S3_ENDPOINT = "https://s3.us-east-005.backblazeb2.com"
@@ -98,3 +75,7 @@ DODO_PRODUCT_BUSINESS_YEARLY = "pdt_0Njn2hNfFNTxKRyXe2ERM"
 DODO_PRODUCT_PRO_YEARLY = "pdt_0Njn2hJUs5OWJURxRxYWJ"
 
 [userenv.development]
+PUBLIC_APP_URL = "https://033d96ef-b973-4c8b-b8c9-9a5ac3019373-00-i2vwwuqbeon7.pike.replit.dev"
+
+[userenv.production]
+PUBLIC_APP_URL = "https://pdfgenius.app"

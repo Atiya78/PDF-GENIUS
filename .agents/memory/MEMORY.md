@@ -70,7 +70,7 @@
 - [pdf-lib embedJpg JFIF](pdf-lib-embedjpg-jfif.md) — embedJpg throws "SOI not found" on headerless (sharp) JPEGs; re-encode via sharp before embed; normalize non-jpeg to PNG.
 - [Web PDF placement-box drag](pdf-placement-drag-web.md) — drag must use window-level pointer listeners + latest-ref (not element-scoped/setPointerCapture); verify e2e with tall viewport + scrollIntoView, test move & resize separately.
 - [Download access model](download-access-model.md) — guests = ONE in-session download (never persist jobId/uri); logged-in persist gated on isAuthenticated; friendly 401/403 "Please log in…"; logout clears history not Files.
-- [Imported project run setup](imported-project-run-setup.md) — fresh import: artifact registry empty, configure workflows manually w/ inline PORT (api 8080, web 21027); full secrets inventory; /api/health not /api/healthz.
+- [Imported project run setup](imported-project-run-setup.md) — import registry/workflow collisions; blocked transitive lock entries can survive parent upgrades; credentials are not imported.
 - [RNGH GestureDetector blocks web drag](rngh-gesturedetector-web-drag.md) — wrapping PanResponder editor content in RNGH GestureDetector kills overlay drag/select on Expo web; skip it via ZoomViewport when Platform.OS==="web".
 - [Dodo Payments web billing](dodo-payments-web.md) — web subscriptions: webhook is source-of-truth, plan tier from product_id not metadata, gate cancel by subscription_id match; account/plan is free-only.
 - [code sandbox lacks process.env](code-sandbox-no-processenv.md) — code_execution can't read secrets; run secret-dependent SDK calls via a bash `node script.mjs` instead.
