@@ -65,3 +65,11 @@ config.resolver.resolveRequest = (context, moduleName, platform) =>
 **How to apply:** any pure-JS CJS dep that `require("tslib")` (pdf-lib, many TS-compiled libs) can
 hit this. After editing metro.config.js, restart the Expo workflow (and clear Metro cache if the old
 error persists — see top of this file).
+
+## Package installs can crash an already-running Metro watcher
+
+If Metro fails while watching a pnpm temporary package directory that no longer exists, finish the package installation before restarting Metro.
+
+**Why:** pnpm creates and renames temporary directories while Metro crawls the workspace. Its fallback watcher can race those renames and exit even when the final package installation is correct.
+
+**How to apply:** treat an install-time watch ENOENT on a temporary package directory as a watcher lifecycle issue, not a missing app dependency. Restart once after the install completes; do not add the vanished temporary directory or change app imports.

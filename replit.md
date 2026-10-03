@@ -24,7 +24,7 @@ GitHub imports do not carry private credentials. Enter secrets using Replit Secr
 
 - Core secrets: `SUPABASE_DB_URL`, `JWT_SECRET` (at least 16 characters; use a long random value), `GOOGLE_CLIENT_SECRET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`.
 - Core non-secret settings: `GOOGLE_CLIENT_ID`, `S3_BUCKET`, `S3_REGION`, `S3_ENDPOINT`, `PUBLIC_APP_URL`.
-- Email: connect Resend, or configure `RESEND_API_KEY`; `RESEND_FROM` specifies the sender.
+- Email: connect Resend (the SDK manages credentials), or configure `RESEND_API_KEY` for external hosting; `RESEND_FROM` specifies the verified-domain sender.
 - Optional admin access: `ADMIN_USERNAME`, `ADMIN_PASSWORD`.
 - Optional AI tools: Replicate connection or `REPLICATE_API_TOKEN`; background removal needs `REMOVE_BG_API_KEY`.
 - Existing web billing: `DODO_PAYMENTS_API_KEY`, `DODO_PAYMENTS_WEBHOOK_KEY`, `DODO_PAYMENTS_ENVIRONMENT`, and the `DODO_PRODUCT_*` product IDs.

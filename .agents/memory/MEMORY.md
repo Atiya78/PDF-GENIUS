@@ -31,7 +31,7 @@
 - [Web code splitting](web-code-splitting.md) — keep pdf-convert-master routes React.lazy + isolate only non-React leaf libs in manualChunks; otherwise monolithic bundle / circular chunks.
 - [Email logo hosting](email-logo-hosting.md) — email images need ABSOLUTE https URLs; serve brand logo from web app public/ (owns /), build URL in api-server from REPLIT_DOMAINS.
 - [Signup OTP verification](signup-otp-verification.md) — signup is 2-step: /register emails a code (NO token), /verify-signup creates the account + returns token; never revert register to auto-login.
-- [Password reset → Resend](password-reset-resend.md) — forgot/reset-password emails only deliver when the Resend connector is connected; otherwise they soft-fail silently (returns generic success, logs 401).
+- [Resend email readiness](password-reset-resend.md) — reset's generic success does not prove delivery; verify the configured email transport and approved sender domain.
 - [Tool upload-page header](tool-upload-header.md) — ToolPageShell.showHeader; every tool's upload empty-state is headerless (header only on working state); all 3 categories share UploadDropzone.
 - [vite.config deploy build](vite-config-deploy-build.md) — config must NOT throw on missing PORT/BASE_PATH; deploy build step runs without [services.env]; default port/base, validate only for dev/serve/preview.
 - [Web auth dark-sheet design](web-auth-dark-sheet.md) — web /signin /signup mirror mobile AuthSheet (shared AuthCard, dark #171c28, coral, progressive step, Lottie welcome/error); render standalone (no DynamicLayout); signup auto-logs in.

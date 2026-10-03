@@ -1,14 +1,15 @@
 /**
  * Transactional email delivery via Resend (Replit integration).
  *
- * The Resend API key is provided by the Replit connector proxy once the user
- * connects their Resend account — we never store the key ourselves. We call
- * Resend's REST API directly with `fetch` so no SDK dependency is required.
+ * Replit's connector SDK forwards requests and manages credentials when the
+ * Resend connection is attached. A direct RESEND_API_KEY remains supported
+ * for deployments outside Replit.
  *
  * If Resend is not connected, `sendPasswordResetEmail` throws; callers should
  * treat that as a soft failure (log it, but do not leak account existence to
  * the client).
  */
+import { ReplitConnectors } from "@replit/connectors-sdk";
 import { logger } from "./logger";
 
 /**
@@ -50,82 +51,30 @@ function resolveFromAddress(configured?: string): string {
   return DEFAULT_FROM;
 }
 
-interface ResendConnectionSettings {
-  api_key?: string;
-  apiKey?: string;
-  access_token?: string;
-  from_email?: string;
-  fromEmail?: string;
-  [key: string]: unknown;
-}
-
-/**
- * Resolves the Resend API key (and optional from-address).
- *
- * Prefers a directly-provided `RESEND_API_KEY` env var so the app works on any
- * host (Railway, etc.) without the Replit connector. Falls back to the Replit
- * connector proxy when no env key is set (e.g. local Replit development).
- */
-async function getResendCredentials(): Promise<{ apiKey: string; from?: string }> {
+/** Keep direct-key hosting support, without retrieving connector secrets. */
+async function sendResendEmail(payload: Record<string, unknown>): Promise<Response> {
   const envKey = process.env.RESEND_API_KEY?.trim();
+  const request = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(20_000),
+  };
   if (envKey) {
-    return { apiKey: envKey, from: process.env.RESEND_FROM?.trim() || undefined };
+    return fetch("https://api.resend.com/emails", {
+      ...request,
+      headers: { ...request.headers, Authorization: `Bearer ${envKey}` },
+    });
   }
-  return getResendCredentialsFromConnector();
-}
-
-/** Fetches the Resend API key (and optional from-address) from the connector proxy. */
-async function getResendCredentialsFromConnector(): Promise<{ apiKey: string; from?: string }> {
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-  const xReplitToken = process.env.REPL_IDENTITY
-    ? "repl " + process.env.REPL_IDENTITY
-    : process.env.WEB_REPL_RENEWAL
-      ? "depl " + process.env.WEB_REPL_RENEWAL
-      : null;
-
-  if (!hostname || !xReplitToken) {
-    throw new Error("Resend connector not available in this environment");
-  }
-
-  const res = await fetch(
-    `https://${hostname}/api/v2/connection?include_secrets=true&connector_names=resend`,
-    {
-      headers: {
-        Accept: "application/json",
-        X_REPLIT_TOKEN: xReplitToken,
-      },
-      signal: AbortSignal.timeout(15_000),
-    },
-  );
-  if (!res.ok) {
-    throw new Error(`Failed to fetch Resend connection (${res.status})`);
-  }
-  const data = (await res.json()) as {
-    items?: Array<{ settings?: ResendConnectionSettings }>;
-  };
-  const settings = data.items?.[0]?.settings;
-  const apiKey = settings?.api_key || settings?.apiKey || settings?.access_token;
-  if (!apiKey) {
-    throw new Error("Resend is not connected (no API key found)");
-  }
-  return {
-    apiKey,
-    from: settings?.from_email || settings?.fromEmail,
-  };
+  const proxyFetch = new ReplitConnectors().createProxyFetch("resend");
+  return proxyFetch("https://api.resend.com/emails", request);
 }
 
 /** Sends a 6-digit password reset code to the user's email via Resend. */
 export async function sendPasswordResetEmail(to: string, code: string): Promise<void> {
-  const { apiKey, from } = await getResendCredentials();
-  const fromAddress = resolveFromAddress(from);
+  const fromAddress = resolveFromAddress(process.env.RESEND_FROM);
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  const res = await sendResendEmail({
       from: fromAddress,
       to: [to],
       subject: "Your PDF Genius password reset code",
@@ -133,8 +82,6 @@ export async function sendPasswordResetEmail(to: string, code: string): Promise<
       text:
         `Your PDF Genius password reset code is ${code}. ` +
         `It expires in 15 minutes. If you didn't request this, you can ignore this email.`,
-    }),
-    signal: AbortSignal.timeout(20_000),
   });
 
   if (!res.ok) {
@@ -146,16 +93,9 @@ export async function sendPasswordResetEmail(to: string, code: string): Promise<
 
 /** Sends a 6-digit signup verification code to a prospective user via Resend. */
 export async function sendSignupOtpEmail(to: string, code: string): Promise<void> {
-  const { apiKey, from } = await getResendCredentials();
-  const fromAddress = resolveFromAddress(from);
+  const fromAddress = resolveFromAddress(process.env.RESEND_FROM);
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+  const res = await sendResendEmail({
       from: fromAddress,
       to: [to],
       subject: "Your PDF Genius verification code",
@@ -163,8 +103,6 @@ export async function sendSignupOtpEmail(to: string, code: string): Promise<void
       text:
         `Your PDF Genius verification code is ${code}. ` +
         `It expires in 10 minutes. If you didn't try to sign up, you can ignore this email.`,
-    }),
-    signal: AbortSignal.timeout(20_000),
   });
 
   if (!res.ok) {
