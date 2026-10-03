@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLocation } from "wouter";
 import { useSeo } from "@/lib/useSeo";
+import { VerifiedSiteStats } from "@/components/VerifiedSiteStats";
+import { SUPPORT_REPLY_COPY, SUPPORT_REPLY_TODO } from "@/config/siteCopy";
 import { 
   Shield, 
   Zap, 
@@ -19,7 +21,7 @@ export const About = (): JSX.Element => {
   useSeo({
     title: "About PDF Genius",
     description:
-      "Learn about PDF Genius — the free, secure, browser-based suite of PDF and image tools trusted by millions to convert, edit and manage documents.",
+      "Learn about PDF Genius and its PDF and image tools. Free tools. No signup required.",
     canonicalPath: "/about",
   });
   const [, setLocation] = useLocation();
@@ -28,7 +30,7 @@ export const About = (): JSX.Element => {
     {
       icon: Shield,
       title: "Security First",
-      description: "Your documents are processed with bank-level security. We never store your files and all transfers are encrypted."
+      description: "Encrypted in transit (HTTPS). Some tools run locally; others upload files for processing."
     },
     {
       icon: Zap,
@@ -43,7 +45,7 @@ export const About = (): JSX.Element => {
     {
       icon: Globe,
       title: "Accessible",
-      description: "Available 24/7 from anywhere in the world. No downloads, no installations, just pure convenience."
+      description: "Use PDF and image tools through your web browser."
     },
     {
       icon: Leaf,
@@ -79,7 +81,7 @@ export const About = (): JSX.Element => {
     {
       name: "David Kim",
       position: "Head of Security",
-      description: "Protecting user data with advanced security protocols and industry-leading encryption standards.",
+      description: "Encrypted in transit (HTTPS).",
       image: "https://api.builder.io/api/v1/image/assets/TEMP/df8fa776e0c3b39f121324b712ecf19d28f076bd?width=504"
     }
   ];
@@ -123,23 +125,14 @@ export const About = (): JSX.Element => {
               <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-6 text-lg text-gray-600">
                 <p>
-                  Founded with a vision to simplify document management, PDF Genius has become the trusted solution for millions of users worldwide. Our journey began when we recognized the growing need for reliable, secure, and user-friendly PDF tools.
+                  PDF Genius provides PDF and image tools for converting, organizing and editing documents. Free tools. No signup required.
                 </p>
                 <p>
                   We've built a platform that combines cutting-edge technology with intuitive design, making professional PDF conversion accessible to everyone.
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 gap-6 mt-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">10M+</div>
-                  <div className="text-gray-600">Files Processed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">150+</div>
-                  <div className="text-gray-600">Countries Served</div>
-                </div>
-              </div>
+              <VerifiedSiteStats group="about" />
             </div>
             
             <div>
@@ -235,7 +228,8 @@ export const About = (): JSX.Element => {
               </div>
               <h3 className="text-xl font-bold mb-4">Phone</h3>
               <p className="text-gray-200 mb-1">+447429919748</p>
-              <p className="text-gray-200 text-sm">Available 24/7</p>
+              <p className="text-gray-200 text-sm">{SUPPORT_REPLY_COPY}</p>
+              <p className="text-gray-200 text-xs mt-2">{SUPPORT_REPLY_TODO}</p>
             </div>
             
             <div className="text-center text-white">

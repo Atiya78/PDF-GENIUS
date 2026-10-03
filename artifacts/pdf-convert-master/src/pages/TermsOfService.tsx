@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Calendar, Clock, CheckCircle, Book, Heart, User, Shield, FileText, Copyright, DollarSign, Lock, X, AlertCircle, Gavel, MessageSquare, Edit, Phone } from "lucide-react";
 import { DocumentSearch, SearchableSection } from "@/components/DocumentSearch";
 import { useDocumentSearch } from "@/hooks/useDocumentSearch";
+import { FILE_RETENTION_COPY, FILE_RETENTION_TODO, HTTPS_COPY } from "@/config/siteCopy";
 
 export const TermsOfService = (): JSX.Element => {
   // Define table of contents items first
@@ -60,7 +61,7 @@ export const TermsOfService = (): JSX.Element => {
     {
       id: "user-content-and-files",
       title: "User Content and Files",
-      content: "File Processing: Files uploaded to our Service are processed temporarily and automatically deleted after completion. We do not permanently store your documents. Content Ownership: You retain full ownership of all content you upload. We do not claim any ownership rights to your files. Processing License: By uploading files, you grant us a limited, temporary license to process your content solely for providing our conversion services. File Limitations: We may impose reasonable limits on file size, processing time, and usage volume to ensure optimal service performance. Prohibited Content: You may not upload content that violates laws, infringes copyrights, or contains malicious code.",
+      content: `File Processing: ${FILE_RETENTION_COPY} ${FILE_RETENTION_TODO} Content Ownership: You retain full ownership of all content you upload. We do not claim any ownership rights to your files. Processing License: By uploading files, you grant us a limited, temporary license to process your content solely for providing our conversion services. File Limitations: We may impose reasonable limits on file size, processing time, and usage volume to ensure optimal service performance. Prohibited Content: You may not upload content that violates laws, infringes copyrights, or contains malicious code.`,
       category: "Content"
     },
     {
@@ -78,7 +79,7 @@ export const TermsOfService = (): JSX.Element => {
     {
       id: "privacy-and-security",
       title: "Privacy and Security",
-      content: "Data Protection: We implement industry-standard security measures to protect your data and comply with UK GDPR requirements. File Security: All file uploads and downloads are encrypted in transit using SSL/TLS encryption. Automatic Deletion: Uploaded files are automatically deleted from our servers after processing, typically within 24 hours. Privacy Policy: Our collection and use of personal information is governed by our Privacy Policy, which forms part of these Terms. No Guarantee: While we implement robust security measures, no system is completely secure, and we cannot guarantee absolute security.",
+      content: `File Security: ${HTTPS_COPY} File Cleanup: ${FILE_RETENTION_COPY} ${FILE_RETENTION_TODO} Privacy Policy: Our collection and use of personal information is governed by our Privacy Policy, which forms part of these Terms. No Guarantee: No system is completely secure, and we cannot guarantee absolute security.`,
       category: "Security"
     },
     {
@@ -391,7 +392,7 @@ export const TermsOfService = (): JSX.Element => {
                     6. User Content and Files
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-3">
-                    <p><strong>File Processing:</strong> Files uploaded to our Service are processed temporarily and automatically deleted after completion. We do not permanently store your documents.</p>
+                    <p><strong>File Processing:</strong> {FILE_RETENTION_COPY} {FILE_RETENTION_TODO}</p>
                     <p><strong>Content Ownership:</strong> You retain full ownership of all content you upload. We do not claim any ownership rights to your files.</p>
                     <p><strong>Processing License:</strong> By uploading files, you grant us a limited, temporary license to process your content solely for providing our conversion services.</p>
                     <p><strong>File Limitations:</strong> We may impose reasonable limits on file size, processing time, and usage volume to ensure optimal service performance.</p>
@@ -443,7 +444,7 @@ export const TermsOfService = (): JSX.Element => {
                   <div className="text-gray-700 leading-relaxed space-y-3">
                     <p><strong>Data Protection:</strong> We implement industry-standard security measures to protect your data and comply with UK GDPR requirements.</p>
                     <p><strong>File Security:</strong> All file uploads and downloads are encrypted in transit using SSL/TLS encryption.</p>
-                    <p><strong>Automatic Deletion:</strong> Uploaded files are automatically deleted from our servers after processing, typically within 24 hours.</p>
+                    <p><strong>File Cleanup:</strong> {FILE_RETENTION_COPY} {FILE_RETENTION_TODO}</p>
                     <p><strong>Privacy Policy:</strong> Our collection and use of personal information is governed by our Privacy Policy, which forms part of these Terms.</p>
                     <p><strong>No Guarantee:</strong> While we implement robust security measures, no system is completely secure, and we cannot guarantee absolute security.</p>
                   </div>

@@ -76,8 +76,7 @@ export const TestimonialsSection = (): JSX.Element => {
             Ready to Transform Your PDF Workflow?
           </h3>
           <p className="text-base text-gray-600 text-center mb-8">
-            Every tool is 100% free with no sign-up required. Create an account
-            only when you're ready to access our developer API.
+            Free tools. No signup required. See our developer documentation for API access.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button

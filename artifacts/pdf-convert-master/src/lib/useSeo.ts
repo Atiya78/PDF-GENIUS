@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
+import { SITE_DESCRIPTION } from "@/config/siteCopy";
 
 /**
  * Per-page SEO for the single-page app. React renders client-side, so each route
@@ -14,7 +15,7 @@ const SITE_URL = "https://pdfgenius.app";
 const BRAND = "PDF Genius";
 const DEFAULT_TITLE = `${BRAND} — Free Online PDF Converter & Editor, No Signup`;
 const DEFAULT_DESCRIPTION =
-  "Convert, edit, merge, split & compress PDFs free in your browser. 100% free — no signup, no email, no credit card. Fast, secure, unlimited PDF tools.";
+  SITE_DESCRIPTION;
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 export interface SeoOptions {

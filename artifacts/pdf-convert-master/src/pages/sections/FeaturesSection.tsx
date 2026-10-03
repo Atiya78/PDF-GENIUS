@@ -9,6 +9,7 @@ import { LottieIcon } from "@/components/ui/lottie-icon";
 import featureConvert from "@/assets/lottie/feature-convert.json";
 import featureOrganize from "@/assets/lottie/feature-organize.json";
 import featureSecure from "@/assets/lottie/feature-secure.json";
+import { getVerifiedStats } from "@/config/siteStats";
 
 export const FeaturesSection = (): JSX.Element => {
   // Add CSS keyframes for the rotating border animation
@@ -32,12 +33,7 @@ export const FeaturesSection = (): JSX.Element => {
   const [location, setLocation] = useLocation();
 
   // Stats data for the metrics section
-  const stats = [
-    { value: "10M+", label: "Active Users" },
-    { value: "100M+", label: "Files Processed" },
-    { value: "99.9%", label: "Uptime" },
-    { value: "24/7", label: "Support" },
-  ];
+  const stats = getVerifiedStats("home");
 
   // Feature cards data
   const featureCards = [
@@ -46,7 +42,7 @@ export const FeaturesSection = (): JSX.Element => {
       IconComponent: ArrowRightLeft,
       lottie: featureConvert,
       description:
-        "Transform your documents between different formats with perfect quality preservation.",
+        "Convert between document formats. Review the result: formatting may change during conversion.",
       features: ["PDF to Word", "Word to PDF", "Excel to PDF", "Image to PDF"],
       borderColor: "border-blue-500/30",
       iconColor: "#f7433d",
@@ -84,13 +80,13 @@ export const FeaturesSection = (): JSX.Element => {
   // Key features with icons
   const keyFeatures = [
     {
-      title: "Lightning Fast Processing",
-      description: "Convert and process documents in seconds, not minutes",
+      title: "PDF and image processing",
+      description: "Conversion time depends on the file and the tool",
       icon: "/figmaAssets/margin-wrap-11.svg",
     },
     {
-      title: "Enterprise-Grade Security",
-      description: "Your documents are encrypted and processed securely",
+      title: "Encrypted in transit (HTTPS).",
+      description: "File uploads and downloads use HTTPS",
       icon: "/figmaAssets/margin-wrap-11.svg",
     },
     {
@@ -128,8 +124,7 @@ export const FeaturesSection = (): JSX.Element => {
             Transform Your PDF Workflow
           </h2>
           <p className="text-xl text-gray-600 max-w-screen-md mx-auto leading-[32.5px]">
-            Discover how millions of users worldwide are revolutionizing their
-            document management with our powerful PDF tools
+            Free tools. No signup required. Convert, organize and edit documents.
           </p>
         </div>
 
@@ -139,7 +134,7 @@ export const FeaturesSection = (): JSX.Element => {
           <div className="flex-1 min-w-[300px]">
             {/* Performance Badge */}
             <Badge className="px-[17px] py-[9px] text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-full mb-6 h-[38px]">
-              Industry Leading Performance
+              Free tools. No signup required.
             </Badge>
 
             {/* Main Heading */}
@@ -253,7 +248,7 @@ export const FeaturesSection = (): JSX.Element => {
         </div>
 
         {/* Stats Section */}
-        <div className="mb-20 bg-gray-50 rounded-3xl border border-gray-200 shadow-sm p-12">
+        {stats.length > 0 && <div className="mb-20 bg-gray-50 rounded-3xl border border-gray-200 shadow-sm p-12">
           <div className="flex flex-wrap justify-between">
             {stats.map((stat, index) => (
               <div
@@ -271,6 +266,7 @@ export const FeaturesSection = (): JSX.Element => {
           </div>
         </div>
 
+        }
         {/* Feature Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {featureCards.map((card, index) => {

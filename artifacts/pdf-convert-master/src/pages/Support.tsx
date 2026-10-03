@@ -1,4 +1,7 @@
 import React, { useState, useMemo } from "react";
+import { VerifiedSiteStats } from "@/components/VerifiedSiteStats";
+import { getVerifiedStats } from "@/config/siteStats";
+import { SUPPORT_REPLY_COPY, SUPPORT_REPLY_TODO } from "@/config/siteCopy";
 import { Search, Mail, Phone, Play, CheckCircle, BookOpen, Settings, CreditCard, Code, FileText, Wrench, Users, TrendingUp, Server, Clock, Target, Award, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -84,7 +87,7 @@ export const Support = (): JSX.Element => {
       icon: Mail,
       color: "bg-blue-500",
       action: "Send Email",
-      availability: "< 2h response"
+      availability: `${SUPPORT_REPLY_COPY}. ${SUPPORT_REPLY_TODO}`
     },
     {
       title: "Phone Support",
@@ -105,36 +108,7 @@ export const Support = (): JSX.Element => {
   ];
 
   // Support statistics
-  const supportStats = [
-    {
-      title: "Response Time",
-      value: "< 2h",
-      description: "Average response time",
-      icon: Clock,
-      color: "text-blue-600"
-    },
-    {
-      title: "Satisfaction Rate",
-      value: "98.3%",
-      description: "Customer satisfaction",
-      icon: Award,
-      color: "text-blue-600"
-    },
-    {
-      title: "Resolution Rate",
-      value: "99.2%",
-      description: "Issues resolved",
-      icon: Target,
-      color: "text-blue-600"
-    },
-    {
-      title: "Articles Available",
-      value: "15+",
-      description: "Help articles",
-      icon: BookOpen,
-      color: "text-blue-600"
-    }
-  ];
+  const supportStats = getVerifiedStats("support");
 
   // Video tutorials
   const videoTutorials = [
@@ -246,6 +220,8 @@ export const Support = (): JSX.Element => {
           <h1 className="text-5xl font-bold text-white mb-6">
             How Can We Help You?
           </h1>
+          <p className="text-white mb-2">{SUPPORT_REPLY_COPY}</p>
+          <p className="text-sm text-gray-200 mb-6">{SUPPORT_REPLY_TODO}</p>
           <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto">
             Get help with PDF Genius services with comprehensive support for all your PDF conversion needs
           </p>
@@ -404,7 +380,7 @@ export const Support = (): JSX.Element => {
       </section>
 
       {/* Statistics Section */}
-      <section id="account-billing" className={`py-16 bg-gray-900 text-white transition-all duration-300 ${
+      {supportStats.length > 0 && <section id="account-billing" className={`py-16 bg-gray-900 text-white transition-all duration-300 ${
         highlightedSection === "account-billing" ? "ring-4 ring-blue-500 ring-opacity-50" : ""
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -413,23 +389,11 @@ export const Support = (): JSX.Element => {
             <p className="text-lg text-gray-300">Our commitment to excellent customer service</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {supportStats.map((stat, index) => (
-              <Card key={index} className="bg-gray-800 border-gray-700 text-center">
-                <CardHeader className="pb-2">
-                  <stat.icon className={`w-8 h-8 mx-auto mb-2 ${stat.color}`} />
-                  <CardTitle className="text-3xl font-bold text-white">{stat.value}</CardTitle>
-                </CardHeader>
-                <div>
-                  <p className="text-gray-300 font-medium">{stat.title}</p>
-                  <p className="text-sm text-gray-400">{stat.description}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
+          <VerifiedSiteStats group="support" />
         </div>
       </section>
 
+      }
       {/* Video Tutorials Section */}
       <section id="video-tutorials" className={`py-16 bg-white transition-all duration-300 ${
         highlightedSection === "video-tutorials" ? "ring-4 ring-blue-500 ring-opacity-50 bg-blue-50" : ""
@@ -509,24 +473,10 @@ export const Support = (): JSX.Element => {
                   Performance Metrics
                 </CardTitle>
               </CardHeader>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span>API Response Time</span>
-                  <span className="font-semibold">245ms</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Uptime (30 days)</span>
-                  <span className="font-semibold">99.98%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Conversion Success Rate</span>
-                  <span className="font-semibold">99.95%</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Active Users</span>
-                  <span className="font-semibold">15,432</span>
-                </div>
-              </div>
+              <VerifiedSiteStats group="performance" />
+              {!getVerifiedStats("performance").length && (
+                <p className="px-6 pb-6 text-sm text-gray-500">TODO: Publish performance metrics only after verification.</p>
+              )}
             </Card>
           </div>
         </div>

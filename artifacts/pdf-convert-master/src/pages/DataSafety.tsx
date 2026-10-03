@@ -1,4 +1,5 @@
 import React from "react";
+import { FILE_RETENTION_COPY, FILE_RETENTION_TODO, IMAGE_UPLOAD_RETENTION_COPY } from "@/config/siteCopy";
 import {
   Shield,
   Lock,
@@ -149,8 +150,8 @@ export const DataSafety = (): JSX.Element => {
             <h2 className="text-2xl font-bold text-gray-900">Data this app collects</h2>
           </div>
           <p className="text-gray-600 mb-6">
-            All data is collected, never shared. Files and photos are processed to deliver
-            your conversion and are deleted automatically (typically within 24 hours).
+            Some tools process files locally; others upload files for processing.
+            {" "}{FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY} {FILE_RETENTION_TODO}
           </p>
 
           <div className="space-y-4">

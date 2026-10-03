@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { VerifiedSiteStats } from "@/components/VerifiedSiteStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -1448,28 +1449,7 @@ export const LearnMore: React.FC = () => {
           </div>
 
           {/* Company Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <TrendingUp className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">10M+</div>
-              <div className="text-blue-200">Users Served</div>
-            </div>
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <FileText className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">20+</div>
-              <div className="text-blue-200">PDF Tools</div>
-            </div>
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <Award className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">99.9%</div>
-              <div className="text-blue-200">Uptime</div>
-            </div>
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <Shield className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">100%</div>
-              <div className="text-blue-200">Secure</div>
-            </div>
-          </div>
+          <VerifiedSiteStats group="learn" />
         </div>
       </section>
 
@@ -1592,7 +1572,7 @@ export const LearnMore: React.FC = () => {
             <h3 className="text-2xl font-bold mb-4">About PDF Genius</h3>
             <p className="text-gray-600 max-w-3xl mx-auto">
               Developed in London, UK, PDF Genius provides professional-grade 
-              PDF tools trusted by millions worldwide. Our mission is to make document management 
+              PDF and image tools for converting, editing and organizing documents. Our aim is to make document management
               simple, secure, and accessible for everyone.
             </p>
           </div>

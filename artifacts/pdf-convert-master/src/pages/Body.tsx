@@ -4,12 +4,14 @@ import { HeroSection } from "./sections/HeroSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
 import { APIDocumentationSection } from "./sections/APIDocumentationSection";
 import { useSeo } from "@/lib/useSeo";
+import { SITE_DESCRIPTION } from "@/config/siteCopy";
+import { PrivacyFilesSection } from "./sections/PrivacyFilesSection";
 
 export const Body = (): JSX.Element => {
   useSeo({
     title: "PDF Genius — Free Online PDF Converter & Editor, No Signup",
     description:
-      "Convert, edit, merge, split & compress PDFs free in your browser. 100% free — no signup, no email, no credit card. Fast, secure, unlimited PDF tools.",
+      SITE_DESCRIPTION,
     canonicalPath: "/",
     jsonLd: {
       "@context": "https://schema.org",
@@ -20,7 +22,7 @@ export const Body = (): JSX.Element => {
       operatingSystem: "Any (web-based)",
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       description:
-        "Free online PDF and image tools: convert, edit, merge, split, compress, sign and OCR PDFs right in your browser.",
+        SITE_DESCRIPTION,
     },
   });
   return (
@@ -28,6 +30,7 @@ export const Body = (): JSX.Element => {
       {/* Main content sections — each renders its own animated background */}
       <HeroSection />
       <FeaturesSection />
+      <PrivacyFilesSection />
       <APIDocumentationSection />
       <TestimonialsSection />
     </div>

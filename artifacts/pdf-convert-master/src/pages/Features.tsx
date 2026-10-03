@@ -8,19 +8,19 @@ export const Features: React.FC = () => {
   useSeo({
     title: "Features — Fast, Secure PDF & Image Tools",
     description:
-      "Discover PDF Genius features: convert, edit, merge, split, compress, sign, OCR and more. Fast, private, browser-based processing with no watermarks.",
+      "Explore PDF and image tools. Some tools process locally; others upload files for server processing. Encrypted in transit (HTTPS).",
     canonicalPath: "/features",
   });
   const [, setLocation] = useLocation();
 
   const features = [
     {
-      title: "Lightning Fast Processing",
-      description: "Convert and process documents in seconds, not minutes"
+      title: "PDF and image processing",
+      description: "Conversion time depends on the file and the tool"
     },
     {
-      title: "Enterprise-Grade Security", 
-      description: "Your documents are encrypted and processed securely"
+      title: "Encrypted in transit (HTTPS).",
+      description: "File uploads and downloads use HTTPS"
     },
     {
       title: "Cross-Platform Compatibility",

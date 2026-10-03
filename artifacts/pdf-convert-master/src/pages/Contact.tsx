@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Phone, Mail, MessageSquare, HeadphonesIcon, MapPin, Clock, Car, Train, Shield, Cloud, Lock, CheckCircle, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSeo } from "@/lib/useSeo";
+import { SUPPORT_REPLY_COPY, SUPPORT_REPLY_TODO, FILE_RETENTION_COPY, FILE_RETENTION_TODO } from "@/config/siteCopy";
 
 export const Contact = (): JSX.Element => {
   useSeo({
@@ -141,16 +142,10 @@ export const Contact = (): JSX.Element => {
                 Our dedicated team is here to assist you with any questions, technical issues, or business inquiries. Choose how you'd like to connect with us.
               </p>
 
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
-                  <div className="text-3xl font-bold text-blue-200 mb-1">24/7</div>
-                  <div className="text-sm text-gray-200">Support Available</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
-                  <div className="text-3xl font-bold text-blue-200 mb-1">&lt;1hr</div>
-                  <div className="text-sm text-gray-200">Response Time</div>
-                </div>
-              </div>
+               <div className="bg-white/10 rounded-lg p-4 mb-8">
+                 <p>{SUPPORT_REPLY_COPY}</p>
+                 <p className="text-sm mt-2">{SUPPORT_REPLY_TODO}</p>
+               </div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
@@ -204,7 +199,7 @@ export const Contact = (): JSX.Element => {
                   <p className="text-gray-200 text-sm mb-3">Having trouble with our tools? Get instant help from our technical team.</p>
                   <div className="flex items-center text-blue-200 text-sm">
                     <Clock className="w-4 h-4 mr-2" />
-                    Average response: 15 minutes
+                    {SUPPORT_REPLY_COPY}
                   </div>
                 </div>
               )}
@@ -215,7 +210,7 @@ export const Contact = (): JSX.Element => {
                   <p className="text-gray-200 text-sm mb-3">Explore enterprise solutions, custom integrations, and volume pricing options for your organization.</p>
                   <div className="flex items-center text-blue-200 text-sm">
                     <Clock className="w-4 h-4 mr-2" />
-                    Response within: 2 hours
+                    {SUPPORT_REPLY_COPY}
                   </div>
                 </div>
               )}
@@ -226,7 +221,7 @@ export const Contact = (): JSX.Element => {
                   <p className="text-gray-200 text-sm mb-3">Share your experience, suggest improvements, or report issues to help us enhance our services.</p>
                   <div className="flex items-center text-blue-200 text-sm">
                     <Clock className="w-4 h-4 mr-2" />
-                    Response within: 24 hours
+                    {SUPPORT_REPLY_COPY}
                   </div>
                 </div>
               )}
@@ -283,7 +278,7 @@ export const Contact = (): JSX.Element => {
                 </div>
                 <div className="flex items-center text-sm text-gray-600 mb-4">
                   <Clock className="w-4 h-4 mr-2" />
-                  24/7 Available
+                   {SUPPORT_REPLY_COPY}
                 </div>
                 <Button variant="blue" className="w-full mt-auto">
                   Call Now
@@ -317,7 +312,7 @@ export const Contact = (): JSX.Element => {
                 </div>
                 <div className="flex items-center text-sm text-gray-600 mb-4">
                   <Clock className="w-4 h-4 mr-2" />
-                  Response within 1 hour
+                   {SUPPORT_REPLY_COPY}
                 </div>
                 <Button variant="blue" className="w-full mt-auto">
                   Send Email
@@ -351,7 +346,7 @@ export const Contact = (): JSX.Element => {
                 </div>
                 <div className="flex items-center text-sm text-gray-600 mb-4">
                   <Clock className="w-4 h-4 mr-2" />
-                  Quick response
+                   {SUPPORT_REPLY_COPY}
                 </div>
                 <Button variant="blue" className="w-full mt-auto">
                   Message Us
@@ -550,7 +545,7 @@ export const Contact = (): JSX.Element => {
               },
               {
                 question: "How secure is my data during conversion?",
-                answer: "Your data security is our top priority. We use industry-standard 256-bit SSL encryption for all file transfers. All uploaded files are automatically deleted from our servers within 24 hours after conversion. We never store, share, or access your personal documents."
+                answer: `Encrypted in transit (HTTPS). ${FILE_RETENTION_COPY} ${FILE_RETENTION_TODO}`
               },
               {
                 question: "Can I use your tools offline?",
@@ -558,7 +553,7 @@ export const Contact = (): JSX.Element => {
               },
               {
                 question: "Do you offer API access for developers?",
-                answer: "Yes! We provide robust REST API access for Pro and Enterprise plan users. Our API supports all conversion tools, batch processing, and webhooks. Comprehensive documentation, SDKs for popular languages, and 24/7 developer support are included."
+                answer: "See our API documentation for supported tools and current access requirements. Contact support for questions."
               },
               {
                 question: "What payment methods do you accept?",
@@ -570,7 +565,7 @@ export const Contact = (): JSX.Element => {
               },
               {
                 question: "Do you provide technical support?",
-                answer: "Yes, we offer comprehensive technical support. Free users get community support, Basic users get email support within 24 hours, Pro users get priority email and chat support within 1 hour, and Enterprise users get 24/7 dedicated support with phone access."
+                answer: `${SUPPORT_REPLY_COPY}. ${SUPPORT_REPLY_TODO}`
               },
               {
                 question: "Are there any usage limits?",
@@ -724,7 +719,7 @@ export const Contact = (): JSX.Element => {
                   <div className="border-t border-blue-200 mt-4 pt-4">
                     <div className="flex items-center text-sm text-blue-800">
                       <Phone className="w-4 h-4 mr-2 text-blue-600" />
-                      24/7 Emergency Support: +447429919748
+                      {SUPPORT_REPLY_COPY}. {SUPPORT_REPLY_TODO}
                     </div>
                   </div>
                 </div>

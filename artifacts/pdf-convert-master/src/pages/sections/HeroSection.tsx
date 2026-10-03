@@ -12,9 +12,9 @@ import { HeroToolConverter } from "@/components/HeroToolConverter";
 
 const heroBenefits = [
   "Work directly in your browser",
-  "Keep original formatting and quality",
-  "Download your converted file in seconds",
-  "100% free, secure & private",
+  "Review the result before using it",
+  "Download your result when processing finishes",
+  "Free tools. No signup required.",
 ];
 
 export const HeroSection = (): JSX.Element => {
@@ -35,17 +35,17 @@ export const HeroSection = (): JSX.Element => {
   const trustIndicators = [
     {
       icon: <ShieldIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "100% Secure",
+      text: "Encrypted in transit (HTTPS).",
       className: "whitespace-nowrap",
     },
     {
       icon: <ZapIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "Instant Processing",
+      text: "PDF and image tools",
       className: "whitespace-nowrap",
     },
     {
       icon: <SparklesIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "Always Free",
+      text: "No signup required",
       className: "whitespace-nowrap",
     },
   ];
@@ -68,7 +68,7 @@ export const HeroSection = (): JSX.Element => {
                           src="/figmaAssets/margin-wrap.svg"
                         />
                         <span className="font-medium text-sm">
-                          Trusted by 10M+ users worldwide
+                          Free tools. No signup required.
                         </span>
                       </Badge>
 
@@ -79,7 +79,7 @@ export const HeroSection = (): JSX.Element => {
                         >
                           {activeTool
                             ? `Convert ${activeTool.title}`
-                            : "Professional PDF tools trusted by millions"}
+                            : "Free PDF tools. No signup required."}
                         </h1>
                       </div>
 
