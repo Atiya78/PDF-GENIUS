@@ -6,8 +6,10 @@ description: How to queue an EAS cloud build from the Replit main agent despite 
 # Running `eas build` from the main agent
 
 `eas build` defaults to using git (it stashes/reads the index to create the upload archive). In the
-Replit main-agent sandbox, git **writes** are blocked, so the build aborts with an error about
+EAS subprocess environment, git **writes** can be blocked, so the build aborts with an error about
 `.git/index.lock` / "Destructive git operations are not allowed".
+
+Do not assume this blocks all Git operations from the main agent: ordinary `git add` and `git rebase --continue` have succeeded through the shell tool.
 
 **Fix:** prefix with `EAS_NO_VCS=1` so EAS tars the working directory directly instead of using git.
 Run from the artifact dir, e.g.:
