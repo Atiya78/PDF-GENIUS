@@ -1,0 +1,139 @@
+# PDF Genius — Bug & Responsiveness Audit
+
+Site: https://pdfgenius.app/
+Tested: 4 Oct 2026, Chromium, viewports 320, 360, 375, 414, 768, 800, 900, 1024, 1100, 1280, 1366, 1440, 1536, 1600, 1920, 2560 px.
+Pages checked: Home, /pdf-to-word, /pricing, /merge-pdf, /edit-pdf, /education, /about, a 404 URL.
+
+Good news first: no page scrolls sideways at any tested width, no broken images, every image has `alt`, each page has one `<h1>`, and the 404 page works. The problems are layout bugs at certain widths, leftover dev text, and some UX/accessibility issues.
+
+---
+
+## Critical (fix first)
+
+### 1. Pricing page is crushed on mobile
+- **What:** At 360 px the plan cards are only ~150 px wide. Feature text wraps one word per line and the **"Upgrade to Pro" text overflows its button**.
+- **Cause:** `<main class="max-w-7xl mx-auto px-20 py-8">` uses `px-20` (80 px left and right) at every size. On top of that, the card wrapper adds `p-6` and each card adds `p-6` again.
+- **Fix:**
+  ```diff
+  - <main class="max-w-7xl mx-auto px-20 py-8">
+  + <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-20 py-8">
+  ```
+  ```diff
+  - <div class="p-6 pt-0">            <!-- card wrapper -->
+  + <div class="p-3 sm:p-6 pt-0">
+  - <div class="border rounded-lg p-6 relative flex flex-col h-full ...">
+  + <div class="border rounded-lg p-4 sm:p-6 relative flex flex-col h-full ...">
+  ```
+  Let button text wrap, or shorten it: remove `whitespace-nowrap` from that button, or use `text-sm px-3`.
+  For the "Monthly / Yearly — 2 months free" toggle, put the badge on its own line, or use `whitespace-nowrap` on "Yearly" and make the badge smaller.
+
+### 2. About page hero overflows: heading clipped and contact text invisible
+- **What:** On mobile the top of "About PDF Genius" is hidden under the sticky header. The row with the building and phone icons (which says "PDF Genius" and "+447429919748") falls **outside** the dark hero image. It is white text on a white background, so only the icons show.
+- **Cause:** `section.relative.h-[400px]` has a fixed height, but its content is taller than 400 px on small screens: the H1 alone is 225 px tall at 360 px. The H1 starts at y=33, above the section's own top (y=65), and the contact row starts at y=470, below the section's bottom (y=465).
+- **Fix:**
+  ```diff
+  - <section class="relative h-[400px] flex items-center justify-center bg-cover bg-center">
+  + <section class="relative min-h-[400px] py-20 md:py-24 flex items-center justify-center bg-cover bg-center">
+  ```
+  Also scale the H1 down on mobile, e.g. `text-4xl sm:text-5xl md:text-6xl`, and let the contact row wrap with `flex-wrap`.
+
+### 3. Developer "TODO" notes visible to users
+- Home → "Privacy and your files": **"TODO: Confirm and implement an automatic deletion period for stored conversion results."**
+- About page: **"TODO: Confirm the 24-hour support response target."**
+- These hurt trust, especially in a privacy section. Remove them or replace them with final text. Add a CI check such as `grep -r "TODO:" src/**/*.tsx` limited to JSX text.
+
+### 4. Desktop navigation hidden on every laptop (1024–1439 px)
+- **What:** The full nav only appears at `min-[1440px]`. Common laptop widths (1280, 1366, 1400) get only the logo and a hamburger, which wastes the header and hides search.
+- **Fix:** Show the nav from `lg` (1024) or `xl` (1280) and make it more compact at those widths:
+  ```diff
+  - class="... hidden min-[1440px]:flex justify-center"
+  + class="... hidden lg:flex justify-center"
+  ```
+  To make it fit at 1024–1279: use `gap-4 text-sm` for nav items, shrink search to an icon button (`xl:w-44`), and move "About" and "Education Zone" into a "More" menu below `xl`.
+
+---
+
+## High
+
+### 5. Logo text collides with "Home" (≥1536 px)
+- The `<h2>PDF Genius</h2>` ends at x=215 and the "Home" link starts at x=216, a 1 px gap. It reads as "PDF GeniusHome".
+- **Fix:** Add a gap or margin between the brand block and the nav: `mr-6 xl:mr-10` on the logo container, or `gap-8` on the flex row.
+
+### 6. Logo isn't a link
+- The header logo is a `<div class="... cursor-pointer">` with a JS click handler. It can't be reached with the keyboard, can't be middle-clicked or opened in a new tab, and gives search engines no home link.
+- **Fix:** `<a href="/" aria-label="PDF Genius home">…</a>`. Also change the brand `<h2>` to a `<span>`: a heading inside the header breaks the page's heading outline on every page.
+
+### 7. Mobile menu items are `<button>`s, not links
+- Home, Education Zone, Pricing and About in the drawer are buttons that navigate with JS. That's bad for SEO, accessibility (screen readers announce "button") and long-press "open in new tab".
+- **Fix:** Use `<a href>` (React Router `<Link>`) for every item that goes to a page. Keep `<button>` only for the expandable groups.
+
+### 8. No search on mobile or tablet
+- The "Search tools…" box exists only in the desktop header (≥1440 px today). With 30+ tools, mobile users have to scroll a long list.
+- **Fix:** Put the search input at the top of the mobile drawer, or add a search icon next to the hamburger.
+
+### 9. Zoom is disabled
+- `<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">`. `maximum-scale=1` blocks pinch-zoom on Android. This fails WCAG 1.4.4.
+- **Fix:** `<meta name="viewport" content="width=device-width, initial-scale=1">`. If you were preventing iOS input-zoom, set input font-size to at least 16 px instead.
+
+### 10. Copy button covers the curl example (mobile)
+- In "Simple Integration" the curl block scrolls sideways, and the "Copy" button sits on top of the URL (`https://pdfgenius.…`).
+- **Fix:** Add `pt-10` (or `pr-20`) to the `<pre>` so the text starts below or beside the button. Alternatively, put the button in a header bar above the code.
+
+### 11. "View Documentation" requires login
+- On Home, "View Documentation" and "Get API Key" both go to `/signin`. Developers expect to read docs before signing up.
+- **Fix:** Point "View Documentation" to a public `/docs` page.
+
+---
+
+## Medium
+
+### 12. Hero drop zone doesn't line up with the header grid
+At 1440 and 1920 px the right column (drop zone) ends well before the header's right edge, leaving a large empty strip. Use the same container (`max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8`) and `grid lg:grid-cols-2`, with the drop zone set to `w-full`.
+
+### 13. Decorative circles overlap text
+On mobile, outlined circles and dots sit on top of body copy, e.g. over the "From converting documents to merging files…" paragraph and behind tool cards. Add `pointer-events-none -z-10` to the decorations and keep them inside an `overflow-hidden` section. Hide them below `md` with `hidden md:block`.
+
+### 14. Inconsistent tool counts
+The site says "20+ Conversion Tools" (API section), "22 tools" (footer accordion) and "All 27 conversion tools" (pricing). The "All tools" grid lists 32 links. Use one number, ideally computed from the tools array.
+
+### 15. Mixed messages on pricing
+The site promises "every web tool stays free, no account required" and "1,000 free API calls/month". The Free plan, however, lists "50 conversions per month". Make clear which limits apply to the web tools and which to the API.
+
+### 16. Same tagline repeated many times on Home
+"Free tools. No signup required." appears in the hero badge, the H1, the trust row, the "Transform Your PDF Workflow" subtitle, a second badge, the final CTA and the About page. Keep it in the hero and CTA and use different supporting copy elsewhere.
+
+### 17. Two upload boxes on Home
+There are two drop zones: the hero "Drop your PDF here" box and the mock "PDF Converter Pro" box with "Browse Files". On mobile you scroll past both. Keep one real drop zone. Make the second one clearly an illustration, or remove it.
+
+### 18. Confusing tool name: "PDF to JPG — current output: PNG"
+The tool is called PDF to JPG but outputs PNG. Rename it to "PDF to Images (PNG)" or add JPG output. Today the internal note leaks into nav links, the footer and the tool grid.
+
+### 19. Upload hint shows before any file is chosen
+/pdf-to-word shows "You can add 10 more files" (and /merge-pdf "You can add 20 more files") before anything is uploaded, in red text that looks like an error. Show it only after the first file is added, in neutral grey.
+
+### 20. Last tool card sits alone (desktop)
+In the 5-column "Everything You Need" grid, "OCR PDF" sits alone in the last row. Use `grid-cols-[repeat(auto-fill,minmax(220px,1fr))]` or change the number of tools/columns so rows fill.
+
+---
+
+## Low / polish
+
+- **Small tap targets:** many footer and nav links are about 17–20 px tall (Pricing, About Us, Support, Contact, Data Safety, email, phone). Aim for at least 44 px on mobile: `py-2 inline-block` on footer links.
+- **Oversized logo:** a 1280×1239 PNG is loaded to display at 36 px. Export a 72–108 px PNG/WebP or an SVG.
+- **Footer logo:** the "SINCE 2026" text under the footer logo is too small to read.
+- **Truncated descriptions:** tool card descriptions on mobile are cut to about 2 lines ("Convert a PDF into a PowerPoint file….") with no way to read the rest. Shorten the copy or allow 3 lines.
+- **Mobile drawer close button:** small and tight in the corner. Make it 40×40 with padding.
+- **Search combobox:** reports `aria-expanded="true"` on page load before any typing. Set it to false until results are shown.
+- **`/api`:** returns a raw Express "Cannot GET /api" page instead of the site's 404. Add a JSON 404 or a redirect to docs for that path.
+
+---
+
+## Quick responsive checklist (after fixes)
+
+| Width | Check |
+|---|---|
+| 320–414 | Pricing cards full width, About hero fits, curl block readable, no circles over text |
+| 768 | Tool grid 2–3 cols, hero stacks cleanly |
+| 1024–1366 | Desktop nav visible (no hamburger), search visible |
+| 1440–1920 | Logo/nav gap, hero columns align with header |
+| 2560 | Content centered at max width, no huge empty areas |
