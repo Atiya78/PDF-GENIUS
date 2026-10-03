@@ -164,7 +164,7 @@ export const FooterSection = (): JSX.Element => {
               <h5 className="text-gray-900 font-medium text-sm mb-3">Follow Us</h5>
               <div className="flex space-x-4">
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/profile.php?id=61591351952175"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
@@ -182,7 +182,7 @@ export const FooterSection = (): JSX.Element => {
                   <Instagram className="w-4 h-4" />
                 </a>
                 <a
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/company/pdf-genius/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-700 hover:text-white transition-all duration-200"
