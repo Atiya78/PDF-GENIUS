@@ -88,3 +88,5 @@
 - [Hidden admin dashboard](admin-dashboard.md) — /admin + env-cred admin-scoped JWT (never give user tokens a scope); tool pause via tool_settings, new conversion endpoints must check isToolPaused.
 - [Compress Video (MP4) levels](compress-video-levels.md) — 3-level target-size two-pass; ratios lockstep web/mobile/backend (0.11/0.226/0.342); audio=20% share; corrupt-input friendly error; done-screen failure gates on status `failed`.
 - [Marketing claim verification](marketing-claims.md) — Google Ads makes false claims risky; require evidence or TODOs; keep mobile store declarations separate from web disclosures.
+- [TS preview/codegen compatibility](typescript-preview-codegen.md) — generic JSX tags break Replit metadata transforms; align Orval/Zod and browser typings.
+- [Education privacy & PDF fonts](education-privacy-fonts.md) — transient source documents, honest AI-provider retention disclosure, and portable Bengali export fonts.

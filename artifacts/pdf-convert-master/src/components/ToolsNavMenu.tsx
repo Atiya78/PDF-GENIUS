@@ -324,7 +324,7 @@ export const MobileNav = ({
               type="button"
               onClick={() => go(item.href)}
               className="w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700 hover:bg-gray-50"
-              data-testid={`mobile-nav-${item.name.toLowerCase()}`}
+              data-testid={`mobile-nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
             >
               {item.name}
             </button>

@@ -2,6 +2,8 @@
 
 # compiled output
 dist
+# Downloaded Tesseract OCR language-model cache (not source assets).
+*.traineddata
 tmp
 out-tsc
 *.tsbuildinfo

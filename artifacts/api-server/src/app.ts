@@ -3,6 +3,7 @@ import cors from "cors";
 import pinoHttp from "pino-http";
 import { logger } from "./lib/logger";
 import { registerRoutes } from "./routes";
+import { educationApp } from "./education/routes";
 
 const app: Express = express();
 
@@ -26,6 +27,9 @@ app.use(
   }),
 );
 app.use(cors());
+// Education owns a bounded JSON/multipart parser; keep the existing API parser
+// and payment webhook raw-body capture exactly as they are.
+app.use("/api/education", educationApp);
 // Capture the raw request body so the Dodo Payments webhook route can verify the
 // Standard-Webhooks HMAC signature against the exact bytes Dodo signed.
 app.use(

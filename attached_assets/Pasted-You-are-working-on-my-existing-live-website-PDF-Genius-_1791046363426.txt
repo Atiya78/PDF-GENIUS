@@ -1,0 +1,119 @@
+You are working on my existing live website PDF Genius (pdfgenius.app). Add a new section called "Education Zone". IMPORTANT: Do NOT break, remove, or restyle any existing pages, tools, API routes, or the homepage layout. Use the existing tech stack, components, fonts, colors, header, footer, and design system of the project. Before writing code, inspect the codebase and briefly tell me the stack and where you will add files.
+
+==================================================
+PART 1 — HOMEPAGE: ADD "EDUCATION ZONE" CONTAINER
+==================================================
+Add ONE new section on the homepage, placed in the MIDDLE of the page: directly AFTER the "Convert / Organize / Secure" category cards section and BEFORE the "Developer API" section. Keep it easy to move later (separate component, e.g. <EducationZoneSection />).
+
+Section content:
+- Small badge: "NEW · For Students"
+- Heading: "Education Zone — Study Smarter with AI"
+- Subheading: "Turn any lecture notes or textbook PDF into quizzes and flashcards in seconds."
+- 2 feature cards side by side (stack on mobile):
+  1. "Quiz Generator" — "Create MCQ, True/False and short-answer quizzes from your PDF." → link /education/quiz-generator
+  2. "Flashcard Maker" — "Auto-generate flip flashcards for fast revision." → link /education/flashcards
+- 1 primary button (same style as the site's main buttons): "Explore Education Zone →" → link /education
+- Subtle background (light gradient or soft tint using existing brand colors), rounded container, icons (graduation cap, quiz, cards), fade-in on scroll. Fully responsive.
+
+Also add "Education Zone" to the header navigation and the footer Quick Links.
+
+==================================================
+PART 2 — /education : EDUCATION ZONE HOME PAGE
+==================================================
+Build an expandable hub page. I WILL ADD MORE TOOLS LATER, so build it data-driven:
+
+- Create a single config file (e.g. educationTools.ts / .js) with an array of tools:
+  { id, name, slug, description, icon, status: "live" | "coming-soon", category, isNew }
+- The page renders tool cards automatically from this config. Adding a new tool later = add one entry + one page.
+- Initial tools:
+  LIVE: Quiz Generator (/education/quiz-generator), Flashcard Maker (/education/flashcards)
+  COMING SOON (disabled cards with "Coming soon" badge): AI PDF Summarizer, Chat with PDF, Notes Maker, Bangla ↔ English PDF Translator, Exam Question Paper Generator, Mind Map from PDF
+- Page layout:
+  1. Hero: title "Education Zone", subtitle "Free AI study tools for students and teachers", upload shortcut
+  2. Category filter tabs (All, Practice, Revision, Notes, Translate) driven by the config
+  3. Tools grid (cards)
+  4. "How it works" — 3 steps: Upload PDF → Choose options → Study & export
+  5. FAQ accordion (5–6 questions)
+  6. CTA banner back to main PDF tools
+- Create a reusable layout/template component (EducationToolLayout) with: breadcrumb (Home > Education Zone > Tool), tool title, description, upload area, options panel, result area, FAQ, related tools. All education tool pages must use it.
+
+==================================================
+PART 3 — /education/quiz-generator
+==================================================
+Flow:
+1. Upload PDF (drag & drop, reuse the site's existing uploader). Limit: 20 MB, 50 pages for free users. Also allow "Paste text" as an alternative.
+2. Extract text from the PDF on the server. If the PDF is scanned or has no text, fall back to the site's existing OCR tool/logic.
+3. Options panel:
+   - Question types (multi-select): Multiple Choice, True/False, Short Answer, Fill in the Blank
+   - Number of questions: 5 / 10 / 20 / 30
+   - Difficulty: Easy / Medium / Hard / Mixed
+   - Language: English / Bangla / Same as document
+   - Optional: page range (e.g. 3–10), topic focus text box
+4. Click "Generate Quiz" → show a progress loader with steps (Reading PDF → Analyzing → Creating questions).
+5. Result modes:
+   - "Take Quiz" interactive mode: one question at a time, select answer, instant feedback, explanation, progress bar, final score with review of wrong answers, "Retry" button.
+   - "View All" mode: full list with answers hidden/show toggle.
+6. Export: Download as PDF (questions only + separate answer key), Download as DOCX, Copy to clipboard, Print.
+7. Allow editing/deleting individual questions before exporting.
+
+==================================================
+PART 4 — /education/flashcards
+==================================================
+Flow:
+1. Same upload + text extraction + OCR fallback as quiz.
+2. Options: number of cards (10 / 20 / 40 / 60), card style (Term → Definition, Question → Answer, Concept → Explanation), language (English / Bangla / Same as document), page range.
+3. Generate → show cards.
+4. Study mode:
+   - 3D flip animation (click or Space key to flip)
+   - Next/Prev (arrow keys), Shuffle, progress "Card 5 of 20"
+   - Mark "I know this" / "Still learning"; at the end show stats and an option to "Review only Still learning cards"
+   - Mobile swipe support
+5. Grid view of all cards with edit/delete/add card.
+6. Export: PDF (printable cut-out cards, 2x4 per page), CSV, Anki-compatible TXT (tab separated), Copy.
+7. Save progress in localStorage so a refresh does not lose the deck.
+
+==================================================
+PART 5 — BACKEND / AI
+==================================================
+- Create API routes:
+  POST /api/education/extract    → PDF to clean text (with OCR fallback)
+  POST /api/education/quiz       → returns quiz JSON
+  POST /api/education/flashcards → returns flashcards JSON
+- Use an AI model API (key stored in Replit Secrets, e.g. OPENAI_API_KEY; make the provider easy to switch in one file, e.g. lib/ai.ts).
+- Always request strict JSON output and validate it with a schema (zod or equivalent). Retry once if invalid.
+  Quiz JSON: { title, questions: [{ id, type, question, options[], correctAnswer, explanation, difficulty, sourcePage }] }
+  Flashcard JSON: { title, cards: [{ id, front, back, sourcePage }] }
+- For long PDFs: split text into chunks, generate per chunk, merge and de-duplicate.
+- Prompts must say: use ONLY information from the document, no made-up facts.
+- Rate limit: free users 5 generations per day (by IP/session). Put the limit in a config value so I can change it or add paid plans later.
+- Delete uploaded files and extracted text after processing (privacy), matching the site's "100% Secure" promise.
+- Clear error messages: file too large, no readable text, AI busy — try again.
+
+==================================================
+PART 6 — SEO, UX, QUALITY
+==================================================
+- Each page gets a unique title, meta description, Open Graph tags, canonical URL, and FAQ schema (JSON-LD). Examples:
+  /education → "Education Zone — Free AI Study Tools for Students | PDF Genius"
+  /education/quiz-generator → "PDF to Quiz Generator — Free AI Quiz Maker from PDF | PDF Genius"
+  /education/flashcards → "PDF to Flashcards — Free AI Flashcard Maker | PDF Genius"
+- Add the new pages to sitemap.xml.
+- Fully responsive (mobile first), dark/light mode if the site supports it, keyboard accessible, ARIA labels.
+- Fast: lazy-load education components, so the homepage speed does not drop.
+- Add simple analytics events: upload, generate, export, quiz completed.
+
+==================================================
+PART 7 — FUTURE-READY STRUCTURE
+==================================================
+Organize code like this (adapt to the project's framework):
+  /education                    (pages)
+  /education/quiz-generator
+  /education/flashcards
+  components/education/         (EducationZoneSection, EducationToolLayout, ToolCard, QuizPlayer, FlashcardDeck, ExportMenu, UploadBox)
+  lib/education/                (educationTools config, ai client, prompts, schemas, pdf extract, export helpers)
+  api/education/                (extract, quiz, flashcards)
+Write a short README-EDUCATION.md explaining how to add a new Education tool in 3 steps (add to config → create page using EducationToolLayout → add API route + prompt).
+
+==================================================
+DELIVERY
+==================================================
+Build in this order, testing each step: (1) homepage section + nav links, (2) /education hub, (3) quiz generator, (4) flashcards, (5) SEO + sitemap. After finishing, list all files created or changed and confirm that existing tools still work.

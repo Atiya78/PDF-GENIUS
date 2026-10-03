@@ -21,6 +21,7 @@ export const NavigationSection = (): JSX.Element => {
   // Simple (non-dropdown) navigation links; the tool categories render as dropdowns
   const leadingItem = { name: "Home", href: "/" };
   const trailingItems = [
+    { name: "Education Zone", href: "/education" },
     { name: "Pricing", href: "/pricing" },
     { name: "About", href: "/about" },
   ];
@@ -60,7 +61,7 @@ export const NavigationSection = (): JSX.Element => {
           </div>
 
           {/* Navigation Menu */}
-          <NavigationMenu className="hidden lg:flex justify-center">
+          <NavigationMenu className="hidden min-[1440px]:flex justify-center">
             <NavigationMenuList className="flex items-center space-x-8">
               <NavigationMenuItem>
                 <NavigationMenuLink
@@ -79,7 +80,7 @@ export const NavigationSection = (): JSX.Element => {
                   <NavigationMenuLink
                     className="font-medium text-gray-600 text-base leading-6 whitespace-nowrap cursor-pointer hover:text-gray-900 transition-colors"
                     onClick={() => handleNavClick(item.href)}
-                    data-testid={`nav-${item.name.toLowerCase()}`}
+                    data-testid={`nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
                   >
                     {item.name}
                   </NavigationMenuLink>
@@ -89,7 +90,7 @@ export const NavigationSection = (): JSX.Element => {
           </NavigationMenu>
 
           {/* Auth Buttons (desktop) */}
-          <div className="hidden lg:flex items-center space-x-3">
+          <div className="hidden min-[1440px]:flex items-center space-x-3">
             <ToolSearch />
             <Button
               variant="outline"
@@ -116,7 +117,7 @@ export const NavigationSection = (): JSX.Element => {
           </div>
 
           {/* Mobile menu */}
-          <div className="lg:hidden">
+          <div className="min-[1440px]:hidden">
             <MobileNav
               homeItem={leadingItem}
               trailingItems={trailingItems}

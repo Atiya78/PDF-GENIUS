@@ -1,4 +1,7 @@
 [
+  {"path":"/education","title":"Education Zone — Free AI Study Tools for Students | PDF Genius","description":"Turn PDF lecture notes into quizzes and flashcards. Explore free AI study tools for students and teachers, with English and Bangla options."},
+  {"path":"/education/quiz-generator","title":"PDF to Quiz Generator — Free AI Quiz Maker from PDF | PDF Genius","description":"Create multiple-choice, true/false, short-answer and fill-in-the-blank quizzes from PDFs. Study interactively and export questions and answers."},
+  {"path":"/education/flashcards","title":"PDF to Flashcards — Free AI Flashcard Maker | PDF Genius","description":"Turn your PDF notes into flip flashcards. Track what you know, review difficult cards, and export printable cards, CSV or Anki text."},
   {"path":"/","title":"PDF Genius — PDF Converter and Editor","description":"Convert, edit, merge, split and compress PDFs with PDF Genius. Explore document and image tools, processing details and support."},
   {"path":"/tools","title":"PDF and Image Tools","description":"Browse PDF Genius tools for document conversion, page editing, image processing and file compression. Choose the tool for your task."},
   {"path":"/pricing","title":"Pricing and Plans","description":"Compare PDF Genius plans, credits and included features. Review the current pricing before choosing a subscription or credit pack."},

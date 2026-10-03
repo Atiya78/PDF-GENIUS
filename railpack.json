@@ -4,6 +4,7 @@
     "...",
     "ca-certificates",
     "fonts-liberation",
+    "fonts-noto-core",
     "libasound2t64",
     "libatk-bridge2.0-0t64",
     "libatk1.0-0t64",
@@ -52,6 +53,7 @@
     "aptPackages": [
       "ca-certificates",
       "fonts-liberation",
+      "fonts-noto-core",
       "libasound2t64",
       "libatk-bridge2.0-0t64",
       "libatk1.0-0t64",

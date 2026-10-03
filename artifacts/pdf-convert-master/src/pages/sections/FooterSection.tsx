@@ -10,6 +10,7 @@ const linkClass =
 
 const productLinks = [
   { text: "All PDF Tools", path: "/tools" },
+  { text: "Education Zone", path: "/education" },
   { text: "Pricing", path: "/pricing" },
   { text: "About Us", path: "/about" },
 ];

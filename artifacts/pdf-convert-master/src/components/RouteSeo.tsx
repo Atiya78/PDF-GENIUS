@@ -14,6 +14,6 @@ const contactSchema = {
 // own their complete metadata and schema through ToolLandingPage instead.
 export function RouteSeo() {
   const [path] = useLocation();
-  useSeo({ enabled: !toolLandingPages.some((page) => page.path === path), jsonLd: path === "/contact" ? contactSchema : undefined });
+  useSeo({ enabled: !(path === "/education" || path.startsWith("/education/")) && !toolLandingPages.some((page) => page.path === path), jsonLd: path === "/contact" ? contactSchema : undefined });
   return null;
 }

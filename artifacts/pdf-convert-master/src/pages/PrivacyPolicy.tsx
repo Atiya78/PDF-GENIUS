@@ -293,6 +293,8 @@ export const PrivacyPolicy = (): JSX.Element => {
                     <p><strong>Purchase Information:</strong> When you buy a subscription or credit pack through the app, we receive purchase history (the products you bought and their status) from the app store so we can activate your plan or credits. Payment card details are handled entirely by the app store (Google Play or Apple) and are never collected or stored by us.</p>
                     <p><strong>Technical Information:</strong> We automatically collect IP addresses, browser types, device identifiers, and referral URLs for security, fraud prevention, analytics, and service optimization.</p>
                     <p><strong>Account Information:</strong> For registered users, we store account credentials, preferences, subscription status, credit balance, and basic profile information.</p>
+                    <p><strong>Education Zone (website):</strong> When you generate a quiz or flashcards, selected document text is sent to the configured AI provider to create study material. PDF Genius processes uploaded education PDFs and extracted text in memory and does not store them. The AI provider has its own retention policies, including any abuse-monitoring logs; do not upload confidential material. Daily limits store only a keyed IP hash, date and count. Expired quota records are purged on subsequent generation requests.</p>
+                    <p><strong>Saved study decks:</strong> Flashcard decks and progress stay in your browser until you use “Clear saved deck” or clear site data. Education analytics record activity types and tool names, not your documents or study text.</p>
                   </div>
                 </section>
 

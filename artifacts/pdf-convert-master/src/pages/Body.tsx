@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { ToolDirectory } from "@/components/ToolDirectory";
 import { FeaturesSection } from "./sections/FeaturesSection";
 import { HeroSection } from "./sections/HeroSection";
@@ -7,6 +7,10 @@ import { APIDocumentationSection } from "./sections/APIDocumentationSection";
 import { useSeo } from "@/lib/useSeo";
 import { SITE_DESCRIPTION } from "@/config/siteCopy";
 import { PrivacyFilesSection } from "./sections/PrivacyFilesSection";
+
+const EducationZoneSection = lazy(() =>
+  import("@/components/education/EducationZoneSection").then((m) => ({ default: m.EducationZoneSection })),
+);
 
 export const Body = (): JSX.Element => {
   useSeo({
@@ -37,6 +41,9 @@ export const Body = (): JSX.Element => {
       {/* Main content sections — each renders its own animated background */}
       <HeroSection />
       <FeaturesSection />
+      <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
+        <EducationZoneSection />
+      </Suspense>
       <PrivacyFilesSection />
       <ToolDirectory />
       <APIDocumentationSection />
