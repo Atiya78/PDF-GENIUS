@@ -1,5 +1,6 @@
 import * as pdfjs from "pdfjs-dist";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import { reportSuccessfulDownload } from "./download";
 
 // PDF.js needs a worker. With Vite we resolve its URL at build time. Setting it
 // here (a module imported by every PDF tool) guarantees it is configured once.
@@ -90,6 +91,7 @@ export function downloadBytes(data: BlobPart | Uint8Array, filename: string, mim
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+  reportSuccessfulDownload();
 }
 
 export function downloadPdf(bytes: Uint8Array, filename: string) {

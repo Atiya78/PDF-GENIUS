@@ -1,4 +1,5 @@
 import { authedFetch } from "./authedFetch";
+import { reportSuccessfulDownload } from "./download";
 
 export interface UploadResult {
   id: string;
@@ -62,6 +63,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+  reportSuccessfulDownload();
 }
 
 // Upload an already-edited image blob to the server, returning a shareable URL.

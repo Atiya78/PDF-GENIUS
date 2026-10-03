@@ -10,6 +10,23 @@
 
 import { getAuthToken } from "./authedFetch";
 
+/**
+ * Report only after a result has been handed to the browser/share sheet.
+ * Ads scripts may be blocked or unavailable; tracking must never affect saving.
+ */
+export function reportSuccessfulDownload(): void {
+  try {
+    const adsWindow = window as Window & {
+      gtag_report_conversion?: () => unknown;
+    };
+    if (typeof adsWindow.gtag_report_conversion === "function") {
+      adsWindow.gtag_report_conversion();
+    }
+  } catch {
+    // A tracking failure must not turn a successful download into an error.
+  }
+}
+
 // iOS Safari (iPhone/iPad) ignores the <a download> attribute for blob: URLs:
 // instead of saving the file it opens it inline in the tab, so the user never
 // gets a real download. The reliable path on iOS is the Web Share sheet, which
@@ -94,6 +111,7 @@ export async function downloadBlob(blob: Blob, name: string): Promise<void> {
     if (navigator.canShare?.({ files: [file] })) {
       try {
         await navigator.share({ files: [file], title: name });
+        reportSuccessfulDownload();
         return;
       } catch (err) {
         // The user dismissing the share sheet is not a failure.
@@ -113,6 +131,7 @@ export async function downloadBlob(blob: Blob, name: string): Promise<void> {
   a.remove();
   // Revoke after a tick so the browser has started the download.
   setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+  reportSuccessfulDownload();
 }
 
 /**
