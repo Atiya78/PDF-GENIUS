@@ -98,22 +98,22 @@ export const APIDocumentationSection = (): JSX.Element => {
           </div>
 
           <Card className="bg-gray-50 border border-gray-200 shadow-sm max-w-3xl mx-auto">
-            <CardContent
-              className="relative p-6 cursor-pointer group"
-              onClick={copyCurl}
-              role="button"
-              aria-label="Copy curl example to clipboard"
-              title="Click to copy"
-            >
-              <div
-                className={`absolute top-3 right-3 flex items-center gap-1.5 text-xs rounded-md border px-2 py-1 transition-colors ${
+            <CardContent className="p-4 sm:p-6">
+              <div className="flex justify-end mb-3">
+              <button
+                type="button"
+                onClick={copyCurl}
+                aria-label="Copy curl example to clipboard"
+                data-testid="button-copy-curl"
+                className={`flex items-center gap-1.5 text-xs rounded-md border px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                   copied
                     ? "bg-green-50 border-green-200 text-green-700"
-                    : "bg-white border-gray-200 text-gray-500 group-hover:text-gray-700"
+                    : "bg-white border-gray-200 text-gray-500 hover:text-gray-700"
                 }`}
               >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                {copied ? "Copied!" : "Copy"}
+                <span aria-live="polite">{copied ? "Copied!" : "Copy"}</span>
+              </button>
               </div>
               <pre className="text-sm text-gray-700 overflow-x-auto">
                 <code>{curlExample}</code>
@@ -166,7 +166,7 @@ export const APIDocumentationSection = (): JSX.Element => {
                 size="lg"
                 variant="outline"
                 className="px-8 py-4"
-                onClick={() => setLocation('/dashboard/api-reference')}
+                onClick={() => setLocation('/docs')}
               >
                 <BookOpen className="w-5 h-5 mr-2" />
                 View Documentation

@@ -1,4 +1,5 @@
 [
+  {"path":"/docs","title":"PDF Conversion API Documentation","description":"Explore PDF Genius API authentication, supported conversion endpoints, file limits and request examples. Read the reference before creating an API key."},
   {"path":"/education","title":"Education Zone — Free AI Study Tools for Students | PDF Genius","description":"Turn PDF lecture notes into quizzes and flashcards. Explore free AI study tools for students and teachers, with English and Bangla options."},
   {"path":"/education/quiz-generator","title":"PDF to Quiz Generator — Free AI Quiz Maker from PDF | PDF Genius","description":"Create multiple-choice, true/false, short-answer and fill-in-the-blank quizzes from PDFs. Study interactively and export questions and answers."},
   {"path":"/education/flashcards","title":"PDF to Flashcards — Free AI Flashcard Maker | PDF Genius","description":"Turn your PDF notes into flip flashcards. Track what you know, review difficult cards, and export printable cards, CSV or Anki text."},

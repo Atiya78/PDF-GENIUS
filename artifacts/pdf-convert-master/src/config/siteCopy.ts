@@ -1,11 +1,11 @@
 export const FREE_TOOLS_COPY = "Free tools. No signup required.";
 export const HTTPS_COPY = "Encrypted in transit (HTTPS).";
-export const SUPPORT_REPLY_COPY = "Support: we reply within 24 hours";
-export const SUPPORT_REPLY_TODO = "TODO: Confirm the 24-hour support response target.";
+export const SUPPORT_REPLY_COPY = "Contact support for help with PDF Genius";
+// Unconfirmed policy notes must stay internal, not in visitor-facing copy.
+export const SUPPORT_REPLY_TODO = "";
 export const FILE_RETENTION_COPY =
   "Conversion results are stored for re-download until deleted. Temporary conversion buffers are removed after 30 minutes of inactivity, checked every 5 minutes; that timer does not delete stored results.";
-export const FILE_RETENTION_TODO =
-  "TODO: Confirm and implement an automatic deletion period for stored conversion results.";
+export const FILE_RETENTION_TODO = "";
 export const IMAGE_UPLOAD_RETENTION_COPY =
   "Optional image-editor uploads are held in server memory for 60 minutes, then removed.";
 export const SITE_DESCRIPTION =

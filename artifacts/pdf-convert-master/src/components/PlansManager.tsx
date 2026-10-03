@@ -275,12 +275,12 @@ export const PlansManager: React.FC = () => {
 
       {/* Available Plans */}
       <Card className="mb-8">
-        <CardHeader>
+        <CardHeader className="p-3 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <CardTitle>Available Plans</CardTitle>
             {/* Monthly / Yearly toggle */}
             <div
-              className="inline-flex items-center rounded-full bg-gray-100 p-1"
+              className="inline-flex max-w-full items-stretch rounded-2xl sm:rounded-full bg-gray-100 p-1"
               role="tablist"
               aria-label="Billing period"
             >
@@ -296,7 +296,7 @@ export const PlansManager: React.FC = () => {
                   role="tab"
                   aria-selected={billingPeriod === opt.value}
                   onClick={() => setBillingPeriod(opt.value)}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                  className={`px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
                     billingPeriod === opt.value
                       ? "bg-white text-gray-900 shadow-sm"
                       : "text-gray-600 hover:text-gray-900"
@@ -305,7 +305,7 @@ export const PlansManager: React.FC = () => {
                 >
                   {opt.label}
                   {opt.value === "year" && (
-                    <span className="ml-1.5 text-xs font-semibold text-[#f7433d]">
+                    <span className="block sm:inline sm:ml-1.5 text-xs font-semibold text-[#f7433d]">
                       2 months free
                     </span>
                   )}
@@ -314,8 +314,8 @@ export const PlansManager: React.FC = () => {
             </div>
           </div>
         </CardHeader>
-        <div className="p-6 pt-0">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-3 sm:p-6 pt-0 sm:pt-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6">
             {plans.map((plan) => {
               const isCurrent = isAuthenticated && plan.id === currentPlanId;
               const isFree = plan.id === "free";
@@ -356,7 +356,7 @@ export const PlansManager: React.FC = () => {
               return (
                 <div
                   key={plan.id}
-                  className={`border rounded-lg p-6 relative flex flex-col h-full ${
+                  className={`min-w-0 border rounded-lg p-4 sm:p-6 relative flex flex-col h-full ${
                     isCurrent
                       ? "border-2 border-[#f7433d] bg-[#f7433d]/5"
                       : "border-gray-200"
@@ -404,12 +404,12 @@ export const PlansManager: React.FC = () => {
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-center">
                         <Check className="w-5 h-5 text-[#f7433d] mr-3 shrink-0" />
-                        <span className="text-sm text-gray-700">{feature}</span>
+                        <span className="min-w-0 text-sm text-gray-700 break-words">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Button
-                    className={`w-full mt-auto ${
+                    className={`w-full mt-auto h-auto min-h-10 whitespace-normal px-3 py-2 text-sm ${
                       isCurrent
                         ? ""
                         : "bg-[#f7433d] hover:bg-[#d93832] text-white"

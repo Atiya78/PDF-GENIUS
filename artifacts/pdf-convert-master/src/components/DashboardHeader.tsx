@@ -14,7 +14,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { ToolsNavDropdowns, MobileNav } from "@/components/ToolsNavMenu";
 import { ToolSearch } from "@/components/ToolSearch";
@@ -30,22 +30,12 @@ import {
 } from "lucide-react";
 
 export const DashboardHeader = (): JSX.Element => {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const { user, signout } = useAuth();
 
   // Simple (non-dropdown) navigation links; the tool categories render as dropdowns
   const leadingItem = { name: "Home", href: "/dashboard" };
   const trailingItems = [{ name: "About", href: "/about" }];
-
-  const handleNavClick = (href: string) => {
-    if (href.startsWith("/")) {
-      setLocation(href);
-    }
-  };
-
-  const handleLogoClick = () => {
-    setLocation("/dashboard");
-  };
 
   const handleManagePlan = () => {
     setLocation("/dashboard/manage-plans");
@@ -61,24 +51,25 @@ export const DashboardHeader = (): JSX.Element => {
       <div className="flex items-center justify-between">
         {/* Left - Logo */}
         <div className="flex items-center">
-          <div 
-            onClick={handleLogoClick}
-            className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity"
+          <Link
+            href="/dashboard"
+            aria-label="PDF Genius dashboard"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
           >
             <img src={logoIcon} alt="PDF Genius" width={1280} height={1239} className="h-9 w-auto" />
-          </div>
+          </Link>
         </div>
 
         {/* Center - Navigation Menu */}
-        <NavigationMenu className="hidden xl:flex justify-center">
-          <NavigationMenuList className="flex items-center space-x-6">
+        <NavigationMenu className="hidden lg:flex justify-center">
+          <NavigationMenuList className="flex items-center space-x-0 gap-3 xl:gap-4">
             <NavigationMenuItem>
               <NavigationMenuLink
-                className="font-medium text-gray-600 text-base leading-6 whitespace-nowrap cursor-pointer hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
-                onClick={() => handleNavClick(leadingItem.href)}
-                data-testid="nav-home"
+                asChild
               >
+                <Link href={leadingItem.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50" data-testid="nav-home">
                 {leadingItem.name}
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -87,11 +78,11 @@ export const DashboardHeader = (): JSX.Element => {
             {trailingItems.map((item, index) => (
               <NavigationMenuItem key={index}>
                 <NavigationMenuLink
-                  className="font-medium text-gray-600 text-base leading-6 whitespace-nowrap cursor-pointer hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50"
-                  onClick={() => handleNavClick(item.href)}
-                  data-testid={`nav-${item.name.toLowerCase()}`}
+                  asChild
                 >
+                  <Link href={item.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50" data-testid={`nav-${item.name.toLowerCase()}`}>
                   {item.name}
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
             ))}
@@ -113,7 +104,7 @@ export const DashboardHeader = (): JSX.Element => {
           </Button>
 
           {/* Tool Search */}
-          <ToolSearch variant="icon" className="hidden sm:inline-flex" />
+          <ToolSearch variant="icon" />
 
           {/* Notifications */}
           <NotificationsBell />
@@ -160,7 +151,7 @@ export const DashboardHeader = (): JSX.Element => {
           </DropdownMenu>
 
           {/* Mobile menu */}
-          <div className="xl:hidden">
+          <div className="lg:hidden">
             <MobileNav
               homeItem={leadingItem}
               trailingItems={trailingItems}

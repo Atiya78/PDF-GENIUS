@@ -474,9 +474,6 @@ export const Support = (): JSX.Element => {
                 </CardTitle>
               </CardHeader>
               <VerifiedSiteStats group="performance" />
-              {!getVerifiedStats("performance").length && (
-                <p className="px-6 pb-6 text-sm text-gray-500">TODO: Publish performance metrics only after verification.</p>
-              )}
             </Card>
           </div>
         </div>

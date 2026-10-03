@@ -29,7 +29,7 @@ const groupedTools = (): { category: string; tools: ToolConfig[] }[] => {
 };
 
 interface ToolSearchProps {
-  variant?: "full" | "icon";
+  variant?: "full" | "icon" | "responsive";
   className?: string;
 }
 
@@ -40,10 +40,21 @@ export const ToolSearch = ({
   const [, setLocation] = useLocation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [compact, setCompact] = useState(() => window.matchMedia("(max-width: 1279px)").matches);
+  const isIcon = variant === "icon" || (variant === "responsive" && compact);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const groups = groupedTools();
   const pausedTools = usePausedTools();
+
+  useEffect(() => {
+    if (variant !== "responsive") return;
+    const media = window.matchMedia("(max-width: 1279px)");
+    const update = () => setCompact(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, [variant]);
 
   // ⌘K / Ctrl+K toggles the inline search and focuses it.
   useEffect(() => {
@@ -62,7 +73,7 @@ export const ToolSearch = ({
     if (!open) return;
     const t = setTimeout(() => inputRef.current?.focus(), 30);
     return () => clearTimeout(t);
-  }, [open]);
+  }, [open, compact]);
 
   // Close the dropdown when clicking anywhere outside the search.
   useEffect(() => {
@@ -141,7 +152,7 @@ export const ToolSearch = ({
   return (
     <div
       ref={containerRef}
-      className={cn("relative", variant === "full" ? "w-56 xl:w-64" : "")}
+      className={cn("relative", variant === "responsive" ? "w-10 xl:w-44 2xl:w-56" : variant === "full" ? "w-56 xl:w-64" : "")}
     >
       <CommandPrimitive
         shouldFilter
@@ -153,7 +164,7 @@ export const ToolSearch = ({
           }
         }}
       >
-        {variant === "full" ? (
+        {!isIcon ? (
           <div
             onClick={() => {
               setOpen(true);
@@ -172,11 +183,13 @@ export const ToolSearch = ({
               onValueChange={setQuery}
               onFocus={() => setOpen(true)}
               placeholder="Search tools…"
-              className="w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+              aria-label="Search tools"
+              aria-expanded={open}
+              className="min-w-0 w-full bg-transparent text-base xl:text-sm text-gray-700 outline-none placeholder:text-gray-400"
               data-testid="input-tool-search"
             />
             {!open && (
-              <kbd className="hidden xl:inline rounded border border-gray-200 bg-gray-50 px-1.5 font-mono text-[10px] text-gray-400">
+              <kbd className="hidden 2xl:inline rounded border border-gray-200 bg-gray-50 px-1.5 font-mono text-[10px] text-gray-400">
                 ⌘K
               </kbd>
             )}
@@ -185,6 +198,7 @@ export const ToolSearch = ({
           <button
             type="button"
             aria-label="Search tools"
+            aria-expanded={open}
             onClick={() => setOpen((prev) => !prev)}
             className={cn(
               "inline-flex h-10 w-10 items-center justify-center rounded-lg border text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900",
@@ -200,13 +214,15 @@ export const ToolSearch = ({
         {open && (
           <div
             className={cn(
-              "absolute z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl",
-              variant === "full"
-                ? "left-0 w-[min(380px,90vw)]"
-                : "right-0 w-[min(320px,90vw)]",
+              "z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl",
+              variant === "responsive"
+                ? "fixed left-4 right-4 top-[65px] md:absolute md:left-auto md:right-0 md:top-full md:w-[min(380px,90vw)]"
+                : !isIcon
+                  ? "absolute left-0 w-[min(380px,90vw)]"
+                  : "fixed left-4 right-4 top-[73px] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-[min(320px,90vw)]",
             )}
           >
-            {variant === "icon" && (
+            {isIcon && (
               <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2.5">
                 <Search className="h-4 w-4 shrink-0 text-gray-500" />
                 <CommandPrimitive.Input
@@ -214,7 +230,9 @@ export const ToolSearch = ({
                   value={query}
                   onValueChange={setQuery}
                   placeholder="Search tools…"
-                  className="w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                  aria-label="Search tools"
+                  aria-expanded={open}
+                  className="min-w-0 w-full bg-transparent text-base md:text-sm text-gray-700 outline-none placeholder:text-gray-400"
                   data-testid="input-tool-search"
                 />
                 <button

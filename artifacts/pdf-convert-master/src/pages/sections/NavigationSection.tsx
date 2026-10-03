@@ -6,16 +6,17 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
-import { useLocation } from "wouter";
-import { useAuth } from "@/contexts/AuthContext";
+import { Link, useLocation } from "wouter";
 import { ToolsNavDropdowns, MobileNav } from "@/components/ToolsNavMenu";
 import { ToolSearch } from "@/components/ToolSearch";
 import { LottieIcon } from "@/components/ui/lottie-icon";
 import userAnim from "@/assets/lottie/user.json";
 
 export const NavigationSection = (): JSX.Element => {
-  const [location, setLocation] = useLocation();
+  const [, setLocation] = useLocation();
   const [loginHover, setLoginHover] = React.useState(false);
 
   // Simple (non-dropdown) navigation links; the tool categories render as dropdowns
@@ -25,12 +26,6 @@ export const NavigationSection = (): JSX.Element => {
     { name: "Pricing", href: "/pricing" },
     { name: "About", href: "/about" },
   ];
-
-  const handleNavClick = (href: string) => {
-    if (href.startsWith("/")) {
-      setLocation(href);
-    }
-  };
 
   // Remove direct login functionality from navigation, redirect to sign-in page instead
 
@@ -42,11 +37,12 @@ export const NavigationSection = (): JSX.Element => {
   return (
     <header className="sticky top-0 z-50 w-full h-[65px] bg-white/60 backdrop-blur-xl backdrop-saturate-150">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-[65px]">
-        <div className="flex items-center justify-between h-full">
+        <div className="flex items-center justify-between gap-3 xl:gap-4 2xl:gap-6 h-full">
           {/* Logo */}
-          <div
-            className="flex items-center gap-2 h-9 cursor-pointer flex-shrink-0"
-            onClick={() => handleNavClick("/")}
+          <Link
+            href="/"
+            aria-label="PDF Genius home"
+            className="flex items-center gap-2 h-9 flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
           >
             <img
               src={logoIcon}
@@ -55,46 +51,59 @@ export const NavigationSection = (): JSX.Element => {
               height={1239}
               className="h-9 w-auto"
             />
-            <h2 className="hidden 2xl:block font-['Poppins'] font-bold text-gray-900 text-xl leading-7 whitespace-nowrap">
+            <span className="hidden 2xl:block font-['Poppins'] font-bold text-gray-900 text-xl leading-7 whitespace-nowrap">
               PDF Genius
-            </h2>
-          </div>
+            </span>
+          </Link>
 
           {/* Navigation Menu */}
-          <NavigationMenu className="hidden min-[1440px]:flex justify-center">
-            <NavigationMenuList className="flex items-center space-x-8">
+          <NavigationMenu className="hidden lg:flex justify-center">
+            <NavigationMenuList className="flex items-center space-x-0 gap-3 xl:gap-4 2xl:gap-6">
               <NavigationMenuItem>
                 <NavigationMenuLink
-                  className="font-medium text-gray-600 text-base leading-6 whitespace-nowrap cursor-pointer hover:text-gray-900 transition-colors"
-                  onClick={() => handleNavClick(leadingItem.href)}
-                  data-testid="nav-home"
+                  asChild
                 >
+                  <Link href={leadingItem.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors" data-testid="nav-home">
                   {leadingItem.name}
+                  </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
               <ToolsNavDropdowns />
 
               {trailingItems.map((item, index) => (
-                <NavigationMenuItem key={index}>
+                <NavigationMenuItem key={index} className={item.name === "Pricing" ? "" : "hidden xl:block"}>
                   <NavigationMenuLink
-                    className="font-medium text-gray-600 text-base leading-6 whitespace-nowrap cursor-pointer hover:text-gray-900 transition-colors"
-                    onClick={() => handleNavClick(item.href)}
-                    data-testid={`nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
+                    asChild
                   >
+                    <Link href={item.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors" data-testid={`nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}>
                     {item.name}
+                    </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
+              <NavigationMenuItem className="xl:hidden">
+                <NavigationMenuTrigger className="bg-transparent px-0 text-sm text-gray-600" data-testid="nav-more">More</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <div className="w-48 p-2">
+                    {trailingItems.filter(item => item.name !== "Pricing").map(item => (
+                      <NavigationMenuLink key={item.href} asChild>
+                        <Link href={item.href} className="block rounded-md px-3 py-2 text-sm hover:bg-gray-100">{item.name}</Link>
+                      </NavigationMenuLink>
+                    ))}
+                  </div>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
 
           {/* Auth Buttons (desktop) */}
-          <div className="hidden min-[1440px]:flex items-center space-x-3">
-            <ToolSearch />
+          <div className="flex shrink-0 items-center gap-2 xl:gap-3">
+            <ToolSearch variant="responsive" />
+            <div className="hidden lg:flex items-center gap-2 xl:gap-3">
             <Button
               variant="outline"
-              className="group h-[42px] pl-[12px] pr-[17px] py-[9px] gap-1.5 rounded-lg border border-gray-300/70 font-medium !text-gray-700 text-base hover:!text-gray-900 hover:bg-white/40 transition-colors bg-transparent"
+              className="group h-[42px] px-3 py-[9px] gap-1.5 rounded-lg border border-gray-300/70 font-medium !text-gray-700 text-sm xl:text-base hover:!text-gray-900 hover:bg-white/40 transition-colors bg-transparent"
               onClick={() => setLocation('/signin')}
               onMouseEnter={() => setLoginHover(true)}
               onMouseLeave={() => setLoginHover(false)}
@@ -108,16 +117,16 @@ export const NavigationSection = (): JSX.Element => {
               Log In
             </Button>
             <Button
-              className="h-10 px-6 py-2 rounded-full font-medium text-base [text-shadow:0px_10px_15px_#0000001a]"
+              className="h-10 px-3 xl:px-4 py-2 rounded-full font-medium text-sm xl:text-base [text-shadow:0px_10px_15px_#0000001a]"
               onClick={handleGetStarted}
               data-testid="button-nav-api-access"
             >
               API Access
             </Button>
-          </div>
+            </div>
 
           {/* Mobile menu */}
-          <div className="min-[1440px]:hidden">
+          <div className="lg:hidden">
             <MobileNav
               homeItem={leadingItem}
               trailingItems={trailingItems}
@@ -152,6 +161,7 @@ export const NavigationSection = (): JSX.Element => {
                 </div>
               )}
             />
+          </div>
           </div>
         </div>
       </div>

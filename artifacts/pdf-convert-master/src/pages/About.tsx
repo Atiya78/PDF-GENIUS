@@ -91,20 +91,20 @@ export const About = (): JSX.Element => {
       
       {/* Hero Section */}
       <section 
-        className="relative h-[400px] flex items-center justify-center bg-cover bg-center"
+        className="relative min-h-[400px] py-20 md:py-24 flex items-center justify-center bg-cover bg-center"
         style={{
           backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://api.builder.io/api/v1/image/assets/TEMP/20bcb3bd3bfc2186efb205fa91833735238659a2?width=2880')"
         }}
       >
         <div className="text-center text-white max-w-4xl px-6">
-          <h1 className="text-6xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
             About <span className="text-blue-300">PDF Genius</span>
           </h1>
-          <p className="text-2xl mb-8 leading-relaxed max-w-3xl mx-auto">
+          <p className="text-xl sm:text-2xl mb-8 leading-relaxed max-w-3xl mx-auto">
             Empowering businesses and individuals with professional PDF solutions since our founding
           </p>
           
-          <div className="flex items-center justify-center gap-4 text-lg">
+          <div className="flex flex-wrap items-center justify-center gap-4 text-lg">
             <div className="flex items-center gap-2">
               <Building className="w-5 h-5 text-blue-300" />
               <span>PDF Genius</span>

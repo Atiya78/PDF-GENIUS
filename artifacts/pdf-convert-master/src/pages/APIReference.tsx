@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { Search, Home, BarChart3, Settings, Book, GitBranch, Wrench, Upload, Clock, ArrowUp, Copy, Check } from "lucide-react";
 import { ProcessingSpinner } from "@/components/processing-spinner";
+import { useSeo } from "@/lib/useSeo";
 
 interface Tool {
   type: string;
@@ -18,7 +19,13 @@ interface Tool {
   maxFileSize: number;
 }
 
-export const APIReference: React.FC = () => {
+export const APIReference: React.FC<{ publicView?: boolean }> = ({ publicView = false }) => {
+  useSeo({
+    enabled: publicView,
+    title: "PDF Conversion API Documentation",
+    description: "Explore PDF Genius API authentication, supported conversion endpoints, file limits and request examples. Read the reference before creating an API key.",
+    canonicalPath: "/docs",
+  });
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -132,7 +139,7 @@ export const APIReference: React.FC = () => {
       <div className="min-h-screen bg-gray-50">
         <div className="flex flex-col lg:flex-row">
           {/* Sidebar */}
-          <aside className="w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 lg:min-h-screen">
+          {!publicView && <aside className="w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 lg:min-h-screen">
             <div className="p-4">
               {/* Search */}
               <div className="relative mb-6">
@@ -275,13 +282,20 @@ export const APIReference: React.FC = () => {
                 </Button>
               </div>
             </div>
-          </aside>
+          </aside>}
 
           {/* Main Content */}
-          <main className="flex-1 p-6">
+          <main className="min-w-0 flex-1 p-4 sm:p-6">
             <div className="max-w-7xl mx-auto">
               {/* Page Header */}
               <h1 className="text-2xl font-bold text-gray-900 mb-6">API Reference</h1>
+              {publicView && (
+                <div className="mb-6 space-y-3">
+                  <p className="text-gray-600">Read the reference without an account. Sign in to create and manage your API key.</p>
+                  <Input aria-label="Search documented tools" placeholder="Search tools…" value={search} onChange={e => setSearch(e.target.value)} className="max-w-md" />
+                  <Button onClick={() => handleNavigation("/dashboard/api-setup")}>Get API Key</Button>
+                </div>
+              )}
 
               {/* Content Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

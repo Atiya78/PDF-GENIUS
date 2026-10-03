@@ -47,7 +47,7 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "data-security-measures",
       title: "Data Security Measures",
-      content: `${HTTPS_COPY} ${FILE_RETENTION_COPY} ${FILE_RETENTION_TODO} TODO: Confirm storage encryption, monitoring and administrative access practices before publishing additional security claims.`,
+      content: `${HTTPS_COPY} ${FILE_RETENTION_COPY}`,
       category: "Security"
     },
     {
@@ -65,7 +65,7 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "data-retention",
       title: "Data Retention",
-      content: `${FILE_RETENTION_COPY} ${IMAGE_UPLOAD_RETENTION_COPY} ${FILE_RETENTION_TODO} TODO: Confirm account, analytics and backup retention periods.`,
+      content: `${FILE_RETENTION_COPY} ${IMAGE_UPLOAD_RETENTION_COPY}`,
       category: "Retention"
     },
     {
@@ -339,9 +339,7 @@ export const PrivacyPolicy = (): JSX.Element => {
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-3">
                     <p><strong>Encryption in Transit:</strong> All data transmission between your device and our servers is encrypted using SSL/TLS protocols (HTTPS).</p>
-                    <p><strong>Storage and Access:</strong> TODO: Confirm storage encryption and administrative access practices before publishing additional security claims.</p>
                     <p><strong>File Cleanup:</strong> {FILE_RETENTION_COPY} {FILE_RETENTION_TODO}</p>
-                    <p><strong>Security Monitoring:</strong> TODO: Confirm monitoring practices.</p>
                   </div>
                 </section>
 

@@ -240,6 +240,11 @@ function Router() {
       </Route>
 
       {/* Public pages with dynamic header based on auth status */}
+      <Route path="/docs">
+        <DynamicLayout>
+          <APIReference publicView />
+        </DynamicLayout>
+      </Route>
       <Route path="/">
         <DynamicLayout>
           <Body />
