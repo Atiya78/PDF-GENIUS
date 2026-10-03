@@ -4,6 +4,7 @@ import logoFull from "@assets/FullLogo_Transparent_NoBuffer_1782108807761.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation } from "wouter";
+import { SOCIAL_FACEBOOK_URL, SOCIAL_INSTAGRAM_URL, SOCIAL_LINKEDIN_URL } from "@/lib/socialLinks";
 
 export const FooterSection = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -58,7 +59,6 @@ export const FooterSection = (): JSX.Element => {
 
   // Footer bottom info items
   const footerInfoItems = [
-    { icon: <PhoneIcon className="w-[14.59px] h-5" />, text: "+447429919748" },
     { icon: <LockIcon className="w-[14.59px] h-5" />, text: "SSL Secured" },
     {
       icon: <CloudIcon className="w-[14.59px] h-5" />,
@@ -82,6 +82,8 @@ export const FooterSection = (): JSX.Element => {
               <img
                 src={logoFull}
                 alt="PDF Genius"
+                width={1280}
+                height={1157}
                 className="h-20 w-auto mb-4"
               />
               <p className="text-gray-600 text-sm leading-relaxed">
@@ -91,14 +93,13 @@ export const FooterSection = (): JSX.Element => {
 
             {/* Contact Details */}
             <div className="space-y-3">
+              <a href="mailto:support@pdfgenius.app" className="flex items-center space-x-3 text-sm font-semibold text-gray-900 hover:text-primary">
+                <Mail className="w-4 h-4 flex-shrink-0" />
+                <span>Support: support@pdfgenius.app</span>
+              </a>
               <div className="flex items-center space-x-3">
                 <PhoneIcon className="w-4 h-4 text-gray-600 flex-shrink-0" />
-                <span className="text-gray-600 text-sm">+447429919748</span>
-              </div>
-
-              <div className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 text-gray-600 flex-shrink-0" />
-                <span className="text-gray-600 text-sm">info@pdfgenius.app</span>
+                <a href="tel:+447429919748" className="text-gray-600 text-sm hover:text-primary">+447429919748</a>
               </div>
             </div>
           </div>
@@ -163,33 +164,33 @@ export const FooterSection = (): JSX.Element => {
             <div>
               <h5 className="text-gray-900 font-medium text-sm mb-3">Follow Us</h5>
               <div className="flex space-x-4">
-                <a
-                  href="https://www.facebook.com/profile.php?id=61591351952175"
+                {SOCIAL_FACEBOOK_URL && <a
+                  href={SOCIAL_FACEBOOK_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
                   aria-label="Facebook"
                 >
                   <Facebook className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://instagram.com"
+                </a>}
+                {SOCIAL_INSTAGRAM_URL && <a
+                  href={SOCIAL_INSTAGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-200"
                   aria-label="Instagram"
                 >
                   <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://www.linkedin.com/company/pdf-genius/"
+                </a>}
+                {SOCIAL_LINKEDIN_URL && <a
+                  href={SOCIAL_LINKEDIN_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 hover:bg-blue-700 hover:text-white transition-all duration-200"
                   aria-label="LinkedIn"
                 >
                   <Linkedin className="w-4 h-4" />
-                </a>
+                </a>}
               </div>
             </div>
           </div>

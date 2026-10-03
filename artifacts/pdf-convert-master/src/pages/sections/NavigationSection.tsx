@@ -50,11 +50,13 @@ export const NavigationSection = (): JSX.Element => {
             <img
               src={logoIcon}
               alt="PDF Genius"
+              width={1280}
+              height={1239}
               className="h-9 w-auto"
             />
-            <h1 className="hidden 2xl:block font-['Poppins'] font-bold text-gray-900 text-xl leading-7 whitespace-nowrap">
+            <h2 className="hidden 2xl:block font-['Poppins'] font-bold text-gray-900 text-xl leading-7 whitespace-nowrap">
               PDF Genius
-            </h1>
+            </h2>
           </div>
 
           {/* Navigation Menu */}

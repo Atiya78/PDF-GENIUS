@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { motion, type Variants } from "framer-motion";
 import { AnimatedSelectButton } from "@/components/ui/animated-select-button";
-import { AnimatedBackground } from "@/components/ui/animated-background";
 import { ConverterStatusIcon } from "@/components/converter-status-icon";
 import { useLocation, useSearch } from "wouter";
 import { toolConfigs, isHeroTool } from "@/lib/toolConfig";
@@ -54,8 +53,6 @@ export const HeroSection = (): JSX.Element => {
   return (
     <section className="flex flex-col w-full items-start relative bg-white overflow-hidden">
       <div className="flex flex-col w-full items-start relative">
-        {/* Animated background */}
-        <AnimatedBackground particleCount={35} />
 
         <div className="flex w-full items-center relative z-10">
           <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 w-full relative">
