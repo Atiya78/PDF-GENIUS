@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Check, GraduationCap, Layers, ListChecks } from "lucide-react";
+import { ArrowRight, Check, Layers, ListChecks } from "lucide-react";
+import { LottieIcon } from "@/components/ui/lottie-icon";
+import studentAnimation from "@/assets/lottie/student.json";
 
 const benefits = [
   "PDF or pasted notes",
@@ -48,9 +50,9 @@ export function EducationZoneSection(): JSX.Element {
             ))}
           </ul>
         </div>
-        <div className="relative mx-auto w-full max-w-sm lg:mx-0 lg:ml-auto">
-          <span className="absolute -top-6 right-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#f7433d] text-white shadow-lg motion-safe:animate-bounce [animation-duration:3s]" aria-hidden="true">
-            <GraduationCap className="h-8 w-8" />
+        <div className="relative mx-auto mt-8 w-full max-w-sm lg:mx-0 lg:ml-auto lg:mt-0">
+          <span className="pointer-events-none absolute -top-16 right-3 h-24 w-24 sm:-top-20 sm:h-28 sm:w-28" aria-hidden="true" data-testid="education-student-animation">
+            <LottieIcon animationData={studentAnimation} width="100%" height="100%" loop autoplay className="block" />
           </span>
           <div className="rounded-2xl bg-white p-6 shadow-[0_20px_40px_-12px_rgba(247,67,61,0.22)] ring-1 ring-gray-100 sm:p-8">
             <h3 className="text-center font-['Poppins'] text-xl font-bold text-gray-900">Start studying</h3>
