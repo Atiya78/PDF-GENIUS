@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { contactFaqs } from "@/config/contactFaqs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -538,44 +539,7 @@ export const Contact = (): JSX.Element => {
               )}
             </div>
 
-            {[
-              {
-                question: "Is there a file size limit for uploads?",
-                answer: "Yes, we have different file size limits based on your plan. Free users can upload files up to 10MB, Basic plan users up to 50MB, Pro plan users up to 200MB, and Enterprise users up to 1GB per file. For larger files, please contact our support team for assistance."
-              },
-              {
-                question: "How secure is my data during conversion?",
-                answer: `Encrypted in transit (HTTPS). ${FILE_RETENTION_COPY} ${FILE_RETENTION_TODO}`
-              },
-              {
-                question: "Can I use your tools offline?",
-                answer: "Our PDF tools are web-based and require an internet connection to function. However, we're developing a desktop application that will allow offline conversions for Pro and Enterprise users. This feature will be available in Q2 2024."
-              },
-              {
-                question: "Do you offer API access for developers?",
-                answer: "See our API documentation for supported tools and current access requirements. Contact support for questions."
-              },
-              {
-                question: "What payment methods do you accept?",
-                answer: "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, Google Pay, and bank transfers for Enterprise accounts. All payments are processed securely through our PCI-compliant payment partners."
-              },
-              {
-                question: "Can I cancel my subscription anytime?",
-                answer: "Absolutely! You can cancel your subscription at any time from your account settings. There are no cancellation fees or long-term commitments. Your subscription will remain active until the end of your current billing period."
-              },
-              {
-                question: "Do you provide technical support?",
-                answer: `${SUPPORT_REPLY_COPY}. ${SUPPORT_REPLY_TODO}`
-              },
-              {
-                question: "Are there any usage limits?",
-                answer: "Usage limits vary by plan. Basic plan includes 100 conversions/month, Pro plan includes 10,000 conversions/month, and Enterprise plan offers unlimited conversions. API calls, storage, and processing speed also increase with higher tier plans."
-              },
-              {
-                question: "How can I get a refund?",
-                answer: "We offer a 30-day money-back guarantee for all paid plans. If you're not satisfied with our service, contact our support team within 30 days of your purchase for a full refund. Refunds are processed within 5-7 business days to your original payment method."
-              }
-            ].map((faq, index) => {
+            {contactFaqs.slice(1).map((faq, index) => {
               const faqIndex = index + 1; // +1 because first FAQ is index 0
               return (
                 <div key={index} className="bg-white rounded-xl shadow-lg">
@@ -595,15 +559,13 @@ export const Contact = (): JSX.Element => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-                  {expandedFAQ === faqIndex && (
-                    <div className="px-6 pb-4">
+                    <div className="px-6 pb-4" hidden={expandedFAQ !== faqIndex}>
                       <div className="border-l-4 border-blue-600 pl-4">
                         <p className="text-gray-700">
                           {faq.answer}
                         </p>
                       </div>
                     </div>
-                  )}
                 </div>
               );
             })}

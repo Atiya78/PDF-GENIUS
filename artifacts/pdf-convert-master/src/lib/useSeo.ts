@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useLocation } from "wouter";
 import { SITE_DESCRIPTION } from "@/config/siteCopy";
+import { ToolLandingContext } from "@/contexts/ToolLandingContext";
+import publicPages from "@/config/publicPageSeo.json";
 
 /**
  * Per-page SEO for the single-page app. React renders client-side, so each route
@@ -19,6 +21,7 @@ const DEFAULT_DESCRIPTION =
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 export interface SeoOptions {
+  enabled?: boolean;
   /** Page-specific title. " | PDF Genius" is appended automatically unless the
    * title already contains the brand name. Omit to use the site default. */
   title?: string;
@@ -92,10 +95,15 @@ function toAbsolute(pathOrUrl: string): string {
 }
 
 export function useSeo(options: SeoOptions = {}) {
+  const embedded = useContext(ToolLandingContext);
   const [location] = useLocation();
-  const { title, description, canonicalPath, image, noindex, jsonLd } = options;
+  const page = publicPages.find((entry) => entry.path === location);
+  const { canonicalPath, image, noindex, jsonLd, enabled = true } = options;
+  const title = page?.title ?? options.title;
+  const description = page?.description ?? options.description;
 
   useEffect(() => {
+    if (embedded || !enabled) return;
     const fullTitle = !title
       ? DEFAULT_TITLE
       : title.includes(BRAND)
@@ -119,8 +127,12 @@ export function useSeo(options: SeoOptions = {}) {
     setMetaByName("twitter:description", desc);
     setMetaByName("twitter:image", ogImage);
 
-    setMetaByName("robots", noindex ? "noindex,nofollow" : "index,follow");
+    const privateRoute = /^\/(signin|signup|login|account|dashboard|admin|forgot-password|reset-password)(\/|$)/.test(location);
+    setMetaByName("robots", noindex || privateRoute ? "noindex,nofollow" : "index,follow");
 
+    // The static shell's homepage schema must not follow client navigation.
+    document.querySelectorAll('script[type="application/ld+json"]:not(#seo-jsonld-page)').forEach((el) => el.remove());
     setJsonLd(jsonLd);
-  }, [title, description, canonicalPath, image, noindex, jsonLd, location]);
+    document.documentElement.dataset.seoPath = path;
+  }, [title, description, canonicalPath, image, noindex, jsonLd, location, embedded, enabled]);
 }

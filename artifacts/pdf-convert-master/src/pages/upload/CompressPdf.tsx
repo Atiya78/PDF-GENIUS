@@ -8,7 +8,7 @@ export const CompressPdfUpload: React.FC = () => {
       <ConversionWorkflow
         toolType="compress-pdf"
         toolTitle="PDF Compressor"
-        toolDescription="Reduce PDF file size while maintaining document quality. Choose from different compression levels to optimize for your needs."
+        toolDescription="Process your PDF with the compression tool, then compare the result's size and readability with the original."
         acceptedFormats={[".pdf"]}
         maxFileSize="200MB"
         outputFormat="Compressed PDF"

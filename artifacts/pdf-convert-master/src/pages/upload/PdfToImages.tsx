@@ -8,7 +8,7 @@ export const PdfToImagesUpload: React.FC = () => {
       <ConversionWorkflow
         toolType="pdf-to-images"
         toolTitle="PDF to Images Converter"
-        toolDescription="Convert PDF pages to high-quality image files (JPG, PNG). Each page becomes a separate image with customizable resolution."
+        toolDescription="Export PDF pages as PNG images in a ZIP archive. Direct JPG output is not currently offered by this workflow."
         acceptedFormats={[".pdf"]}
         maxFileSize="50MB"
         outputFormat="JPG/PNG"

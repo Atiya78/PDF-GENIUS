@@ -1,4 +1,5 @@
 import React from "react";
+import { ToolDirectory } from "@/components/ToolDirectory";
 import { FeaturesSection } from "./sections/FeaturesSection";
 import { HeroSection } from "./sections/HeroSection";
 import { TestimonialsSection } from "./sections/TestimonialsSection";
@@ -13,7 +14,13 @@ export const Body = (): JSX.Element => {
     description:
       SITE_DESCRIPTION,
     canonicalPath: "/",
-    jsonLd: {
+    jsonLd: [{
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "PDF Genius",
+      url: "https://pdfgenius.app/",
+      logo: "https://pdfgenius.app/genius-logo.png",
+    }, {
       "@context": "https://schema.org",
       "@type": "WebApplication",
       name: "PDF Genius",
@@ -23,7 +30,7 @@ export const Body = (): JSX.Element => {
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       description:
         SITE_DESCRIPTION,
-    },
+    }],
   });
   return (
     <div className="flex flex-col w-full relative overflow-x-hidden bg-white">
@@ -31,6 +38,7 @@ export const Body = (): JSX.Element => {
       <HeroSection />
       <FeaturesSection />
       <PrivacyFilesSection />
+      <ToolDirectory />
       <APIDocumentationSection />
       <TestimonialsSection />
     </div>

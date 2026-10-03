@@ -59,7 +59,7 @@ const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
   const isPaused = useToolPaused(tool ? getServerToolType(tool) : undefined);
   if (!tool) return null;
   const Icon = tool.icon;
-  const target = isHeroTool(id) ? `/?tool=${id}` : tool.route;
+  const target = tool.route;
   return (
     <NavigationMenuLink asChild>
       <button
@@ -185,7 +185,7 @@ const MobileToolButton = ({
   const isPaused = useToolPaused(tool ? getServerToolType(tool) : undefined);
   if (!tool) return null;
   const Icon = tool.icon;
-  const target = isHeroTool(id) ? `/?tool=${id}` : tool.route;
+  const target = tool.route;
   return (
     <button
       type="button"

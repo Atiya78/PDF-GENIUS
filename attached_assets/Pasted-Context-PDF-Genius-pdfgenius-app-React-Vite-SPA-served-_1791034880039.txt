@@ -1,0 +1,22 @@
+Context: PDF Genius (pdfgenius.app), React + Vite SPA served by Express on Railway. The raw HTML is an empty shell (a spinner), so crawlers see almost nothing. Tool URLs are currently /upload/word-to-pdf and similar. Pages like /pdf-to-word return the home page HTML with a 200 status. Make safe changes and do not break existing tools. Run the build and summarise when done. Do not invent claims, ratings or user counts.
+
+Task: SEO foundation.
+
+1. Add build-time pre-rendering for the public routes (home, pricing, about, contact, support, legal pages and all tool landing pages) without rewriting the app. Pick vite-plugin-ssg, vite-prerender-plugin, or a Puppeteer script that runs after vite build, and tell me which one you chose and why.
+2. Create keyword-friendly landing pages with clean URLs, each rendering the same working tool component as the old /upload/... route:
+   /pdf-to-word, /word-to-pdf, /pdf-to-excel, /excel-to-pdf, /powerpoint-to-pdf, /pdf-to-powerpoint, /pdf-to-jpg, /jpg-to-pdf, /html-to-pdf, /merge-pdf, /split-pdf, /compress-pdf, /edit-pdf, /rotate-pdf, /crop-pdf, /sign-pdf, /watermark-pdf, /add-image-to-pdf, /delete-pdf-pages, /ocr-pdf, /compress-image, /convert-image, /crop-image, /resize-image, /rotate-image, /remove-background, /upscale-image.
+   Each page needs:
+   - A unique title under 60 characters.
+   - A unique meta description under 155 characters.
+   - One H1.
+   - A 3-step "How to" section.
+   - A short "Why use this tool" section.
+   - 4 FAQs.
+   - Links to 4 related tools.
+   Write original copy.
+3. Keep the old /upload/... URLs working with a 301 redirect to the new URL.
+4. Unknown URLs must return a real 404 status with the 404 page, not 200 with the home page.
+5. Add per-route title, meta description, canonical, Open Graph and Twitter tags.
+6. Structured data (JSON-LD): keep Organization and WebApplication on the home page. Add FAQPage where there are FAQs, HowTo and BreadcrumbList on tool pages. Do not add AggregateRating or Review.
+7. Regenerate sitemap.xml with only the new canonical URLs and correct lastmod dates. Keep robots.txt pointing to it. Add noindex to login, account and dashboard pages.
+8. Internal links: the home page links to every tool, each tool links to related tools, and the footer has a "PDF Tools" column.

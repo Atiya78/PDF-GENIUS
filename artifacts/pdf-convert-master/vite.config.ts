@@ -1,6 +1,9 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import fs from "node:fs";
+import publicPages from "./src/config/publicPageSeo.json";
+import landingPages from "./src/config/toolLandingData.json";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 // PORT/BASE_PATH are injected by the workflow for `dev`/`serve`. They are NOT
@@ -26,6 +29,37 @@ const basePath = process.env.BASE_PATH || "/";
 export default defineConfig({
   base: basePath,
   plugins: [
+    {
+      name: "canonical-tool-navigation",
+      configureServer(server) {
+        const appSource = fs.readFileSync(path.resolve(import.meta.dirname, "src/App.tsx"), "utf8");
+        const known = new Set([
+          ...publicPages.map(page => page.path), ...landingPages.map(page => page.path),
+          ...[...appSource.matchAll(/<Route path="([^"]+)"/g)].map(match => match[1]),
+        ]);
+        const aliases: Record<string, string> = Object.fromEntries(landingPages.map(page => [`/upload/${page.id}`, page.path]));
+        aliases["/upload/restore-document"] = "/restore-document";
+        server.middlewares.use(async (req, res, next) => {
+          if (req.method !== "GET" && req.method !== "HEAD") return next();
+          const url = new URL(req.url ?? "/", "http://localhost");
+          const route = url.pathname.replace(/\/+$/, "") || "/";
+          if (aliases[route]) {
+            res.writeHead(301, { Location: aliases[route] + url.search });
+            return res.end();
+          }
+          if (url.pathname === "/sitemap.xml" && fs.existsSync(path.resolve(import.meta.dirname, "dist/public/sitemap.xml"))) {
+            res.setHeader("Content-Type", "application/xml");
+            return res.end(fs.readFileSync(path.resolve(import.meta.dirname, "dist/public/sitemap.xml")));
+          }
+          if (known.has(route) || /\.[a-z0-9]+$/i.test(url.pathname) || /^\/(?:api(?:\/|$)|@|__|src\/|node_modules\/)/.test(url.pathname)) return next();
+          try {
+            const html = await server.transformIndexHtml(url.pathname, fs.readFileSync(path.resolve(import.meta.dirname, "index.html"), "utf8"));
+            res.writeHead(404, { "Content-Type": "text/html; charset=utf-8", "X-Robots-Tag": "noindex, nofollow" });
+            res.end(html);
+          } catch (error) { next(error as Error); }
+        });
+      },
+    },
     react(),
     runtimeErrorOverlay(),
     ...(process.env.NODE_ENV !== "production" &&

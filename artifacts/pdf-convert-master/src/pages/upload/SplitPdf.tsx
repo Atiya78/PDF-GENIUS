@@ -8,7 +8,7 @@ export const SplitPdfUpload: React.FC = () => {
       <ConversionWorkflow
         toolType="split-pdf"
         toolTitle="PDF Splitter"
-        toolDescription="Split large PDF files into smaller documents by page ranges, extract specific pages, or divide into equal parts with preview."
+        toolDescription="Export every PDF page as a separate one-page PDF, packaged in a ZIP archive. This workflow does not offer page-range selection."
         acceptedFormats={[".pdf"]}
         maxFileSize="100MB"
         outputFormat="PDF Files"

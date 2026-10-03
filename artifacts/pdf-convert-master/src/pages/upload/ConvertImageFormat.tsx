@@ -8,7 +8,7 @@ export const ConvertImageFormatUpload: React.FC = () => {
       <ConversionWorkflow
         toolType="convert-image-format"
         toolTitle="Image Format Converter"
-        toolDescription="Convert between popular image formats: JPG, PNG, WebP, GIF, BMP, TIFF. Optimize for web or print with quality settings."
+        toolDescription="Convert supported input images to PNG. This web workflow currently has no output-format selector."
         acceptedFormats={[".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".tiff"]}
         maxFileSize="25MB"
         outputFormat="JPG, PNG, WebP, etc."

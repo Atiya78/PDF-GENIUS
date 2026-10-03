@@ -1,0 +1,242 @@
+[
+  {
+    "id":"pdf-to-word","path":"/pdf-to-word","name":"PDF to Word","title":"PDF to Word Converter",
+    "description":"Convert a PDF into an editable DOCX document. Upload your file, run the conversion and check the Word output before editing.",
+    "why":"Use Word when you need to revise paragraphs rather than annotate a fixed-layout PDF. Check tables, fonts and spacing after conversion.",
+    "steps":["Choose the PDF you want to edit in Word.","Start conversion to create a DOCX file.","Download the document and review its layout in Word."],
+    "faqs":[["Which file should I upload?","Choose a PDF document. The result is a DOCX file for editing in Word or another compatible editor."],["Will the Word layout match my PDF?","Conversion can change fonts, spacing and tables. Review the result before sharing it."],["What if my PDF contains scanned pages?","Scans may not contain extractable text. Try OCR PDF first to recognize the words, then review the recognized text."]],
+    "related":["word-to-pdf","pdf-to-excel","ocr-pdf","edit-pdf"],"processing":"server"
+  },
+  {
+    "id":"word-to-pdf","path":"/word-to-pdf","name":"Word to PDF","title":"Word to PDF Converter",
+    "description":"Turn a Word document into a PDF for sharing. Upload a DOC or DOCX file, convert it and review the downloaded PDF.",
+    "why":"A PDF is useful for sending a document that recipients do not need to edit. Preview the exported pages before sending a report or application.",
+    "steps":["Upload your DOC or DOCX document.","Start the Word-to-PDF conversion.","Download the PDF and check its pages."],
+    "faqs":[["Can I upload both DOC and DOCX?","The tool accepts Word documents in DOC and DOCX formats."],["Can I edit the PDF like a Word document?","PDFs use a fixed page layout. Keep the original Word file for later revisions."],["Why might the converted PDF look different?","Fonts, page breaks or document features can render differently. Inspect the output instead of assuming an exact match."]],
+    "related":["pdf-to-word","merge-pdfs","compress-pdf","sign-pdf"],"processing":"server"
+  },
+  {
+    "id":"pdf-to-excel","path":"/pdf-to-excel","name":"PDF to Excel","title":"PDF to Excel Converter",
+    "description":"Extract PDF content into an Excel workbook. Upload a PDF, convert it to XLSX and review cells and tables before using the data.",
+    "why":"Move document content into a spreadsheet when you need to sort or review it. Verify values, row boundaries and column placement against the source.",
+    "steps":["Select the PDF containing your data.","Convert the PDF to an Excel workbook.","Download the XLSX file and verify the cells."],
+    "faqs":[["What format does PDF to Excel produce?","The conversion produces an XLSX workbook that can be opened in a compatible spreadsheet application."],["Will every table become a clean spreadsheet?","PDF table structures vary. Rows and columns may need correction after conversion."],["Can I rely on extracted financial figures?","Check each important figure against the original PDF before calculating or making decisions."]],
+    "related":["excel-to-pdf","pdf-to-word","ocr-pdf","split-pdf"],"processing":"server"
+  },
+  {
+    "id":"excel-to-pdf","path":"/excel-to-pdf","name":"Excel to PDF","title":"Excel to PDF Converter",
+    "description":"Convert an Excel workbook to a PDF document. Upload an XLS or XLSX file and inspect the resulting page layout before sharing.",
+    "why":"Send a workbook as pages when the recipient needs to read rather than recalculate it. Check wide sheets and page breaks in the exported PDF.",
+    "steps":["Choose your XLS or XLSX workbook.","Run the Excel-to-PDF conversion.","Download the PDF and inspect the sheet layout."],
+    "faqs":[["Which spreadsheet formats are accepted?","Upload an Excel workbook in XLS or XLSX format."],["Does the PDF retain spreadsheet formulas?","The PDF displays rendered content, not an editable calculation model. Keep the workbook if you need formulas."],["What should I check after exporting a wide sheet?","Inspect page breaks and look for clipped columns or small text before sharing the PDF."]],
+    "related":["pdf-to-excel","merge-pdfs","rotate-pdf","compress-pdf"],"processing":"server"
+  },
+  {
+    "id":"powerpoint-to-pdf","path":"/powerpoint-to-pdf","name":"PowerPoint to PDF","title":"PowerPoint to PDF Converter",
+    "description":"Create a PDF from a PowerPoint presentation. Upload a PPT or PPTX file, convert it and review the exported slides.",
+    "why":"Share presentation pages with someone who does not need to edit the slides. A PDF is a static document, so review the deck without its animations.",
+    "steps":["Upload a PPT or PPTX presentation.","Convert the presentation into PDF pages.","Download the PDF and check each slide."],
+    "faqs":[["Can I convert a PPTX presentation?","The tool accepts PPT and PPTX files for conversion to PDF."],["Will slide animations work in the PDF?","A PDF export contains static pages rather than interactive slide animations."],["Should I keep the original presentation?","Yes. Keep the PPT or PPTX source for editing slides, notes and presentation effects."]],
+    "related":["pdf-to-powerpoint","merge-pdfs","compress-pdf","pdf-to-images"],"processing":"server"
+  },
+  {
+    "id":"pdf-to-powerpoint","path":"/pdf-to-powerpoint","name":"PDF to PowerPoint","title":"PDF to PowerPoint Converter",
+    "description":"Convert a PDF into a PowerPoint file. Upload your document, download the PPTX result and review the converted slides.",
+    "why":"Use a presentation file as a starting point for arranging document content into slides. Review the output; conversion is not a reconstruction of the original deck.",
+    "steps":["Select the PDF you want to use in a presentation.","Run conversion to a PowerPoint file.","Download the PPTX and review it in a slide editor."],
+    "faqs":[["What file will I download?","The tool returns a PPTX presentation after a successful conversion."],["Will all PDF content become editable slide objects?","The result depends on the source and conversion. Do not assume that every image or text element can be edited independently."],["Can this restore the original presentation effects?","A PDF does not preserve the original slide animations or transitions, so those effects cannot be recovered from it."]],
+    "related":["powerpoint-to-pdf","pdf-to-images","split-pdf","edit-pdf"],"processing":"server"
+  },
+  {
+    "id":"pdf-to-images","path":"/pdf-to-jpg","name":"PDF to JPG — current output: PNG","title":"PDF to JPG: Current Export Is PNG",
+    "description":"Export PDF pages as PNG images in a ZIP. JPG output is not currently offered by this web workflow.",
+    "why":"This URL uses the existing PDF-to-images tool. Its current output is PNG, not JPG. Use a separate converter if you specifically need JPEG files.",
+    "steps":["Upload the PDF you want to export as page images.","Start conversion to create PNG images of its pages.","Download the ZIP and extract the PNG images."],
+    "faqs":[["Why is the download a ZIP instead of one JPG?","The converter currently exports each page as PNG and packages the images in a ZIP archive."],["Can this web workflow output JPG directly?","Not currently. The existing tool exports PNG files. This page does not offer a JPG output selector."],["Will I be able to select text in a page image?","A page image contains pixels, not selectable document text. Use OCR PDF when you need recognized text."]],
+    "related":["images-to-pdf","convert-image-format","compress-image","crop-image"],"processing":"server"
+  },
+  {
+    "id":"images-to-pdf","path":"/jpg-to-pdf","name":"JPG to PDF","title":"JPG to PDF Converter",
+    "description":"Combine JPG and other supported images into a PDF. Select your pictures, review their order and download the document.",
+    "why":"Put related photos or image scans into one document instead of sending separate files. Arrange the pictures in the order you want readers to see.",
+    "steps":["Select the images you want in the PDF.","Arrange the images and create the document.","Download the PDF and inspect the page order."],
+    "faqs":[["Can I put several JPG files into one PDF?","Yes. The images-to-PDF tool accepts multiple images for a single document."],["Are formats other than JPG accepted?","The uploader also accepts supported formats such as PNG. Check the input list shown by the tool."],["Does this recognize words in photographed pages?","Creating a PDF from images does not by itself recognize text. Use OCR PDF separately if you need text recognition."]],
+    "related":["pdf-to-images","merge-pdfs","ocr-pdf","compress-pdf"],"processing":"server"
+  },
+  {
+    "id":"html-to-pdf","path":"/html-to-pdf","name":"HTML to PDF","title":"HTML to PDF Converter",
+    "description":"Convert an uploaded HTML file into a PDF. Review the generated pages and check any images, fonts or external resources.",
+    "why":"Create a paginated copy of HTML content for reading or sharing as a document. Web layouts and printed layouts differ, so inspect the export.",
+    "steps":["Upload the HTML file you want to convert.","Run the HTML-to-PDF conversion.","Download the PDF and review its rendered content."],
+    "faqs":[["Do I upload a file or enter a website address?","This tool accepts an HTML file through its uploader."],["Will external images and fonts appear?","External resources may be unavailable during rendering. Check the PDF rather than assuming every resource loaded."],["Will the PDF remain an interactive website?","No. The result is a document rendering, not a live website with its original interactive behavior."]],
+    "related":["word-to-pdf","merge-pdfs","crop-pdf","compress-pdf"],"processing":"server"
+  },
+  {
+    "id":"merge-pdfs","path":"/merge-pdf","name":"Merge PDF","title":"Merge PDF Files Online",
+    "description":"Combine multiple PDF documents into one file. Choose your PDFs, arrange their order and download the merged document.",
+    "why":"Keep related documents together in a single PDF. Set the file order before merging to make the combined document easier to read.",
+    "steps":["Select the PDF files you want to combine.","Arrange their order and start merging.","Download the merged PDF and verify its pages."],
+    "faqs":[["Do I need more than one PDF to merge?","Merging is intended to combine multiple PDF files into a single document."],["Does the order of my files matter?","Yes. Review and arrange the file order before creating the merged PDF."],["Can I remove unwanted pages after merging?","Use Delete PDF Pages on the merged document to remove pages you do not need."]],
+    "related":["split-pdf","delete-pages-pdf","compress-pdf","images-to-pdf"],"processing":"server"
+  },
+  {
+    "id":"split-pdf","path":"/split-pdf","name":"Split PDF","title":"Split PDF into Single-Page Files",
+    "description":"Split a PDF into individual one-page PDF files, packaged in a ZIP. Upload the document, process it and extract the downloaded archive.",
+    "why":"Access each document page as a separate PDF. This workflow exports all pages; it does not offer a page-range selector.",
+    "steps":["Upload the PDF you want to separate into pages.","Start splitting to create a PDF for every page.","Download the ZIP and extract the one-page PDFs."],
+    "faqs":[["What does the Split PDF download contain?","It contains a ZIP archive with one separate PDF file for each page of the source document."],["Can I select a page range in this workflow?","Not currently. The tool exports every page. You can keep the individual files you need after extracting the archive."],["Will I lose the source PDF?","The tool creates an output archive without overwriting the source file on your device. Keep the original PDF for later use."]],
+    "related":["merge-pdfs","delete-pages-pdf","rotate-pdf","crop-pdf"],"processing":"server"
+  },
+  {
+    "id":"compress-pdf","path":"/compress-pdf","name":"Compress PDF","title":"Compress PDF Files Online",
+    "description":"Process a PDF with the compression tool. Download the result and compare its file size and readability with the original document.",
+    "why":"A smaller PDF can be easier to attach or upload. Compression results depend on the document, and size reduction can affect image detail.",
+    "steps":["Upload the PDF you want to compress.","Start the compression process.","Download the result and compare size and readability."],
+    "faqs":[["How much smaller will my PDF become?","There is no fixed reduction for every document. The result depends on its images, structure and the compression process."],["Can compression change image quality?","Yes. Review diagrams, small print and photographs after compression."],["What if the compressed PDF is not smaller?","Some files already use efficient compression. Keep the original if the result does not suit your needs."]],
+    "related":["merge-pdfs","split-pdf","pdf-to-images","word-to-pdf"],"processing":"server"
+  },
+  {
+    "id":"edit-pdf","path":"/edit-pdf","name":"Edit PDF","title":"Edit PDF Online in Your Browser",
+    "description":"Open a PDF in the browser editor, make supported changes and download your edited document. Review the pages before sharing.",
+    "why":"Make on-page changes without first converting the entire document to another format. Check the exported PDF, especially where you added or changed content.",
+    "steps":["Open your PDF in the editor.","Use the available editing controls to make changes.","Export the edited PDF and review the affected pages."],
+    "faqs":[["What can I change in the PDF editor?","Use the controls provided by the editor for supported on-page edits, text, drawing and document annotations."],["Is every PDF text element editable?","Text extraction depends on the PDF. Scans and some document structures may need a different approach."],["Does the editor overwrite my original document?","The editor exports a result file. Keep the original PDF as a separate copy."]],
+    "related":["sign-pdf","watermark-pdf","add-image-pdf","ocr-pdf"],"processing":"browser"
+  },
+  {
+    "id":"rotate-pdf","path":"/rotate-pdf","name":"Rotate PDF","title":"Set PDF Pages to 90-Degree Rotation",
+    "description":"Set every PDF page to 90-degree clockwise rotation. Upload your PDF, run the rotation tool and download the updated document.",
+    "why":"Correct sideways or upside-down document pages so they are easier to read. Review pages with mixed orientations before saving.",
+    "steps":["Upload the PDF whose page rotation you want to change.","Start processing: the tool sets every page to 90 degrees clockwise.","Download the PDF and check the orientation of all its pages."],
+    "faqs":[["Can I choose a page or rotation angle?","Not currently. This workflow sets every page's rotation to 90 degrees clockwise; it has no page or angle selector."],["Will rotating a scan recognize its text?","No. Rotation and text recognition are different tasks; use OCR PDF for recognition."],["What should I check after rotating pages?","Check every page, including any pages that were already rotated. The workflow sets a fixed rotation rather than adding an angle to the existing rotation."]],
+    "related":["crop-pdf","split-pdf","delete-pages-pdf","ocr-pdf"],"processing":"server"
+  },
+  {
+    "id":"crop-pdf","path":"/crop-pdf","name":"Crop PDF","title":"Crop PDF Pages Online",
+    "description":"Adjust the visible area of PDF pages in your browser. Set the crop, apply it and review the downloaded document.",
+    "why":"Reduce unwanted page margins or focus the visible page area. Cropping is not a secure method for removing confidential content.",
+    "steps":["Open the PDF you want to crop.","Set the page crop using the preview controls.","Export the PDF and review the visible area."],
+    "faqs":[["Can cropping trim wide page margins?","Use the crop controls to change the visible page area and inspect the preview before exporting."],["Does cropping securely delete hidden information?","Do not treat cropping as redaction. Content outside a visible crop can remain in a PDF."],["How is PDF cropping different from image cropping?","PDF cropping changes a document page's visible boundary. Image cropping creates an image with a changed pixel area."]],
+    "related":["rotate-pdf","edit-pdf","split-pdf","crop-image"],"processing":"browser"
+  },
+  {
+    "id":"sign-pdf","path":"/sign-pdf","name":"Sign PDF","title":"Add a Signature to a PDF",
+    "description":"Place a signature on a PDF in your browser. Position it on the page, export the document and check the result.",
+    "why":"Add a visible signature to a document using the available signature controls. Confirm the receiving party's requirements before relying on it.",
+    "steps":["Open the PDF that needs a signature.","Create or choose a signature and position it on the page.","Save the signed PDF and review its placement."],
+    "faqs":[["Is this a certificate-based digital signature?","This tool places a visible signature on the page. Do not assume it provides certificate-based identity verification."],["Can I move the signature before exporting?","Use the editor's placement controls to position the signature before saving."],["Is the signature legally valid for every document?","Requirements vary by document and jurisdiction. Ask the receiving party what signing method it accepts."]],
+    "related":["edit-pdf","add-image-pdf","watermark-pdf","word-to-pdf"],"processing":"browser"
+  },
+  {
+    "id":"watermark-pdf","path":"/watermark-pdf","name":"Watermark PDF","title":"Add a Watermark to a PDF",
+    "description":"Add a watermark to PDF pages in your browser. Adjust its placement, export the result and check that the document remains readable.",
+    "why":"Mark a document with a label or visual identifier. A watermark is a visible annotation, not a guarantee against copying or reuse.",
+    "steps":["Open the PDF to watermark.","Set the watermark content and placement.","Export the PDF and inspect its readability."],
+    "faqs":[["Can a watermark stop someone copying my PDF?","No. A visible watermark labels the document but does not prevent copying."],["What should I check before saving a watermark?","Check that its size and position do not obscure important text or diagrams."],["Does watermarking replace the original document text?","The watermark adds a visible mark. It is not a tool for securely deleting document content."]],
+    "related":["edit-pdf","sign-pdf","add-image-pdf","compress-pdf"],"processing":"browser"
+  },
+  {
+    "id":"add-image-pdf","path":"/add-image-to-pdf","name":"Add Image to PDF","title":"Add an Image to a PDF Online",
+    "description":"Place an image on a PDF page in your browser. Adjust its size and position, save the document and inspect the result.",
+    "why":"Add a logo, picture or other visual element to an existing document. Check the image placement and the surrounding page content.",
+    "steps":["Open the PDF and select the image to insert.","Position and resize the image on the page.","Save the PDF and check the inserted image."],
+    "faqs":[["Can I add a logo to an existing PDF?","Select a supported image file, then use the page controls to place it in the document."],["Does the inserted picture become editable text?","No. An inserted image remains an image rather than recognized document text."],["What if my picture covers important content?","Move or resize it before exporting, then review the result to check that the original content remains readable."]],
+    "related":["edit-pdf","watermark-pdf","sign-pdf","resize-image"],"processing":"browser"
+  },
+  {
+    "id":"delete-pages-pdf","path":"/delete-pdf-pages","name":"Delete PDF Pages","title":"Delete Pages from a PDF",
+    "description":"Remove unwanted PDF pages in your browser. Select the pages to delete, save a new document and verify the remaining page order.",
+    "why":"Remove blank sheets or pages you do not want to share. Keep a copy of the original document in case you need the removed pages later.",
+    "steps":["Open the PDF containing unwanted pages.","Select the pages you want to remove.","Save the result and verify the remaining pages."],
+    "faqs":[["Can I remove a blank page from a PDF?","Choose that page in the deletion controls, then review the remaining pages before exporting."],["Will this edit text within the remaining pages?","No. This tool removes selected pages rather than modifying text inside the pages you keep."],["Should I keep a backup before deleting pages?","Yes. Save the output separately from the source so you can recover pages from the original document."]],
+    "related":["split-pdf","merge-pdfs","rotate-pdf","edit-pdf"],"processing":"browser"
+  },
+  {
+    "id":"ocr-pdf","path":"/ocr-pdf","name":"OCR PDF","title":"OCR PDF: Recognize Scanned Text",
+    "description":"Recognize text in scanned PDF pages using browser-based OCR. Review the extracted words and export an available result format.",
+    "why":"Turn photographed or scanned words into recognized text. OCR can misread letters, numbers and layout, so proofreading is part of the process.",
+    "steps":["Open the scanned PDF in the OCR tool.","Choose the recognition options and process the pages.","Review the recognized text and export the result."],
+    "faqs":[["What does OCR do to a scanned PDF?","OCR attempts to recognize words from the page images so you can work with the resulting text."],["Is recognized text always accurate?","No. Scan quality, language, handwriting and layout affect recognition. Review important text and numbers."],["Can OCR recover every table or document layout?","Text recognition does not guarantee that the original table structure or visual layout will be reconstructed."]],
+    "related":["pdf-to-word","pdf-to-excel","images-to-pdf","edit-pdf"],"processing":"browser"
+  },
+  {
+    "id":"compress-image","path":"/compress-image","name":"Compress Image","title":"Compress Images Online",
+    "description":"Process an image with the compression tool. Download the result and compare its file size and visible detail with the original.",
+    "why":"Prepare an image for an upload limit or smaller attachment. Compare the resulting file size and visible detail before replacing the source.",
+    "steps":["Upload the image you want to compress.","Start image compression.","Download the result and compare size and detail."],
+    "faqs":[["Will every image become much smaller?","No. The source format, existing compression and processing determine the resulting size."],["Can compression affect visible detail?","Yes. Check text, edges and small features in the downloaded image."],["Should I discard the original picture?","Keep the original if you may need a higher-quality version for printing or later editing."]],
+    "related":["convert-image-format","resize-image","crop-image","images-to-pdf"],"processing":"server"
+  },
+  {
+    "id":"convert-image-format","path":"/convert-image","name":"Convert Image","title":"Convert Images to PNG Online",
+    "description":"Convert supported images to PNG using the web tool. Upload your picture, run conversion and inspect the downloaded PNG image.",
+    "why":"Create a PNG version of an image for an app or document that accepts that format. This web workflow currently uses PNG output without a format selector.",
+    "steps":["Upload an image in a supported input format.","Start conversion to the workflow's PNG output format.","Download the PNG and verify that it opens correctly."],
+    "faqs":[["Can I select JPG or another output format here?","The current web workflow does not expose an output-format selector. It uses PNG output."],["Does PNG conversion recover transparency from a JPG?","No. PNG can represent transparency, but conversion does not recover transparency that was absent from the source."],["Does changing the format improve image resolution?","Format conversion alone does not recover detail missing from the source image."]],
+    "related":["compress-image","resize-image","remove-background","images-to-pdf"],"processing":"server"
+  },
+  {
+    "id":"crop-image","path":"/crop-image","name":"Crop Image","title":"Crop Images in Your Browser",
+    "description":"Trim an image to the area you need. Set the crop in your browser, download the result and keep the original for later edits.",
+    "why":"Focus a picture on its subject or remove unwanted edges. Inspect the crop before saving because content outside the selection is excluded from the output.",
+    "steps":["Choose an image to open in the crop tool.","Adjust the crop area around the content you need.","Download the cropped image and check its framing."],
+    "faqs":[["Will the crop change the image dimensions?","The exported image uses the selected crop area, which can change its pixel dimensions."],["Can I recover cropped-out areas from the output?","Keep the original image. The cropped output does not include areas outside your selected crop."],["Is cropping the same as resizing?","No. Cropping selects an area; resizing changes the dimensions of the image content."]],
+    "related":["resize-image","rotate-image","compress-image","remove-background"],"processing":"optional"
+  },
+  {
+    "id":"resize-image","path":"/resize-image","name":"Resize Image","title":"Resize Images in Your Browser",
+    "description":"Change an image's dimensions using browser-based resizing. Set the output size, save the image and verify its width and height.",
+    "why":"Fit an image to a form, document or layout that requires particular dimensions. Check the aspect ratio to avoid unintended stretching.",
+    "steps":["Open the image you want to resize.","Set the dimensions using the resize controls.","Download the resized image and check its dimensions."],
+    "faqs":[["What is the difference between dimensions and file size?","Dimensions are width and height in pixels. File size is the amount of stored data; both can change during resizing."],["Can enlarging a small picture restore missing detail?","Ordinary resizing cannot recover detail absent from the source. Enlarged images may look blurred."],["How can I avoid stretching my image?","Use the tool's aspect-ratio controls where available and inspect the result before saving."]],
+    "related":["crop-image","rotate-image","compress-image","upscale-image"],"processing":"optional"
+  },
+  {
+    "id":"rotate-image","path":"/rotate-image","name":"Rotate Image","title":"Rotate Images in Your Browser",
+    "description":"Change a picture's orientation in your browser. Set the rotation, save the image and inspect the downloaded result.",
+    "why":"Correct an image that appears sideways or upside down before including it in a document. Check the orientation in the exported file, not only the preview.",
+    "steps":["Open the image with the wrong orientation.","Choose the rotation using the image controls.","Download the result and confirm its direction."],
+    "faqs":[["Can I correct a sideways photo?","Use the rotation controls to turn the picture, then inspect the preview and exported image."],["Will rotation recognize text in a photo?","No. Turning the image does not perform text recognition."],["Why should I check the downloaded image too?","Different viewers can interpret image orientation metadata differently. Open the exported file to verify the result."]],
+    "related":["crop-image","resize-image","images-to-pdf","convert-image-format"],"processing":"optional"
+  },
+  {
+    "id":"remove-background","path":"/remove-background","name":"Remove Background","title":"Remove an Image Background",
+    "description":"Remove the background from a supported image. Process your picture, inspect the subject edges and download the result.",
+    "why":"Prepare a subject image for use against another background. Fine edges, hair and similar foreground/background colors may need extra review.",
+    "steps":["Upload the image whose background you want to remove.","Run background removal and inspect the preview.","Download the result and check the subject edges."],
+    "faqs":[["Will the subject be separated perfectly?","No. Results depend on the picture. Review fine edges and areas where subject and background colors overlap."],["What should I check around hair or small details?","Look for missing foreground areas or remaining background pixels before using the result."],["Can I add the result to a PDF?","Use Add Image to PDF with a supported downloaded image, and check the placement in the document."]],
+    "related":["crop-image","resize-image","convert-image-format","add-image-pdf"],"processing":"server"
+  },
+  {
+    "id":"upscale-image","path":"/upscale-image","name":"Upscale Image","title":"Upscale Images Online",
+    "description":"Increase an image's output dimensions with the upscaling tool. Process the picture and compare the result with the source.",
+    "why":"Try a larger image for a layout that needs more pixels. Inspect the output closely: added pixels are not proof of recovered original detail.",
+    "steps":["Upload the image you want to enlarge.","Select the available upscaling options and process it.","Download the result and compare it with the source."],
+    "faqs":[["Does upscaling guarantee a sharper picture?","No. The result depends on the source and processing. Compare edges, text and texture after enlarging."],["Can upscaling recover unreadable text?","Do not rely on it to reconstruct missing or unreadable information. Verify important text against the source."],["How is upscaling different from compression?","Upscaling increases output dimensions; compression aims to reduce stored file size. They address different needs."]],
+    "related":["resize-image","compress-image","convert-image-format","crop-image"],"processing":"server"
+  },
+  {
+    "id":"lock-pdf","path":"/lock-pdf","name":"Lock PDF","title":"Password Protect a PDF",
+    "description":"Add a password to a PDF using the existing lock tool. Download the protected document and check it opens with your chosen password.",
+    "why":"Use a password when you want a PDF reader to request one before opening the document. Keep the password somewhere you can retrieve it.",
+    "steps":["Upload the PDF you want to protect.","Enter a password and run the lock tool.","Download the protected PDF and test the password."],
+    "faqs":[["Should I save the password?","Keep a copy of the password separately from the document so you can open it later."],["Does a password guarantee nobody can copy the document?","Do not treat password protection as a guarantee against every form of copying or disclosure."],["Can I remove a password later?","Use Unlock PDF with the required password and verify the downloaded result."]],
+    "related":["unlock-pdf","sign-pdf","watermark-pdf","compress-pdf"],"processing":"server"
+  },
+  {
+    "id":"unlock-pdf","path":"/unlock-pdf","name":"Unlock PDF","title":"Remove a PDF Password",
+    "description":"Remove password protection from a PDF you are authorized to access. Enter the required password, process the file and check the result.",
+    "why":"Create an unprotected copy when you have permission and no longer need a password prompt. Store the resulting document appropriately.",
+    "steps":["Upload the PDF you are authorized to unlock.","Provide the required password and process the document.","Download the result and test that it opens."],
+    "faqs":[["Can this recover a forgotten password?","The tool is not a password-recovery guarantee. Provide the password requested by the workflow."],["May I unlock someone else's document?","Only process documents you are authorized to access and modify."],["Does unlocking edit the document pages?","Removing password protection is separate from editing page content. Review the output after processing."]],
+    "related":["lock-pdf","edit-pdf","split-pdf","merge-pdfs"],"processing":"server"
+  },
+  {
+    "id":"compress-video","path":"/compress-video","name":"Compress Video","title":"Compress Video Files Online",
+    "description":"Reduce a video's file size with the available compression levels. Upload the video, process it and compare playback with the original.",
+    "why":"Prepare a video for a smaller attachment or upload. Compression can affect picture and sound quality, so inspect the result before replacing your source.",
+    "steps":["Upload a supported video file.","Select a compression level and start processing.","Download the video and check playback and file size."],
+    "faqs":[["Is the size reduction the same for every video?","No. Duration, source bitrate and selected compression level affect the result."],["Can compression take longer for large videos?","Yes. Processing time depends on the video and the server workload; there is no fixed completion-time guarantee."],["Should I check the audio as well as the picture?","Play the downloaded video and review sound, picture and synchronization before using it."]],
+    "related":["compress-image","compress-pdf","convert-image-format","resize-image"],"processing":"server"
+  }
+]

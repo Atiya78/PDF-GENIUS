@@ -1,3 +1,4 @@
+import { canonicalToolPath, toolLandingPages } from "@/config/toolLandingPages";
 import { 
   FileText, 
   FileSpreadsheet, 
@@ -598,6 +599,19 @@ export const PDF_CONVERTER_IDS = [
   "images-to-pdf",
   "html-to-pdf",
 ];
+
+// Keep every existing tool ID and processing option; navigation uses canonical URLs.
+for (const tool of Object.values(toolConfigs)) {
+  const id = tool.route?.replace("/upload/", "");
+  const landing = toolLandingPages.find(page => page.id === id);
+  if (landing) tool.description = landing.description;
+  if (id === "restore-document") {
+    tool.title = "Document Restore (coming soon)";
+    tool.description = "Not currently available. Choose an existing document tool.";
+  }
+  const path = id ? canonicalToolPath(id) : undefined;
+  if (path && path !== `/upload/${id}`) tool.route = path;
+}
 
 export const isHeroTool = (id?: string | null): boolean =>
   !!id && PDF_CONVERTER_IDS.includes(id);

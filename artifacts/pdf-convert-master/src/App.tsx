@@ -1,5 +1,8 @@
 import { Component, lazy, Suspense, type ReactNode } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import { toolLandingPages } from "@/config/toolLandingPages";
+import { ToolLandingPage } from "@/components/ToolLandingPage";
+import { RouteSeo } from "@/components/RouteSeo";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -73,6 +76,22 @@ const OcrPdfUpload = named(() => import("@/pages/upload/OcrPdf"), "OcrPdfUpload"
 const RestoreDocumentUpload = named(() => import("@/pages/upload/RestoreDocument"), "RestoreDocumentUpload");
 const LockPdfUpload = named(() => import("@/pages/upload/LockPdf"), "LockPdfUpload");
 const UnlockPdfUpload = named(() => import("@/pages/upload/UnlockPdf"), "UnlockPdfUpload");
+const canonicalToolComponents: Record<string, React.ComponentType> = {
+  "pdf-to-word": PdfToWordUpload, "word-to-pdf": WordToPdfUpload,
+  "pdf-to-excel": PdfToExcelUpload, "excel-to-pdf": ExcelToPdfUpload,
+  "powerpoint-to-pdf": PowerPointToPdfUpload, "pdf-to-powerpoint": PdfToPowerPointUpload,
+  "pdf-to-images": PdfToImagesUpload, "images-to-pdf": ImagesToPdfUpload,
+  "html-to-pdf": HtmlToPdfUpload, "merge-pdfs": MergePdfsUpload,
+  "split-pdf": SplitPdfUpload, "compress-pdf": CompressPdfUpload,
+  "edit-pdf": EditPdfUpload, "rotate-pdf": RotatePdfUpload, "crop-pdf": CropPdfUpload,
+  "sign-pdf": SignPdfUpload, "watermark-pdf": WatermarkPdfUpload,
+  "add-image-pdf": AddImagePdfUpload, "delete-pages-pdf": DeletePagesPdfUpload,
+  "ocr-pdf": OcrPdfUpload, "compress-image": CompressImageUpload,
+  "convert-image-format": ConvertImageFormatUpload, "crop-image": CropImageUpload,
+  "resize-image": ResizeImageUpload, "rotate-image": RotateImageUpload,
+  "remove-background": RemoveBackgroundUpload, "upscale-image": UpscaleImageUpload,
+  "lock-pdf": LockPdfUpload, "unlock-pdf": UnlockPdfUpload, "compress-video": CompressVideoUpload,
+};
 const ResizeImageTool = named(() => import("@/pages/ImageEditTools"), "ResizeImageTool");
 const CropImageTool = named(() => import("@/pages/ImageEditTools"), "CropImageTool");
 const RotateImageTool = named(() => import("@/pages/ImageEditTools"), "RotateImageTool");
@@ -137,6 +156,21 @@ class LazyErrorBoundary extends Component<
 function Router() {
   return (
     <Switch>
+      {toolLandingPages.map((page) => {
+        const Tool = canonicalToolComponents[page.id];
+        return (
+          <Route key={page.path} path={page.path}>
+            <DynamicLayout><ToolLandingPage page={page}><Tool /></ToolLandingPage></DynamicLayout>
+          </Route>
+        );
+      })}
+      {toolLandingPages.map((page) => (
+        <Route key={page.legacyPath} path={page.legacyPath}>
+          <Redirect to={page.path} replace />
+        </Route>
+      ))}
+      <Route path="/upload/restore-document"><Redirect to="/restore-document" replace /></Route>
+      <Route path="/restore-document"><DynamicLayout><RestoreDocumentUpload /></DynamicLayout></Route>
       {/* Protected Dashboard routes */}
       <Route path="/dashboard">
         <ProtectedRoute>
@@ -536,6 +570,7 @@ function App() {
       <TooltipProvider>
         <AuthProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <RouteSeo />
             <Toaster />
             <LazyErrorBoundary>
               <Suspense fallback={<PageFallback />}>

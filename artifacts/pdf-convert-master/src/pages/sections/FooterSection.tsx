@@ -3,7 +3,8 @@ import React from "react";
 import logoFull from "@assets/FullLogo_Transparent_NoBuffer_1782108807761.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
+import { toolLandingPages } from "@/config/toolLandingPages";
 import { SOCIAL_FACEBOOK_URL, SOCIAL_INSTAGRAM_URL, SOCIAL_LINKEDIN_URL } from "@/lib/socialLinks";
 
 export const FooterSection = (): JSX.Element => {
@@ -74,7 +75,15 @@ export const FooterSection = (): JSX.Element => {
     <footer className="bg-white w-full border-t border-gray-200">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
+          <div>
+            <h2 className="text-gray-900 font-semibold text-base mb-6">PDF Tools</h2>
+            <ul className="space-y-2 text-sm">
+              {toolLandingPages.filter((page) => page.name.includes("PDF")).map((page) => (
+                <li key={page.path}><Link href={page.path} className="text-gray-600 hover:text-primary">{page.name}</Link></li>
+              ))}
+            </ul>
+          </div>
 
           {/* Company Info Column */}
           <div className="space-y-6">

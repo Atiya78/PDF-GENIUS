@@ -8,7 +8,7 @@ export const CompressImageUpload: React.FC = () => {
       <ConversionWorkflow
         toolType="compress-image"
         toolTitle="Image Compressor"
-        toolDescription="Reduce image file size without losing quality. Perfect for web optimization and storage savings with customizable compression levels."
+        toolDescription="Process your image with the compression tool, then compare file size and visible detail with the original."
         acceptedFormats={[".jpg", ".jpeg", ".png", ".webp"]}
         maxFileSize="25MB"
         outputFormat="Compressed Images"

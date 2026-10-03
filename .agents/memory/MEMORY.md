@@ -78,7 +78,7 @@
 - [Conversion delete purges durable copy](conversion-delete-purge.md) — DELETE /api/download/:jobId removes S3+DB+memory; S3 delete is authoritative (fail→500, don't orphan); web toast / mobile best-effort; jobId on both History+Files entries.
 - [Avatar storage](avatar-storage.md) — profile photos stay in Backblaze (key `avatars/<userId>`), NOT Supabase (user-confirmed); DELETE /api/auth/avatar clears url to "".
 - [Mobile edited-filename persist](mobile-edited-filename-persist.md) — History/Files written at conversion time w/ original name; rename is PATCHED on download-confirm via savedEntryRef, don't move the persist.
-- [Per-route SEO (web SPA)](web-seo-per-route.md) — useSeo hook drives head tags client-side per route; public=index, auth/account=noindex; code SEO won't index instantly (needs Search Console + sitemap submit).
+- [Web SEO strategy](web-seo-per-route.md) — build-time public snapshots preserve the SPA; private pages stay uncached/noindex; route metadata alone isn't enough, and SEO cannot guarantee indexing.
 - [Puppeteer Chrome in prod](puppeteer-chrome-prod.md) — repo-local .puppeteer-cache via .puppeteerrc.cjs + build-time install when no system chromium; executablePath() is ASYNC; downloads use contentDisposition() helper.
 - [Prod ffmpeg via static npm](prod-ffmpeg-static.md) — Railway image lacks ffmpeg/ffprobe (bare spawn ENOENT in prod, works in dev); bundle ffmpeg-static+ffprobe-static, allowlist ffmpeg-static in pnpm.onlyBuiltDependencies, keep esbuild-external.
 - [Video compression timeout](compress-video-timeout.md) — "Processing took longer than expected" = slow encode, not corrupt; use x264 `veryfast` (not medium) + 400-poll (~600s) client window for compress-video.

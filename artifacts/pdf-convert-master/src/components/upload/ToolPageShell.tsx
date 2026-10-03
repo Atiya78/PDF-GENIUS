@@ -2,6 +2,7 @@ import React from "react";
 import { ShieldCheck } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { useSeo } from "@/lib/useSeo";
+import { ToolLandingContext } from "@/contexts/ToolLandingContext";
 
 export interface ToolPageShellProps {
   /** Page heading. */
@@ -44,6 +45,7 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
   showHeader = true,
   children,
 }) => {
+  const embedded = React.useContext(ToolLandingContext);
   const jsonLd = React.useMemo(
     () => ({
       "@context": "https://schema.org",
@@ -64,7 +66,7 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
     <div className="relative min-h-screen overflow-hidden bg-white">
       <AnimatedBackground particleCount={particleCount} className="opacity-60" />
       <div className={`relative z-10 w-full ${maxWidth} mx-auto px-4 sm:px-6 py-10`}>
-        {showHeader ? (
+        {embedded ? null : showHeader ? (
           <div className="text-center mb-8">
             <div className="flex justify-center mb-4">
               <div

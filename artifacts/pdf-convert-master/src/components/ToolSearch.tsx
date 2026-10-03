@@ -80,7 +80,7 @@ export const ToolSearch = ({
   }, [open]);
 
   const handleSelect = (tool: ToolConfig) => {
-    const target = isHeroTool(tool.id) ? `/?tool=${tool.id}` : tool.route;
+    const target = tool.route;
     setOpen(false);
     setQuery("");
     if (target) setLocation(target);
