@@ -637,7 +637,7 @@ export const PaymentsBillingHelp = (): JSX.Element => {
           </aside>
 
           {/* Main content */}
-          <div className="flex-1">
+          <main className="flex-1">
             <div className="bg-white rounded-lg shadow-sm p-8">
               <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-blue-50 px-4 py-1.5 text-sm font-medium text-blue-700">
                 Showing help for {MERCHANTS[merchant].name}
@@ -686,7 +686,7 @@ export const PaymentsBillingHelp = (): JSX.Element => {
                 </section>
               </div>
             </div>
-          </div>
+          </main>
         </div>
       </div>
     </div>

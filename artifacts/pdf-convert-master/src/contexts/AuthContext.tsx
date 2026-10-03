@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User } from "@workspace/db";
-import { initializeSupportChat, setSupportSession } from "@/lib/supportChat";
 
 interface AuthContextType {
   user: User | null;
@@ -26,10 +25,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  useEffect(initializeSupportChat, []);
-  useEffect(() => {
-    setSupportSession(user && token ? { token } : null);
-  }, [user, token]);
 
   // Check for existing token on mount
   useEffect(() => {

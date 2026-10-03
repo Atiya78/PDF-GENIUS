@@ -1,4 +1,3 @@
-import { useSeo } from "@/lib/useSeo";
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +19,6 @@ interface Tool {
 }
 
 export const APIReference: React.FC = () => {
-  useSeo({ title: "API Reference", noindex: true });
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -280,7 +278,7 @@ export const APIReference: React.FC = () => {
           </aside>
 
           {/* Main Content */}
-          <div className="flex-1 p-6">
+          <main className="flex-1 p-6">
             <div className="max-w-7xl mx-auto">
               {/* Page Header */}
               <h1 className="text-2xl font-bold text-gray-900 mb-6">API Reference</h1>
@@ -433,7 +431,7 @@ export const APIReference: React.FC = () => {
                 </div>
               </Card>
             </div>
-          </div>
+          </main>
         </div>
       </div>
     

@@ -1,4 +1,3 @@
-import { useSeo } from "@/lib/useSeo";
 import React, { useState } from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,7 +45,6 @@ function formatDate(value: string | null): string {
 }
 
 export const APISetup: React.FC = () => {
-  useSeo({ title: "API Setup", noindex: true });
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -254,7 +252,7 @@ export const APISetup: React.FC = () => {
           </aside>
 
           {/* Main Content */}
-          <div className="flex-1 p-6">
+          <main className="flex-1 p-6">
             <div className="max-w-7xl mx-auto">
               {/* Page Header */}
               <h1 className="text-2xl font-bold text-gray-900 mb-6">API Setup</h1>
@@ -368,7 +366,7 @@ export const APISetup: React.FC = () => {
                 </div>
               </Card>
             </div>
-          </div>
+          </main>
         </div>
 
         {/* Create key dialog */}

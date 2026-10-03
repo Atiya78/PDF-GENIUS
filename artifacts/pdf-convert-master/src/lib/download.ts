@@ -9,7 +9,6 @@
 // works in those embedded contexts because the navigation stays same-document.
 
 import { getAuthToken } from "./authedFetch";
-import { reportSuccessfulDownload } from "./conversionTracking";
 
 // iOS Safari (iPhone/iPad) ignores the <a download> attribute for blob: URLs:
 // instead of saving the file it opens it inline in the tab, so the user never
@@ -95,7 +94,6 @@ export async function downloadBlob(blob: Blob, name: string): Promise<void> {
     if (navigator.canShare?.({ files: [file] })) {
       try {
         await navigator.share({ files: [file], title: name });
-        reportSuccessfulDownload(blob);
         return;
       } catch (err) {
         // The user dismissing the share sheet is not a failure.
@@ -112,7 +110,6 @@ export async function downloadBlob(blob: Blob, name: string): Promise<void> {
   a.download = name;
   document.body.appendChild(a);
   a.click();
-  reportSuccessfulDownload(blob);
   a.remove();
   // Revoke after a tick so the browser has started the download.
   setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);

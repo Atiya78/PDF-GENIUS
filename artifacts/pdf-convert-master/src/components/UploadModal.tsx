@@ -217,8 +217,8 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
                 <Zap className="w-4 h-4 text-blue-600" />
               </div>
-              <h4 className="text-sm font-medium text-gray-900 mb-1">Simple</h4>
-              <p className="text-xs text-gray-600">Quick to use</p>
+              <h4 className="text-sm font-medium text-gray-900 mb-1">Fast</h4>
+              <p className="text-xs text-gray-600">Lightning speed</p>
             </div>
 
             <div className="text-center">

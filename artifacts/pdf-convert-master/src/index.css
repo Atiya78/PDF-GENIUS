@@ -1,15 +1,6 @@
-@import "./styles/fonts.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Keep the coral brand accent; use its darker shade where text needs AA. */
-.bg-blue-600, .bg-primary { background-color: #c62d27 !important; }
-.text-blue-600, .text-blue-700, .text-primary { color: #c62d27 !important; }
-a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
-  outline: 2px solid #c62d27;
-  outline-offset: 3px;
-}
 
 @layer components {
   .all-\[unset\] {
@@ -290,14 +281,4 @@ a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
 }
 .pdf-inline-edit ::selection {
   background: transparent;
-}
-
-/* Accessibility: visible keyboard focus + room for the sticky header on anchor jumps */
-html { scroll-padding-top: 76px; }
-a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, [tabindex]:focus-visible {
-  outline: 2px solid #d92f29;
-  outline-offset: 2px;
-}
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
 }

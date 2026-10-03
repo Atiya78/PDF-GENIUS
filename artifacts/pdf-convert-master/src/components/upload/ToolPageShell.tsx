@@ -2,7 +2,6 @@ import React from "react";
 import { ShieldCheck } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { useSeo } from "@/lib/useSeo";
-import { useInToolLanding } from "@/components/upload/ToolLandingContext";
 
 export interface ToolPageShellProps {
   /** Page heading. */
@@ -59,9 +58,7 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
     [title, description],
   );
 
-  const inLanding = useInToolLanding();
-  const Heading = inLanding ? "h2" : "h1";
-  useSeo({ title, description, jsonLd, skip: inLanding });
+  useSeo({ title, description, jsonLd });
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-white">
@@ -76,12 +73,12 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
                 {icon}
               </div>
             </div>
-            <Heading
+            <h1
               className="text-3xl font-bold text-gray-900 mb-2"
               data-testid="text-tool-title"
             >
               {title}
-            </Heading>
+            </h1>
             <p className="text-gray-600 max-w-2xl mx-auto">{description}</p>
             {trustText && (
               <p className="inline-flex items-center gap-1.5 text-xs text-gray-400 mt-3">
@@ -94,12 +91,12 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
           // Upload (empty) state: show only the tool name as a headline above
           // the bare dropzone, so every upload page is clearly labelled.
           <div className="text-center mb-8">
-            <Heading
+            <h1
               className="text-3xl font-bold text-gray-900"
               data-testid="text-tool-title"
             >
               {title}
-            </Heading>
+            </h1>
           </div>
         )}
         {children}

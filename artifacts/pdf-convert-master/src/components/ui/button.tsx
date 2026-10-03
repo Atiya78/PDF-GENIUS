@@ -4,12 +4,12 @@ import * as React from "react";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c62d27] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-200 ease-in-out focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-[#c62d27] text-white hover:bg-[#a9221d]",
+          "btn-red-gradient text-white",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 transition-all duration-200",
         outline:
@@ -22,10 +22,10 @@ const buttonVariants = cva(
         green: "btn-green-gradient text-white",
       },
       size: {
-        default: "h-9 px-4 py-2 [@media(pointer:coarse)]:min-h-[44px]",
-        sm: "h-8 rounded-full px-3 text-xs [@media(pointer:coarse)]:min-h-[44px]",
-        lg: "h-10 rounded-full px-8 [@media(pointer:coarse)]:min-h-[44px]",
-        icon: "h-9 w-9 [@media(pointer:coarse)]:min-h-[44px] [@media(pointer:coarse)]:min-w-[44px]",
+        default: "h-9 px-4 py-2",
+        sm: "h-8 rounded-full px-3 text-xs",
+        lg: "h-10 rounded-full px-8",
+        icon: "h-9 w-9",
       },
     },
     defaultVariants: {

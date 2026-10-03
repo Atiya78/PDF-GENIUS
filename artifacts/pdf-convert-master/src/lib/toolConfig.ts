@@ -63,7 +63,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/pdf-to-word"
+    route: "/upload/pdf-to-word"
   },
   "pdf-to-excel": {
     id: "pdf-to-excel",
@@ -80,7 +80,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/pdf-to-excel"
+    route: "/upload/pdf-to-excel"
   },
   "pdf-to-powerpoint": {
     id: "pdf-to-powerpoint",
@@ -97,7 +97,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/pdf-to-powerpoint"
+    route: "/upload/pdf-to-powerpoint"
   },
   "pdf-to-images": {
     id: "pdf-to-images",
@@ -114,7 +114,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/pdf-to-jpg"
+    route: "/upload/pdf-to-images"
   },
   "word-to-pdf": {
     id: "word-to-pdf",
@@ -131,7 +131,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/word-to-pdf"
+    route: "/upload/word-to-pdf"
   },
   "excel-to-pdf": {
     id: "excel-to-pdf",
@@ -148,7 +148,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/excel-to-pdf"
+    route: "/upload/excel-to-pdf"
   },
   "powerpoint-to-pdf": {
     id: "powerpoint-to-pdf",
@@ -165,7 +165,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/powerpoint-to-pdf"
+    route: "/upload/powerpoint-to-pdf"
   },
   "html-to-pdf": {
     id: "html-to-pdf",
@@ -182,7 +182,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/html-to-pdf"
+    route: "/upload/html-to-pdf"
   },
 
   // IMAGE PROCESSING TOOLS
@@ -201,7 +201,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Convert",
-    route: "/jpg-to-pdf"
+    route: "/upload/images-to-pdf"
   },
   "resize-images": {
     id: "resize-images",
@@ -218,7 +218,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Image Tools",
-    route: "/resize-image"
+    route: "/upload/resize-image"
   },
   "crop-images": {
     id: "crop-images", 
@@ -235,7 +235,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Image Tools",
-    route: "/crop-image"
+    route: "/upload/crop-image"
   },
   "rotate-images": {
     id: "rotate-images",
@@ -252,7 +252,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Image Tools",
-    route: "/rotate-image"
+    route: "/upload/rotate-image"
   },
   "convert-image-format": {
     id: "convert-image-format",
@@ -269,12 +269,12 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Image Tools",
-    route: "/convert-image"
+    route: "/upload/convert-image-format"
   },
   "compress-images": {
     id: "compress-images",
     title: "Compress Images",
-    description: "Reduce image file size for the web and email",
+    description: "Reduce image file size without losing quality for web optimization",
     acceptedFormats: [".jpg", ".jpeg", ".png", ".webp"],
     maxFileSize: "25MB",
     buttonText: "Select Images",
@@ -286,12 +286,12 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Image Tools",
-    route: "/compress-image"
+    route: "/upload/compress-image"
   },
   "upscale-images": {
     id: "upscale-images",
     title: "Upscale Images",
-    description: "Enlarge images up to 4x using AI-based upscaling",
+    description: "Enhance image resolution using AI technology up to 4x",
     acceptedFormats: [".jpg", ".jpeg", ".png", ".webp"],
     maxFileSize: "10MB",
     buttonText: "Select Images",
@@ -303,7 +303,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Image Tools",
-    route: "/upscale-image"
+    route: "/upload/upscale-image"
   },
   "remove-background": {
     id: "remove-background",
@@ -320,7 +320,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Image Tools",
-    route: "/remove-background"
+    route: "/upload/remove-background"
   },
 
   // PDF MANAGEMENT TOOLS
@@ -339,12 +339,12 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Edit",
-    route: "/edit-pdf"
+    route: "/upload/edit-pdf"
   },
   "restore-document": {
     id: "restore-document",
     title: "Document Restore",
-    description: "Planned tool for repairing damaged documents (coming soon)",
+    description: "Restore a broken or damaged PDF/photo into a clean, sharpened PDF",
     acceptedFormats: [".pdf", ".jpg", ".jpeg", ".png", ".webp", ".bmp", ".tiff"],
     maxFileSize: "25MB",
     buttonText: "Select Document",
@@ -356,7 +356,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-[#f7433d]/10",
     iconBorderColor: "border-[#f7433d]/20",
     category: "Edit",
-    route: "/restore-document",
+    route: "/upload/restore-document",
     comingSoon: true,
     comingSoonNote:
       "Document Restore is coming soon. We're putting the finishing touches on it — check back shortly."
@@ -364,7 +364,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
   "lock-pdf": {
     id: "lock-pdf",
     title: "Lock PDF",
-    description: "Password-protect a PDF so it needs a password to open",
+    description: "Password-protect a PDF with strong AES-256 encryption",
     acceptedFormats: [".pdf"],
     maxFileSize: "100MB",
     buttonText: "Select PDF",
@@ -376,7 +376,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-[#f7433d]/10",
     iconBorderColor: "border-[#f7433d]/20",
     category: "Security",
-    route: "/lock-pdf"
+    route: "/upload/lock-pdf"
   },
   "unlock-pdf": {
     id: "unlock-pdf",
@@ -393,13 +393,13 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-[#f7433d]/10",
     iconBorderColor: "border-[#f7433d]/20",
     category: "Security",
-    route: "/unlock-pdf"
+    route: "/upload/unlock-pdf"
   },
   // VIDEO TOOLS
   "compress-video": {
     id: "compress-video",
     title: "Video Compressor",
-    description: "Reduce video file size for easier sharing",
+    description: "Reduce video file size while keeping good quality",
     acceptedFormats: [".mp4", ".mov", ".mkv", ".avi", ".webm", ".flv", ".wmv", ".m4v", ".mpeg", ".mpg", ".3gp", ".ts", ".m2ts", ".mts", ".ogv"],
     maxFileSize: "200MB",
     buttonText: "Select Video",
@@ -411,7 +411,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-[#f7433d]/10",
     iconBorderColor: "border-[#f7433d]/20",
     category: "Video Tools",
-    route: "/compress-video"
+    route: "/upload/compress-video"
   },
   "merge-pdfs": {
     id: "merge-pdfs",
@@ -428,7 +428,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Organize",
-    route: "/merge-pdf"
+    route: "/upload/merge-pdfs"
   },
   "split-pdf": {
     id: "split-pdf",
@@ -445,12 +445,12 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Organize",
-    route: "/split-pdf"
+    route: "/upload/split-pdf"
   },
   "compress-pdf": {
     id: "compress-pdf",
     title: "Compress PDF",
-    description: "Reduce the file size of a PDF for easier sharing",
+    description: "Reduce file size while optimizing for maximal PDF quality",
     acceptedFormats: [".pdf"],
     maxFileSize: "200MB",
     buttonText: "Select PDF Files",
@@ -462,7 +462,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Edit",
-    route: "/compress-pdf"
+    route: "/upload/compress-pdf"
   },
   "rotate-pdf": {
     id: "rotate-pdf",
@@ -479,7 +479,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Organize",
-    route: "/rotate-pdf"
+    route: "/upload/rotate-pdf"
   },
   "crop-pdf": {
     id: "crop-pdf",
@@ -496,7 +496,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Edit",
-    route: "/crop-pdf"
+    route: "/upload/crop-pdf"
   },
   "sign-pdf": {
     id: "sign-pdf",
@@ -513,7 +513,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Edit",
-    route: "/sign-pdf"
+    route: "/upload/sign-pdf"
   },
   "watermark-pdf": {
     id: "watermark-pdf",
@@ -530,7 +530,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Edit",
-    route: "/watermark-pdf"
+    route: "/upload/watermark-pdf"
   },
   "add-image-pdf": {
     id: "add-image-pdf",
@@ -547,7 +547,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Edit",
-    route: "/add-image-to-pdf"
+    route: "/upload/add-image-pdf"
   },
   "delete-pages-pdf": {
     id: "delete-pages-pdf",
@@ -564,7 +564,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Organize",
-    route: "/delete-pdf-pages"
+    route: "/upload/delete-pages-pdf"
   },
   "ocr-pdf": {
     id: "ocr-pdf",
@@ -581,7 +581,7 @@ export const toolConfigs: Record<string, ToolConfig> = {
     iconBgColor: "bg-blue-50",
     iconBorderColor: "border-blue-200",
     category: "Edit",
-    route: "/ocr-pdf"
+    route: "/upload/ocr-pdf"
   }
 };
 

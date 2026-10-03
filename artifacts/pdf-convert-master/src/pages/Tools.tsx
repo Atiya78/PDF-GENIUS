@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { AuthErrorAction } from "@/components/AuthErrorAction";
 import { toolConfigs, type ToolConfig } from "@/lib/toolConfig";
-import { usePublicSeo } from "@/lib/usePublicSeo";
+import { useSeo } from "@/lib/useSeo";
 import { useToolPaused } from "@/lib/usePausedTools";
 import {
   Upload,
@@ -1039,7 +1039,12 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
 };
 
 export const Tools: React.FC = () => {
-  usePublicSeo("/tools");
+  useSeo({
+    title: "All PDF & Image Tools — Free Online",
+    description:
+      "Browse every free PDF Genius tool: convert, merge, split, compress, rotate, sign, OCR PDFs plus resize, crop and convert images. No signup, no watermarks.",
+    canonicalPath: "/tools",
+  });
   const [activeFilter, setActiveFilter] = useState("All Tools");
 
   const mainToolKeys = [
@@ -1096,8 +1101,6 @@ export const Tools: React.FC = () => {
       {/* Filter Buttons */}
       <div className="relative z-10 w-full py-8 px-4 sm:px-8 lg:px-20">
         <div className="max-w-screen-2xl mx-auto">
-          <h1 className="mb-3 text-center text-3xl font-bold text-gray-900">PDF and image tools</h1>
-          <p className="mb-8 text-center text-gray-600">Choose a tool to work with your file.</p>
           <div className="flex justify-center gap-2 sm:gap-3 flex-wrap pb-8">
             {filterButtons.map((buttonName, index) => (
               <Button

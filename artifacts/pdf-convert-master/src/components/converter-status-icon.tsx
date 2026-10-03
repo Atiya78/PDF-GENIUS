@@ -3,7 +3,7 @@ import syncingFile from "@/assets/lottie/syncing-file.json";
 import correctFile from "@/assets/lottie/correct-file.json";
 import discardedFile from "@/assets/lottie/discarded-file.json";
 import processingAnim from "@/assets/lottie/processing.json";
-import { useToolAnimation, TOOL_ANIMATION_LOADERS } from "@/components/tool-lottie-icon";
+import { TOOL_ANIMATIONS } from "@/components/tool-lottie-icon";
 
 /**
  * Stages every file converter shares:
@@ -32,16 +32,12 @@ export interface ConverterStatusIconProps {
   toolId?: string;
 }
 
-import { useToolProcessing } from "@/lib/toolProcessing";
-
 export function ConverterStatusIcon({
   status,
   size = 96,
   className,
   toolId,
 }: ConverterStatusIconProps) {
-  useToolProcessing(status === "processing");
-  const toolAnim = useToolAnimation(toolId, status === "upload");
   let animation: unknown;
   let loop: boolean;
 
@@ -56,12 +52,8 @@ export function ConverterStatusIcon({
     loop = true;
   } else {
     // upload prompt → prefer the picked tool's own animation, else generic loop
-    animation = toolId && TOOL_ANIMATION_LOADERS[toolId] ? toolAnim : syncingFile;
+    animation = (toolId && TOOL_ANIMATIONS[toolId]) || syncingFile;
     loop = true;
-  }
-
-  if (!animation) {
-    return <span aria-hidden="true" className={className} style={{ display: "inline-flex", width: size, height: size }} />;
   }
 
   return (

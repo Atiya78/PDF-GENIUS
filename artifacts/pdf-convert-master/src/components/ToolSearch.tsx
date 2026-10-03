@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { Search, X } from "lucide-react";
 import { PausedBadge } from "@/components/PausedBadge";
 import { Command as CommandPrimitive } from "cmdk";
-import { toolConfigs, getServerToolType, type ToolConfig } from "@/lib/toolConfig";
+import { toolConfigs, isHeroTool, getServerToolType, type ToolConfig } from "@/lib/toolConfig";
 import { usePausedTools } from "@/lib/usePausedTools";
 import { cn } from "@/lib/utils";
 
@@ -80,7 +80,7 @@ export const ToolSearch = ({
   }, [open]);
 
   const handleSelect = (tool: ToolConfig) => {
-    const target = tool.route;
+    const target = isHeroTool(tool.id) ? `/?tool=${tool.id}` : tool.route;
     setOpen(false);
     setQuery("");
     if (target) setLocation(target);

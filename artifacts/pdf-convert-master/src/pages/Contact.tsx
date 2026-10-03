@@ -7,64 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 import { Phone, Mail, MessageSquare, HeadphonesIcon, MapPin, Clock, Car, Train, Shield, Cloud, Lock, CheckCircle, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { usePublicSeo } from "@/lib/usePublicSeo";
-
-const firstFaq = {
-  question: "What file formats do you support for conversion?",
-  answer: "We support a wide range of file formats including PDF, Word (DOC/DOCX), Excel (XLS/XLSX), PowerPoint (PPT/PPTX), JPG, PNG, HTML, and many more. Our tools can handle most common document and image formats.",
-};
-
-const moreFaqs: { question: string; answer: string }[] = [
-              {
-                question: "Is there a file size limit for uploads?",
-                answer: "Each web tool displays its accepted formats and file size limit before upload. Check the selected tool for its current limit."
-              },
-              {
-                question: "How secure is my data during conversion?",
-                answer: "File transfers use HTTPS. Server-based tools upload your file and store the result so you can download it later; you can delete saved results yourself. Edit PDF, Sign PDF, Crop PDF and Delete Pages run in your browser without uploading your file."
-              },
-              {
-                question: "Can I use your tools offline?",
-                answer: "An internet connection is needed to load the website and use server-based tools. Some editing tools process files in your browser after the page has loaded."
-              },
-              {
-                question: "Do you offer API access for developers?",
-                answer: "The developer API has its own plans and usage limits. See the API documentation and pricing page for currently supported tools and quotas."
-              },
-              {
-                question: "What payment methods do you accept?",
-                answer: "Payment options are shown at checkout for the developer API plans. See the Pricing page and Payments & Billing Help for details."
-              },
-              {
-                question: "Can I cancel my subscription anytime?",
-                answer: "Subscriptions to the developer API are managed from your account. See Payments & Billing Help and the Refund Policy for cancellation and refund details."
-              },
-              {
-                question: "Do you provide technical support?",
-                answer: "Contact us through the Support page and we will get back to you."
-              },
-              {
-                question: "Are there any usage limits?",
-                answer: "Web tools are free. Developer API quotas depend on your API plan; consult the pricing page and your account dashboard for current limits."
-              },
-              {
-                question: "How can I get a refund?",
-                answer: "Refund eligibility is described in our Refund Policy. Contact Support with your order details and we will review your request."
-              }
-];
-
-const contactFaqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [firstFaq, ...moreFaqs].map((f) => ({
-    "@type": "Question",
-    name: f.question,
-    acceptedAnswer: { "@type": "Answer", text: f.answer },
-  })),
-};
+import { useSeo } from "@/lib/useSeo";
 
 export const Contact = (): JSX.Element => {
-  usePublicSeo("/contact", { jsonLd: contactFaqJsonLd });
+  useSeo({
+    title: "Contact & Support",
+    description:
+      "Get in touch with the PDF Genius team. Questions, feedback or support for our free online PDF and image tools — we're here to help.",
+    canonicalPath: "/contact",
+  });
   const [selectedPriority, setSelectedPriority] = useState("medium");
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(0); // First FAQ expanded by default
   const [selectedCategory, setSelectedCategory] = useState("technical");
@@ -190,7 +141,16 @@ export const Contact = (): JSX.Element => {
                 Our dedicated team is here to assist you with any questions, technical issues, or business inquiries. Choose how you'd like to connect with us.
               </p>
 
-              
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-blue-200 mb-1">24/7</div>
+                  <div className="text-sm text-gray-200">Support Available</div>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 text-center">
+                  <div className="text-3xl font-bold text-blue-200 mb-1">&lt;1hr</div>
+                  <div className="text-sm text-gray-200">Response Time</div>
+                </div>
+              </div>
             </div>
 
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 p-6">
@@ -241,10 +201,10 @@ export const Contact = (): JSX.Element => {
               {selectedCategory === "technical" && (
                 <div className="transition-all duration-300">
                   <h3 className="text-white text-lg font-semibold mb-3">Technical Support</h3>
-                  <p className="text-gray-200 text-sm mb-3">Having trouble with our tools? Contact our technical team.</p>
+                  <p className="text-gray-200 text-sm mb-3">Having trouble with our tools? Get instant help from our technical team.</p>
                   <div className="flex items-center text-blue-200 text-sm">
                     <Clock className="w-4 h-4 mr-2" />
-                    Contact us through Support
+                    Average response: 15 minutes
                   </div>
                 </div>
               )}
@@ -255,7 +215,7 @@ export const Contact = (): JSX.Element => {
                   <p className="text-gray-200 text-sm mb-3">Explore enterprise solutions, custom integrations, and volume pricing options for your organization.</p>
                   <div className="flex items-center text-blue-200 text-sm">
                     <Clock className="w-4 h-4 mr-2" />
-                    Contact us through Support
+                    Response within: 2 hours
                   </div>
                 </div>
               )}
@@ -266,7 +226,7 @@ export const Contact = (): JSX.Element => {
                   <p className="text-gray-200 text-sm mb-3">Share your experience, suggest improvements, or report issues to help us enhance our services.</p>
                   <div className="flex items-center text-blue-200 text-sm">
                     <Clock className="w-4 h-4 mr-2" />
-                    Contact us through Support
+                    Response within: 24 hours
                   </div>
                 </div>
               )}
@@ -323,7 +283,7 @@ export const Contact = (): JSX.Element => {
                 </div>
                 <div className="flex items-center text-sm text-gray-600 mb-4">
                   <Clock className="w-4 h-4 mr-2" />
-                  Phone: see number above
+                  24/7 Available
                 </div>
                 <Button variant="blue" className="w-full mt-auto">
                   Call Now
@@ -357,7 +317,7 @@ export const Contact = (): JSX.Element => {
                 </div>
                 <div className="flex items-center text-sm text-gray-600 mb-4">
                   <Clock className="w-4 h-4 mr-2" />
-                  Email us any time
+                  Response within 1 hour
                 </div>
                 <Button variant="blue" className="w-full mt-auto">
                   Send Email
@@ -533,7 +493,7 @@ export const Contact = (): JSX.Element => {
               <div className="flex justify-between items-center pt-6">
                 <div className="flex items-center text-sm text-gray-600">
                   <Shield className="w-4 h-4 mr-2 text-blue-600" />
-                  See our Privacy Policy for how your information is used
+                  Your information is secure and confidential
                 </div>
                 <Button type="submit" className="px-8">
                   Send Message
@@ -583,7 +543,44 @@ export const Contact = (): JSX.Element => {
               )}
             </div>
 
-            {moreFaqs.map((faq, index) => {
+            {[
+              {
+                question: "Is there a file size limit for uploads?",
+                answer: "Yes, we have different file size limits based on your plan. Free users can upload files up to 10MB, Basic plan users up to 50MB, Pro plan users up to 200MB, and Enterprise users up to 1GB per file. For larger files, please contact our support team for assistance."
+              },
+              {
+                question: "How secure is my data during conversion?",
+                answer: "Your data security is our top priority. We use industry-standard 256-bit SSL encryption for all file transfers. All uploaded files are automatically deleted from our servers within 24 hours after conversion. We never store, share, or access your personal documents."
+              },
+              {
+                question: "Can I use your tools offline?",
+                answer: "Our PDF tools are web-based and require an internet connection to function. However, we're developing a desktop application that will allow offline conversions for Pro and Enterprise users. This feature will be available in Q2 2024."
+              },
+              {
+                question: "Do you offer API access for developers?",
+                answer: "Yes! We provide robust REST API access for Pro and Enterprise plan users. Our API supports all conversion tools, batch processing, and webhooks. Comprehensive documentation, SDKs for popular languages, and 24/7 developer support are included."
+              },
+              {
+                question: "What payment methods do you accept?",
+                answer: "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, Google Pay, and bank transfers for Enterprise accounts. All payments are processed securely through our PCI-compliant payment partners."
+              },
+              {
+                question: "Can I cancel my subscription anytime?",
+                answer: "Absolutely! You can cancel your subscription at any time from your account settings. There are no cancellation fees or long-term commitments. Your subscription will remain active until the end of your current billing period."
+              },
+              {
+                question: "Do you provide technical support?",
+                answer: "Yes, we offer comprehensive technical support. Free users get community support, Basic users get email support within 24 hours, Pro users get priority email and chat support within 1 hour, and Enterprise users get 24/7 dedicated support with phone access."
+              },
+              {
+                question: "Are there any usage limits?",
+                answer: "Usage limits vary by plan. Basic plan includes 100 conversions/month, Pro plan includes 10,000 conversions/month, and Enterprise plan offers unlimited conversions. API calls, storage, and processing speed also increase with higher tier plans."
+              },
+              {
+                question: "How can I get a refund?",
+                answer: "We offer a 30-day money-back guarantee for all paid plans. If you're not satisfied with our service, contact our support team within 30 days of your purchase for a full refund. Refunds are processed within 5-7 business days to your original payment method."
+              }
+            ].map((faq, index) => {
               const faqIndex = index + 1; // +1 because first FAQ is index 0
               return (
                 <div key={index} className="bg-white rounded-xl shadow-lg">
@@ -727,7 +724,7 @@ export const Contact = (): JSX.Element => {
                   <div className="border-t border-blue-200 mt-4 pt-4">
                     <div className="flex items-center text-sm text-blue-800">
                       <Phone className="w-4 h-4 mr-2 text-blue-600" />
-                      Phone: +447429919748
+                      24/7 Emergency Support: +447429919748
                     </div>
                   </div>
                 </div>

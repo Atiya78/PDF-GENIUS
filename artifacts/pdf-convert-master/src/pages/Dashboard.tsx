@@ -395,7 +395,7 @@ export const Dashboard: React.FC = () => {
         </aside>
 
         {/* Main Content */}
-        <div className="flex-1 p-6">
+        <main className="flex-1 p-6">
           <div className="max-w-7xl mx-auto">
             {/* Welcome Section */}
             <div className="mb-6 p-8 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-600 to-blue-600 text-white relative overflow-hidden">
@@ -516,7 +516,7 @@ export const Dashboard: React.FC = () => {
               </div>
             </Card>
           </div>
-        </div>
+        </main>
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-import { useInToolLanding } from "@/components/upload/ToolLandingContext";
 import React from "react";
 import { Link } from "wouter";
 import { Clock, RefreshCw } from "lucide-react";
@@ -8,7 +7,6 @@ import { toolConfigs } from "@/lib/toolConfig";
 export const RestoreDocumentUpload: React.FC = () => {
   const cfg = toolConfigs["restore-document"];
 
-  const Heading = useInToolLanding() ? "h2" : "h1";
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 flex items-start justify-center">
       <div className="w-full max-w-lg mx-auto px-4 pt-12">
@@ -20,9 +18,9 @@ export const RestoreDocumentUpload: React.FC = () => {
             <Clock className="w-3.5 h-3.5" />
             Coming soon
           </span>
-          <Heading className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Document Restore
-          </Heading>
+          </h1>
           <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
             {cfg?.comingSoonNote ??
               "Document Restore is coming soon. Check back shortly."}

@@ -65,7 +65,7 @@
 - [Scanner download "cannot open"](scanner-download-extension.md) — StoredFileEntry.name has NO extension (it's in outputFormat); Files-tab download must append it or Android writes octet-stream/extensionless → cannot open. Don't validate pdf-lib in the sandbox.
 - [RevenueCat seed reconcile](revenuecat-seed-reconcile.md) — RC store-app identifier (package_name/bundle_id) is mutable via updateApp; ensureApps reconciles drift on re-seed; plain re-seed alone keeps stale id.
 - [EAS build in main agent](eas-build-main-agent.md) — `eas build` git step hits the sandbox git-write block; run with `EAS_NO_VCS=1` to tar the workdir instead.
-- [Data Safety + Privacy alignment](data-safety-privacy.md) — native analytics is first-party; website Ads/Tawk disclosures are separate; keep Play CSV and mobile privacy facts aligned.
+- [Data Safety + Privacy alignment](data-safety-privacy.md) — Play Data Safety declared baseline + CSV uses Google's 5-col import schema; analytics is FIRST-PARTY only (no 3rd-party SDKs); keep CSV/PrivacyPolicy/DataSafety page in lockstep.
 - [RevenueCat IAP (mobile)](revenuecat-iap.md) — native SDK behind purchasesClient.ts + .web.ts stub (rn-purchases breaks web bundle); type-only import in revenuecat.tsx; sync is non-clobbering, idempotent credits, runs only on purchase/restore not login.
 - [pdf-lib embedJpg JFIF](pdf-lib-embedjpg-jfif.md) — embedJpg throws "SOI not found" on headerless (sharp) JPEGs; re-encode via sharp before embed; normalize non-jpeg to PNG.
 - [Web PDF placement-box drag](pdf-placement-drag-web.md) — drag must use window-level pointer listeners + latest-ref (not element-scoped/setPointerCapture); verify e2e with tall viewport + scrollIntoView, test move & resize separately.
@@ -87,5 +87,3 @@
 - [GitHub push path](github-push-path.md) — Git pane token broken; push via GITHUB_PERSONAL_ACCESS_TOKEN secret + GIT_ASKPASS; push protection blocks committed secrets (filter-branch fix).
 - [Hidden admin dashboard](admin-dashboard.md) — /admin + env-cred admin-scoped JWT (never give user tokens a scope); tool pause via tool_settings, new conversion endpoints must check isToolPaused.
 - [Compress Video (MP4) levels](compress-video-levels.md) — 3-level target-size two-pass; ratios lockstep web/mobile/backend (0.11/0.226/0.342); audio=20% share; corrupt-input friendly error; done-screen failure gates on status `failed`.
-- [Marketing honesty](marketing-honesty.md) — Google Ads-facing copy must use verified facts; no invented metrics, reviews, guarantees, or privacy/support promises.
-- [Tawk support constraints](tawk-support-constraints.md) — delayed website chat is owner-required; verified identity needs server HMAC; customStyle cannot set dynamic position.
