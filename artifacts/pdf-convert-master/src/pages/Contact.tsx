@@ -256,7 +256,7 @@ export const Contact = (): JSX.Element => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {/* Phone Support */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full">
               <div className="bg-blue-600 bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
@@ -321,39 +321,6 @@ export const Contact = (): JSX.Element => {
                 </div>
                 <Button variant="blue" className="w-full mt-auto">
                   Send Email
-                </Button>
-              </div>
-            </div>
-
-            {/* Live Chat */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full">
-              <div className="bg-blue-600 bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                  <MessageSquare className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">Live Chat</h3>
-                <p className="text-blue-100 text-sm">Chat with our support team in real-time</p>
-              </div>
-              <div className="p-6 flex-grow flex flex-col">
-                <div className="mb-4 flex-grow">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">Contact Info:</span>
-                  </div>
-                  <p className="text-sm font-medium">Chat widget, bottom right</p>
-                </div>
-                <div className="flex items-center text-sm text-gray-600 mb-4">
-                  <Clock className="w-4 h-4 mr-2" />
-                  Instant response
-                </div>
-                <Button
-                  variant="blue"
-                  className="w-full mt-auto"
-                  onClick={() => {
-                    const tawk = (window as any).Tawk_API;
-                    if (tawk?.maximize) tawk.maximize();
-                  }}
-                >
-                  Start Chat
                 </Button>
               </div>
             </div>

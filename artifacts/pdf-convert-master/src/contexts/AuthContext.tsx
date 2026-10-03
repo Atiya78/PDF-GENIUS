@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User } from "@workspace/db";
-import { setTawkVisitor } from "@/lib/tawk";
 
 interface AuthContextType {
   user: User | null;
@@ -38,18 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
     }
   }, []);
-
-  // Keep the Tawk.to support-chat visitor identity in sync with auth state so
-  // agents see the logged-in user's name & email. Anonymous visitors (no user
-  // once loading settles) are left/cleared as anonymous.
-  useEffect(() => {
-    if (loading) return;
-    if (user) {
-      setTawkVisitor({ name: user.name || user.email, email: user.email });
-    } else {
-      setTawkVisitor(null);
-    }
-  }, [user, loading]);
 
   const checkAuthStatus = async (authToken: string) => {
     try {

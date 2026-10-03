@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Search, MessageCircle, Mail, Phone, Play, CheckCircle, BookOpen, Settings, CreditCard, Code, FileText, Wrench, Users, TrendingUp, Server, Clock, Target, Award, Zap } from "lucide-react";
+import { Search, Mail, Phone, Play, CheckCircle, BookOpen, Settings, CreditCard, Code, FileText, Wrench, Users, TrendingUp, Server, Clock, Target, Award, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -78,14 +78,6 @@ export const Support = (): JSX.Element => {
 
   // Help options
   const helpOptions = [
-    {
-      title: "Live Chat",
-      description: "Get instant help from our support team",
-      icon: MessageCircle,
-      color: "bg-blue-500",
-      action: "Start Chat",
-      availability: "24/7 Support"
-    },
     {
       title: "Email Support",
       description: "Send us detailed questions via email",
@@ -604,12 +596,6 @@ export const Support = (): JSX.Element => {
         </div>
       </section>
 
-      {/* Live Chat Widget */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <Button className="rounded-full w-14 h-14 bg-blue-600 hover:bg-blue-700 shadow-lg">
-          <MessageCircle className="w-6 h-6" />
-        </Button>
-      </div>
     </div>
   );
 };
