@@ -1,5 +1,10 @@
-# Railway config-as-code. Only sets which paths trigger an auto-deploy — your
-# build/start commands and other settings stay as configured in the dashboard.
+# Railway config-as-code. Build/start commands and Debian Trixie Chrome
+# dependencies are defined in the repository's railpack.json.
+# Runtime aptPackages deliberately replaces Railpack's generated Puppeteer list
+# (no "..."), which includes obsolete Debian package names. Build dependencies
+# extend the generated list so native module build requirements are preserved.
+# Remove stale RAILPACK_BUILD_APT_PACKAGES / RAILPACK_DEPLOY_APT_PACKAGES service
+# overrides if present; package lists are maintained in railpack.json instead.
 #
 # The production server (@workspace/api-server) serves the web app's prebuilt
 # output (artifacts/pdf-convert-master/dist/public), so a deploy MUST trigger
