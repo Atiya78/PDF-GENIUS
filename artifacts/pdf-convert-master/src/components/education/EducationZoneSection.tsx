@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, GraduationCap, Layers, ListChecks } from "lucide-react";
+import { ArrowRight, Layers, ListChecks } from "lucide-react";
 
 const cards = [
   { icon: ListChecks, title: "Quiz Generator", text: "Create MCQ, True/False and short-answer quizzes from your PDF.", href: "/education/quiz-generator", id: "quiz" },
@@ -22,9 +22,6 @@ export function EducationZoneSection(): JSX.Element {
     <section ref={ref} aria-labelledby="education-zone-heading" className="w-full px-4 py-12 sm:px-6 lg:px-8" data-testid="section-education-zone">
       <div className={`mx-auto max-w-6xl rounded-3xl bg-gradient-to-br from-[#fff1f0] via-white to-[#fff7f1] p-6 ring-1 ring-[#f7433d]/10 transition-all duration-700 motion-reduce:transition-none sm:p-10 ${shown ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}>
         <div className="text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1 text-xs font-semibold text-[#d9322c] shadow-sm ring-1 ring-[#f7433d]/20">
-            <GraduationCap className="h-4 w-4" aria-hidden="true" /> NEW · For Students
-          </span>
           <h2 id="education-zone-heading" className="mt-4 font-['Poppins'] text-3xl font-bold text-gray-900 sm:text-4xl">Education Zone — Study Smarter with AI</h2>
           <p className="mx-auto mt-3 max-w-2xl text-base text-gray-600 sm:text-lg">Turn any lecture notes or textbook PDF into quizzes and flashcards in seconds.</p>
         </div>
