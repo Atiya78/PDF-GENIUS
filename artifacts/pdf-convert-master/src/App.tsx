@@ -1,5 +1,7 @@
-import { Component, lazy, Suspense, type ReactNode } from "react";
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Component, lazy, Suspense, type ComponentType, type ReactNode } from "react";
+import { Switch, Route, Redirect, useSearch, Router as WouterRouter } from "wouter";
+import { ToolLanding } from "@/components/ToolLanding";
+import { toolPages, legacyToolRedirects } from "@/config/toolPages";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -132,6 +134,45 @@ class LazyErrorBoundary extends Component<
     }
     return this.props.children;
   }
+}
+
+const toolComponents: Record<string, ComponentType> = {
+  "pdf-to-word": PdfToWordUpload,
+  "word-to-pdf": WordToPdfUpload,
+  "pdf-to-excel": PdfToExcelUpload,
+  "excel-to-pdf": ExcelToPdfUpload,
+  "powerpoint-to-pdf": PowerPointToPdfUpload,
+  "pdf-to-powerpoint": PdfToPowerPointUpload,
+  "pdf-to-images": PdfToImagesUpload,
+  "images-to-pdf": ImagesToPdfUpload,
+  "html-to-pdf": HtmlToPdfUpload,
+  "merge-pdfs": MergePdfsUpload,
+  "split-pdf": SplitPdfUpload,
+  "compress-pdf": CompressPdfUpload,
+  "edit-pdf": EditPdfUpload,
+  "rotate-pdf": RotatePdfUpload,
+  "crop-pdf": CropPdfUpload,
+  "sign-pdf": SignPdfUpload,
+  "watermark-pdf": WatermarkPdfUpload,
+  "add-image-pdf": AddImagePdfUpload,
+  "delete-pages-pdf": DeletePagesPdfUpload,
+  "ocr-pdf": OcrPdfUpload,
+  "compress-images": CompressImageUpload,
+  "convert-image-format": ConvertImageFormatUpload,
+  "crop-images": CropImageUpload,
+  "resize-images": ResizeImageUpload,
+  "rotate-images": RotateImageUpload,
+  "upscale-images": UpscaleImageUpload,
+  "remove-background": RemoveBackgroundUpload,
+  "lock-pdf": LockPdfUpload,
+  "unlock-pdf": UnlockPdfUpload,
+  "compress-video": CompressVideoUpload,
+  "restore-document": RestoreDocumentUpload,
+};
+
+function LegacyRedirect({ to }: { to: string }) {
+  const search = useSearch();
+  return <Redirect to={search ? `${to}?${search}` : to} replace />;
 }
 
 function Router() {
@@ -311,196 +352,24 @@ function Router() {
         </ProtectedRoute>
       </Route>
 
-      {/* Upload pages for tools */}
-      <Route path="/upload/word-to-pdf">
-        <DynamicLayout>
-          <WordToPdfUpload />
-        </DynamicLayout>
-      </Route>
+      {/* Canonical clean tool URLs */}
+      {toolPages.map((p) => {
+        const Tool = toolComponents[p.toolId];
+        return (
+          <Route key={p.slug} path={`/${p.slug}`}>
+            <DynamicLayout>
+              <ToolLanding page={p} Tool={Tool} />
+            </DynamicLayout>
+          </Route>
+        );
+      })}
 
-      <Route path="/upload/restore-document">
-        <DynamicLayout>
-          <RestoreDocumentUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/lock-pdf">
-        <DynamicLayout>
-          <LockPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/unlock-pdf">
-        <DynamicLayout>
-          <UnlockPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/pdf-to-word">
-        <DynamicLayout>
-          <PdfToWordUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/pdf-to-excel">
-        <DynamicLayout>
-          <PdfToExcelUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/merge-pdfs">
-        <DynamicLayout>
-          <MergePdfsUpload />
-        </DynamicLayout>
-      </Route>
-
-      {/* New PDF conversion tools */}
-      <Route path="/upload/excel-to-pdf">
-        <DynamicLayout>
-          <ExcelToPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/powerpoint-to-pdf">
-        <DynamicLayout>
-          <PowerPointToPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/pdf-to-powerpoint">
-        <DynamicLayout>
-          <PdfToPowerPointUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/pdf-to-images">
-        <DynamicLayout>
-          <PdfToImagesUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/images-to-pdf">
-        <DynamicLayout>
-          <ImagesToPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/html-to-pdf">
-        <DynamicLayout>
-          <HtmlToPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      {/* PDF document management tools */}
-      <Route path="/upload/edit-pdf">
-        <DynamicLayout>
-          <EditPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/split-pdf">
-        <DynamicLayout>
-          <SplitPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/compress-pdf">
-        <DynamicLayout>
-          <CompressPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/compress-video">
-        <DynamicLayout>
-          <CompressVideoUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/rotate-pdf">
-        <DynamicLayout>
-          <RotatePdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      {/* PDF Editor tools (client-side) */}
-      <Route path="/upload/crop-pdf">
-        <DynamicLayout>
-          <CropPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/sign-pdf">
-        <DynamicLayout>
-          <SignPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/watermark-pdf">
-        <DynamicLayout>
-          <WatermarkPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/add-image-pdf">
-        <DynamicLayout>
-          <AddImagePdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/delete-pages-pdf">
-        <DynamicLayout>
-          <DeletePagesPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/ocr-pdf">
-        <DynamicLayout>
-          <OcrPdfUpload />
-        </DynamicLayout>
-      </Route>
-
-      {/* Image editing tools */}
-      <Route path="/upload/resize-image">
-        <DynamicLayout>
-          <ResizeImageUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/crop-image">
-        <DynamicLayout>
-          <CropImageUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/rotate-image">
-        <DynamicLayout>
-          <RotateImageUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/convert-image-format">
-        <DynamicLayout>
-          <ConvertImageFormatUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/compress-image">
-        <DynamicLayout>
-          <CompressImageUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/upscale-image">
-        <DynamicLayout>
-          <UpscaleImageUpload />
-        </DynamicLayout>
-      </Route>
-
-      <Route path="/upload/remove-background">
-        <DynamicLayout>
-          <RemoveBackgroundUpload />
-        </DynamicLayout>
-      </Route>
+      {/* Legacy /upload/* URLs redirect (client-side, replace) to the clean URLs */}
+      {Object.entries(legacyToolRedirects).map(([from, to]) => (
+        <Route key={from} path={from}>
+          <LegacyRedirect to={to} />
+        </Route>
+      ))}
 
       <Route path="/image-editor/resize">
         <DynamicLayout>

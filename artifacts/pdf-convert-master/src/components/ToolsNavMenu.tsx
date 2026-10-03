@@ -18,10 +18,10 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { toolConfigs, isHeroTool, getServerToolType } from "@/lib/toolConfig";
+import { toolConfigs, getServerToolType } from "@/lib/toolConfig";
 import { useToolPaused } from "@/lib/usePausedTools";
 import { Menu } from "lucide-react";
-import { useLocation } from "wouter";
+import { Link } from "wouter";
 import { PausedBadge } from "@/components/PausedBadge";
 
 // Tools grouped for the navbar dropdowns
@@ -50,22 +50,20 @@ const IMAGE_TOOLS = [
 ];
 
 const triggerClass =
-  "font-medium text-gray-600 text-base leading-6 bg-transparent hover:bg-transparent hover:text-gray-900 focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-gray-900 px-0 h-auto";
+  "font-medium text-gray-600 text-base leading-6 bg-transparent hover:bg-transparent hover:text-gray-900 focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-gray-900 px-0 min-h-[44px] h-auto focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d92f29]";
 
 
 const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
-  const [, setLocation] = useLocation();
   const tool = toolConfigs[id];
   const isPaused = useToolPaused(tool ? getServerToolType(tool) : undefined);
   if (!tool) return null;
   const Icon = tool.icon;
-  const target = isHeroTool(id) ? `/?tool=${id}` : tool.route;
+  const target = tool.route;
   return (
     <NavigationMenuLink asChild>
-      <button
-        type="button"
-        onClick={() => target && setLocation(target)}
-        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-blue-50 ${isPaused ? "opacity-70" : ""}`}
+      <Link
+        href={target || "/tools"}
+        className={`flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#fff5f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d92f29] ${isPaused ? "opacity-70" : ""}`}
         data-testid={`nav-tool-${tool.id}`}
       >
         <span
@@ -79,20 +77,21 @@ const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
         {isPaused && (
           <PausedBadge className="ml-auto shrink-0" testId={`nav-tool-paused-${tool.id}`} />
         )}
-      </button>
+        {tool.comingSoon && (
+          <span className="ml-auto shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Coming soon</span>
+        )}
+      </Link>
     </NavigationMenuLink>
   );
 };
 
 const ColumnHeading = ({ children }: { children: React.ReactNode }): JSX.Element => (
-  <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+  <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-gray-600">
     {children}
   </p>
 );
 
 export const ToolsNavDropdowns = (): JSX.Element => {
-  const [, setLocation] = useLocation();
-
   return (
     <>
       {/* PDF Converter */}
@@ -121,14 +120,13 @@ export const ToolsNavDropdowns = (): JSX.Element => {
           </div>
           <div className="border-t border-gray-100 px-4 py-3">
             <NavigationMenuLink asChild>
-              <button
-                type="button"
-                onClick={() => setLocation("/tools")}
-                className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700"
+              <Link
+                href="/tools"
+                className="inline-flex min-h-[44px] items-center text-sm font-semibold text-[#c62d27] transition-colors hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d92f29]"
                 data-testid="nav-view-all-tools"
               >
                 View all tools →
-              </button>
+              </Link>
             </NavigationMenuLink>
           </div>
         </NavigationMenuContent>
@@ -180,20 +178,16 @@ const MobileToolButton = ({
   id: string;
   onNavigate: () => void;
 }): JSX.Element | null => {
-  const [, setLocation] = useLocation();
   const tool = toolConfigs[id];
   const isPaused = useToolPaused(tool ? getServerToolType(tool) : undefined);
   if (!tool) return null;
   const Icon = tool.icon;
-  const target = isHeroTool(id) ? `/?tool=${id}` : tool.route;
+  const target = tool.route;
   return (
-    <button
-      type="button"
-      onClick={() => {
-        if (target) setLocation(target);
-        onNavigate();
-      }}
-      className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-blue-50 ${isPaused ? "opacity-70" : ""}`}
+    <Link
+      href={target || "/tools"}
+      onClick={onNavigate}
+      className={`flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-[#fff5f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d92f29] ${isPaused ? "opacity-70" : ""}`}
       data-testid={`mobile-nav-tool-${tool.id}`}
     >
       <span
@@ -205,7 +199,10 @@ const MobileToolButton = ({
       {isPaused && (
         <PausedBadge className="ml-auto shrink-0" testId={`mobile-nav-tool-paused-${tool.id}`} />
       )}
-    </button>
+      {tool.comingSoon && (
+        <span className="ml-auto shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">Coming soon</span>
+      )}
+    </Link>
   );
 };
 
@@ -221,14 +218,9 @@ export const MobileNav = ({
   trailingItems,
   footer,
 }: MobileNavProps): JSX.Element => {
-  const [, setLocation] = useLocation();
   const [open, setOpen] = useState(false);
 
   const close = () => setOpen(false);
-  const go = (href: string) => {
-    if (href.startsWith("/")) setLocation(href);
-    close();
-  };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -236,7 +228,7 @@ export const MobileNav = ({
         <button
           type="button"
           aria-label="Open menu"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50"
           data-testid="button-mobile-menu"
         >
           <Menu className="h-5 w-5" />
@@ -253,50 +245,50 @@ export const MobileNav = ({
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto px-3 py-4">
-          <button
-            type="button"
-            onClick={() => go(homeItem.href)}
-            className="w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700 hover:bg-gray-50"
+          <Link
+            href={homeItem.href}
+            onClick={close}
+            className="flex min-h-[44px] w-full items-center rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d92f29]"
             data-testid="mobile-nav-home"
           >
             {homeItem.name}
-          </button>
+          </Link>
 
           <Accordion type="multiple" className="w-full">
             <AccordionItem value="pdf" className="border-none">
-              <AccordionTrigger className="px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="min-h-[44px] px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d92f29]">
                 PDF Converter
               </AccordionTrigger>
               <AccordionContent className="pb-1">
-                <p className="px-3 pb-1 pt-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <p className="px-3 pb-1 pt-1 text-xs font-semibold uppercase tracking-wide text-gray-600">
                   Convert from PDF
                 </p>
                 {PDF_FROM.map((id) => (
                   <MobileToolButton key={id} id={id} onNavigate={close} />
                 ))}
-                <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-600">
                   Convert to PDF
                 </p>
                 {PDF_TO.map((id) => (
                   <MobileToolButton key={id} id={id} onNavigate={close} />
                 ))}
-                <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-600">
                   Edit
                 </p>
                 <MobileToolButton id="edit-pdf" onNavigate={close} />
-                <button
-                  type="button"
-                  onClick={() => go("/tools")}
-                  className="mt-1 px-3 py-2 text-left text-sm font-semibold text-blue-600 hover:text-blue-700"
+                <Link
+                  href="/tools"
+                  onClick={close}
+                  className="mt-1 flex min-h-[44px] items-center px-3 py-2 text-left text-sm font-semibold text-[#c62d27] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d92f29]"
                   data-testid="mobile-nav-view-all-tools"
                 >
                   View all tools →
-                </button>
+                </Link>
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="pdf-editor" className="border-none">
-              <AccordionTrigger className="px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="min-h-[44px] px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d92f29]">
                 PDF Editor
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -307,7 +299,7 @@ export const MobileNav = ({
             </AccordionItem>
 
             <AccordionItem value="image" className="border-none">
-              <AccordionTrigger className="px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="min-h-[44px] px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#d92f29]">
                 Image Tools
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -319,15 +311,15 @@ export const MobileNav = ({
           </Accordion>
 
           {trailingItems.map((item) => (
-            <button
+            <Link
               key={item.name}
-              type="button"
-              onClick={() => go(item.href)}
-              className="w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700 hover:bg-gray-50"
+              href={item.href}
+              onClick={close}
+              className="flex min-h-[44px] w-full items-center rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[#d92f29]"
               data-testid={`mobile-nav-${item.name.toLowerCase()}`}
             >
               {item.name}
-            </button>
+            </Link>
           ))}
         </div>
 

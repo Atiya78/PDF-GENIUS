@@ -1,4 +1,5 @@
 import type { Express, Request } from "express";
+import { supportChatIdentity } from "./lib/supportChat";
 import { createServer, type Server } from "http";
 import multer from "multer";
 import { randomUUID } from "crypto";
@@ -3870,6 +3871,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Protected route: Get user profile
   app.get("/api/user", authenticateUser, getCurrentUser);
   app.get("/api/auth/user", authenticateUser, getCurrentUser); // alias
+  app.get("/api/auth/chat-identity", authenticateUser, supportChatIdentity);
 
   // Profile management (protected)
   app.patch("/api/auth/profile", authenticateUser, updateProfile);

@@ -22,9 +22,9 @@ export const BuyCredits: React.FC = () => {
       </div>
 
       {/* Main Content — credits only, nothing else */}
-      <main className="max-w-3xl mx-auto px-6 py-8">
+      <div className="max-w-3xl mx-auto px-6 py-8">
         <CreditPurchaseCard />
-      </main>
+      </div>
     </div>
   );
 };

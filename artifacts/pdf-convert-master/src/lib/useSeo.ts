@@ -14,7 +14,7 @@ const SITE_URL = "https://pdfgenius.app";
 const BRAND = "PDF Genius";
 const DEFAULT_TITLE = `${BRAND} — Free Online PDF Converter & Editor, No Signup`;
 const DEFAULT_DESCRIPTION =
-  "Convert, edit, merge, split & compress PDFs free in your browser. 100% free — no signup, no email, no credit card. Fast, secure, unlimited PDF tools.";
+  "Convert, edit, merge, split & compress PDFs with free web tools. No signup required. Developer API available separately.";
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 export interface SeoOptions {
@@ -32,6 +32,8 @@ export interface SeoOptions {
   noindex?: boolean;
   /** Optional JSON-LD structured data object(s) for this page. */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** When true the hook does nothing (a parent, e.g. ToolLanding, owns the metadata). */
+  skip?: boolean;
 }
 
 function setMetaByName(name: string, content: string) {
@@ -92,9 +94,10 @@ function toAbsolute(pathOrUrl: string): string {
 
 export function useSeo(options: SeoOptions = {}) {
   const [location] = useLocation();
-  const { title, description, canonicalPath, image, noindex, jsonLd } = options;
+  const { title, description, canonicalPath, image, noindex, jsonLd, skip } = options;
 
   useEffect(() => {
+    if (skip) return;
     const fullTitle = !title
       ? DEFAULT_TITLE
       : title.includes(BRAND)
@@ -121,5 +124,5 @@ export function useSeo(options: SeoOptions = {}) {
     setMetaByName("robots", noindex ? "noindex,nofollow" : "index,follow");
 
     setJsonLd(jsonLd);
-  }, [title, description, canonicalPath, image, noindex, jsonLd, location]);
+  }, [title, description, canonicalPath, image, noindex, jsonLd, location, skip]);
 }

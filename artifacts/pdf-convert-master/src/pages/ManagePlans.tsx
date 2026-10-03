@@ -1,7 +1,9 @@
+import { useSeo } from "@/lib/useSeo";
 import React from "react";
 import { PlansManager } from "@/components/PlansManager";
 
 export const ManagePlans: React.FC = () => {
+  useSeo({ title: "Manage Plans", noindex: true });
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Page Title Section */}
@@ -19,9 +21,9 @@ export const ManagePlans: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-20 py-8">
+      <div className="max-w-7xl mx-auto px-20 py-8">
         <PlansManager />
-      </main>
+      </div>
     </div>
   );
 };

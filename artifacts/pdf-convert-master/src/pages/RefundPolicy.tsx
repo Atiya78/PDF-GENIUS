@@ -1,3 +1,4 @@
+import { usePublicSeo } from "@/lib/usePublicSeo";
 import React from "react";
 import {
   Calendar,
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 
 export const RefundPolicy = (): JSX.Element => {
+  usePublicSeo("/refund-policy");
   const sections = [
     { icon: RefreshCw, text: "Overview", id: "overview" },
     { icon: Building2, text: "Who You Buy From", id: "merchant-of-record" },
@@ -96,7 +98,7 @@ export const RefundPolicy = (): JSX.Element => {
           </aside>
 
           {/* Main Content Area */}
-          <main className="flex-1">
+          <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm p-8">
               <div className="prose prose-gray max-w-none space-y-12">
                 {/* Overview */}
@@ -335,7 +337,7 @@ export const RefundPolicy = (): JSX.Element => {
                 </section>
               </div>
             </div>
-          </main>
+          </div>
         </div>
       </div>
     </div>

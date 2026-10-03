@@ -26,3 +26,17 @@ uri = "file://docs/PDF-Genius-TestSprite-PRD.md"
 type = "text"
 title = "PDF Genius — TestSprite PRD"
 logical_id = "1a15123b-f892-40a6-987f-6e7c5607fec1"
+
+[[outputs]]
+id = "dVYDoB5kybTFmQSp7zFRK"
+uri = "file://reports/pdf-genius-website-update.html"
+type = "html"
+title = "PDF Genius — Full Website Update Report"
+description = "Six-phase summary, full changed-file list, verified tool processing classification, Lighthouse comparison, owner TODOs and release checklist."
+logical_id = "e5e8b199-5f8c-4532-87cc-42cef9f759b3"
+content_hash = "sha256:98a4ddb7e954704e823b93337786c9523691c1ae22042a39a1290a7e6f0bf2b3"
+size = 17096
+mtime_ms = 1791030181654
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:033d96ef-b973-4c8b-b8c9-9a5ac3019373/e5e8b199-5f8c-4532-87cc-42cef9f759b3/96b80ec7-0ac3-4758-92a3-ad7ca9e0efc0"
+storage_version_token = "1791030230877513"
+content_type = "text/html"

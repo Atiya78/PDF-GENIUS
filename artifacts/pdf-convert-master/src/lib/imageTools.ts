@@ -1,4 +1,5 @@
 import { authedFetch } from "./authedFetch";
+import { reportSuccessfulDownload } from "./conversionTracking";
 
 export interface UploadResult {
   id: string;
@@ -60,6 +61,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   a.download = filename;
   document.body.appendChild(a);
   a.click();
+  reportSuccessfulDownload(blob);
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

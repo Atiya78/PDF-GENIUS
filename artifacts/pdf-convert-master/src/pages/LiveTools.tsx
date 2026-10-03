@@ -1,3 +1,4 @@
+import { useSeo } from "@/lib/useSeo";
 import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -130,6 +131,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ tool, onUse }) => {
 };
 
 export const LiveTools: React.FC = () => {
+  useSeo({ title: "Live PDF Tools", noindex: true });
   const [, setLocation] = useLocation();
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");

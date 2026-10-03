@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { takeToolFiles } from "@/lib/toolFileHandoff";
 import { ConverterStatusIcon } from "@/components/converter-status-icon";
 import { useToast } from "@/hooks/use-toast";
 import { getFileTypeErrorMessage } from "@/lib/toolConfig";
@@ -104,7 +105,7 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
   );
 
   const processFiles = useCallback(
-    (fileList: FileList | null) => {
+    (fileList: FileList | File[] | null) => {
       const files = Array.from(fileList || []);
       if (files.length === 0) return;
 
@@ -143,9 +144,16 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
   const resolvedActionLabel =
     actionLabel ?? (multiple ? "Select Files" : "Select File");
 
+  useEffect(() => {
+    if (interactionDisabled) return;
+    const files = takeToolFiles(toolId);
+    if (files) processFiles(files);
+  }, [toolId, interactionDisabled, processFiles]);
+
   return (
     <div
       role="button"
+      data-upload-action
       tabIndex={interactionDisabled ? -1 : 0}
       aria-disabled={interactionDisabled}
       onClick={openPicker}
@@ -242,7 +250,7 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
         ))}
       </div>
 
-      <p className="mt-3 text-xs text-gray-400">Maximum file size: {maxSizeLabel}</p>
+      <p className="mt-3 text-xs text-gray-600">Maximum file size: {maxSizeLabel}</p>
     </div>
   );
 };

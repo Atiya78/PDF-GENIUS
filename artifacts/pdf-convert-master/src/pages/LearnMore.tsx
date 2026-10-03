@@ -1,3 +1,5 @@
+import { Link } from "wouter";
+import { usePublicSeo } from "@/lib/usePublicSeo";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,8 +14,6 @@ import {
   Zap, 
   Settings, 
   BookOpen,
-  TrendingUp,
-  Award,
   CheckCircle,
   ArrowRight
 } from "lucide-react";
@@ -32,6 +32,7 @@ interface Article {
 }
 
 export const LearnMore: React.FC = () => {
+  usePublicSeo("/learn-more");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
@@ -1380,7 +1381,7 @@ export const LearnMore: React.FC = () => {
         </header>
 
         {/* Article Content */}
-        <main className="max-w-4xl mx-auto px-6 py-8">
+        <div className="max-w-4xl mx-auto px-6 py-8">
           <div 
             className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: selectedArticle.content }}
@@ -1425,7 +1426,7 @@ export const LearnMore: React.FC = () => {
                 ))}
             </div>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
@@ -1447,34 +1448,23 @@ export const LearnMore: React.FC = () => {
             </p>
           </div>
 
-          {/* Company Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <TrendingUp className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">10M+</div>
-              <div className="text-blue-200">Users Served</div>
-            </div>
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <FileText className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">20+</div>
-              <div className="text-blue-200">PDF Tools</div>
-            </div>
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <Award className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">99.9%</div>
-              <div className="text-blue-200">Uptime</div>
-            </div>
-            <div className="bg-blue-800/50 rounded-lg p-6">
-              <Shield className="w-8 h-8 mx-auto mb-2 text-blue-200" />
-              <div className="text-3xl font-bold">100%</div>
-              <div className="text-blue-200">Secure</div>
-            </div>
+          {/* Neutral tool links (unverified usage stats removed) */}
+          <div className="grid grid-cols-1 gap-4 text-center md:grid-cols-3">
+            {[
+              { href: "/tools", label: "Browse all tools" },
+              { href: "/pricing", label: "Pricing and API" },
+              { href: "/data-safety", label: "How your files are handled" },
+            ].map((l) => (
+              <Link key={l.href} href={l.href} className="flex min-h-[44px] items-center justify-center rounded-lg bg-blue-800/50 p-4 font-semibold text-white hover:bg-blue-800">
+                {l.label}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Search and Filter */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -1591,31 +1581,30 @@ export const LearnMore: React.FC = () => {
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold mb-4">About PDF Genius</h3>
             <p className="text-gray-600 max-w-3xl mx-auto">
-              Developed in London, UK, PDF Genius provides professional-grade 
-              PDF tools trusted by millions worldwide. Our mission is to make document management 
-              simple, secure, and accessible for everyone.
+              Developed in London, UK, PDF Genius provides free web PDF and image tools plus a separate developer API. 
+              Our mission is to make everyday document tasks simple and accessible.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div className="flex flex-col items-center">
               <Shield className="w-12 h-12 text-blue-600 mb-3" />
-              <h4 className="font-semibold mb-2">Enterprise Security</h4>
-              <p className="text-sm text-gray-600">Bank-level encryption and compliance standards</p>
+              <h4 className="font-semibold mb-2">Data handling</h4>
+              <p className="text-sm text-gray-600">Files travel over HTTPS. See Data Safety for which tools run in your browser.</p>
             </div>
             <div className="flex flex-col items-center">
               <Zap className="w-12 h-12 text-blue-600 mb-3" />
-              <h4 className="font-semibold mb-2">Lightning Fast</h4>
-              <p className="text-sm text-gray-600">Optimized processing for quick results</p>
+              <h4 className="font-semibold mb-2">Free web tools</h4>
+              <p className="text-sm text-gray-600">No signup needed for the web tools</p>
             </div>
             <div className="flex flex-col items-center">
               <Settings className="w-12 h-12 text-blue-600 mb-3" />
-              <h4 className="font-semibold mb-2">20+ Tools</h4>
-              <p className="text-sm text-gray-600">Complete PDF solution suite</p>
+              <h4 className="font-semibold mb-2">Many tools</h4>
+              <p className="text-sm text-gray-600">Convert, edit, organize and secure PDFs</p>
             </div>
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

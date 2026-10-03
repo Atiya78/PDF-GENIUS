@@ -275,7 +275,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({
               Fast Conversion
             </h3>
             <p className="text-sm text-gray-600 leading-relaxed">
-              Lightning-fast processing with high-quality results
+              Pick a file, choose options, get your result
             </p>
           </div>
 

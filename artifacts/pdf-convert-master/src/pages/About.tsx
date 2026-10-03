@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useLocation } from "wouter";
-import { useSeo } from "@/lib/useSeo";
+import { usePublicSeo } from "@/lib/usePublicSeo";
 import { 
   Shield, 
   Zap, 
@@ -16,24 +16,19 @@ import {
 } from "lucide-react";
 
 export const About = (): JSX.Element => {
-  useSeo({
-    title: "About PDF Genius",
-    description:
-      "Learn about PDF Genius — the free, secure, browser-based suite of PDF and image tools trusted by millions to convert, edit and manage documents.",
-    canonicalPath: "/about",
-  });
+  usePublicSeo("/about");
   const [, setLocation] = useLocation();
 
   const coreValues = [
     {
       icon: Shield,
       title: "Security First",
-      description: "Your documents are processed with bank-level security. We never store your files and all transfers are encrypted."
+      description: "File transfers use HTTPS. Some tools run entirely in your browser; others upload your file to be processed."
     },
     {
       icon: Zap,
-      title: "Lightning Fast",
-      description: "Our optimized conversion engine processes files in seconds, not minutes. Get your results instantly."
+      title: "Straightforward",
+      description: "Pick a tool, add your file, download the result. No signup needed for the free web tools."
     },
     {
       icon: Heart,
@@ -43,7 +38,7 @@ export const About = (): JSX.Element => {
     {
       icon: Globe,
       title: "Accessible",
-      description: "Available 24/7 from anywhere in the world. No downloads, no installations, just pure convenience."
+      description: "Use it from any modern browser. No installation needed."
     },
     {
       icon: Leaf,
@@ -52,37 +47,11 @@ export const About = (): JSX.Element => {
     },
     {
       icon: Headphones,
-      title: "Expert Support",
-      description: "Our dedicated support team is always ready to help. Professional assistance when you need it."
+      title: "Support",
+      description: "Questions or problems? Reach us through the Support page."
     }
   ];
 
-  const teamMembers = [
-    {
-      name: "Sarah Johnson",
-      position: "Chief Executive Officer",
-      description: "Leading PDF Genius with 15+ years of experience in tech innovation and digital transformation.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/e57646e20adf34f0f3b39ea49f9a6ca981e0f8df?width=504"
-    },
-    {
-      name: "Michael Chen",
-      position: "Chief Technology Officer",
-      description: "Architecting our cutting-edge conversion technology with expertise in cloud computing and AI systems.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/01b806e57e80d577978bee50b6dc9d71af006df2?width=504"
-    },
-    {
-      name: "Emily Rodriguez",
-      position: "Head of Product",
-      description: "Ensuring our tools meet user needs through innovative design and user experience optimization.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/4d4fc0c5bed2bd9a4b7514963fcef4e8beda5656?width=504"
-    },
-    {
-      name: "David Kim",
-      position: "Head of Security",
-      description: "Protecting user data with advanced security protocols and industry-leading encryption standards.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/df8fa776e0c3b39f121324b712ecf19d28f076bd?width=504"
-    }
-  ];
 
   return (
     <div className="bg-gradient-to-br from-blue-50 via-blue-50 to-blue-50">
@@ -118,37 +87,21 @@ export const About = (): JSX.Element => {
       {/* Our Story Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid gap-12 items-center max-w-3xl">
             <div>
               <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
               <div className="space-y-6 text-lg text-gray-600">
                 <p>
-                  Founded with a vision to simplify document management, PDF Genius has become the trusted solution for millions of users worldwide. Our journey began when we recognized the growing need for reliable, secure, and user-friendly PDF tools.
+                  PDF Genius offers practical PDF and image tools that are free to use without signup, alongside a separate paid developer API.
                 </p>
                 <p>
-                  We've built a platform that combines cutting-edge technology with intuitive design, making professional PDF conversion accessible to everyone.
+                  The web tools are free to use without an account. The developer API is a separate paid product.
                 </p>
               </div>
               
-              <div className="grid grid-cols-2 gap-6 mt-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">10M+</div>
-                  <div className="text-gray-600">Files Processed</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-blue-600 mb-2">150+</div>
-                  <div className="text-gray-600">Countries Served</div>
-                </div>
-              </div>
+              
             </div>
             
-            <div>
-              <img 
-                src="https://api.builder.io/api/v1/image/assets/TEMP/1d8a687c2ae4c42db87394ec89dbfcc7c3fb088a?width=1056"
-                alt="Team collaboration"
-                className="w-full h-96 object-cover rounded-lg shadow-xl"
-              />
-            </div>
           </div>
         </div>
       </section>
@@ -171,38 +124,6 @@ export const About = (): JSX.Element => {
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-4">{value.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{value.description}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Meet Our Team Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The passionate professionals behind PDF Genius
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <Card key={index} className="bg-white shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-                <div className="relative">
-                  <img 
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                </div>
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
-                  <p className="text-blue-600 font-semibold mb-3">{member.position}</p>
-                  <p className="text-sm text-gray-600 leading-relaxed">{member.description}</p>
-                </div>
               </Card>
             ))}
           </div>
@@ -235,7 +156,7 @@ export const About = (): JSX.Element => {
               </div>
               <h3 className="text-xl font-bold mb-4">Phone</h3>
               <p className="text-gray-200 mb-1">+447429919748</p>
-              <p className="text-gray-200 text-sm">Available 24/7</p>
+              <p className="text-gray-200 text-sm">Contact us via Support</p>
             </div>
             
             <div className="text-center text-white">

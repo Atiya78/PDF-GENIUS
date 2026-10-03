@@ -1,3 +1,4 @@
+import { useSeo } from "@/lib/useSeo";
 import React from "react";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -93,6 +94,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, subtitle, iconBg, ico
 };
 
 export const UsageStatistics: React.FC = () => {
+  useSeo({ title: "Usage Statistics", noindex: true });
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
   const [downloadingId, setDownloadingId] = React.useState<number | null>(null);

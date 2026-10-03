@@ -1,3 +1,4 @@
+import { usePublicSeo } from "@/lib/usePublicSeo";
 import React from "react";
 import {
   Shield,
@@ -111,6 +112,7 @@ const practices = [
 ];
 
 export const DataSafety = (): JSX.Element => {
+  usePublicSeo("/data-safety");
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -149,8 +151,7 @@ export const DataSafety = (): JSX.Element => {
             <h2 className="text-2xl font-bold text-gray-900">Data this app collects</h2>
           </div>
           <p className="text-gray-600 mb-6">
-            All data is collected, never shared. Files and photos are processed to deliver
-            your conversion and are deleted automatically (typically within 24 hours).
+            All data is collected, never shared. Server-based tools upload your file to process it, and results are stored so you can download them later; you can delete saved results yourself. Edit, Sign, Crop and Delete Pages run in your browser and do not upload your file.
           </p>
 
           <div className="space-y-4">

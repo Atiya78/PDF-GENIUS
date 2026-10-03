@@ -10,7 +10,7 @@
 
       gtag('config', 'AW-18278560130');
     </script>
-    <!-- Event snippet for Page view conversion -->
+    <!-- Conversion event: called only by successful result-download handlers. -->
     <script>
       function gtag_report_conversion(url) {
         var callback = function () {
@@ -26,12 +26,11 @@
         });
         return false;
       }
-      window.addEventListener('load', function () { gtag_report_conversion(); });
     </script>
     <meta charset="UTF-8" >
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
     <title>PDF Genius — Free Online PDF Converter & Editor, No Signup</title>
-    <meta name="description" content="Convert, edit, merge, split & compress PDFs free in your browser. 100% free — no signup, no email, no credit card. Fast, secure, unlimited PDF tools." >
+    <meta name="description" content="Free PDF and image tools, with no signup required. Convert, merge, split, edit and sign files. Developer API plans are available separately." >
     <link rel="canonical" href="https://pdfgenius.app/" >
 
     <!-- Favicons & app icons -->
@@ -48,7 +47,7 @@
     <meta property="og:type" content="website" >
     <meta property="og:site_name" content="PDF Genius" >
     <meta property="og:title" content="PDF Genius — Free Online PDF Converter & Editor, No Signup" >
-    <meta property="og:description" content="Convert, edit, merge, split & compress PDFs free in your browser. 100% free — no signup, no email, no credit card. Fast, secure, unlimited PDF tools." >
+    <meta property="og:description" content="Free PDF and image tools, with no signup required. Convert, merge, split, edit and sign files. Developer API plans are available separately." >
     <meta property="og:url" content="https://pdfgenius.app/" >
     <meta property="og:image" content="https://pdfgenius.app/og-image.png" >
     <meta property="og:image:width" content="1200" >
@@ -58,23 +57,13 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" >
     <meta name="twitter:title" content="PDF Genius — Free Online PDF Converter & Editor, No Signup" >
-    <meta name="twitter:description" content="Convert, edit, merge, split & compress PDFs free in your browser. 100% free — no signup, no email, no credit card. Fast, secure, unlimited PDF tools." >
+    <meta name="twitter:description" content="Free PDF and image tools, with no signup required. Convert, merge, split, edit and sign files. Developer API plans are available separately." >
     <meta name="twitter:image" content="https://pdfgenius.app/og-image.png" >
 
-    <!-- Organization structured data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "PDF Genius",
-        "url": "https://pdfgenius.app",
-        "logo": "https://pdfgenius.app/logo-512x512.png"
-      }
-    </script>
+    <!-- Route-owned JSON-LD is rendered by the page and captured at build time. -->
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" >
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin >
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" >
+    <link rel="preload" href="/src/assets/fonts/inter-100-900.woff2" as="font" type="font/woff2" crossorigin >
+    <link rel="preload" href="/src/assets/fonts/poppins-700.woff2" as="font" type="font/woff2" crossorigin >
     <style>
       /* Boot loader shown before the JS bundle mounts React. React replaces the
          #root children on first render, removing this automatically. Mirrors the
@@ -108,6 +97,5 @@
     </div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>
 </html>

@@ -37,7 +37,7 @@ export const TestimonialsSection = (): JSX.Element => {
           </h2>
           <p className="text-xl text-gray-600 text-center max-w-screen-md">
             All your PDF and image tools in one place — click any tool to get
-            started instantly
+            started
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export const TestimonialsSection = (): JSX.Element => {
             Ready to Transform Your PDF Workflow?
           </h3>
           <p className="text-base text-gray-600 text-center mb-8">
-            Every tool is 100% free with no sign-up required. Create an account
+            Free web tools, no sign-up required. Create an account
             only when you're ready to access our developer API.
           </p>
           <div className="flex flex-wrap justify-center gap-4">

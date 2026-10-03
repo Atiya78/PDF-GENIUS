@@ -17,7 +17,11 @@ The official import CSV uses Google's 5-column schema (`Question ID`, `Response 
 
 **NOT collected:** location, payment info (app store handles it), crash logs, diagnostics, health, messages, audio, contacts, calendar, web browsing, installed apps, in-app search.
 
-**Why "Analytics" purpose but no third-party SDKs:** analytics is FIRST-PARTY only (api-server usage stats). There are NO third-party analytics/crash/ads SDKs. Privacy policy must say analytics + cookies are first-party and must NOT claim third-party analytics services or third-party tracking cookies, or it contradicts the Data Safety form (Play review risk).
+**Rule:** the native mobile app's analytics is FIRST-PARTY only (api-server usage stats), with no third-party analytics/crash/ads SDKs. This rule does NOT cover the website: the owner explicitly retains Google Ads and Tawk there.
+
+**Why:** the Play Data Safety declaration describes the native app, not the website. A shared privacy policy must distinguish them; a blanket denial of third-party website cookies would be false.
+
+**How to apply:** keep the mobile declaration unchanged and scope Google Ads/Tawk disclosures to the website. Any future native SDK addition requires revisiting the Play declaration.
 
 **Payments wording:** in-app billing via Google Play / Apple App Store (they process card data); RevenueCat is a data *processor* (not "sharing"). Data Safety "not shared" + privacy policy processor mentions must be phrased so they don't read as contradictory.
 

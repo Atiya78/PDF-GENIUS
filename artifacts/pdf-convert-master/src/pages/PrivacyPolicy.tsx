@@ -1,9 +1,11 @@
+import { usePublicSeo } from "@/lib/usePublicSeo";
 import React, { useState, useEffect, useMemo } from "react";
 import { Calendar, Clock, Shield, Database, FileText, Lock, Cookie, Cloud, Timer, UserCheck, Globe, AlertTriangle, Mail, Edit, X, Eye, UserX, HardDrive, Trash2, FileCheck } from "lucide-react";
 import { DocumentSearch, SearchableSection } from "@/components/DocumentSearch";
 import { useDocumentSearch } from "@/hooks/useDocumentSearch";
 
 export const PrivacyPolicy = (): JSX.Element => {
+  usePublicSeo("/privacy-policy");
   // Define table of contents items first
   const tableOfContentsItems = [
     { icon: Database, text: "Information We Collect", id: "information-we-collect" },
@@ -28,7 +30,7 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "information-we-collect",
       title: "Information We Collect",
-      content: "Personal Information: We collect minimal personal information, including email addresses and an optional display name for account creation, user preferences, and customer support communications. File Information: When you upload files for conversion, we temporarily process file metadata and content solely for conversion purposes. We do not permanently store or analyze your file contents. Camera and Photos: When you use the document scanner, photos you capture with your camera or select from your device are uploaded solely to produce the requested document and are deleted on the same temporary schedule as other files. We never access your camera or photo library without your action. Usage Data: We collect anonymous usage statistics, including conversion types, file sizes, processing times, and general usage patterns to improve our services. Purchase Information: When you buy a subscription or credit pack through the app, we receive purchase history (the products you bought and their status) from the app store so we can activate your plan or credits. Payment card details are handled entirely by the app store (Google Play or Apple) and are never collected or stored by us. Technical Information: We automatically collect IP addresses, browser types, device identifiers, and referral URLs for security, fraud prevention, analytics, and service optimization. Account Information: For registered users, we store account credentials, preferences, subscription status, credit balance, and basic profile information.",
+      content: "Personal Information: We collect minimal personal information, including email addresses and an optional display name for account creation, user preferences, and customer support communications. File Information: When you upload files for conversion, we temporarily process file metadata and content solely for conversion purposes. We do not analyze your file contents beyond what is needed to perform the requested task. Camera and Photos: When you use the document scanner, photos you capture with your camera or select from your device are uploaded solely to produce the requested document and are handled like other uploaded files (see File Processing and Storage). We never access your camera or photo library without your action. Usage Data: We collect anonymous usage statistics, including conversion types, file sizes, processing times, and general usage patterns to improve our services. Purchase Information: When you buy a subscription or credit pack through the app, we receive purchase history (the products you bought and their status) from the app store so we can activate your plan or credits. Payment card details are handled entirely by the app store (Google Play or Apple) and are never collected or stored by us. Technical Information: We automatically collect IP addresses, browser types, device identifiers, and referral URLs for security, fraud prevention, analytics, and service optimization. Account Information: For registered users, we store account credentials, preferences, subscription status, credit balance, and basic profile information.",
       category: "Data Collection"
     },
     {
@@ -40,19 +42,19 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "file-processing-and-storage",
       title: "File Processing and Storage",
-      content: "Temporary Processing: All uploaded files are processed temporarily on secure servers. Files are automatically deleted after conversion completion, typically within 24 hours. No Permanent Storage: We do not permanently store your uploaded files or converted documents. Once processing is complete and files are downloaded or the session expires, all data is permanently deleted. Processing Purpose: Files are accessed only for the specific conversion or processing task requested and are not used for any other purpose. Server Security: Our processing servers are secured with encryption, access controls, and regular security monitoring. File Limitations: We may impose reasonable file size and processing time limits to ensure optimal service performance for all users.",
+      content: "Server Processing and Stored Results: Server-based tools upload your file to our servers to process it, and the result is stored so you can download it later; you can delete saved results yourself. Edit PDF, Sign PDF, Crop PDF and Delete Pages run in your browser and do not upload your file. We have not set a fixed automatic deletion period for stored results. Browser-only tools: Files opened in those four tools stay on your device. Processing Purpose: Files are accessed only for the specific conversion or processing task requested and are not used for any other purpose. Server Security: Our processing servers are secured with encryption, access controls, and regular security monitoring. File Limitations: We may impose reasonable file size and processing time limits to ensure optimal service performance for all users.",
       category: "File Handling"
     },
     {
       id: "data-security-measures",
       title: "Data Security Measures",
-      content: "Encryption in Transit: All data transmission between your device and our servers is encrypted using SSL/TLS protocols (HTTPS). Encryption at Rest: Files temporarily stored during processing are encrypted using industry-standard encryption algorithms. Access Controls: Strict access controls ensure only authorized personnel can access systems, with multi-factor authentication and regular access reviews. Server Security: Our servers are protected by firewalls, intrusion detection systems, and regular security updates. Automatic Deletion: Automated systems ensure uploaded files and processing data are permanently deleted after completion. Security Monitoring: Continuous monitoring for security threats, suspicious activities, and potential data breaches.",
+      content: "Encryption in Transit: All data transmission between your device and our servers is encrypted using SSL/TLS protocols (HTTPS). Access Controls: Access to our systems is restricted to authorized personnel. Deleting Results: You can delete saved conversion results from your dashboard. We have not set a fixed automatic deletion period. Security Monitoring: Continuous monitoring for security threats, suspicious activities, and potential data breaches.",
       category: "Security"
     },
     {
       id: "cookies-and-tracking",
       title: "Cookies and Tracking",
-      content: "Essential Cookies: We use necessary cookies for core site functionality, including user authentication, session management, and security features. Functional Cookies: Cookies that remember your preferences, settings, and improve your user experience on our platform. Analytics Cookies: We use our own first-party cookies to understand, in aggregate, how users interact with our service. We do not use third-party advertising or cross-app tracking cookies. Cookie Control: You can control cookie settings through your browser preferences, though disabling certain cookies may affect site functionality. Cookie Retention: Most cookies expire automatically, with session cookies deleted when you close your browser.",
+      content: "Essential and functional storage supports authentication and preferences. Website advertising and chat use Google Ads conversion tracking and Tawk.to. These third-party services can use cookies and receive browser and connection information. We do not automatically send file names or contents to chat. Account name and email are passed only when a signed-in user opens chat and account verification is configured. The mobile app uses first-party usage statistics and does not include these website scripts. Cookie controls are available in your browser; retention varies by provider.",
       category: "Cookies"
     },
     {
@@ -64,7 +66,7 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "data-retention",
       title: "Data Retention",
-      content: "File Retention: Uploaded and converted files are automatically deleted within 24 hours of processing completion. No files are stored permanently. Account Information: Account data is retained while your account is active and for a reasonable period after account closure to comply with legal obligations. Usage Analytics: Anonymous usage statistics may be retained for service improvement purposes, with personal identifiers removed. Legal Requirements: We may retain certain data longer when required by law, legal processes, or legitimate business purposes. Data Deletion: Upon account deletion, personal information is removed within 30 days, except where retention is legally required. Backup Systems: Data in backup systems is subject to the same deletion schedules, though technical limitations may cause brief delays.",
+      content: "Converted results are stored for later downloads and saved results can be deleted. No fixed automatic deletion period is configured. Contact Support for account-deletion and retention questions. We have not published a guaranteed account-deletion completion period. Records may be retained where required by law. Backup retention needs owner confirmation.",
       category: "Retention"
     },
     {
@@ -272,7 +274,7 @@ export const PrivacyPolicy = (): JSX.Element => {
           </aside>
 
           {/* Main Content Area */}
-          <main className="flex-1">
+          <div className="flex-1">
             <div className="bg-white rounded-lg shadow-sm p-8">
               <div className="prose prose-gray max-w-none space-y-12">
 
@@ -286,8 +288,8 @@ export const PrivacyPolicy = (): JSX.Element => {
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-4">
                     <p><strong>Personal Information:</strong> We collect minimal personal information, including email addresses and an optional display name for account creation, user preferences, and customer support communications.</p>
-                    <p><strong>File Information:</strong> When you upload files for conversion, we temporarily process file metadata and content solely for conversion purposes. We do not permanently store or analyze your file contents.</p>
-                    <p><strong>Camera and Photos:</strong> When you use the document scanner, photos you capture with your camera or select from your device are uploaded solely to produce the requested document and are deleted on the same temporary schedule as other files. We never access your camera or photo library without your action.</p>
+                    <p><strong>File Information:</strong> When you upload files for conversion, we temporarily process file metadata and content solely for conversion purposes. We do not analyze your file contents beyond what is needed to perform the requested task.</p>
+                    <p><strong>Camera and Photos:</strong> When you use the document scanner, photos you capture with your camera or select from your device are uploaded solely to produce the requested document and are handled like other uploaded files (see File Processing and Storage). We never access your camera or photo library without your action.</p>
                     <p><strong>Usage Data:</strong> We collect anonymous usage statistics, including conversion types, file sizes, processing times, and general usage patterns to improve our services.</p>
                     <p><strong>Purchase Information:</strong> When you buy a subscription or credit pack through the app, we receive purchase history (the products you bought and their status) from the app store so we can activate your plan or credits. Payment card details are handled entirely by the app store (Google Play or Apple) and are never collected or stored by us.</p>
                     <p><strong>Technical Information:</strong> We automatically collect IP addresses, browser types, device identifiers, and referral URLs for security, fraud prevention, analytics, and service optimization.</p>
@@ -318,8 +320,8 @@ export const PrivacyPolicy = (): JSX.Element => {
                     3. File Processing and Storage
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-3">
-                    <p><strong>Temporary Processing:</strong> All uploaded files are processed temporarily on secure servers. Files are automatically deleted after conversion completion, typically within 24 hours.</p>
-                    <p><strong>No Permanent Storage:</strong> We do not permanently store your uploaded files or converted documents. Once processing is complete and files are downloaded or the session expires, all data is permanently deleted.</p>
+                    <p><strong>Server Processing:</strong> Server-based tools upload your file to our servers to process it. Edit PDF, Sign PDF, Crop PDF and Delete Pages run in your browser and do not upload your file.</p>
+                    <p><strong>Stored Results:</strong> Results of server-based tools are stored so you can download them later. You can delete saved results yourself. We have not set a fixed automatic deletion period.</p>
                     <p><strong>Processing Purpose:</strong> Files are accessed only for the specific conversion or processing task requested and are not used for any other purpose.</p>
                     <p><strong>Server Security:</strong> Our processing servers are secured with encryption, access controls, and regular security monitoring.</p>
                     <p><strong>File Limitations:</strong> We may impose reasonable file size and processing time limits to ensure optimal service performance for all users.</p>
@@ -339,7 +341,7 @@ export const PrivacyPolicy = (): JSX.Element => {
                     <p><strong>Encryption at Rest:</strong> Files temporarily stored during processing are encrypted using industry-standard encryption algorithms.</p>
                     <p><strong>Access Controls:</strong> Strict access controls ensure only authorized personnel can access systems, with multi-factor authentication and regular access reviews.</p>
                     <p><strong>Server Security:</strong> Our servers are protected by firewalls, intrusion detection systems, and regular security updates.</p>
-                    <p><strong>Automatic Deletion:</strong> Automated systems ensure uploaded files and processing data are permanently deleted after completion.</p>
+                    <p><strong>Deleting Results:</strong> You can delete saved conversion results from your dashboard.</p>
                     <p><strong>Security Monitoring:</strong> Continuous monitoring for security threats, suspicious activities, and potential data breaches.</p>
                   </div>
                 </section>
@@ -355,9 +357,10 @@ export const PrivacyPolicy = (): JSX.Element => {
                   <div className="text-gray-700 leading-relaxed space-y-3">
                     <p><strong>Essential Cookies:</strong> We use necessary cookies for core site functionality, including user authentication, session management, and security features.</p>
                     <p><strong>Functional Cookies:</strong> Cookies that remember your preferences, settings, and improve your user experience on our platform.</p>
-                    <p><strong>Analytics Cookies:</strong> We use our own first-party cookies to understand, in aggregate, how users interact with our service. We do not use third-party advertising or cross-app tracking cookies.</p>
+                    <p><strong>Website advertising and chat:</strong> This website uses Google Ads conversion tracking and Tawk.to support chat. These third-party services can use cookies and receive browser and connection information. Tawk loads after interaction or five seconds. We do not automatically send your file names or contents to chat. If you open chat while signed in and account verification is configured, we send your account name and email to identify you.</p>
+                    <p><strong>Mobile app analytics:</strong> The mobile app uses first-party usage statistics. It does not include the website's Google Ads or Tawk scripts.</p>
                     <p><strong>Cookie Control:</strong> You can control cookie settings through your browser preferences, though disabling certain cookies may affect site functionality.</p>
-                    <p><strong>Cookie Retention:</strong> Most cookies expire automatically, with session cookies deleted when you close your browser.</p>
+                    <p><strong>Cookie Retention:</strong> Retention varies by provider and browser settings. Review the providers' privacy policies for details.</p>
                   </div>
                 </section>
 
@@ -387,12 +390,13 @@ export const PrivacyPolicy = (): JSX.Element => {
                     7. Data Retention
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-3">
-                    <p><strong>File Retention:</strong> Uploaded and converted files are automatically deleted within 24 hours of processing completion. No files are stored permanently.</p>
+                    <p><strong>File Retention:</strong> Converted results are stored so you can download them later, and you can delete saved results yourself. We have not set a fixed automatic deletion period.</p>
                     <p><strong>Account Information:</strong> Account data is retained while your account is active and for a reasonable period after account closure to comply with legal obligations.</p>
                     <p><strong>Usage Analytics:</strong> Anonymous usage statistics may be retained for service improvement purposes, with personal identifiers removed.</p>
                     <p><strong>Legal Requirements:</strong> We may retain certain data longer when required by law, legal processes, or legitimate business purposes.</p>
-                    <p><strong>Data Deletion:</strong> Upon account deletion, personal information is removed within 30 days, except where retention is legally required.</p>
-                    <p><strong>Backup Systems:</strong> Data in backup systems is subject to the same deletion schedules, though technical limitations may cause brief delays.</p>
+                    {/* TODO(owner): Confirm account-deletion workflow, timeframes and backup retention. */}
+                    <p><strong>Data Deletion:</strong> Contact Support for account-deletion requests. We have not published a guaranteed completion period. Records may be retained where required by law.</p>
+                    <p><strong>Backup Systems:</strong> Contact Support for questions about backup retention.</p>
                   </div>
                 </section>
 
@@ -536,7 +540,7 @@ export const PrivacyPolicy = (): JSX.Element => {
 
               </div>
             </div>
-          </main>
+          </div>
         </div>
 
 

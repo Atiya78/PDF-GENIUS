@@ -1,52 +1,44 @@
-import { ArrowRight, CheckCircle, ShieldIcon, SparklesIcon, UploadIcon, ZapIcon } from "lucide-react";
-import React from "react";
+import { ArrowRight, CheckCircle, ShieldIcon, SparklesIcon, ZapIcon } from "lucide-react";
+import React, { lazy, Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { motion, type Variants } from "framer-motion";
-import { AnimatedSelectButton } from "@/components/ui/animated-select-button";
-import { AnimatedBackground } from "@/components/ui/animated-background";
-import { ConverterStatusIcon } from "@/components/converter-status-icon";
-import { useLocation, useSearch } from "wouter";
+import { Link, useSearch } from "wouter";
 import { toolConfigs, isHeroTool } from "@/lib/toolConfig";
-import { HeroToolConverter } from "@/components/HeroToolConverter";
+import { HeroUploadCard } from "@/components/HeroUploadCard";
+import { TopToolsGrid } from "@/components/TopToolsGrid";
+
+// Heavy converter code loads only when a ?tool= deep link is opened.
+const HeroToolConverter = lazy(() =>
+  import("@/components/HeroToolConverter").then((m) => ({ default: m.HeroToolConverter })),
+);
 
 const heroBenefits = [
   "Work directly in your browser",
   "Keep original formatting and quality",
   "Download your converted file in seconds",
-  "100% free, secure & private",
+  "Free web tools, no signup required",
 ];
 
 export const HeroSection = (): JSX.Element => {
-  const [location, setLocation] = useLocation();
   const search = useSearch();
   const toolId = new URLSearchParams(search).get("tool");
   const activeTool = isHeroTool(toolId) ? toolConfigs[toolId as string] : null;
-
-  // File format options
-  const fileFormats = [
-    { format: "PDF", className: "w-[38.58px]" },
-    { format: "DOC", className: "w-[40.44px]" },
-    { format: "XLS", className: "w-[37.61px]" },
-    { format: "JPG", className: "w-[38.88px]" },
-  ];
 
   // Trust indicators
   const trustIndicators = [
     {
       icon: <ShieldIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "100% Secure",
+      text: "Encrypted in transit (HTTPS)",
       className: "whitespace-nowrap",
     },
     {
       icon: <ZapIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "Instant Processing",
+      text: "No signup needed",
       className: "whitespace-nowrap",
     },
     {
       icon: <SparklesIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "Always Free",
+      text: "Free web tools",
       className: "whitespace-nowrap",
     },
   ];
@@ -55,23 +47,24 @@ export const HeroSection = (): JSX.Element => {
     <section className="flex flex-col w-full items-start relative bg-white overflow-hidden">
       <div className="flex flex-col w-full items-start relative">
         {/* Animated background */}
-        <AnimatedBackground particleCount={35} />
 
         <div className="flex w-full items-center relative z-10">
           <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 w-full relative">
               <div className="flex flex-wrap w-full items-center gap-12 relative">
                 {/* Left column - Text content */}
-                <div className="flex flex-col w-full md:w-[584px] items-start relative">
+                <div className="flex flex-col w-full md:w-[584px] items-start relative order-1">
                   <div className="flex flex-col w-full items-start relative">
                     <div className="flex flex-col w-full items-start relative">
                       <Badge className="flex h-[38px] items-center px-[17px] py-[9px] bg-blue-50 text-blue-700 rounded-full border border-solid border-blue-200">
                         <img
                           className="mr-2"
-                          alt="Margin wrap"
+                          alt=""
+                          width={16}
+                          height={16}
                           src="/figmaAssets/margin-wrap.svg"
                         />
                         <span className="font-medium text-sm">
-                          Trusted by 10M+ users worldwide
+                          Free tools. No signup required.
                         </span>
                       </Badge>
 
@@ -82,7 +75,7 @@ export const HeroSection = (): JSX.Element => {
                         >
                           {activeTool
                             ? `Convert ${activeTool.title}`
-                            : "Professional PDF tools trusted by millions"}
+                            : "Practical PDF tools, free to use"}
                         </h1>
                       </div>
 
@@ -93,7 +86,7 @@ export const HeroSection = (): JSX.Element => {
                         >
                           {activeTool
                             ? activeTool.description
-                            : `Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.`}
+                            : `Every tool you need to use PDFs, at your fingertips. Free to use, no signup required. Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.`}
                         </p>
                       </div>
                     </div>
@@ -115,32 +108,23 @@ export const HeroSection = (): JSX.Element => {
                     ) : (
                       <div className="pt-8 w-full">
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                          <AnimatedSelectButton
-                            className="h-[61px] px-8 py-4 rounded-full justify-center w-full sm:w-auto shadow-[0px_10px_15px_-3px_#0000001a,0px_4px_6px_-4px_#0000001a]"
-                            onClick={() => {
-                              console.log('Start Converting Now button clicked');
-                              setLocation('/tools');
-                            }}
+                          <Link
+                            href="/tools"
+                            className="inline-flex h-[56px] w-full sm:w-auto items-center justify-center rounded-full bg-[#d92f29] px-8 text-base font-semibold text-white shadow-md hover:opacity-90"
+                            data-testid="link-hero-all-tools"
                           >
-                            <ZapIcon className="mr-2 h-5 w-5" />
-                            <span className="font-semibold text-base">
-                              Start Converting Now
-                            </span>
-                          </AnimatedSelectButton>
+                            <ZapIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                            Browse all tools
+                          </Link>
 
-                          <Button
-                            variant="outline"
-                            className="h-[61px] px-[34px] py-[18px] justify-center w-full sm:w-auto bg-white text-gray-700 rounded-lg border-2 border-solid border-gray-300 hover:bg-gray-50"
-                            onClick={() => {
-                              console.log('Learn More button clicked from hero');
-                              setLocation('/learn-more');
-                            }}
+                          <Link
+                            href="/learn-more"
+                            className="inline-flex h-[56px] w-full sm:w-auto items-center justify-center rounded-full border-2 border-gray-300 bg-white px-8 text-base font-semibold text-gray-700 hover:bg-gray-50"
+                            data-testid="link-hero-learn-more"
                           >
-                            <ArrowRight className="mr-2 w-5 h-5 text-gray-700" />
-                            <span className="font-semibold text-base">
-                              Learn More
-                            </span>
-                          </Button>
+                            <ArrowRight className="mr-2 h-5 w-5" aria-hidden="true" />
+                            About PDF Genius
+                          </Link>
                         </div>
                       </div>
                     )}
@@ -184,50 +168,13 @@ export const HeroSection = (): JSX.Element => {
 
                 {/* Right column - File upload card */}
                 {activeTool ? (
-                  <HeroToolConverter key={activeTool.id} tool={activeTool} />
+                  <Suspense fallback={<div className="w-full md:w-[584px] min-h-[405px] rounded-3xl bg-gray-100 animate-pulse" aria-hidden="true" />}>
+                    <HeroToolConverter key={activeTool.id} tool={activeTool} />
+                  </Suspense>
                 ) : (
-                <Card className="flex flex-col w-full md:w-[584px] h-[405px] items-start p-[50px] bg-card rounded-3xl border-2 border-dashed border-blue-300 shadow-sm">
-                  <div className="flex flex-col items-center justify-center w-full p-0">
-                    <ConverterStatusIcon status="upload" size={80} className="mb-3" />
-
-                    <h2 className="font-bold text-gray-900 text-xl text-center mb-3">
-                      Drop your PDF here
-                    </h2>
-
-                    <p className="font-normal text-gray-600 text-base text-center mb-8">
-                      or click to browse files
-                    </p>
-
-                    <AnimatedSelectButton
-                      onClick={() => setLocation('/?tool=pdf-to-word')}
-                      className="h-[57px] px-12 py-4 mb-8 rounded-full shadow-[0px_10px_15px_-3px_#0000001a,0px_4px_6px_-4px_#0000001a]"
-                    >
-                      <UploadIcon className="mr-2 h-5 w-5" />
-                      <span className="text-base">
-                        Select PDF File
-                      </span>
-                    </AnimatedSelectButton>
-
-                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
-                      {fileFormats.map((format, index) => (
-                        <div
-                          key={`format-${index}`}
-                          className={`flex h-4 items-center ${format.className}`}
-                        >
-                          <img
-                            className="mr-1"
-                            alt={`${format.format} icon`}
-                            src={`/figmaAssets/margin-wrap-${index === 0 ? "26" : index === 1 ? "4" : index === 2 ? "9" : "6"}.svg`}
-                          />
-                          <span className="font-normal text-gray-500 text-xs text-center">
-                            {format.format}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
+                <div className="order-3 md:order-2 w-full md:w-auto"><HeroUploadCard /></div>
                 )}
+                {!activeTool && <div className="order-2 md:order-3 w-full"><TopToolsGrid /></div>}
               </div>
           </div>
         </div>

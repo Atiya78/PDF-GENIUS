@@ -2,25 +2,20 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Play, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
-import { useSeo } from "@/lib/useSeo";
+import { usePublicSeo } from "@/lib/usePublicSeo";
 
 export const Features: React.FC = () => {
-  useSeo({
-    title: "Features — Fast, Secure PDF & Image Tools",
-    description:
-      "Discover PDF Genius features: convert, edit, merge, split, compress, sign, OCR and more. Fast, private, browser-based processing with no watermarks.",
-    canonicalPath: "/features",
-  });
+  usePublicSeo("/features");
   const [, setLocation] = useLocation();
 
   const features = [
     {
-      title: "Lightning Fast Processing",
-      description: "Convert and process documents in seconds, not minutes"
+      title: "Quick to Use",
+      description: "Pick a tool, add a file, download the result"
     },
     {
-      title: "Enterprise-Grade Security", 
-      description: "Your documents are encrypted and processed securely"
+      title: "Encrypted in Transit", 
+      description: "File transfers use HTTPS"
     },
     {
       title: "Cross-Platform Compatibility",
