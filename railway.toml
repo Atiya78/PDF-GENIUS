@@ -15,4 +15,5 @@ watchPatterns = [
   "pnpm-lock.yaml",
   "package.json",
   "railway.toml",
+  "railpack.json",
 ]
