@@ -56,11 +56,11 @@
     "related":["powerpoint-to-pdf","pdf-to-images","split-pdf","edit-pdf"],"processing":"server"
   },
   {
-    "id":"pdf-to-images","path":"/pdf-to-jpg","name":"PDF to JPG — current output: PNG","title":"PDF to JPG: Current Export Is PNG",
-    "description":"Export PDF pages as PNG images in a ZIP. JPG output is not currently offered by this web workflow.",
-    "why":"This URL uses the existing PDF-to-images tool. Its current output is PNG, not JPG. Use a separate converter if you specifically need JPEG files.",
-    "steps":["Upload the PDF you want to export as page images.","Start conversion to create PNG images of its pages.","Download the ZIP and extract the PNG images."],
-    "faqs":[["Why is the download a ZIP instead of one JPG?","The converter currently exports each page as PNG and packages the images in a ZIP archive."],["Can this web workflow output JPG directly?","Not currently. The existing tool exports PNG files. This page does not offer a JPG output selector."],["Will I be able to select text in a page image?","A page image contains pixels, not selectable document text. Use OCR PDF when you need recognized text."]],
+    "id":"pdf-to-images","path":"/pdf-to-jpg","name":"PDF to JPG","title":"PDF to JPG or PNG Converter",
+    "description":"Export PDF pages as JPG or PNG images in a ZIP archive. Choose JPG quality before converting your document.",
+    "why":"Create page images for presentations, documents or image workflows. Choose JPG for adjustable compression or PNG for lossless raster images.",
+    "steps":["Upload the PDF you want to export as page images.","Choose JPG or PNG and set JPG quality.","Download the ZIP and extract the page images."],
+    "faqs":[["Why is the download a ZIP instead of one JPG?","Each PDF page becomes its own JPG or PNG image. The images are packaged together in one ZIP archive."],["Can I adjust JPG quality?","Yes. Choose JPG and a quality value from 10 to 100. PNG output does not use the JPG quality setting."],["Will I be able to select text in a page image?","A page image contains pixels, not selectable document text. Use OCR PDF when you need recognized text."]],
     "related":["images-to-pdf","convert-image-format","compress-image","crop-image"],"processing":"server"
   },
   {
@@ -73,10 +73,10 @@
   },
   {
     "id":"html-to-pdf","path":"/html-to-pdf","name":"HTML to PDF","title":"HTML to PDF Converter",
-    "description":"Convert an uploaded HTML file into a PDF. Review the generated pages and check any images, fonts or external resources.",
+    "description":"Convert an HTML file or a public webpage URL into a PDF. Review the generated pages and check the printed layout.",
     "why":"Create a paginated copy of HTML content for reading or sharing as a document. Web layouts and printed layouts differ, so inspect the export.",
-    "steps":["Upload the HTML file you want to convert.","Run the HTML-to-PDF conversion.","Download the PDF and review its rendered content."],
-    "faqs":[["Do I upload a file or enter a website address?","This tool accepts an HTML file through its uploader."],["Will external images and fonts appear?","External resources may be unavailable during rendering. Check the PDF rather than assuming every resource loaded."],["Will the PDF remain an interactive website?","No. The result is a document rendering, not a live website with its original interactive behavior."]],
+    "steps":["Upload an HTML file or choose From URL and enter a public webpage address.","Run the HTML-to-PDF conversion.","Download the PDF and review its rendered content."],
+    "faqs":[["Do I upload a file or enter a website address?","Both are supported. Select HTML file or From URL. URL mode accepts public HTTP and HTTPS addresses on standard web ports."],["Will external images and fonts appear?","URL mode can fetch supported public images, styles and fonts within its resource limits. Uploaded HTML uses embedded resources only. Pages requiring JavaScript or a login may not render as expected."],["Will the PDF remain an interactive website?","No. The result is a document rendering, not a live website with its original interactive behavior."]],
     "related":["word-to-pdf","merge-pdfs","crop-pdf","compress-pdf"],"processing":"server"
   },
   {
@@ -88,11 +88,11 @@
     "related":["split-pdf","delete-pages-pdf","compress-pdf","images-to-pdf"],"processing":"server"
   },
   {
-    "id":"split-pdf","path":"/split-pdf","name":"Split PDF","title":"Split PDF into Single-Page Files",
-    "description":"Split a PDF into individual one-page PDF files, packaged in a ZIP. Upload the document, process it and extract the downloaded archive.",
-    "why":"Access each document page as a separate PDF. This workflow exports all pages; it does not offer a page-range selector.",
-    "steps":["Upload the PDF you want to separate into pages.","Start splitting to create a PDF for every page.","Download the ZIP and extract the one-page PDFs."],
-    "faqs":[["What does the Split PDF download contain?","It contains a ZIP archive with one separate PDF file for each page of the source document."],["Can I select a page range in this workflow?","Not currently. The tool exports every page. You can keep the individual files you need after extracting the archive."],["Will I lose the source PDF?","The tool creates an output archive without overwriting the source file on your device. Keep the original PDF for later use."]],
+    "id":"split-pdf","path":"/split-pdf","name":"Split PDF","title":"Split PDF by Pages or Ranges",
+    "description":"Split every PDF page, create separate PDFs from page ranges, or extract selected pages into one PDF.",
+    "why":"Separate a document into useful sections or keep just the pages you need. Enter page numbers and ascending ranges separated by commas.",
+    "steps":["Upload the PDF you want to split.","Choose every page, page ranges or extract selected pages and enter the selection.","Download the ZIP of separate PDFs or the single extracted PDF."],
+    "faqs":[["What does the Split PDF download contain?","Every-page and page-range modes produce a ZIP of separate PDFs. Extract mode produces one PDF with the selected pages."],["How do page ranges work?","Enter a selection such as 1-3, 5, 8-10. In range mode each comma-separated group becomes a separate PDF; extract mode combines the selected pages."],["Will I lose the source PDF?","The tool creates a result without overwriting the source file on your device. Keep the original PDF for later use."]],
     "related":["merge-pdfs","delete-pages-pdf","rotate-pdf","crop-pdf"],"processing":"server"
   },
   {
@@ -112,11 +112,11 @@
     "related":["sign-pdf","watermark-pdf","add-image-pdf","ocr-pdf"],"processing":"browser"
   },
   {
-    "id":"rotate-pdf","path":"/rotate-pdf","name":"Rotate PDF","title":"Set PDF Pages to 90-Degree Rotation",
-    "description":"Set every PDF page to 90-degree clockwise rotation. Upload your PDF, run the rotation tool and download the updated document.",
+    "id":"rotate-pdf","path":"/rotate-pdf","name":"Rotate PDF","title":"Rotate Selected PDF Pages Online",
+    "description":"Preview your PDF pages and rotate selected pages or the whole document by 90, 180 or 270 degrees.",
     "why":"Correct sideways or upside-down document pages so they are easier to read. Review pages with mixed orientations before saving.",
-    "steps":["Upload the PDF whose page rotation you want to change.","Start processing: the tool sets every page to 90 degrees clockwise.","Download the PDF and check the orientation of all its pages."],
-    "faqs":[["Can I choose a page or rotation angle?","Not currently. This workflow sets every page's rotation to 90 degrees clockwise; it has no page or angle selector."],["Will rotating a scan recognize its text?","No. Rotation and text recognition are different tasks; use OCR PDF for recognition."],["What should I check after rotating pages?","Check every page, including any pages that were already rotated. The workflow sets a fixed rotation rather than adding an angle to the existing rotation."]],
+    "steps":["Upload your PDF to load its page thumbnails.","Choose all pages or select individual pages, then choose 90, 180 or 270 degrees.","Download the PDF and check the orientation of the changed pages."],
+    "faqs":[["Can I choose a page or rotation angle?","Yes. Select pages by thumbnail or page number and choose 90, 180 or 270 degrees. You can also rotate all pages."],["Will rotating a scan recognize its text?","No. Rotation and text recognition are different tasks; use OCR PDF for recognition."],["What happens to pages that were already rotated?","The chosen angle is added to each selected page's existing rotation. Unselected pages keep their current orientation."]],
     "related":["crop-pdf","split-pdf","delete-pages-pdf","ocr-pdf"],"processing":"server"
   },
   {
@@ -176,11 +176,11 @@
     "related":["convert-image-format","resize-image","crop-image","images-to-pdf"],"processing":"server"
   },
   {
-    "id":"convert-image-format","path":"/convert-image","name":"Convert Image","title":"Convert Images to PNG Online",
-    "description":"Convert supported images to PNG using the web tool. Upload your picture, run conversion and inspect the downloaded PNG image.",
-    "why":"Create a PNG version of an image for an app or document that accepts that format. This web workflow currently uses PNG output without a format selector.",
-    "steps":["Upload an image in a supported input format.","Start conversion to the workflow's PNG output format.","Download the PNG and verify that it opens correctly."],
-    "faqs":[["Can I select JPG or another output format here?","The current web workflow does not expose an output-format selector. It uses PNG output."],["Does PNG conversion recover transparency from a JPG?","No. PNG can represent transparency, but conversion does not recover transparency that was absent from the source."],["Does changing the format improve image resolution?","Format conversion alone does not recover detail missing from the source image."]],
+    "id":"convert-image-format","path":"/convert-image","name":"Convert Image","title":"Convert Images to JPG, PNG or WebP",
+    "description":"Convert supported images, including HEIC and HEIF photos, to JPG, PNG or WebP. Set quality for JPG and WebP output.",
+    "why":"Choose the image format your document, website or app needs. PNG and WebP can retain existing transparency; JPG uses a white background.",
+    "steps":["Upload an image in a supported input format.","Choose JPG, PNG or WebP and adjust quality where available.","Download the converted image and check its appearance."],
+    "faqs":[["Can I convert HEIC and HEIF photos?","Yes. HEIC and HEIF photos are decoded on the server. These inputs must be no larger than 25 MB or 40 megapixels."],["Does PNG conversion recover transparency from a JPG?","No. PNG can represent transparency, but conversion does not recover transparency that was absent from the source."],["Does changing the format improve image resolution?","Format conversion alone does not recover detail missing from the source image."]],
     "related":["compress-image","resize-image","remove-background","images-to-pdf"],"processing":"server"
   },
   {

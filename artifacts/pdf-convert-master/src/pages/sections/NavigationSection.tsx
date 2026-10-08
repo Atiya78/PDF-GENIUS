@@ -83,7 +83,7 @@ export const NavigationSection = (): JSX.Element => {
                 </NavigationMenuItem>
               ))}
               <NavigationMenuItem className="xl:hidden">
-                <NavigationMenuTrigger hideChevron className="site-nav-action bg-transparent px-0 text-sm text-gray-600" data-testid="nav-more">More</NavigationMenuTrigger>
+                <NavigationMenuTrigger hideChevron className="site-nav-action bg-transparent px-0 text-sm text-gray-600" aria-current={trailingItems.some(item => item.name !== "Pricing" && item.href === location) ? "page" : undefined} data-testid="nav-more">More</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="w-48 p-2">
                     {trailingItems.filter(item => item.name !== "Pricing").map(item => (

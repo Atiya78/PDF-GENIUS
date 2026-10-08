@@ -58,8 +58,8 @@ function getClient(): S3Client {
     // Recent aws-sdk v3 adds CRC32 checksum headers by default, which
     // S3-compatible providers like Backblaze B2 reject. Only send checksums
     // when the operation actually requires them.
-    requestChecksumCalculation: "when_required",
-    responseChecksumValidation: "when_required",
+    requestChecksumCalculation: "WHEN_REQUIRED",
+    responseChecksumValidation: "WHEN_REQUIRED",
   });
   return cachedClient;
 }

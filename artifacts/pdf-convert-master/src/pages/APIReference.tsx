@@ -81,6 +81,24 @@ export const APIReference: React.FC<{ publicView?: boolean }> = ({ publicView = 
     ],
     convert_image_format: [
       { name: "outputFormat", desc: "Target format — one of png, jpg, webp, gif, avif, tiff" },
+      { name: "quality", desc: "JPG/WebP quality 10–100 (default 90). HEIC/HEIF input: up to 25 MB and 40 megapixels." },
+    ],
+    pdf_to_images: [
+      { name: "outputFormat", desc: "jpg or png (default png for existing API callers); returns a ZIP of page images" },
+      { name: "quality", desc: "JPG quality 10–100 (default 90); ignored for PNG. Up to 500 pages and 128 MB of exported images." },
+    ],
+    split_pdf: [
+      { name: "mode", desc: "all (default): one PDF per page; ranges: one PDF per comma-separated range; extract: one combined PDF. all/ranges return ZIP, extract returns PDF." },
+      { name: "ranges", desc: 'Required for ranges/extract, e.g. "1-3,5,8-10". Pages are 1-based. Invalid or out-of-bounds ranges fail. Up to 1,000 output files and 128 MB combined.' },
+    ],
+    rotate_pdf: [
+      { name: "angle", desc: "90 (default), 180 or 270 degrees clockwise, added to existing rotation" },
+      { name: "pages", desc: 'all (default) or 1-based page ranges, e.g. "1-3,5". Unselected pages are unchanged.' },
+    ],
+    html_to_pdf: [
+      { name: "inputMode", desc: 'file (default) or url. For url, the multipart "file" field is optional.' },
+      { name: "url", desc: "Public HTTP/HTTPS webpage URL on port 80 or 443, without embedded credentials. Private/internal/reserved addresses are unsupported; redirects are revalidated." },
+      { name: "URL limits", desc: "5 MB HTML, 2 MB per asset, 12 MB total, 40 requests, up to 3 redirects per resource. DNS: 5s; request: 10s; overall fetch budget: 30s. JavaScript/login-dependent pages may not render." },
     ],
     compress_image: [
       { name: "quality", desc: "Compression quality 10–100 (default 80)" },

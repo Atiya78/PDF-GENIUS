@@ -7,6 +7,7 @@
     "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
     "build": "node ./build.mjs",
     "test:education": "tsx --test src/education/education.test.ts",
+    "test:phase-one": "tsx --test tests/phase-one-tools.test.ts",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:seo": "esbuild tests/web-static.test.ts --bundle --platform=node --format=esm --packages=external --outfile=tests/.web-static.test.mjs && NODE_ENV=production node --test tests/.web-static.test.mjs"
@@ -35,6 +36,7 @@
     "ffmpeg-static": "^5.3.0",
     "ffprobe-static": "^3.1.0",
     "google-auth-library": "^10.7.0",
+    "heic-convert": "^2.1.0",
     "jsonwebtoken": "^9.0.3",
     "jszip": "^3.10.1",
     "mammoth": "^1.12.0",
@@ -57,6 +59,7 @@
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/heic-convert": "^2.1.1",
     "@types/node": "catalog:",
     "esbuild": "0.27.3",
     "esbuild-plugin-pino": "^2.3.3",

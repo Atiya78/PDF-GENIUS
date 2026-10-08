@@ -41,6 +41,24 @@ interface ConversionWorkflowProps {
   outputFormat: string;
   toolIcon: React.ReactNode;
   iconBg: string;
+  /** Extra JSON merged into the `options` field posted to /api/convert. */
+  extraOptions?: Record<string, unknown>;
+  /** Rendered in the files-selected stage above the action buttons. */
+  renderSettings?: (ctx: { files: File[]; disabled: boolean }) => React.ReactNode;
+  /** When false the Convert button is disabled (e.g. invalid settings). Default true. */
+  canConvert?: boolean;
+  /** Max files per run. Default 10. */
+  maxFiles?: number;
+  /** Replaces `outputFormat.toUpperCase()` in the Convert button copy. */
+  outputLabel?: string;
+  /** Filename used for the saved download (honest extension). Defaults to the input name. */
+  downloadName?: (file: File) => string;
+  /** Rendered above the dropzone in the upload stage. */
+  uploadHeader?: React.ReactNode;
+  /** Hide the dropzone in the upload stage (the header supplies the input). */
+  hideDropzone?: boolean;
+  /** Programmatically add files; processed whenever `key` changes. */
+  injectedFiles?: { key: string; files: File[] } | null;
 }
 
 interface FileUpload {
@@ -75,7 +93,16 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
   maxFileSize,
   outputFormat,
   toolIcon,
-  iconBg
+  iconBg,
+  extraOptions,
+  renderSettings,
+  canConvert = true,
+  maxFiles: maxFilesProp = 10,
+  outputLabel,
+  downloadName,
+  uploadHeader,
+  hideDropzone = false,
+  injectedFiles,
 }) => {
   const [stage, setStage] = useState<ConversionStage>('upload');
   const [selectedFiles, setSelectedFiles] = useState<FileUpload[]>([]);
@@ -101,7 +128,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
   const [levelModalOpen, setLevelModalOpen] = useState(false);
   const [compressionLevel, setCompressionLevel] = useState<'high' | 'medium' | 'low'>('high');
 
-  const maxFiles = 10;
+  const maxFiles = maxFilesProp;
   const maxSizeInBytes = parseFloat(maxFileSize) * 1024 * 1024;
 
   // Tool-specific upload copy so the upload page clearly states the conversion
@@ -301,6 +328,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
           const convertOptions: Record<string, unknown> = {};
           if (needsPassword) convertOptions.password = password.trim();
           if (isVideoCompress) convertOptions.level = compressionLevel;
+          if (extraOptions) Object.assign(convertOptions, extraOptions);
           formData.append('options', JSON.stringify(convertOptions));
 
           // Start conversion job with file upload
@@ -489,7 +517,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
     const file = selectedFiles[index];
     if (!file?.downloadUrl) return;
     try {
-      await downloadFromUrl(file.downloadUrl, file.file.name);
+      await downloadFromUrl(file.downloadUrl, downloadName ? downloadName(file.file) : file.file.name);
       toast({
         title: "Download Started",
         description: `${file.file.name} is being downloaded`,
@@ -518,7 +546,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
       for (const file of completedFiles) {
         if (!file.downloadUrl) continue;
         try {
-          await downloadFromUrl(file.downloadUrl, file.file.name);
+          await downloadFromUrl(file.downloadUrl, downloadName ? downloadName(file.file) : file.file.name);
           succeeded += 1;
         } catch (err) {
           failed += 1;
@@ -605,6 +633,16 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
     setIsDragOver(false);
   };
 
+  const injectedKeyRef = useRef<string | null>(null);
+  const selectionRef = useRef(handleFilesSelection);
+  selectionRef.current = handleFilesSelection;
+  React.useEffect(() => {
+    if (injectedFiles && injectedFiles.key !== injectedKeyRef.current) {
+      injectedKeyRef.current = injectedFiles.key;
+      selectionRef.current(injectedFiles.files);
+    }
+  }, [injectedFiles]);
+
   const validFilesCount = selectedFiles.filter(f => f.status === 'valid').length;
   const completedFilesCount = selectedFiles.filter(f => f.status === 'completed').length;
   const failedFilesCount = selectedFiles.filter(f => f.status === 'failed').length;
@@ -631,7 +669,8 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
       {/* Upload Stage — bare dropzone, identical design to every other tool */}
       {stage === 'upload' && !isPaused && (
         <>
-          <EnhancedUploadArea
+          {uploadHeader}
+          {!hideDropzone && <EnhancedUploadArea
             acceptedFormats={acceptedFormats}
             maxFileSize={maxFileSize}
             maxFiles={maxFiles}
@@ -645,7 +684,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
             toolId={toolType}
             title={uploadTitle}
             actionLabel={uploadActionLabel}
-          />
+          />}
           <GuestRecentDownloads toolType={toolType.replace(/-/g, '_')} />
         </>
       )}
@@ -679,7 +718,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
         </div>
 
         {/* Content Area */}
-        <div className="p-8">
+        <div className="p-4 sm:p-8">
 
           {/* Files Selected Stage */}
           {stage === 'files-selected' && selectedFiles.length > 0 && (
@@ -717,10 +756,12 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                     index={index}
                     progressLabel={actionLabels.progress}
                     doneLabel={actionLabels.done}
-                    status={fileUpload.status}
+                    status={fileUpload.status === "valid" && !canConvert ? "pending" : fileUpload.status}
                     progress={fileUpload.progress}
                     errorMessage={fileUpload.errorMessage}
-                    validationMessage={fileUpload.validationMessage}
+                    validationMessage={fileUpload.status === "valid" && !canConvert
+                      ? "Review the document or settings below before processing."
+                      : fileUpload.validationMessage}
                     downloadUrl={fileUpload.downloadUrl}
                     onRemove={removeFile}
                     onDownload={downloadIndividualFile}
@@ -729,6 +770,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
               </div>
 
               {/* Add More Files Area */}
+              {selectedFiles.length < maxFiles && (
               <div className="border-2 border-dashed border-gray-200 rounded-lg p-4">
                 <EnhancedUploadArea
                   acceptedFormats={acceptedFormats}
@@ -744,6 +786,12 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                   toolId={toolType}
                 />
               </div>
+              )}
+
+              {renderSettings?.({
+                files: selectedFiles.filter(f => f.status === 'valid').map(f => f.file),
+                disabled: isConverting,
+              })}
 
               {/* Password field — Lock PDF / Unlock PDF only */}
               {needsPassword && (
@@ -771,16 +819,17 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
 
               {/* Action Buttons */}
               {hasValidFiles && (
-                <div className="flex justify-center space-x-4 pt-4">
+                <div className="flex flex-wrap justify-center gap-3 pt-4">
                   <Button
                     onClick={isVideoCompress ? () => setLevelModalOpen(true) : startBatchConversion}
                     className="bg-[#f7433d] hover:bg-[#e03a35] text-white px-8 py-3"
-                    disabled={isConverting || !passwordReady}
+                    disabled={isConverting || !passwordReady || !canConvert}
+                    data-testid="button-convert"
                   >
                     <Settings className="w-4 h-4 mr-2" />
                     {isVideoCompress
                       ? `Compress ${validFilesCount} Video${validFilesCount !== 1 ? 's' : ''}`
-                      : `Convert ${validFilesCount} File${validFilesCount !== 1 ? 's' : ''} to ${outputFormat.toUpperCase()}`}
+                      : `Convert ${validFilesCount} File${validFilesCount !== 1 ? 's' : ''} to ${outputLabel ?? outputFormat.toUpperCase()}`}
                   </Button>
                   <Button
                     onClick={resetWorkflow}
@@ -879,6 +928,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                 <div className="flex justify-center space-x-4 pt-4">
                   <Button
                     onClick={downloadAllFiles}
+                    data-testid="button-download-all"
                     className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
                   >
                     Download All Files

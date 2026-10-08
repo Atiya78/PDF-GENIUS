@@ -1,0 +1,65 @@
+Add new converters and PDF tools to PDF Genius
+
+## Context
+PDF Genius (pdfgenius.app) is a live PDF and image toolkit. Add the tools listed below and fix the incomplete existing ones. Keep everything else working exactly as it does today.
+
+## Before you start
+- Look at how the existing tools are built: the shared tool catalog, the routes, the ToolSearch component, the header and drawer nav, the tool-paused state, the SEO prerender and sitemap pipeline, and the /api/v1 endpoints.
+- Every new tool must follow the same patterns. Don't create a parallel system.
+- Check what conversion libraries the server already has (for example LibreOffice, Ghostscript, pdf-lib, Sharp) and reuse them. Before adding a new dependency, tell me which one and why.
+
+## Phase 1: Fix existing tools
+1. PDF to JPG: add real JPG output with a quality setting, and keep PNG as an option. Update the labels and descriptions that currently say "current output: PNG".
+2. Convert Image: add JPG, WebP and PNG output. Accept HEIC/HEIF input.
+3. Split PDF: add "split by page ranges" (e.g. 1-3, 5, 8-10) and "extract selected pages into one PDF", alongside the current split-every-page mode.
+4. Rotate PDF: let the user rotate selected pages or all pages by 90, 180 or 270 degrees, with page thumbnails.
+5. HTML to PDF: add a "From URL" mode. Validate URLs, block private and internal IP addresses (SSRF protection), and add timeouts and size limits.
+
+## Phase 2: New converters
+1. PDF to Text (.txt)
+2. Text and RTF to PDF
+3. PDF to PDF/A (PDF/A-2b)
+4. EPUB to PDF, and PDF to EPUB
+5. ODT, ODS and ODP to PDF
+6. Markdown to PDF, with clean default styling and Bangla font support
+7. HEIC, WebP and SVG to PDF (extend Images to PDF)
+
+## Phase 3: New PDF tools
+1. Organize PDF: drag-and-drop page reordering with thumbnails; delete and rotate pages in the same view
+2. Add Page Numbers: position, start number, format ("1" or "Page 1 of N"), font size, page range
+3. Repair PDF: try to rebuild damaged or corrupted PDFs
+4. Redact PDF: draw boxes or search for text, then permanently remove the content underneath. A black box drawn on top is not enough: the underlying text must be removed.
+5. Fill PDF Forms: detect AcroForm fields, fill them in the browser, and offer an option to flatten
+6. Flatten PDF: flatten form fields and annotations
+7. Compare PDFs: side-by-side text difference between two PDFs
+8. Edit PDF Metadata: title, author, subject, keywords
+
+## Phase 4: AI tools (build after Phases 1–3 are verified)
+1. Summarize PDF and Chat with PDF
+2. Translate PDF (English ↔ Bangla first)
+- Reuse the AI provider and setup the Education Zone already uses. Apply the existing plan limits and auth rules. Don't add new pricing or plans.
+- Show clearly that the output is AI-generated and may contain mistakes.
+
+## Requirements for every new tool
+- Add it to the shared tool catalog so it appears in the nav, ToolSearch, the All Tools grid, the footer tool list and the sitemap/prerender, each with a unique SEO title and description.
+- Follow the existing pattern for browser-side versus server-side processing, and update the "Where each tool processes your file" privacy info for each new tool.
+- Server-side tools must follow the current file-retention behavior. Don't write new retention or security claims into the public copy.
+- Add an /api/v1 endpoint for server-side tools where it fits the existing API pattern, and add it to the public /docs reference.
+- Use the existing design (coral branding, card style). Make it responsive from 320px to 2560px with no horizontal scrolling.
+- Show clear errors for unsupported, encrypted or oversized files.
+- Support the existing tool-paused state.
+
+## Out of scope
+- Changes to Dodo billing, prices, plans or the Education Zone
+- Native Android app changes
+- A redesign or rebranding
+- Unsupported marketing claims (speed, security, retention guarantees)
+
+## Verification
+- Run the typecheck and build.
+- For each new or changed tool, test it end to end with a real sample file and confirm the output opens correctly. Test with a Bangla-text PDF too.
+- Check that ToolSearch, mobile nav and the sitemap include the new tools.
+- Take screenshots at 375, 1024 and 1440px.
+- Report what you built, anything you couldn't do, and every dependency you added.
+
+Work phase by phase, and stop after each phase to summarize before continuing.

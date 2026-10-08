@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { Search, X } from "lucide-react";
 import { PausedBadge } from "@/components/PausedBadge";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 import { Command as CommandPrimitive } from "cmdk";
 import { toolConfigs, isHeroTool, getServerToolType, type ToolConfig } from "@/lib/toolConfig";
 import { usePausedTools } from "@/lib/usePausedTools";
@@ -109,7 +110,6 @@ export const ToolSearch = ({
           className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-400"
         >
           {tools.map((tool) => {
-            const Icon = tool.icon;
             const isPaused = pausedTools.has(getServerToolType(tool));
             return (
               <CommandPrimitive.Item
@@ -125,7 +125,7 @@ export const ToolSearch = ({
                 <span
                   className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.iconBgColor}`}
                 >
-                  <Icon className={`h-4 w-4 ${tool.iconColor}`} />
+                  <ToolLottieIcon toolId={tool.id} config={tool} size={28} />
                 </span>
                 <div className="flex min-w-0 flex-col">
                   <span className="text-sm font-medium text-gray-800">

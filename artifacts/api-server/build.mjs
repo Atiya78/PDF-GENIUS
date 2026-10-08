@@ -30,6 +30,7 @@ async function buildAll() {
     external: [
       "*.node",
       "sharp",
+      "heic-convert",
       "better-sqlite3",
       "sqlite3",
       "canvas",

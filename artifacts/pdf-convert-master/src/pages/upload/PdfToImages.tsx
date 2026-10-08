@@ -1,19 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import { ConversionWorkflow } from "@/components/ConversionWorkflow";
-import { Image } from "lucide-react";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
+import { ImageOutputOptions, type ImgFmt } from "@/components/upload/OutputOptions";
+
+const stem = (f: File) => f.name.replace(/\.[^.]+$/, "") || "file";
 
 export const PdfToImagesUpload: React.FC = () => {
+  const [fmt, setFmt] = useState<ImgFmt>("jpg");
+  const [quality, setQuality] = useState(90);
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="pdf-to-images"
         toolTitle="PDF to Images Converter"
-        toolDescription="Export PDF pages as PNG images in a ZIP archive. Direct JPG output is not currently offered by this workflow."
+        toolDescription="Export every PDF page as a JPG or PNG image. Pages are delivered together in a ZIP archive."
         acceptedFormats={[".pdf"]}
         maxFileSize="50MB"
-        outputFormat="JPG/PNG"
-        toolIcon={<Image className="w-8 h-8 text-blue-500" />}
+        outputFormat={`ZIP of ${fmt.toUpperCase()} images`}
+        outputLabel={`ZIP (${fmt.toUpperCase()} images)`}
+        toolIcon={<ToolLottieIcon toolId="pdf-to-images" size={48} />}
         iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+        extraOptions={{ outputFormat: fmt, quality }}
+        downloadName={(f) => `${stem(f)}-images.zip`}
+        renderSettings={({ disabled }) => (
+          <ImageOutputOptions
+            title="Image output" formats={["jpg", "png"]} format={fmt} quality={quality}
+            onFormat={setFmt} onQuality={setQuality} disabled={disabled}
+            note="The download is always a ZIP with one image per page."
+          />
+        )}
       />
     </div>
   );

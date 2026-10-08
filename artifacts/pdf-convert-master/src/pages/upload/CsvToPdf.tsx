@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
-import { FileSpreadsheet, RefreshCw, Download, RotateCcw } from "lucide-react";
+import { RefreshCw, Download, RotateCcw } from "lucide-react";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 import { CSV_MAX_BYTES, decodeCsv, parseCsv } from "@workspace/csv-utils";
 import { ToolPageShell } from "@/components/upload/ToolPageShell";
 import { UploadDropzone } from "@/components/upload/UploadDropzone";
@@ -236,7 +237,7 @@ export const CsvToPdfUpload: React.FC = () => {
     <ToolPageShell
       title="CSV to PDF"
       description="Turn a CSV file into a printable PDF table."
-      icon={<FileSpreadsheet className="w-8 h-8 text-[#f7433d]" />}
+      icon={<ToolLottieIcon toolId="csv-to-pdf" size={48} />}
       iconBoxClassName="border-[#f7433d]/30 bg-[#f7433d]/10"
       maxWidth="max-w-4xl"
       showHeader={showWorking}

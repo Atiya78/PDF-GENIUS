@@ -44,6 +44,9 @@ import * as xlsx from "xlsx";
 import { execSync, spawn } from "child_process";
 import puppeteer from "puppeteer";
 import { buildCsvPdf, type CsvPrintOptions } from "./lib/csvToPdf";
+import { rotatePdfPages, splitPdfPages, loadEditablePdf } from "./lib/pdfOperations";
+import { normalizeImageInput, imageQuality } from "./lib/imageInput";
+import { PublicPageFetcher, urlSourceFile } from "./lib/publicUrl";
 import { PDFParse } from "pdf-parse";
 import { Document, Packer, Paragraph, TextRun, PageBreak } from "docx";
 import pptxgen from "pptxgenjs";
@@ -184,10 +187,9 @@ async function acquireRenderSlot(): Promise<() => void> {
 
 // Render HTML into a real, faithful PDF using headless Chromium.
 // Security: the HTML can be user-supplied (or derived from user uploads), so we
-// run it locked down — JavaScript disabled and ALL network/file fetches blocked
-// except inline data: URIs. This prevents SSRF (e.g. cloud metadata endpoints)
-// and stops external resources from hanging the render. We also cap render time.
-async function htmlToPdfBuffer(html: string, printOptions: Partial<CsvPrintOptions> = {}): Promise<Buffer> {
+// JavaScript is disabled. File mode blocks all network/file fetches; URL mode
+// fulfills allowed assets through the IP-pinned, size-limited Node transport.
+async function htmlToPdfBuffer(html: string, printOptions: Partial<CsvPrintOptions> = {}, publicPage?: PublicPageFetcher): Promise<Buffer> {
   const release = await acquireChromiumSlot();
   let browser: import("puppeteer").Browser | undefined;
   try {
@@ -199,16 +201,25 @@ async function htmlToPdfBuffer(html: string, printOptions: Partial<CsvPrintOptio
     const page = await browser.newPage();
     await page.setJavaScriptEnabled(false);
     await page.setRequestInterception(true);
-    page.on('request', (req) => {
+    page.on('request', async (req) => {
       const url = req.url();
-      if (url.startsWith('data:') || url.startsWith('about:') || url.startsWith('blob:')) {
-        req.continue();
-      } else {
-        // Block http(s)/file/ftp/etc. to prevent SSRF and external fetches.
-        req.abort();
+      try {
+        if (url.startsWith('data:') || url.startsWith('about:') || url.startsWith('blob:')) {
+          await req.continue();
+        } else if (publicPage && ['image', 'stylesheet', 'font'].includes(req.resourceType())) {
+          const asset = await publicPage.fetch(url, 2 * 1024 * 1024);
+          if (!req.isInterceptResolutionHandled()) await req.respond({ status: 200, contentType: asset.contentType, body: asset.body });
+        } else {
+          await req.abort();
+        }
+      } catch {
+        if (!req.isInterceptResolutionHandled()) await req.abort().catch(() => undefined);
       }
     });
     await page.setContent(html, { waitUntil: 'load', timeout: 20000 });
+    publicPage?.assertSizeLimits();
+    if (publicPage && !(await page.evaluate("Boolean(document.body && document.body.innerText.trim()) || Boolean(document.querySelector('img,svg'))")))
+      throw new Error("This page has no static content to print. Pages that require JavaScript or a login are not supported in URL mode.");
     const pdfBytes = await page.pdf({
       format: 'A4',
       printBackground: true,
@@ -429,7 +440,7 @@ async function performActualConversion(
         return await convertPdfToWord(fileBuffer, outputFilename);
         
       case 'pdf_to_images':
-        return await convertPdfToImages(fileBuffer, outputFilename);
+        return await convertPdfToImages(fileBuffer, outputFilename, options);
         
       case 'images_to_pdf':
         return await convertImageToPdf(fileBuffer, inputExtension, outputFilename);
@@ -438,7 +449,7 @@ async function performActualConversion(
         return await compressPdf(fileBuffer, outputFilename);
         
       case 'rotate_pdf':
-        return await rotatePdf(fileBuffer, outputFilename);
+        return await rotatePdfPages(fileBuffer, options);
         
       case 'word_to_pdf':
         return await convertWordToPdf(fileBuffer, outputFilename);
@@ -463,7 +474,7 @@ async function performActualConversion(
         return await rotateImage(fileBuffer, inputExtension, outputFilename, options);
         
       case 'convert_image_format':
-        return await convertImageFormat(fileBuffer, inputExtension, outputExtension, outputFilename);
+        return await convertImageFormat(fileBuffer, inputExtension, outputExtension, outputFilename, options);
         
       case 'crop_image':
         return await cropImage(fileBuffer, inputExtension, outputFilename, options);
@@ -472,7 +483,7 @@ async function performActualConversion(
         return await mergePdfs([fileBuffer], outputFilename);
         
       case 'split_pdf':
-        return await splitPdf(fileBuffer, outputFilename);
+        return await splitPdfPages(fileBuffer, options);
         
       case 'pdf_to_excel':
         return await convertPdfToExcel(fileBuffer, outputFilename);
@@ -484,7 +495,7 @@ async function performActualConversion(
         return await convertPowerPointToPdf(fileBuffer, outputFilename);
         
       case 'html_to_pdf':
-        return await convertHtmlToPdf(fileBuffer, outputFilename);
+        return await convertHtmlToPdf(fileBuffer, outputFilename, options);
         
       case 'upscale_image':
         return await upscaleImage(fileBuffer, inputExtension, outputFilename, options);
@@ -1078,23 +1089,28 @@ async function rotateImage(imageBuffer: Buffer, inputExt: string | undefined, ou
 }
 
 // Convert image format using Sharp
-async function convertImageFormat(imageBuffer: Buffer, inputExt: string | undefined, outputExt: string | undefined, outputFilename: string) {
+async function convertImageFormat(imageBuffer: Buffer, inputExt: string | undefined, outputExt: string | undefined, outputFilename: string, options: Record<string, unknown> = {}) {
   try {
+    if (options.outputFormat !== undefined && (typeof options.outputFormat !== "string" ||
+      !["jpg", "jpeg", "png", "webp", "gif", "avif", "tiff", "tif"].includes(options.outputFormat.toLowerCase())))
+      throw new Error("Unsupported output format. Choose JPG, PNG or WebP.");
+    imageBuffer = await normalizeImageInput(imageBuffer, inputExt);
+    const quality = imageQuality(options.quality);
     let convertedBuffer: Buffer;
     let mimeType: string;
     
     switch (outputExt) {
       case 'jpg':
       case 'jpeg':
-        convertedBuffer = await sharp(imageBuffer).jpeg({ quality: 90 }).toBuffer();
+        convertedBuffer = await sharp(imageBuffer).rotate().flatten({ background: '#ffffff' }).jpeg({ quality }).toBuffer();
         mimeType = 'image/jpeg';
         break;
       case 'png':
-        convertedBuffer = await sharp(imageBuffer).png().toBuffer();
+        convertedBuffer = await sharp(imageBuffer).rotate().png().toBuffer();
         mimeType = 'image/png';
         break;
       case 'webp':
-        convertedBuffer = await sharp(imageBuffer).webp({ quality: 90 }).toBuffer();
+        convertedBuffer = await sharp(imageBuffer).rotate().webp({ quality }).toBuffer();
         mimeType = 'image/webp';
         break;
       case 'gif':
@@ -1180,18 +1196,29 @@ async function cropImage(imageBuffer: Buffer, inputExt: string | undefined, outp
 }
 
 // PDF to Images: rasterize each page to a real PNG and bundle them in a ZIP.
-async function convertPdfToImages(pdfBuffer: Buffer, outputFilename: string) {
+async function convertPdfToImages(pdfBuffer: Buffer, outputFilename: string, options: Record<string, unknown> = {}) {
+  const format = options.outputFormat ?? "png";
+  if (!["jpg", "png"].includes(format as string)) throw new Error("Choose JPG or PNG output for PDF page images.");
+  const quality = imageQuality(options.quality);
+  const document = await loadEditablePdf(pdfBuffer);
+  const count = document.getPageCount();
+  if (count > 500) throw new Error("This PDF has more than 500 pages. Split it into smaller documents before exporting images.");
   const parser = new PDFParse({ data: new Uint8Array(pdfBuffer) });
   try {
-    const result = await parser.getScreenshot({ scale: 2 });
-
     const zip = new JSZip();
     let pageImages = 0;
-    for (const pg of result.pages) {
-      if (pg.data) {
-        zip.file(`page_${pg.pageNumber}.png`, Buffer.from(pg.data));
-        pageImages++;
-      }
+    let outputBytes = 0;
+    for (let page = 1; page <= count; page++) {
+      const result = await parser.getScreenshot({ scale: 2, partial: [page], imageDataUrl: false });
+      const pg = result.pages[0];
+      if (!pg?.data) throw new Error(`Page ${page} could not be rendered.`);
+      const image = format === "jpg"
+        ? await sharp(Buffer.from(pg.data)).flatten({ background: "#ffffff" }).jpeg({ quality }).toBuffer()
+        : Buffer.from(pg.data);
+      outputBytes += image.length;
+      if (outputBytes > 128 * 1024 * 1024) throw new Error("The exported images exceed 128 MB. Export fewer PDF pages at a time.");
+      zip.file(`page_${page}.${format}`, image);
+      pageImages++;
     }
 
     if (pageImages === 0) {
@@ -1606,45 +1633,6 @@ async function compressPdf(pdfBuffer: Buffer, outputFilename: string) {
   }
 }
 
-async function rotatePdf(pdfBuffer: Buffer, outputFilename: string) {
-  try {
-    // Load the PDF
-    const pdfDoc = await PDFDocument.load(pdfBuffer);
-    const pageCount = pdfDoc.getPageCount();
-    
-    // Create a new PDF with rotated pages
-    const rotatedDoc = await PDFDocument.create();
-    
-    // Copy and rotate each page
-    for (let i = 0; i < pageCount; i++) {
-      const [existingPage] = await rotatedDoc.copyPages(pdfDoc, [i]);
-      
-      // Rotate page 90 degrees clockwise
-      existingPage.setRotation(degrees(90));
-      
-      rotatedDoc.addPage(existingPage);
-    }
-    
-    // Add rotation metadata
-    rotatedDoc.setTitle('Rotated PDF Document');
-    rotatedDoc.setSubject('PDF pages rotated 90 degrees clockwise');
-    rotatedDoc.setCreator('PDF Rotation Tool');
-    rotatedDoc.setProducer('Advanced PDF Rotator v1.0');
-    
-    const rotatedBytes = await rotatedDoc.save();
-    
-    console.log(`PDF rotated: ${pageCount} pages rotated 90 degrees clockwise`);
-    
-    return {
-      success: true,
-      convertedBuffer: Buffer.from(rotatedBytes),
-      mimeType: 'application/pdf'
-    };
-  } catch (error) {
-    throw new Error(`PDF rotation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
 // Pull every word + bounding box out of a Tesseract result, regardless of which
 // shape the version returns (`data.words` on older builds, nested `data.blocks`
 // on newer ones).
@@ -1870,32 +1858,6 @@ async function mergePdfs(pdfBuffers: Buffer[], outputFilename: string) {
 }
 
 // Split PDF: extract every page into its own real PDF and bundle them in a ZIP.
-async function splitPdf(pdfBuffer: Buffer, outputFilename: string) {
-  try {
-    const srcDoc = await PDFDocument.load(pdfBuffer);
-    const pageCount = srcDoc.getPageCount();
-
-    const zip = new JSZip();
-    for (let i = 0; i < pageCount; i++) {
-      const newDoc = await PDFDocument.create();
-      const [copiedPage] = await newDoc.copyPages(srcDoc, [i]);
-      newDoc.addPage(copiedPage);
-      const bytes = await newDoc.save();
-      zip.file(`page_${i + 1}.pdf`, Buffer.from(bytes));
-    }
-
-    const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
-
-    return {
-      success: true,
-      convertedBuffer: zipBuffer,
-      mimeType: 'application/zip'
-    };
-  } catch (error) {
-    throw new Error(`PDF split failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
-  }
-}
-
 // PDF to Excel: extract real text per page and lay it out into spreadsheet rows,
 // splitting each line into cells on tabs or runs of 2+ spaces (column gaps).
 async function convertPdfToExcel(pdfBuffer: Buffer, outputFilename: string) {
@@ -2024,14 +1986,16 @@ async function convertPowerPointToPdf(pptBuffer: Buffer, outputFilename: string)
   }
 }
 
-async function convertHtmlToPdf(htmlBuffer: Buffer, outputFilename: string) {
+async function convertHtmlToPdf(htmlBuffer: Buffer, outputFilename: string, options: Record<string, unknown> = {}) {
   try {
-    // Extract HTML content from buffer
-    const htmlContent = htmlBuffer.toString('utf8');
+    if (options.inputMode !== undefined && !["file", "url"].includes(options.inputMode as string))
+      throw new Error("Choose HTML file or From URL mode.");
+    const publicPage = options.inputMode === "url" ? new PublicPageFetcher() : undefined;
+    const htmlContent = publicPage ? await publicPage.html(String(options.url ?? "")) : htmlBuffer.toString('utf8');
 
     // Render the actual HTML (styles, layout, images) with headless Chromium so
     // the PDF looks like the page itself, not a stripped-down text dump.
-    const pdfBuffer = await htmlToPdfBuffer(htmlContent);
+    const pdfBuffer = await htmlToPdfBuffer(htmlContent, {}, publicPage);
 
     return {
       success: true,
@@ -2710,6 +2674,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/convert", optionalConversionAuth, upload.single('file'), async (req, res) => {
     try {
+      let parsedOptions: Record<string, unknown> = {};
+      try {
+        parsedOptions = req.body.options ? JSON.parse(req.body.options) : {};
+        if (!parsedOptions || typeof parsedOptions !== "object" || Array.isArray(parsedOptions)) throw new Error();
+      } catch {
+        return res.status(400).json({ success: false, error: '"options" must be a JSON object.' });
+      }
+      if (!req.file && req.body.toolType === ToolType.HTML_TO_PDF && parsedOptions.inputMode === "url") {
+        try { req.file = urlSourceFile(String(parsedOptions.url ?? "")); }
+        catch (error) { return res.status(400).json({ success: false, error: error instanceof Error ? error.message : "Invalid URL." }); }
+      }
       if (!req.file) {
         return res.status(400).json({
           success: false,
@@ -2727,8 +2702,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const requestData = {
         toolType: req.body.toolType,
         fileName: req.body.fileName || req.file.originalname,
-        fileSize: parseInt(req.body.fileSize) || req.file.size,
-        options: req.body.options ? JSON.parse(req.body.options) : {}
+        fileSize: req.file.size,
+        options: parsedOptions
       };
 
       const validationResult = fileConversionRequestSchema.safeParse(requestData);
@@ -3198,6 +3173,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const requested = (options?.outputFormat || "png").toString().toLowerCase();
         outputExtension = allowedFormats[requested] || "png";
       }
+      if (toolType === ToolType.SPLIT_PDF) outputExtension = options?.mode === "extract" ? "pdf" : "zip";
       const outputFilename = `${inputName}_converted.${outputExtension}`;
       
       // PERFORM ACTUAL CONVERSION
@@ -4543,12 +4519,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const tool = (req as any).resolvedTool;
 
         const files = (req.files as Express.Multer.File[]) || [];
-        if (files.length === 0) {
-          return res.status(400).json({
-            success: false,
-            error: 'No file uploaded. Send the file in a multipart "file" field.',
-          });
-        }
 
         // Parse options (JSON string) plus convenience scalar fields.
         let options: Record<string, any> = {};
@@ -4559,8 +4529,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return res.status(400).json({ success: false, error: '"options" must be valid JSON.' });
           }
         }
+        if (!options || typeof options !== "object" || Array.isArray(options))
+          return res.status(400).json({ success: false, error: '"options" must be a JSON object.' });
         if (req.body?.outputFormat && options.outputFormat === undefined) options.outputFormat = req.body.outputFormat;
         if (req.body?.quality !== undefined && options.quality === undefined) options.quality = Number(req.body.quality);
+        if (!files.length && toolType === ToolType.HTML_TO_PDF && options.inputMode === "url") {
+          try { files.push(urlSourceFile(String(options.url ?? ""))); }
+          catch (error) { return res.status(400).json({ success: false, error: error instanceof Error ? error.message : "Invalid URL." }); }
+        }
+        if (!files.length) return res.status(400).json({
+          success: false, error: 'No file uploaded. Send a multipart "file" field, or use html_to_pdf with options.inputMode="url" and options.url.',
+        });
 
         const maxBytes = tool.maxFileSize * 1024 * 1024;
         const startTime = Date.now();
@@ -4642,6 +4621,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const requested = (options?.outputFormat || "png").toString().toLowerCase();
           outputExtension = allowedFormats[requested] || "png";
         }
+        if (toolType === ToolType.SPLIT_PDF) outputExtension = options?.mode === "extract" ? "pdf" : "zip";
         const outputFilename = `${inputName}_converted.${outputExtension}`;
 
         let result;

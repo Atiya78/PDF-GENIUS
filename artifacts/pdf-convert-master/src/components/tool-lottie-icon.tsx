@@ -4,6 +4,7 @@ import { toolConfigs, type ToolConfig } from "@/lib/toolConfig";
 import wordFile from "@/assets/lottie/word-file.json";
 import pdfToExcel from "@/assets/lottie/pdf-to-excel.json";
 import excelFileScanning from "@/assets/lottie/excel-file-scanning.json";
+import csvFileDocument from "@/assets/lottie/csv-file-document.json";
 import ppt from "@/assets/lottie/ppt.json";
 import pptToPdf from "@/assets/lottie/ppt_to_pdf.json";
 import pdf from "@/assets/lottie/pdf.json";
@@ -45,6 +46,7 @@ export const TOOL_ANIMATIONS: Record<string, unknown> = {
   "word-to-pdf": wordFile,
   "pdf-to-excel": pdfToExcel,
   "excel-to-pdf": excelFileScanning,
+  "csv-to-pdf": csvFileDocument,
   "pdf-to-powerpoint": ppt,
   "powerpoint-to-pdf": pptToPdf,
   "html-to-pdf": pdf,

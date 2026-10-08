@@ -21,8 +21,10 @@ import {
 import { toolConfigs, isHeroTool, getServerToolType } from "@/lib/toolConfig";
 import { useToolPaused } from "@/lib/usePausedTools";
 import { Menu } from "lucide-react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { canonicalToolPath } from "@/config/toolLandingPages";
 import { PausedBadge } from "@/components/PausedBadge";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 
 // Tools grouped for the navbar dropdowns
 const PDF_FROM = ["pdf-to-word", "pdf-to-excel", "pdf-to-powerpoint", "pdf-to-images"];
@@ -57,7 +59,6 @@ const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
   const tool = toolConfigs[id];
   const isPaused = useToolPaused(tool ? getServerToolType(tool) : undefined);
   if (!tool) return null;
-  const Icon = tool.icon;
   const target = tool.route;
   if (!target) return null;
   return (
@@ -70,7 +71,7 @@ const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
         <span
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.iconBgColor}`}
         >
-          <Icon className={`h-4 w-4 ${tool.iconColor}`} />
+          <ToolLottieIcon toolId={tool.id} config={tool} size={28} />
         </span>
         <span className="whitespace-nowrap text-sm font-medium text-gray-700">
           {tool.title}
@@ -90,12 +91,20 @@ const ColumnHeading = ({ children }: { children: React.ReactNode }): JSX.Element
 );
 
 export const ToolsNavDropdowns = (): JSX.Element => {
-
+  const [location] = useLocation();
+  const currentToolId = Object.values(toolConfigs).find(
+    tool => tool.route === location || canonicalToolPath(tool.id) === location ||
+      tool.route?.replace(/^\/upload(?=\/)/, "") === location,
+  )?.id ?? "";
+  // A few editor menus also link image tools; give each tool one category.
+  const currentCategory = IMAGE_TOOLS.includes(currentToolId) ? "image-tools"
+    : [...PDF_EDITOR_COL1, ...PDF_EDITOR_COL2].includes(currentToolId) ? "pdf-editor"
+    : [...PDF_FROM, ...PDF_TO].includes(currentToolId) ? "pdf-converter" : undefined;
   return (
     <>
       {/* PDF Converter */}
       <NavigationMenuItem>
-        <NavigationMenuTrigger hideChevron className={triggerClass} data-testid="nav-pdf-converter">
+        <NavigationMenuTrigger hideChevron className={triggerClass} aria-current={currentCategory === "pdf-converter" ? "page" : undefined} data-testid="nav-pdf-converter">
           PDF Converter
         </NavigationMenuTrigger>
         <NavigationMenuContent>
@@ -133,7 +142,7 @@ export const ToolsNavDropdowns = (): JSX.Element => {
 
       {/* PDF Editor */}
       <NavigationMenuItem>
-        <NavigationMenuTrigger hideChevron className={triggerClass} data-testid="nav-pdf-editor">
+        <NavigationMenuTrigger hideChevron className={triggerClass} aria-current={currentCategory === "pdf-editor" ? "page" : undefined} data-testid="nav-pdf-editor">
           PDF Editor
         </NavigationMenuTrigger>
         <NavigationMenuContent>
@@ -154,7 +163,7 @@ export const ToolsNavDropdowns = (): JSX.Element => {
 
       {/* Image Tools */}
       <NavigationMenuItem>
-        <NavigationMenuTrigger hideChevron className={triggerClass} data-testid="nav-image-tools">
+        <NavigationMenuTrigger hideChevron className={triggerClass} aria-current={currentCategory === "image-tools" ? "page" : undefined} data-testid="nav-image-tools">
           Image Tools
         </NavigationMenuTrigger>
         <NavigationMenuContent>
@@ -180,7 +189,6 @@ const MobileToolButton = ({
   const tool = toolConfigs[id];
   const isPaused = useToolPaused(tool ? getServerToolType(tool) : undefined);
   if (!tool) return null;
-  const Icon = tool.icon;
   const target = tool.route;
   if (!target) return null;
   return (
@@ -193,7 +201,7 @@ const MobileToolButton = ({
       <span
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.iconBgColor}`}
       >
-        <Icon className={`h-4 w-4 ${tool.iconColor}`} />
+        <ToolLottieIcon toolId={tool.id} config={tool} size={28} />
       </span>
       <span className="text-sm font-medium text-gray-700">{tool.title}</span>
       {isPaused && (

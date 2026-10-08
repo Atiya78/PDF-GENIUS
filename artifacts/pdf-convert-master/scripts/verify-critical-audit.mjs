@@ -156,9 +156,11 @@ try {
     await new Promise(resolve => setTimeout(resolve, 220));
     const hover = await page.$eval(selector, el => ({
       color: getComputedStyle(el).color,
-      underline: getComputedStyle(el, "::after").transform,
+      underline: getComputedStyle(el, "::after").content,
+      background: getComputedStyle(el).backgroundColor,
+      shadow: getComputedStyle(el).boxShadow,
     }));
-    verify(hover.color === "rgb(207, 48, 43)" && hover.underline === "matrix(1, 0, 0, 1, 0, 0)", `${selector}: coral hover and underline missing`);
+    verify(hover.color === "rgb(207, 48, 43)" && hover.underline === "none" && hover.background === "rgba(0, 0, 0, 0)" && hover.shadow === "none", `${selector}: navbar must use text-only hover styling`);
   }
   await page.setViewport({ width: 1024, height: 950 });
   await page.hover('[data-testid="nav-more"]');

@@ -1,5 +1,7 @@
 import { Link } from "wouter";
 import { useSeo } from "@/lib/useSeo";
+import aboutIllustration from "@/assets/about-collaboration.png";
+import supportIllustration from "@/assets/about-support.png";
 import {
   FREE_TOOLS_COPY,
   HTTPS_COPY,
@@ -53,12 +55,13 @@ export const About = (): JSX.Element => {
 
   return (
     <div className="bg-[#fffaf8] text-stone-900 overflow-x-hidden">
-      <section className="border-b border-stone-200">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20 lg:py-28">
+      <section className="border-b border-stone-200" data-testid="about-hero">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:gap-12 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:py-24 xl:gap-14">
+          <div className="min-w-0">
           <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest" style={{ color: CORAL }}>
             About PDF Genius
           </p>
-          <h1 className="mt-4 max-w-3xl text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] break-words">
+          <h1 className="mt-4 max-w-3xl text-3xl sm:text-5xl xl:text-6xl font-bold leading-[1.1] break-words">
             PDF and image tools for everyday work and study.
           </h1>
           <p className="mt-6 max-w-2xl text-base sm:text-lg text-stone-700 leading-relaxed">
@@ -81,6 +84,20 @@ export const About = (): JSX.Element => {
             >
               <Code2 className="w-4 h-4" /> Developer docs
             </Link>
+          </div>
+          </div>
+          <div className="mx-auto w-full min-w-0 max-w-xl lg:max-w-none">
+            <img
+              src={aboutIllustration}
+              alt=""
+              aria-hidden="true"
+              width={3002}
+              height={1370}
+              fetchPriority="high"
+              decoding="async"
+              className="block h-auto w-full max-w-full object-contain"
+              data-testid="about-hero-illustration"
+            />
           </div>
         </div>
       </section>
@@ -129,13 +146,14 @@ export const About = (): JSX.Element => {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20">
-        <div className="rounded-xl p-6 sm:p-10 text-white" style={{ backgroundColor: CORAL }}>
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20" data-testid="about-support">
+        <div className="grid items-center gap-8 rounded-xl p-6 text-white sm:p-10 lg:grid-cols-[1.15fr_1fr] xl:gap-12" style={{ backgroundColor: CORAL }}>
+          <div className="min-w-0">
           <h2 className="text-2xl sm:text-3xl font-bold">Questions or feedback?</h2>
           <p className="mt-3 max-w-xl leading-relaxed">
              Contact support with questions about a tool, your account or a file-processing issue.
           </p>
-          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+          <div className="mt-6 flex flex-col flex-wrap gap-3 sm:flex-row">
             <a
               href="mailto:support@pdfgenius.app"
               data-testid="link-about-email"
@@ -150,6 +168,20 @@ export const About = (): JSX.Element => {
             >
               Open contact page
             </Link>
+          </div>
+          </div>
+          <div className="mx-auto w-full min-w-0 max-w-sm lg:max-w-none">
+            <img
+              src={supportIllustration}
+              alt=""
+              aria-hidden="true"
+              width={2950}
+              height={1668}
+              loading="eager"
+              decoding="async"
+              className="block h-auto w-full max-w-full object-contain"
+              data-testid="about-support-illustration"
+            />
           </div>
         </div>
       </section>

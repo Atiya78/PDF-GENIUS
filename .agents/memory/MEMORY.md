@@ -5,9 +5,10 @@
 - [Mobile loaders](mobile-loaders.md) — all loading/processing states in pdf-convert-mobile use the shared `Loader`/`ScreenLoader` (processing.json), not ActivityIndicator.
 - [Lottie on Expo web](lottie-expo-web.md) — lottie-react-native@7 web needs the `@lottiefiles/dotlottie-react` optional peer installed.
 - [Web tool icons always animate](web-tool-icon-always-animate.md) — ToolLottieIcon ignores OS reduce-motion by design (mobile parity); don't re-add useReducedMotion.
+- [Uploaded navigation icons](web-navigation-tool-icons.md) — website dropdowns, mobile menus and search must show the same uploaded per-tool icons as tool pages/cards.
+- [Navbar selection](web-navbar-selection.md) — one highlighted heading at a time; text color only, no backgrounds, shadows or underlines.
 - [SvgXml viewBox clipping](svgxml-viewbox.md) — raw SVGs need a viewBox before SvgXml width/height will scale (not clip); inject one from width/height when missing.
 - [OCR text side-channel](ocr-text-storage.md) — in-memory job stores are purged on /api/download; fetch OCR text (and any per-job side data) before triggering download.
-- [api-server tsc vs esbuild](api-server-typecheck.md) — tsc is pre-existingly red on dead `routes_broken.ts`; app builds via esbuild. Don't "green" it as a side task.
 - [Watermark/overlay text fit](watermark-text-fit.md) — size overlay font from box WIDTH not height; off-screen measuring races font load; adjustsFontSizeToFit is web-unsupported.
 - [Nested PanResponder steal](nested-panresponder-steal.md) — child handle inside a draggable parent only "moves"; fix with capture handlers + `onPanResponderTerminationRequest:false` + hitSlop.
 - [pdf.js web-only split](pdfjs-mobile-web-split.md) — real PDF page rendering: pdfjs imported only from `.web.ts` (native stub), worker via unpkg CDN; draw/type signature via SignaturePad + drawSvgPath.
@@ -90,3 +91,5 @@
 - [Marketing claim verification](marketing-claims.md) — public claims need evidence or neutral wording; TODOs stay internal; keep mobile store declarations separate from web disclosures.
 - [TS preview/codegen compatibility](typescript-preview-codegen.md) — generic JSX tags break Replit metadata transforms; align Orval/Zod and browser typings.
 - [Education privacy & PDF fonts](education-privacy-fonts.md) — owner's OpenRouter key; transient sources, honest provider retention, and portable Bengali exports.
+- [URL rendering boundary](url-rendering-boundary.md) — static rendering is intentional; remote JavaScript requires a complete outbound-network sandbox, not just request interception.
+- [Rotated PDF text verification](rotated-text-verification.md) — normalize extraction layout whitespace before diagnosing Bangla text loss; keep page and rotation checks strict.
