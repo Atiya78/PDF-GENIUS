@@ -46,6 +46,7 @@ const toolTypeMap: Record<string, string> = {
   "pdf-to-images": "pdf_to_images",
   "word-to-pdf": "word_to_pdf",
   "excel-to-pdf": "excel_to_pdf",
+  "csv-to-pdf": "csv_to_pdf",
   "powerpoint-to-pdf": "powerpoint_to_pdf",
   "html-to-pdf": "html_to_pdf",
   "images-to-pdf": "images_to_pdf",
@@ -117,6 +118,7 @@ const getActionLabel = (cfg: ToolConfig): string => {
     "pdf-to-images": "Convert to Images",
     "word-to-pdf": "Convert to PDF",
     "excel-to-pdf": "Convert to PDF",
+    "csv-to-pdf": "Convert to PDF",
     "powerpoint-to-pdf": "Convert to PDF",
     "html-to-pdf": "Convert to PDF",
     "images-to-pdf": "Convert to PDF",
@@ -157,7 +159,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const mountedRef = useRef(true);
   const [, setLocation] = useLocation();
-  const isNavigateTool = NAVIGATE_TOOL_IDS.has(toolConfig.id);
+  const isNavigateTool = NAVIGATE_TOOL_IDS.has(toolConfig.id) || toolConfig.id === "csv-to-pdf";
   const isComingSoon = !!toolConfig.comingSoon;
   // Admin-paused tools are greyed out just like coming-soon ones, but with a
   // "Temporarily unavailable" label. Editor tools without a backend toolType
@@ -1054,6 +1056,7 @@ export const Tools: React.FC = () => {
     "pdf-to-images",
     "word-to-pdf",
     "excel-to-pdf",
+    "csv-to-pdf",
     "powerpoint-to-pdf",
     "html-to-pdf",
     "images-to-pdf",

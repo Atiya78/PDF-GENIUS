@@ -206,6 +206,7 @@ export enum ToolType {
   PDF_TO_POWERPOINT = "pdf_to_powerpoint",
   WORD_TO_PDF = "word_to_pdf",
   EXCEL_TO_PDF = "excel_to_pdf",
+  CSV_TO_PDF = "csv_to_pdf",
   POWERPOINT_TO_PDF = "powerpoint_to_pdf",
   HTML_TO_PDF = "html_to_pdf",
   

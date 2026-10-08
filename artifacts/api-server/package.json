@@ -23,6 +23,7 @@
     "@types/uuid": "^11.0.0",
     "@types/ws": "^8.18.1",
     "@workspace/api-zod": "workspace:*",
+    "@workspace/csv-utils": "workspace:*",
     "@workspace/db": "workspace:*",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",

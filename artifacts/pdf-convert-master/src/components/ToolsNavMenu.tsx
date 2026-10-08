@@ -26,7 +26,7 @@ import { PausedBadge } from "@/components/PausedBadge";
 
 // Tools grouped for the navbar dropdowns
 const PDF_FROM = ["pdf-to-word", "pdf-to-excel", "pdf-to-powerpoint", "pdf-to-images"];
-const PDF_TO = ["word-to-pdf", "excel-to-pdf", "powerpoint-to-pdf", "images-to-pdf", "html-to-pdf"];
+const PDF_TO = ["word-to-pdf", "excel-to-pdf", "csv-to-pdf", "powerpoint-to-pdf", "images-to-pdf", "html-to-pdf"];
 const PDF_EDITOR_COL1 = ["edit-pdf", "sign-pdf", "rotate-pdf", "merge-pdfs", "split-pdf", "crop-pdf"];
 const PDF_EDITOR_COL2 = [
   "restore-document",
@@ -50,7 +50,7 @@ const IMAGE_TOOLS = [
 ];
 
 const triggerClass =
-  "font-medium text-gray-600 text-sm xl:text-base leading-6 bg-transparent hover:bg-transparent hover:text-gray-900 focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:text-gray-900 px-0 h-auto";
+  "site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 bg-transparent px-0 h-auto";
 
 
 const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
@@ -64,7 +64,7 @@ const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
     <NavigationMenuLink asChild>
       <Link
         href={target}
-        className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-blue-50 ${isPaused ? "opacity-70" : ""}`}
+        className={`site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left ${isPaused ? "opacity-70" : ""}`}
         data-testid={`nav-tool-${tool.id}`}
       >
         <span
@@ -95,7 +95,7 @@ export const ToolsNavDropdowns = (): JSX.Element => {
     <>
       {/* PDF Converter */}
       <NavigationMenuItem>
-        <NavigationMenuTrigger className={triggerClass} data-testid="nav-pdf-converter">
+        <NavigationMenuTrigger hideChevron className={triggerClass} data-testid="nav-pdf-converter">
           PDF Converter
         </NavigationMenuTrigger>
         <NavigationMenuContent>
@@ -121,10 +121,10 @@ export const ToolsNavDropdowns = (): JSX.Element => {
             <NavigationMenuLink asChild>
               <Link
                 href="/tools"
-                className="text-sm font-semibold text-blue-600 transition-colors hover:text-blue-700"
+                className="site-nav-row inline-block rounded-md px-2 py-1 text-sm font-semibold text-blue-600"
                 data-testid="nav-view-all-tools"
               >
-                View all tools →
+                View all tools
               </Link>
             </NavigationMenuLink>
           </div>
@@ -133,7 +133,7 @@ export const ToolsNavDropdowns = (): JSX.Element => {
 
       {/* PDF Editor */}
       <NavigationMenuItem>
-        <NavigationMenuTrigger className={triggerClass} data-testid="nav-pdf-editor">
+        <NavigationMenuTrigger hideChevron className={triggerClass} data-testid="nav-pdf-editor">
           PDF Editor
         </NavigationMenuTrigger>
         <NavigationMenuContent>
@@ -154,7 +154,7 @@ export const ToolsNavDropdowns = (): JSX.Element => {
 
       {/* Image Tools */}
       <NavigationMenuItem>
-        <NavigationMenuTrigger className={triggerClass} data-testid="nav-image-tools">
+        <NavigationMenuTrigger hideChevron className={triggerClass} data-testid="nav-image-tools">
           Image Tools
         </NavigationMenuTrigger>
         <NavigationMenuContent>
@@ -187,7 +187,7 @@ const MobileToolButton = ({
     <Link
       href={target}
       onClick={(event) => closeOnNavigation(event, onNavigate)}
-      className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors hover:bg-blue-50 ${isPaused ? "opacity-70" : ""}`}
+      className={`site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left ${isPaused ? "opacity-70" : ""}`}
       data-testid={`mobile-nav-tool-${tool.id}`}
     >
       <span
@@ -250,7 +250,7 @@ export const MobileNav = ({
           <Link
             href={homeItem.href}
             onClick={(event) => closeOnNavigation(event, close)}
-            className="block w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700 hover:bg-gray-50"
+            className="site-nav-row block w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700"
             data-testid="mobile-nav-home"
           >
             {homeItem.name}
@@ -258,7 +258,7 @@ export const MobileNav = ({
 
           <Accordion type="multiple" className="w-full">
             <AccordionItem value="pdf" className="border-none">
-              <AccordionTrigger className="px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
                 PDF Converter
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -281,7 +281,7 @@ export const MobileNav = ({
                 <Link
                   href="/tools"
                   onClick={(event) => closeOnNavigation(event, close)}
-                  className="block mt-1 px-3 py-2 text-left text-sm font-semibold text-blue-600 hover:text-blue-700"
+                  className="site-nav-row block mt-1 rounded-lg px-3 py-2 text-left text-sm font-semibold text-blue-600"
                   data-testid="mobile-nav-view-all-tools"
                 >
                   View all tools →
@@ -290,7 +290,7 @@ export const MobileNav = ({
             </AccordionItem>
 
             <AccordionItem value="pdf-editor" className="border-none">
-              <AccordionTrigger className="px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
                 PDF Editor
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -301,7 +301,7 @@ export const MobileNav = ({
             </AccordionItem>
 
             <AccordionItem value="image" className="border-none">
-              <AccordionTrigger className="px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
                 Image Tools
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -317,7 +317,7 @@ export const MobileNav = ({
               key={item.name}
               href={item.href}
               onClick={(event) => closeOnNavigation(event, close)}
-              className="block w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700 hover:bg-gray-50"
+              className="site-nav-row block w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700"
               data-testid={`mobile-nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
             >
               {item.name}

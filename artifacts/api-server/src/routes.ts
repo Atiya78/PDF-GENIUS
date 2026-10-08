@@ -43,6 +43,7 @@ import mammoth from "mammoth";
 import * as xlsx from "xlsx";
 import { execSync, spawn } from "child_process";
 import puppeteer from "puppeteer";
+import { buildCsvPdf, type CsvPrintOptions } from "./lib/csvToPdf";
 import { PDFParse } from "pdf-parse";
 import { Document, Packer, Paragraph, TextRun, PageBreak } from "docx";
 import pptxgen from "pptxgenjs";
@@ -58,6 +59,7 @@ const PptxGenCtor: any = (pptxgen as any)?.default ?? pptxgen;
 
 // MIME type mapping for proper file downloads
 const MIME_TYPES: { [key: string]: string } = {
+  'csv': 'text/csv',
   'pdf': 'application/pdf',
   'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'doc': 'application/msword',
@@ -185,7 +187,7 @@ async function acquireRenderSlot(): Promise<() => void> {
 // run it locked down — JavaScript disabled and ALL network/file fetches blocked
 // except inline data: URIs. This prevents SSRF (e.g. cloud metadata endpoints)
 // and stops external resources from hanging the render. We also cap render time.
-async function htmlToPdfBuffer(html: string): Promise<Buffer> {
+async function htmlToPdfBuffer(html: string, printOptions: Partial<CsvPrintOptions> = {}): Promise<Buffer> {
   const release = await acquireChromiumSlot();
   let browser: import("puppeteer").Browser | undefined;
   try {
@@ -212,6 +214,7 @@ async function htmlToPdfBuffer(html: string): Promise<Buffer> {
       printBackground: true,
       margin: { top: '16mm', bottom: '16mm', left: '14mm', right: '14mm' },
       timeout: 20000,
+      ...printOptions,
     });
     return Buffer.from(pdfBytes);
   } finally {
@@ -442,6 +445,10 @@ async function performActualConversion(
         
       case 'excel_to_pdf':
         return await convertExcelToPdf(fileBuffer, outputFilename);
+      case 'csv_to_pdf': {
+        const { html, print } = await buildCsvPdf(fileBuffer, inputFilename, options);
+        return { success: true, convertedBuffer: await htmlToPdfBuffer(html, print), mimeType: 'application/pdf' };
+      }
         
       case 'compress_image':
         return await compressImage(fileBuffer, inputExtension, outputFilename, options);

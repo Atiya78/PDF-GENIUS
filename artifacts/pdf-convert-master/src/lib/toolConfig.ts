@@ -151,6 +151,16 @@ export const toolConfigs: Record<string, ToolConfig> = {
     category: "Convert",
     route: "/upload/excel-to-pdf"
   },
+  "csv-to-pdf": {
+    id: "csv-to-pdf",
+    title: "CSV to PDF",
+    description: "Turn CSV data into readable PDF tables with page and header controls",
+    acceptedFormats: ["csv"], maxFileSize: "5MB", buttonText: "Convert to PDF",
+    dropAreaText: "Drop a CSV file here", fileTypeHint: "CSV files up to 5 MB",
+    outputFormat: "PDF", icon: FileSpreadsheet,
+    iconColor: "text-[#f7433d]", iconBgColor: "bg-[#f7433d]/10", iconBorderColor: "border-[#f7433d]/30",
+    category: "Convert", route: "/upload/csv-to-pdf"
+  },
   "powerpoint-to-pdf": {
     id: "powerpoint-to-pdf",
     title: "PowerPoint to PDF",
@@ -595,6 +605,7 @@ export const PDF_CONVERTER_IDS = [
   "pdf-to-images",
   "word-to-pdf",
   "excel-to-pdf",
+  "csv-to-pdf",
   "powerpoint-to-pdf",
   "images-to-pdf",
   "html-to-pdf",
@@ -625,6 +636,7 @@ export const getToolActionLabel = (cfg: ToolConfig): string => {
     "pdf-to-images": "Convert to Images",
     "word-to-pdf": "Convert to PDF",
     "excel-to-pdf": "Convert to PDF",
+    "csv-to-pdf": "Convert to PDF",
     "powerpoint-to-pdf": "Convert to PDF",
     "html-to-pdf": "Convert to PDF",
     "images-to-pdf": "Convert to PDF",
@@ -641,6 +653,7 @@ export const getServerToolType = (cfg: ToolConfig): string => {
     "pdf-to-images": "pdf_to_images",
     "word-to-pdf": "word_to_pdf",
     "excel-to-pdf": "excel_to_pdf",
+    "csv-to-pdf": "csv_to_pdf",
     "powerpoint-to-pdf": "powerpoint_to_pdf",
     "html-to-pdf": "html_to_pdf",
     "images-to-pdf": "images_to_pdf",

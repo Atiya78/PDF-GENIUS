@@ -1,5 +1,13 @@
 [
   {
+    "id":"csv-to-pdf","path":"/csv-to-pdf","name":"CSV to PDF","title":"CSV to PDF Converter",
+    "description":"Convert real CSV data into a readable PDF table. Preview your rows, choose page layout and export a paginated PDF.",
+    "why":"Make CSV exports easier to read and share as pages. Values remain text, including leading zeroes, and wide tables are grouped into printable column sections.",
+    "steps":["Select a CSV file up to 5 MB and inspect the table preview.","Choose the separator, page size, orientation and first-row header setting.","Convert the full table and download the PDF."],
+    "faqs":[["What CSV files are supported?","UTF-8 and BOM-marked UTF-16 CSV files with comma, semicolon, tab or pipe separators. Quoted fields, escaped quotes and multiline values are supported."],["Are all rows exported?","The preview shows up to eight rows, but conversion uses the full file. Limits are 10,000 rows, 50 columns and 100,000 cells."],["How are wide tables handled?","Landscape pages use sections of up to eight columns; portrait pages use up to five. Later sections repeat the first column for reference. When the first-row header option is on, CSV headers repeat on subsequent PDF pages; otherwise generated column labels repeat."]],
+    "related":["excel-to-pdf","pdf-to-excel","compress-pdf","merge-pdfs"],"processing":"server"
+  },
+  {
     "id":"pdf-to-word","path":"/pdf-to-word","name":"PDF to Word","title":"PDF to Word Converter",
     "description":"Convert a PDF into an editable DOCX document. Upload your file, run the conversion and check the Word output before editing.",
     "why":"Use Word when you need to revise paragraphs rather than annotate a fixed-layout PDF. Check tables, fonts and spacing after conversion.",

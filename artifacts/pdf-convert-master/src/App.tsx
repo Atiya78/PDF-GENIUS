@@ -52,6 +52,7 @@ const WordToPdfUpload = named(() => import("@/pages/upload/WordToPdf"), "WordToP
 const PdfToWordUpload = named(() => import("@/pages/upload/PdfToWord"), "PdfToWordUpload");
 const PdfToExcelUpload = named(() => import("@/pages/upload/PdfToExcel"), "PdfToExcelUpload");
 const ExcelToPdfUpload = named(() => import("@/pages/upload/ExcelToPdf"), "ExcelToPdfUpload");
+const CsvToPdfUpload = named(() => import("@/pages/upload/CsvToPdf"), "CsvToPdfUpload");
 const PowerPointToPdfUpload = named(() => import("@/pages/upload/PowerPointToPdf"), "PowerPointToPdfUpload");
 const PdfToPowerPointUpload = named(() => import("@/pages/upload/PdfToPowerPoint"), "PdfToPowerPointUpload");
 const PdfToImagesUpload = named(() => import("@/pages/upload/PdfToImages"), "PdfToImagesUpload");
@@ -82,6 +83,7 @@ const UnlockPdfUpload = named(() => import("@/pages/upload/UnlockPdf"), "UnlockP
 const canonicalToolComponents: Record<string, React.ComponentType> = {
   "pdf-to-word": PdfToWordUpload, "word-to-pdf": WordToPdfUpload,
   "pdf-to-excel": PdfToExcelUpload, "excel-to-pdf": ExcelToPdfUpload,
+  "csv-to-pdf": CsvToPdfUpload,
   "powerpoint-to-pdf": PowerPointToPdfUpload, "pdf-to-powerpoint": PdfToPowerPointUpload,
   "pdf-to-images": PdfToImagesUpload, "images-to-pdf": ImagesToPdfUpload,
   "html-to-pdf": HtmlToPdfUpload, "merge-pdfs": MergePdfsUpload,
@@ -419,6 +421,9 @@ function Router() {
         <DynamicLayout>
           <ExcelToPdfUpload />
         </DynamicLayout>
+      </Route>
+      <Route path="/upload/csv-to-pdf">
+        <DynamicLayout><CsvToPdfUpload /></DynamicLayout>
       </Route>
 
       <Route path="/upload/powerpoint-to-pdf">

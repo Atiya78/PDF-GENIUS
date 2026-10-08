@@ -1,254 +1,155 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { useLocation } from "wouter";
+import { Link } from "wouter";
 import { useSeo } from "@/lib/useSeo";
-import { VerifiedSiteStats } from "@/components/VerifiedSiteStats";
-import { SUPPORT_REPLY_COPY, SUPPORT_REPLY_TODO } from "@/config/siteCopy";
-import { 
-  Shield, 
-  Zap, 
-  Heart, 
-  Globe, 
-  Leaf, 
-  Headphones,
-  Building,
-  Phone,
-  Globe2
+import {
+  FREE_TOOLS_COPY,
+  HTTPS_COPY,
+  FILE_RETENTION_COPY,
+  IMAGE_UPLOAD_RETENTION_COPY,
+} from "@/config/siteCopy";
+import {
+  FileText,
+  Combine,
+  Scissors,
+  Minimize2,
+  LayoutGrid,
+  Image as ImageIcon,
+  ShieldCheck,
+  Code2,
+  Mail,
+  ArrowRight,
 } from "lucide-react";
+
+const CORAL = "#f7433d";
+
+const capabilities = [
+  { icon: FileText, title: "Convert", text: "Move documents between PDF and other formats." },
+  { icon: Combine, title: "Merge", text: "Combine several PDFs into one file." },
+  { icon: Scissors, title: "Split", text: "Separate a PDF into individual pages." },
+  { icon: Minimize2, title: "Compress", text: "Reduce file size for sharing and uploads." },
+  { icon: LayoutGrid, title: "Organize and edit", text: "Rotate, crop, sign and edit your PDFs." },
+  { icon: ImageIcon, title: "Image workflows", text: "Resize, crop, rotate and convert images." },
+];
+
+const handling = [
+  {
+    title: "Local or uploaded",
+    text: "Some operations run locally in your browser. Others upload the file for processing.",
+  },
+  { title: "In transit", text: HTTPS_COPY },
+  { title: "Stored results", text: FILE_RETENTION_COPY },
+  { title: "Image editor uploads", text: IMAGE_UPLOAD_RETENTION_COPY },
+];
 
 export const About = (): JSX.Element => {
   useSeo({
     title: "About PDF Genius",
     description:
-      "Learn about PDF Genius and its PDF and image tools. Free tools. No signup required.",
+      "PDF Genius is a browser toolkit for converting, editing, merging, splitting and compressing PDFs and images. Free tools. No signup required.",
     canonicalPath: "/about",
   });
-  const [, setLocation] = useLocation();
 
-  const coreValues = [
-    {
-      icon: Shield,
-      title: "Security First",
-      description: "Encrypted in transit (HTTPS). Some tools run locally; others upload files for processing."
-    },
-    {
-      icon: Zap,
-      title: "Lightning Fast",
-      description: "Our optimized conversion engine processes files in seconds, not minutes. Get your results instantly."
-    },
-    {
-      icon: Heart,
-      title: "User-Centric",
-      description: "Every feature is designed with you in mind. Simple, intuitive, and powerful tools that just work."
-    },
-    {
-      icon: Globe,
-      title: "Accessible",
-      description: "Use PDF and image tools through your web browser."
-    },
-    {
-      icon: Leaf,
-      title: "Eco-Friendly",
-      description: "Digital-first approach reduces paper waste. Our servers run on renewable energy sources."
-    },
-    {
-      icon: Headphones,
-      title: "Expert Support",
-      description: "Our dedicated support team is always ready to help. Professional assistance when you need it."
-    }
-  ];
-
-  const teamMembers = [
-    {
-      name: "Sarah Johnson",
-      position: "Chief Executive Officer",
-      description: "Leading PDF Genius with 15+ years of experience in tech innovation and digital transformation.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/e57646e20adf34f0f3b39ea49f9a6ca981e0f8df?width=504"
-    },
-    {
-      name: "Michael Chen",
-      position: "Chief Technology Officer",
-      description: "Architecting our cutting-edge conversion technology with expertise in cloud computing and AI systems.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/01b806e57e80d577978bee50b6dc9d71af006df2?width=504"
-    },
-    {
-      name: "Emily Rodriguez",
-      position: "Head of Product",
-      description: "Ensuring our tools meet user needs through innovative design and user experience optimization.",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/4d4fc0c5bed2bd9a4b7514963fcef4e8beda5656?width=504"
-    },
-    {
-      name: "David Kim",
-      position: "Head of Security",
-      description: "Encrypted in transit (HTTPS).",
-      image: "https://api.builder.io/api/v1/image/assets/TEMP/df8fa776e0c3b39f121324b712ecf19d28f076bd?width=504"
-    }
-  ];
+  const btn =
+    "inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 via-blue-50 to-blue-50">
-      
-      {/* Hero Section */}
-      <section 
-        className="relative min-h-[400px] py-20 md:py-24 flex items-center justify-center bg-cover bg-center"
-        style={{
-          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://api.builder.io/api/v1/image/assets/TEMP/20bcb3bd3bfc2186efb205fa91833735238659a2?width=2880')"
-        }}
-      >
-        <div className="text-center text-white max-w-4xl px-6">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            About <span className="text-blue-300">PDF Genius</span>
-          </h1>
-          <p className="text-xl sm:text-2xl mb-8 leading-relaxed max-w-3xl mx-auto">
-            Empowering businesses and individuals with professional PDF solutions since our founding
+    <div className="bg-[#fffaf8] text-stone-900 overflow-x-hidden">
+      <section className="border-b border-stone-200">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20 lg:py-28">
+          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest" style={{ color: CORAL }}>
+            About PDF Genius
           </p>
-          
-          <div className="flex flex-wrap items-center justify-center gap-4 text-lg">
-            <div className="flex items-center gap-2">
-              <Building className="w-5 h-5 text-blue-300" />
-              <span>PDF Genius</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Phone className="w-5 h-5 text-blue-300" />
-              <span>+447429919748</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Story Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
-              <div className="space-y-6 text-lg text-gray-600">
-                <p>
-                  PDF Genius provides PDF and image tools for converting, organizing and editing documents. Free tools. No signup required.
-                </p>
-                <p>
-                  We've built a platform that combines cutting-edge technology with intuitive design, making professional PDF conversion accessible to everyone.
-                </p>
-              </div>
-              
-              <VerifiedSiteStats group="about" />
-            </div>
-            
-            <div>
-              <img 
-                src="https://api.builder.io/api/v1/image/assets/TEMP/1d8a687c2ae4c42db87394ec89dbfcc7c3fb088a?width=1056"
-                alt="Team collaboration"
-                className="w-full h-96 object-cover rounded-lg shadow-xl"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Values Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Core Values</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              These principles guide everything we do at PDF Genius
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {coreValues.map((value, index) => (
-              <Card key={index} className="p-8 bg-white shadow-lg hover:shadow-xl transition-shadow">
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
-                  <value.icon className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-4">{value.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{value.description}</p>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Meet Our Team Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Meet Our Team</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              The passionate professionals behind PDF Genius
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {teamMembers.map((member, index) => (
-              <Card key={index} className="bg-white shadow-lg hover:shadow-xl transition-shadow overflow-hidden">
-                <div className="relative">
-                  <img 
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                </div>
-                <div className="p-6 text-center">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{member.name}</h3>
-                  <p className="text-blue-600 font-semibold mb-3">{member.position}</p>
-                  <p className="text-sm text-gray-600 leading-relaxed">{member.description}</p>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Get in Touch Section */}
-      <section className="py-20 bg-slate-900 bg-gradient-to-r from-slate-800 to-slate-900">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Get in Touch</h2>
-            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-              Have questions about our services? We'd love to hear from you.
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="text-center text-white">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Building className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-4">Company</h3>
-              <p className="text-gray-200 mb-1">PDF Genius</p>
-              <p className="text-gray-200">Professional PDF Solutions</p>
-            </div>
-            
-            <div className="text-center text-white">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Phone className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-4">Phone</h3>
-              <p className="text-gray-200 mb-1">+447429919748</p>
-              <p className="text-gray-200 text-sm">{SUPPORT_REPLY_COPY}</p>
-              <p className="text-gray-200 text-xs mt-2">{SUPPORT_REPLY_TODO}</p>
-            </div>
-            
-            <div className="text-center text-white">
-              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Globe2 className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-4">Website</h3>
-              <p className="text-gray-200 mb-1">pdfgenius.app</p>
-              <p className="text-gray-200 text-sm">Your trusted PDF partner</p>
-            </div>
-          </div>
-          
-          <div className="text-center">
-            <Button
-              className="bg-white text-slate-900 hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
-              onClick={() => setLocation('/contact')}
+          <h1 className="mt-4 max-w-3xl text-3xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] break-words">
+            PDF and image tools for everyday work and study.
+          </h1>
+          <p className="mt-6 max-w-2xl text-base sm:text-lg text-stone-700 leading-relaxed">
+            PDF Genius gives you straightforward browser workflows for the document jobs that come up
+            with work files and study material. {FREE_TOOLS_COPY}
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/tools"
+              data-testid="link-about-tools"
+              className={`${btn} text-white hover:opacity-90`}
+              style={{ backgroundColor: CORAL }}
             >
-              Contact Us Today
-            </Button>
+              Browse tools <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/docs"
+              data-testid="link-about-docs"
+              className={`${btn} border border-stone-300 bg-white hover:bg-stone-50`}
+            >
+              <Code2 className="w-4 h-4" /> Developer docs
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20">
+        <h2 className="text-2xl sm:text-3xl font-bold">What you can do</h2>
+        <div className="mt-8 grid gap-px bg-stone-200 border border-stone-200 rounded-lg overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
+          {capabilities.map((c) => (
+            <div key={c.title} className="bg-white p-5 sm:p-6" data-testid={`item-capability-${c.title}`}>
+              <c.icon className="w-6 h-6" style={{ color: CORAL }} />
+              <h3 className="mt-4 text-lg font-semibold">{c.title}</h3>
+              <p className="mt-1 text-stone-600 leading-relaxed">{c.text}</p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-6 max-w-2xl text-stone-600">
+           Web tools are available without signup. A developer API key requires an account.
+        </p>
+      </section>
+
+      <section className="bg-white border-y border-stone-200">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20 grid gap-10 lg:grid-cols-[1fr_1.4fr]">
+          <div>
+            <ShieldCheck className="w-8 h-8" style={{ color: CORAL }} />
+            <h2 className="mt-4 text-2xl sm:text-3xl font-bold">How your files are handled</h2>
+            <p className="mt-3 text-stone-600 leading-relaxed">
+              Knowing where a file goes matters. Here is what applies today.
+            </p>
+            <Link
+              href="/privacy-policy"
+              data-testid="link-about-privacy"
+              className="mt-5 inline-flex items-center gap-2 font-semibold hover:underline"
+              style={{ color: CORAL }}
+            >
+              Read the privacy policy <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <dl className="divide-y divide-stone-200 border-t border-b border-stone-200">
+            {handling.map((h) => (
+              <div key={h.title} className="py-4 sm:grid sm:grid-cols-[10rem_1fr] sm:gap-6">
+                <dt className="font-semibold">{h.title}</dt>
+                <dd className="mt-1 sm:mt-0 text-stone-600 leading-relaxed">{h.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20">
+        <div className="rounded-xl p-6 sm:p-10 text-white" style={{ backgroundColor: CORAL }}>
+          <h2 className="text-2xl sm:text-3xl font-bold">Questions or feedback?</h2>
+          <p className="mt-3 max-w-xl leading-relaxed">
+             Contact support with questions about a tool, your account or a file-processing issue.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3">
+            <a
+              href="mailto:support@pdfgenius.app"
+              data-testid="link-about-email"
+              className={`${btn} bg-white text-stone-900 hover:bg-stone-100 break-all`}
+            >
+              <Mail className="w-4 h-4 shrink-0" /> support@pdfgenius.app
+            </a>
+            <Link
+              href="/contact"
+              data-testid="link-about-contact"
+              className={`${btn} border border-white/70 hover:bg-white/10`}
+            >
+              Open contact page
+            </Link>
           </div>
         </div>
       </section>

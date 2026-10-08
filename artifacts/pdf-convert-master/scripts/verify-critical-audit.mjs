@@ -136,6 +136,40 @@ try {
     await visit(route);
     verify(!await page.evaluate(() => document.documentElement.scrollWidth > innerWidth + 1), `${route}: mobile page overflow`);
   }
+  await page.setViewport({ width: 1440, height: 950 });
+  await visit("/about");
+  const about = await page.evaluate(() => ({
+    content: document.querySelector("main").innerText,
+    fakePhotos: [...document.querySelectorAll("main img")].some(el => el.src.includes("builder.io") || el.src.includes("/TEMP/")),
+    arrows: document.querySelectorAll('[data-testid="nav-pdf-converter"] svg, [data-testid="nav-pdf-editor"] svg, [data-testid="nav-image-tools"] svg, [data-testid="nav-more"] svg').length,
+    active: document.querySelector('[data-testid="nav-about"]')?.getAttribute("aria-current"),
+  }));
+  verify(!/Sarah Johnson|Michael Chen|Emily Rodriguez|David Kim|renewable energy|15\+ years|TODO|Lorem ipsum|Meet Our Team|since our founding|results instantly/i.test(about.content), "About contains fabricated or placeholder copy");
+  verify(!about.fakePhotos, "About contains sample company/team photography");
+  verify(about.arrows === 0, "Navbar dropdown arrows remain");
+  verify(about.active === "page", "About active navigation state missing");
+  for (const [id, href] of [["tools", "/tools"], ["docs", "/docs"], ["privacy", "/privacy-policy"], ["contact", "/contact"], ["email", "mailto:support@pdfgenius.app"]]) {
+    verify(await page.$eval(`[data-testid="link-about-${id}"]`, el => el.getAttribute("href")) === href, `About ${id} destination incorrect`);
+  }
+  for (const selector of ['[data-testid="nav-home"]', '[data-testid="nav-pdf-converter"]', '[data-testid="nav-pdf-editor"]', '[data-testid="nav-image-tools"]', '[data-testid="nav-pricing"]', '[data-testid="nav-about"]']) {
+    await page.hover(selector);
+    await new Promise(resolve => setTimeout(resolve, 220));
+    const hover = await page.$eval(selector, el => ({
+      color: getComputedStyle(el).color,
+      underline: getComputedStyle(el, "::after").transform,
+    }));
+    verify(hover.color === "rgb(207, 48, 43)" && hover.underline === "matrix(1, 0, 0, 1, 0, 0)", `${selector}: coral hover and underline missing`);
+  }
+  await page.setViewport({ width: 1024, height: 950 });
+  await page.hover('[data-testid="nav-more"]');
+  await new Promise(resolve => setTimeout(resolve, 220));
+  verify(await page.$eval('[data-testid="nav-more"]', el => getComputedStyle(el).color) === "rgb(207, 48, 43)", "Compact More hover missing");
+  await page.mouse.move(10, 800);
+  await page.$eval('[data-testid="nav-more"]', el => el.focus());
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Enter");
+  await page.waitForFunction(() => document.querySelector('[data-testid="nav-more"]')?.getAttribute("data-state") === "open");
+  verify(true, "Arrowless menu still opens from keyboard");
   }
   signedInFixture = true;
   await page.evaluateOnNewDocument(() => localStorage.setItem("auth_token", "audit-fixture-not-a-real-token"));

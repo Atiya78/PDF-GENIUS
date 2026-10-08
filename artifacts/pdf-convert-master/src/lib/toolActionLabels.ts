@@ -23,6 +23,7 @@ const TOOL_ACTION_LABELS: Record<string, ToolActionLabels> = {
   // PDF conversion
   "pdf-to-word": CONVERT,
   "word-to-pdf": CONVERT,
+  "csv-to-pdf": CONVERT,
   "pdf-to-excel": CONVERT,
   "excel-to-pdf": CONVERT,
   "pdf-to-powerpoint": CONVERT,

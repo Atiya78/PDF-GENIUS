@@ -1,0 +1,8 @@
+{
+  "name": "@workspace/csv-utils",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": { ".": "./src/index.ts" },
+  "dependencies": { "csv-parse": "^6.1.0" }
+}

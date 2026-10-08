@@ -3,9 +3,9 @@ name: Marketing claim verification
 description: PDF Genius advertising context and the evidence requirement for public claims.
 ---
 
-Public copy must not invent usage numbers, testimonials, reliability guarantees or security assurances. When evidence or business confirmation is missing, use neutral verified wording or omit the claim; keep TODO notes in source-code comments, never visitor-visible text.
+Public copy must not invent usage numbers, testimonials, reliability guarantees or security assurances. About must describe the real product, not invented team members, company history, environmental claims or stock photos presented as the company. When evidence or business confirmation is missing, use neutral verified wording or omit the claim; keep TODO notes in source-code comments, never visitor-visible text.
 
-**Why:** The creator explicitly states that PDF Genius runs Google Ads and false claims are a risk. The owner-approved website audit also identified public privacy/support TODO notes as a trust problem.
+**Why:** The creator explicitly states that PDF Genius runs Google Ads and false claims are a risk. The owner-approved website audit also identified public privacy/support TODO notes as a trust problem. The owner explicitly requires About and new tools to have no dummy or placeholder content or behavior.
 
 **How to apply:** Check visible copy, metadata and structured data together. Verify processing and retention against reachable tool implementations, distinguishing memory cleanup from persistent-file deletion. Do not treat an advertised support response target as confirmed until the creator confirms it, and do not remove a TODO while retaining its unsupported promise.
 

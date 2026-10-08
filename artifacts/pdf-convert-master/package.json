@@ -78,6 +78,7 @@
     "zod": "catalog:"
   },
   "dependencies": {
+    "@workspace/csv-utils": "workspace:*",
     "fuse.js": "^7.4.2",
     "lottie-react": "^2.4.1",
     "pdf-lib": "^1.17.1",

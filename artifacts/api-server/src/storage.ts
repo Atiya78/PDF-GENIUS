@@ -182,6 +182,13 @@ export class MemStorage implements IStorage {
         processingTimeEstimate: 25
       },
       {
+        id: 28, name: "CSV to PDF", type: ToolType.CSV_TO_PDF,
+        category: ToolCategory.PDF_CONVERSION,
+        description: "Convert CSV data to a paginated PDF table",
+        inputFormats: ["csv"], outputFormat: "pdf", maxFileSize: 5,
+        processingTimeEstimate: 10
+      },
+      {
         id: 6,
         name: "PowerPoint to PDF",
         type: ToolType.POWERPOINT_TO_PDF,
@@ -877,6 +884,13 @@ export class DatabaseStorage implements IStorage {
         outputFormat: "pdf",
         maxFileSize: 100,
         processingTimeEstimate: 25
+      },
+      {
+        id: 28, name: "CSV to PDF", type: ToolType.CSV_TO_PDF,
+        category: ToolCategory.PDF_CONVERSION,
+        description: "Convert CSV data to a paginated PDF table",
+        inputFormats: ["csv"], outputFormat: "pdf", maxFileSize: 5,
+        processingTimeEstimate: 10
       },
       {
         id: 6,

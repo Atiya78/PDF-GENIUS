@@ -16,7 +16,7 @@ import { LottieIcon } from "@/components/ui/lottie-icon";
 import userAnim from "@/assets/lottie/user.json";
 
 export const NavigationSection = (): JSX.Element => {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const [loginHover, setLoginHover] = React.useState(false);
 
   // Simple (non-dropdown) navigation links; the tool categories render as dropdowns
@@ -63,7 +63,7 @@ export const NavigationSection = (): JSX.Element => {
                 <NavigationMenuLink
                   asChild
                 >
-                  <Link href={leadingItem.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors" data-testid="nav-home">
+                  <Link href={leadingItem.href} aria-current={location === leadingItem.href ? "page" : undefined} className="site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap" data-testid="nav-home">
                   {leadingItem.name}
                   </Link>
                 </NavigationMenuLink>
@@ -76,19 +76,19 @@ export const NavigationSection = (): JSX.Element => {
                   <NavigationMenuLink
                     asChild
                   >
-                    <Link href={item.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors" data-testid={`nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}>
+                    <Link href={item.href} aria-current={location === item.href ? "page" : undefined} className="site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap" data-testid={`nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}>
                     {item.name}
                     </Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               ))}
               <NavigationMenuItem className="xl:hidden">
-                <NavigationMenuTrigger className="bg-transparent px-0 text-sm text-gray-600" data-testid="nav-more">More</NavigationMenuTrigger>
+                <NavigationMenuTrigger hideChevron className="site-nav-action bg-transparent px-0 text-sm text-gray-600" data-testid="nav-more">More</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="w-48 p-2">
                     {trailingItems.filter(item => item.name !== "Pricing").map(item => (
                       <NavigationMenuLink key={item.href} asChild>
-                        <Link href={item.href} className="block rounded-md px-3 py-2 text-sm hover:bg-gray-100">{item.name}</Link>
+                        <Link href={item.href} aria-current={location === item.href ? "page" : undefined} className="site-nav-row block rounded-md px-3 py-2 text-sm">{item.name}</Link>
                       </NavigationMenuLink>
                     ))}
                   </div>

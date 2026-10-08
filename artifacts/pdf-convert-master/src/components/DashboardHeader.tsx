@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 
 export const DashboardHeader = (): JSX.Element => {
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
   const { user, signout } = useAuth();
 
   // Simple (non-dropdown) navigation links; the tool categories render as dropdowns
@@ -67,7 +67,7 @@ export const DashboardHeader = (): JSX.Element => {
               <NavigationMenuLink
                 asChild
               >
-                <Link href={leadingItem.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50" data-testid="nav-home">
+                <Link href={leadingItem.href} aria-current={location === leadingItem.href ? "page" : undefined} className="site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap px-3 py-2 rounded-lg" data-testid="nav-home">
                 {leadingItem.name}
                 </Link>
               </NavigationMenuLink>
@@ -80,7 +80,7 @@ export const DashboardHeader = (): JSX.Element => {
                 <NavigationMenuLink
                   asChild
                 >
-                  <Link href={item.href} className="font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-50" data-testid={`nav-${item.name.toLowerCase()}`}>
+                  <Link href={item.href} aria-current={location === item.href ? "page" : undefined} className="site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap px-3 py-2 rounded-lg" data-testid={`nav-${item.name.toLowerCase()}`}>
                   {item.name}
                   </Link>
                 </NavigationMenuLink>

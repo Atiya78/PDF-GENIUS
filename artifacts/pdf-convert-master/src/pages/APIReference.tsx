@@ -72,6 +72,13 @@ export const APIReference: React.FC<{ publicView?: boolean }> = ({ publicView = 
   // Tool-specific request options honoured by the live /api/v1 endpoint.
   // (Format list + max size come straight from /api/tools so they never drift.)
   const TOOL_OPTIONS: Record<string, { name: string; desc: string }[]> = {
+    csv_to_pdf: [
+      { name: "delimiter", desc: "auto (default), comma (,), semicolon (;), tab (\\t) or pipe (|)" },
+      { name: "paperSize", desc: "A4 (default) or Letter" },
+      { name: "orientation", desc: "landscape (default) or portrait" },
+      { name: "firstRowHeader", desc: "Use row 1 as the repeated table header (default true)" },
+      { name: "fontSize", desc: "8, 10 (default) or 12 points" },
+    ],
     convert_image_format: [
       { name: "outputFormat", desc: "Target format — one of png, jpg, webp, gif, avif, tiff" },
     ],
