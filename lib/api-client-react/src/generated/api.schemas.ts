@@ -7,6 +7,7 @@
  */
 export interface EducationProblem {
   error: string;
+  ocrUrl?: string;
 }
 
 export interface EducationPdfInput {
@@ -18,7 +19,7 @@ export interface EducationPdfInput {
 export interface EducationSourcePage {
   /**
      * @minimum 1
-     * @maximum 50
+     * @maximum 100000
      * @nullable
      */
   pageNumber: number | null;
@@ -35,16 +36,6 @@ export interface EducationExtraction {
   usedOcr: boolean;
   warnings: string[];
 }
-
-export type EducationQuizInputCount = typeof EducationQuizInputCount[keyof typeof EducationQuizInputCount];
-
-
-export const EducationQuizInputCount = {
-  NUMBER_5: 5,
-  NUMBER_10: 10,
-  NUMBER_20: 20,
-  NUMBER_30: 30,
-} as const;
 
 export type EducationQuizInputQuestionTypesItem = typeof EducationQuizInputQuestionTypesItem[keyof typeof EducationQuizInputQuestionTypesItem];
 
@@ -78,10 +69,15 @@ export const EducationQuizInputLanguage = {
 export interface EducationQuizInput {
   /**
      * @minItems 1
-     * @maxItems 50
+     * @maxItems 500
      */
   pages: EducationSourcePage[];
-  count: EducationQuizInputCount;
+  /**
+     * @minimum 5
+     * @maximum 50
+     */
+  count: number;
+  requestId?: string;
   /** @minItems 1 */
   questionTypes: EducationQuizInputQuestionTypesItem[];
   difficulty: EducationQuizInputDifficulty;
@@ -90,16 +86,6 @@ export interface EducationQuizInput {
   topicFocus?: string;
 }
 
-export type EducationFlashcardInputCount = typeof EducationFlashcardInputCount[keyof typeof EducationFlashcardInputCount];
-
-
-export const EducationFlashcardInputCount = {
-  NUMBER_10: 10,
-  NUMBER_20: 20,
-  NUMBER_40: 40,
-  NUMBER_60: 60,
-} as const;
-
 export type EducationFlashcardInputStyle = typeof EducationFlashcardInputStyle[keyof typeof EducationFlashcardInputStyle];
 
 
@@ -107,6 +93,7 @@ export const EducationFlashcardInputStyle = {
   'term-definition': 'term-definition',
   'question-answer': 'question-answer',
   'concept-explanation': 'concept-explanation',
+  cloze: 'cloze',
 } as const;
 
 export type EducationFlashcardInputLanguage = typeof EducationFlashcardInputLanguage[keyof typeof EducationFlashcardInputLanguage];
@@ -121,10 +108,15 @@ export const EducationFlashcardInputLanguage = {
 export interface EducationFlashcardInput {
   /**
      * @minItems 1
-     * @maxItems 50
+     * @maxItems 500
      */
   pages: EducationSourcePage[];
-  count: EducationFlashcardInputCount;
+  /**
+     * @minimum 10
+     * @maximum 100
+     */
+  count: number;
+  requestId?: string;
   style: EducationFlashcardInputStyle;
   language: EducationFlashcardInputLanguage;
 }
@@ -178,7 +170,7 @@ export interface EducationQuestion {
   difficulty: EducationQuestionDifficulty;
   /**
      * @minimum 1
-     * @maximum 50
+     * @maximum 100000
      * @nullable
      */
   sourcePage: number | null;
@@ -192,7 +184,7 @@ export interface EducationQuiz {
   title: string;
   /**
      * @minItems 1
-     * @maxItems 30
+     * @maxItems 50
      */
   questions: EducationQuestion[];
 }
@@ -215,7 +207,7 @@ export interface EducationCard {
   back: string;
   /**
      * @minimum 1
-     * @maximum 50
+     * @maximum 100000
      * @nullable
      */
   sourcePage: number | null;
@@ -250,11 +242,47 @@ export type EducationExportInputFormat = typeof EducationExportInputFormat[keyof
 export const EducationExportInputFormat = {
   pdf: 'pdf',
   docx: 'docx',
+  txt: 'txt',
+  markdown: 'markdown',
+  csv: 'csv',
+  html: 'html',
 } as const;
 
 export interface EducationExportInput {
   kind: EducationExportInputKind;
   format: EducationExportInputFormat;
+  quiz?: EducationQuiz;
+  deck?: EducationDeck;
+}
+
+export type EducationHistoryEntryKind = typeof EducationHistoryEntryKind[keyof typeof EducationHistoryEntryKind];
+
+
+export const EducationHistoryEntryKind = {
+  quiz: 'quiz',
+  flashcards: 'flashcards',
+} as const;
+
+export interface EducationHistoryEntry {
+  id: string;
+  kind: EducationHistoryEntryKind;
+  title: string;
+  createdAt: string;
+}
+
+export type EducationSavedResultKind = typeof EducationSavedResultKind[keyof typeof EducationSavedResultKind];
+
+
+export const EducationSavedResultKind = {
+  quiz: 'quiz',
+  flashcards: 'flashcards',
+} as const;
+
+export interface EducationSavedResult {
+  id: string;
+  kind: EducationSavedResultKind;
+  title: string;
+  createdAt: string;
   quiz?: EducationQuiz;
   deck?: EducationDeck;
 }

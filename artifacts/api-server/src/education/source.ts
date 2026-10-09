@@ -1,5 +1,4 @@
 import { PDFParse } from "pdf-parse";
-import { createWorker } from "tesseract.js";
 import type { EducationSourcePage, EducationExtraction } from "@workspace/api-zod";
 import { educationConfig, EducationError } from "./config";
 
@@ -35,40 +34,34 @@ export async function extractPdf(buffer: Buffer, range?: string): Promise<Educat
   if (!buffer.subarray(0, 1024).toString("latin1").includes("%PDF-"))
     throw new EducationError("Please upload a valid PDF file.");
   const parser = new PDFParse({ data: new Uint8Array(buffer) });
-  let worker: Awaited<ReturnType<typeof createWorker>> | undefined;
   try {
     const info = await parser.getInfo();
-    if (info.total > educationConfig.maxPages)
-      throw new EducationError("Free uploads support PDFs with up to 50 pages.", 413);
+    if (!range?.trim() && info.total > educationConfig.maxPages)
+      throw new EducationError("Select up to 500 pages at a time using the page range.", 413);
     const selected = parsePageRange(range, info.total);
-    const result = await parser.getText({ partial: selected });
-    const textByPage = new Map(result.pages.map(page => [page.num, cleanText(page.text)]));
+    if (selected.length > educationConfig.maxPages)
+      throw new EducationError("Select up to 500 pages at a time using the page range.", 413);
+    const textByPage = new Map<number, string>();
+    for (let offset = 0; offset < selected.length; offset += 20) {
+      const result = await parser.getText({ partial: selected.slice(offset, offset + 20) });
+      for (const page of result.pages) textByPage.set(page.num, cleanText(page.text));
+      if ([...textByPage.values()].reduce((sum, text) => sum + text.length, 0) > educationConfig.maxSourceCharacters)
+        throw new EducationError("This document has too much text. Select a smaller page range.", 413);
+    }
     const pages: EducationSourcePage[] = [], warnings: string[] = [];
-    let usedOcr = false;
     for (const pageNumber of selected) {
-      let text = textByPage.get(pageNumber) ?? "";
-      // Same PDFParse screenshot + local Tesseract pipeline as the existing OCR
-      // tool; OCR only missing pages, not the entire document.
-      if (text.replace(/\s/g, "").length < 20) {
-        usedOcr = true;
-        worker ??= await createWorker("eng+ben");
-        const shots = await parser.getScreenshot({ partial: [pageNumber], scale: 1.5 });
-        const image = shots.pages[0]?.data;
-        if (image) {
-          const recognised = await worker.recognize(Buffer.from(image));
-          text = cleanText(recognised.data.text);
-        }
-      }
+      const text = textByPage.get(pageNumber) ?? "";
       if (text) pages.push({ pageNumber, text });
       else warnings.push(`Page ${pageNumber} had no readable text and was skipped.`);
     }
+    if (!pages.length)
+      throw new EducationError("This PDF has no readable text (scanned). Please use OCR first", 422, "/upload/ocr-pdf");
     validateSource(pages);
-    return { pages, totalPages: info.total, usedOcr, warnings };
+    return { pages, totalPages: info.total, usedOcr: false, warnings };
   } catch (error) {
     if (error instanceof EducationError) throw error;
     throw new EducationError("Could not read this PDF. It may be password-protected, damaged, or too unclear. Try an unlocked PDF or paste text.");
   } finally {
-    await worker?.terminate().catch(() => {});
     await parser.destroy().catch(() => {});
   }
 }

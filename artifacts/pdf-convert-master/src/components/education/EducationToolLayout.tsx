@@ -20,10 +20,14 @@ export function EducationToolLayout({ toolId, seoTitle, seoDescription, upload, 
   const Icon = tool.icon;
   useSeo({ title: seoTitle, description: seoDescription, canonicalPath: tool.href, jsonLd: faqJsonLd(tool.faqs) });
   const related = educationTools.filter((t) => t.id !== toolId && t.status === "live").slice(0, 3);
-  const more = related.length ? related : educationTools.filter((t) => t.id !== toolId).slice(0, 3);
+  const more = related.length ? related : educationTools.filter((t) => t.status === "live" && t.id !== toolId).slice(0, 3);
+  const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
 
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-b from-[#fff7f6] to-white">
+    <div className="education-tool-content min-h-[100dvh] bg-gradient-to-b from-[#fff7f6] to-white">
+      <style>{`@font-face{font-family:"Education Bengali";src:url("${base}/api/education/font") format("truetype");font-weight:100 900;font-display:swap;unicode-range:U+0980-09FF}
+        .education-tool-content{font-family:Inter,"Education Bengali",system-ui,sans-serif}
+        .education-tool-content [class*="Poppins"]{font-family:Poppins,"Education Bengali",system-ui,sans-serif}`}</style>
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:py-12">
         <nav aria-label="Breadcrumb" className="mb-5 flex flex-wrap items-center gap-1 text-sm text-gray-500">
           <Link href="/" className="hover:text-gray-900">Home</Link><ChevronRight className="h-4 w-4" aria-hidden="true" />

@@ -26,9 +26,11 @@ import type {
   EducationExportInput,
   EducationExtraction,
   EducationFlashcardInput,
+  EducationHistoryEntry,
   EducationPdfInput,
   EducationQuiz,
   EducationQuizInput,
+  EducationSavedResult,
   HealthStatus
 } from './api.schemas';
 
@@ -59,6 +61,83 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   return result;
 };
 
+export const getGetEducationFontUrl = () => {
+
+
+
+
+  return `/api/education/font`
+}
+
+/**
+ * @summary Licensed Bengali font for study material
+ */
+export const getEducationFont = async ( options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetEducationFontUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEducationFontQueryKey = () => {
+    return [
+    `/api/education/font`
+    ] as const;
+    }
+
+
+export const getGetEducationFontQueryOptions = <TData = Awaited<ReturnType<typeof getEducationFont>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationFont>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEducationFontQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEducationFont>>> = ({ signal }) => getEducationFont({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEducationFont>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEducationFontQueryResult = NonNullable<Awaited<ReturnType<typeof getEducationFont>>>
+export type GetEducationFontQueryError = ErrorType<unknown>
+
+
+/**
+ * @summary Licensed Bengali font for study material
+ */
+
+export function useGetEducationFont<TData = Awaited<ReturnType<typeof getEducationFont>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationFont>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEducationFontQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
 export const getExtractEducationPdfUrl = () => {
 
 
@@ -68,7 +147,7 @@ export const getExtractEducationPdfUrl = () => {
 }
 
 /**
- * @summary Read a temporary PDF, using OCR for pages without text
+ * @summary Read a temporary text PDF with numbered pages
  */
 export const extractEducationPdf = async (educationPdfInput: EducationPdfInput, options?: Parameters<typeof customFetch>[1]): Promise<EducationExtraction> => {
     const formData = new FormData();
@@ -125,7 +204,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
     export type ExtractEducationPdfMutationVariables = {data: BodyType<EducationPdfInput>}
 
     /**
- * @summary Read a temporary PDF, using OCR for pages without text
+ * @summary Read a temporary text PDF with numbered pages
  */
 export const useExtractEducationPdf = <TError = ErrorType<EducationErrorResponse>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof extractEducationPdf>>, TError,ExtractEducationPdfMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
@@ -488,6 +567,222 @@ export const useRecordEducationEvent = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getRecordEducationEventMutationOptions(options));
+    }
+
+export const getListEducationHistoryUrl = () => {
+
+
+
+
+  return `/api/education/history`
+}
+
+/**
+ * @summary List the signed-in user's successful study results from the last 24 hours
+ */
+export const listEducationHistory = async ( options?: Parameters<typeof customFetch>[1]): Promise<EducationHistoryEntry[]> => {
+
+  return customFetch<EducationHistoryEntry[]>(getListEducationHistoryUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListEducationHistoryQueryKey = () => {
+    return [
+    `/api/education/history`
+    ] as const;
+    }
+
+
+export const getListEducationHistoryQueryOptions = <TData = Awaited<ReturnType<typeof listEducationHistory>>, TError = ErrorType<EducationErrorResponse>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEducationHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListEducationHistoryQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listEducationHistory>>> = ({ signal }) => listEducationHistory({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listEducationHistory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListEducationHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof listEducationHistory>>>
+export type ListEducationHistoryQueryError = ErrorType<EducationErrorResponse>
+
+
+/**
+ * @summary List the signed-in user's successful study results from the last 24 hours
+ */
+
+export function useListEducationHistory<TData = Awaited<ReturnType<typeof listEducationHistory>>, TError = ErrorType<EducationErrorResponse>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listEducationHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListEducationHistoryQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetEducationHistoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/education/history/${id}`
+}
+
+export const getEducationHistory = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<EducationSavedResult> => {
+
+  return customFetch<EducationSavedResult>(getGetEducationHistoryUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEducationHistoryQueryKey = (id: string,) => {
+    return [
+    `/api/education/history/${id}`
+    ] as const;
+    }
+
+
+export const getGetEducationHistoryQueryOptions = <TData = Awaited<ReturnType<typeof getEducationHistory>>, TError = ErrorType<EducationErrorResponse>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEducationHistoryQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEducationHistory>>> = ({ signal }) => getEducationHistory(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEducationHistory>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEducationHistoryQueryResult = NonNullable<Awaited<ReturnType<typeof getEducationHistory>>>
+export type GetEducationHistoryQueryError = ErrorType<EducationErrorResponse>
+
+
+
+export function useGetEducationHistory<TData = Awaited<ReturnType<typeof getEducationHistory>>, TError = ErrorType<EducationErrorResponse>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationHistory>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEducationHistoryQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getDeleteEducationHistoryUrl = (id: string,) => {
+
+
+
+
+  return `/api/education/history/${id}`
+}
+
+export const deleteEducationHistory = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteEducationHistoryUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteEducationHistoryMutationKey = () => ['deleteEducationHistory'] as const;
+
+export const getDeleteEducationHistoryMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEducationHistory>>, TError,DeleteEducationHistoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteEducationHistory>>, TError,DeleteEducationHistoryMutationVariables, TContext> => {
+
+const mutationKey = getDeleteEducationHistoryMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteEducationHistory>>, DeleteEducationHistoryMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  deleteEducationHistory(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteEducationHistoryMutationResult = NonNullable<Awaited<ReturnType<typeof deleteEducationHistory>>>
+
+    export type DeleteEducationHistoryMutationError = ErrorType<unknown>
+    export type DeleteEducationHistoryMutationVariables = {id: string}
+
+    export const useDeleteEducationHistory = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEducationHistory>>, TError,DeleteEducationHistoryMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteEducationHistory>>,
+        TError,
+        DeleteEducationHistoryMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteEducationHistoryMutationOptions(options));
     }
 
 export const getHealthCheckUrl = () => {

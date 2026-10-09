@@ -15,7 +15,7 @@ export function UploadBox({ src, disabled }: { src: SourceState; disabled: boole
     <div>
       <div role="tablist" aria-label="Source" className="mb-4 flex gap-2">{tab("upload", "Upload PDF")}{tab("paste", "Paste text")}</div>
       <p className="mb-4 rounded-lg bg-gray-50 p-3 text-xs text-gray-600" data-testid="text-ai-disclosure">
-        Privacy: PDF Genius does not store your PDF or its extracted text. To create questions or cards, the extracted text is sent to the configured AI provider, whose own data retention policies apply (we cannot promise the provider deletes its abuse-monitoring logs). Do not upload confidential material. Only generated flashcard decks and your study progress are kept, in this browser.
+        Privacy: PDF Genius does not save your PDF or extracted text. The text is sent to the configured AI provider, whose own retention policies apply. Do not upload confidential material. Signed-in accounts save generated results for 24 hours; flashcard progress and local edits are kept in this browser. Five generations per day are free; signed-in users can spend one credit per additional successful generation. Failed generations do not spend credits.
       </p>
       {src.mode === "upload" ? (
         <div className="space-y-4">

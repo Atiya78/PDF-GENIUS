@@ -52,7 +52,7 @@ test("real PDF text extraction respects selected pages, rejects damaged and >50-
   for (let i = 0; i < 51; i++) long.addPage();
   await assert.rejects(extractPdf(Buffer.from(await long.save())), /50 pages/);
 });
-test("real scanned-page OCR fallback reads a synthetic image, without persisting the upload", async () => {
+test("scanned-page extraction directs users to OCR without persisting the upload", async () => {
   const image = await sharp(Buffer.from(`<svg width="1400" height="900" xmlns="http://www.w3.org/2000/svg">
   <rect width="100%" height="100%" fill="white"/><g fill="black" font-family="Arial" font-size="38">
   <text x="65" y="120">Photosynthesis converts light into chemical energy.</text>
@@ -60,9 +60,8 @@ test("real scanned-page OCR fallback reads a synthetic image, without persisting
   <text x="65" y="280">Plants absorb water and release oxygen.</text></g></svg>`)).png().toBuffer();
   const pdf = await PDFDocument.create(), embedded = await pdf.embedPng(image);
   pdf.addPage([700, 450]).drawImage(embedded, { x: 0, y: 0, width: 700, height: 450 });
-  const result = await extractPdf(Buffer.from(await pdf.save()));
-  assert.equal(result.usedOcr, true);
-  assert.match(result.pages[0]!.text, /Chlorophyll/i);
+  await assert.rejects(extractPdf(Buffer.from(await pdf.save())), error =>
+    error instanceof EducationError && error.message === "This PDF has no readable text (scanned). Please use OCR first" && error.ocrUrl === "/upload/ocr-pdf");
 });
 
 test("strict AI parsing retries once, merges chunks, enforces grounded pages and answer choices", async () => {
@@ -165,9 +164,9 @@ test("PDF/DOCX exports work and printable flashcards have eight cards per sheet"
   const doc = await exportFile({ kind: "quiz", format: "docx", quiz });
   assert.equal(doc.buffer.subarray(0, 2).toString(), "PK");
   const deck = { title: "Revision", cards: Array.from({ length: 10 }, (_, i) => ({ id: String(i), front: "Chlorophyll", back: "Absorbs sunlight.", sourcePage: 1 })) };
-  assert.equal(exportHtml({ kind: "cards", format: "pdf", deck }).match(/class="sheet"/g)?.length, 2);
+  assert.equal(exportHtml({ kind: "cards", format: "pdf", deck }).match(/class="sheet"/g)?.length, 4);
   const file = await exportFile({ kind: "cards", format: "pdf", deck });
   const parser = new (await import("pdf-parse")).PDFParse({ data: new Uint8Array(file.buffer) });
-  try { assert.equal((await parser.getInfo()).total, 2); } finally { await parser.destroy(); }
-  await assert.rejects(exportFile({ kind: "cards", format: "docx", deck }), /Choose PDF/);
+  try { assert.equal((await parser.getInfo()).total, 4); } finally { await parser.destroy(); }
+  assert.equal((await exportFile({ kind: "cards", format: "docx", deck })).buffer.subarray(0, 2).toString(), "PK");
 });

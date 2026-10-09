@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Copy, FileText, FileSpreadsheet, FileDown, Trash2 } from "lucide-react";
+import { Copy, FileText, FileSpreadsheet, FileDown, Trash2, Printer } from "lucide-react";
 import type { EducationDeck } from "@workspace/api-client-react";
-import { cardsToAnki, cardsToCsv, copyText, downloadText, formatDeckText, requestExport, slugify } from "@/lib/education/exportHelpers";
+import { cardsToAnki, cardsToCsv, copyText, downloadText, formatDeckText, printStudyMaterial, requestExport, slugify } from "@/lib/education/exportHelpers";
 import type { Mark } from "@/lib/education/storage";
 import { ExportMenu } from "./ExportMenu";
 import { FlashcardDeck } from "./FlashcardDeck";
@@ -48,14 +48,18 @@ export function FlashcardWorkspace({ deck, marks, order, saveFailed, onDeck, onM
       <div className="mt-6 border-t border-gray-100 pt-5">
         <h3 className="mb-3 text-sm font-semibold text-gray-900">Export</h3>
         <ExportMenu disabledReason={empty ? "Add at least one card to export." : null} onExported={onExported} actions={[
-          { id: "pdf", label: "Printable PDF (2x4)", icon: FileText, run: () => requestExport({ kind: "cards", format: "pdf", deck }, `${base}-cards.pdf`) },
+          { id: "pdf", label: "Printable front/back PDF", icon: FileText, run: () => requestExport({ kind: "cards", format: "pdf", deck }, `${base}-cards.pdf`) },
           { id: "csv", label: "CSV", icon: FileSpreadsheet, run: () => downloadText(cardsToCsv(deck.cards), `${base}.csv`, "text/csv") },
           { id: "anki", label: "Anki TXT", icon: FileDown, run: () => downloadText(cardsToAnki(deck.cards), `${base}-anki.txt`, "text/plain") },
+          { id: "docx", label: "DOCX", icon: FileText, run: () => requestExport({ kind: "cards", format: "docx", deck }, `${base}.docx`) },
+          { id: "markdown", label: "Markdown", icon: FileText, run: () => requestExport({ kind: "cards", format: "markdown", deck }, `${base}.md`) },
+          { id: "print", label: "Print", icon: Printer, run: () => printStudyMaterial({ kind: "cards", deck }) },
           { id: "copy", label: "Copy", icon: Copy, run: () => copyText(formatDeckText(deck)) },
         ]} />
       </div>
       <div className="mt-4 rounded-xl bg-gray-50 p-4 text-sm text-gray-600" data-testid="text-privacy-notice">
-        <p>This deck and your progress are saved in this browser only. Your PDF and its text are never stored here.</p>
+        <p>Your study progress is saved in this browser. When signed in, the original generated deck is also saved to your account history for 24 hours. Local edits stay in this browser; export them to keep a copy. Your PDF and its extracted text are not saved.</p>
+        <p className="mt-1">For printable cards, print both sides of A4 paper and flip on the long edge. Front and back sheets have matching cut lines.</p>
         {saveFailed && <p role="alert" className="mt-1 font-semibold text-red-600">Your browser blocked saving, so this deck will be lost on refresh. Export it to keep it.</p>}
         {confirmClear ? (
           <p className="mt-2 flex flex-wrap items-center gap-2"><span className="font-semibold text-gray-900">Delete this deck and progress?</span>

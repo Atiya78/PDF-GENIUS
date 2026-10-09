@@ -16,7 +16,7 @@ function ensureUsageTable() {
 export async function reserveGeneration(req: Request): Promise<() => Promise<void>> {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new EducationError("Education tools are temporarily unavailable. Please try again later.", 503);
-  const identity = createHmac("sha256", secret).update(`education:${req.ip}`).digest("hex");
+  const identity = createHmac("sha256", secret).update(`education:${req.user?.id ?? req.ip}`).digest("hex");
   const day = new Date().toISOString().slice(0, 10);
   try {
     await ensureUsageTable();
@@ -34,6 +34,18 @@ export async function reserveGeneration(req: Request): Promise<() => Promise<voi
   } catch (error) {
     if (error instanceof EducationError) throw error;
     throw new EducationError("The study service is temporarily unavailable. Please try again.", 503);
+  }
+}
+
+export async function reserveEducationAccess(req: Request) {
+  try {
+    return { refund: await reserveGeneration(req), chargeCredit: false };
+  } catch (error) {
+    if (!(error instanceof EducationError) || error.status !== 429 || !req.user) throw error;
+    const available = await pool.query("SELECT credits FROM users WHERE id = $1", [req.user.id]);
+    if (!available.rows[0]?.credits)
+      throw new EducationError("You've used your five free generations today and have no credits left. Add credits or return tomorrow (UTC).", 402);
+    return { refund: async () => {}, chargeCredit: true };
   }
 }
 

@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useId } from "react";
 
 interface Opt<T> { value: T; label: string }
 interface Props<T extends string | number> {
@@ -42,5 +43,19 @@ export function ChipGroup<const T extends string | number>({ label, options, val
 export const LANGUAGE_OPTIONS = [
   { value: "english", label: "English" },
   { value: "bangla", label: "Bangla" },
-  { value: "same", label: "Same as document" },
+  { value: "same", label: "Same as PDF" },
 ] as const;
+
+export function CountInput({ label, min, max, value, onChange, disabled }: {
+  label: string; min: number; max: number; value: number; onChange: (value: number) => void; disabled?: boolean;
+}) {
+  const id = useId();
+  return <div>
+    <label htmlFor={id} className="mb-2 block text-sm font-semibold text-gray-900">{label}</label>
+    <input id={id} type="number" min={min} max={max} step={1} value={value || ""} disabled={disabled}
+      onChange={event => onChange(Number(event.target.value))}
+      className="h-10 w-full max-w-40 rounded-lg border border-gray-300 px-3 text-sm focus:border-[#f7433d] focus:outline-none"
+      aria-describedby={`${id}-hint`} />
+    <p id={`${id}-hint`} className="mt-1 text-xs text-gray-500">Choose any whole number from {min} to {max}.</p>
+  </div>;
+}

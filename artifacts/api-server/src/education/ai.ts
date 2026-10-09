@@ -52,13 +52,13 @@ or unsupported inferences. If insufficient material exists, return fewer items r
 Questions/cards must be distinct and useful, not repetitions. sourcePage must be the exact supplied
 page number supporting the item, or null for pasted text. Return only the requested strict JSON.`;
 
-async function completion(kind: "quiz" | "flashcards", prompt: string, retry: boolean): Promise<unknown> {
+async function completion(kind: "quiz" | "flashcards", prompt: string, retry: boolean, deadline: number): Promise<unknown> {
   assertAiReady();
   const { base, model, key, openrouter } = providerConfig();
   let response: Response;
   try {
     response = await fetch(`${base}/chat/completions`, {
-      method: "POST", signal: AbortSignal.timeout(120_000),
+      method: "POST", signal: AbortSignal.timeout(Math.max(1, Math.min(120_000, deadline - Date.now()))),
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         model, max_completion_tokens: 16_000,
@@ -72,16 +72,20 @@ async function completion(kind: "quiz" | "flashcards", prompt: string, retry: bo
       }),
     });
   } catch { throw new EducationError("AI is busy or took too long. Please try again.", 503); }
-  if (!response.ok) throw new EducationError("AI is busy or unavailable. Please try again.", 503);
+  if (!response.ok) throw new EducationError(
+    response.status === 429 ? "The AI provider is rate limited. Please wait and retry; no credits were charged."
+      : "AI is busy or unavailable. Please retry; no credits were charged.",
+    response.status === 429 ? 429 : 503);
   const body = await response.json() as { choices?: { message?: { content?: string; refusal?: string } }[] };
   const content = body.choices?.[0]?.message?.content;
   if (!content) throw new Error("Missing AI JSON");
   return JSON.parse(content);
 }
 
-async function validCompletion<T>(kind: "quiz" | "flashcards", prompt: string, parse: (value: unknown) => T): Promise<T> {
+async function validCompletion<T>(kind: "quiz" | "flashcards", prompt: string, parse: (value: unknown) => T, deadline: number): Promise<T> {
   for (let attempt = 0; attempt < 2; attempt++) {
-    try { return parse(await completion(kind, prompt, attempt === 1)); }
+    if (Date.now() >= deadline) throw new EducationError("Generation took too long. Try fewer items or a smaller page range; no credits were charged.", 503);
+    try { return parse(await completion(kind, prompt, attempt === 1, deadline)); }
     catch (error) {
       if (error instanceof EducationError) throw error;
       if (attempt === 1) throw new EducationError("AI could not create valid study material from this text. Try fewer items or a clearer document.", 503);
@@ -98,8 +102,11 @@ function key(text: string) { return text.normalize("NFKC").toLowerCase().replace
 
 // Every chunk is included. Group neighboring chunks only when there are fewer
 // requested items than chunks, so we never silently drop the end of a PDF.
-function generationChunks(pages: EducationQuizInput["pages"], count: number) {
+function generationChunks(pages: EducationQuizInput["pages"], count: number, batchSize: number) {
   const raw = chunkSource(pages);
+  if (raw.length < Math.ceil(count / batchSize)) {
+    return Array.from({ length: Math.ceil(count / batchSize) }, (_, i) => raw[i % raw.length]!);
+  }
   if (raw.length <= count) return raw;
   const groupSize = Math.ceil(raw.length / count);
   const groups: typeof raw = [];
@@ -112,7 +119,8 @@ function generationChunks(pages: EducationQuizInput["pages"], count: number) {
 
 export async function generateQuiz(input: EducationQuizInput): Promise<EducationQuiz> {
   validateSource(input.pages);
-  const chunks = generationChunks(input.pages, input.count);
+  const deadline = Date.now() + 5 * 60_000;
+  const chunks = generationChunks(input.pages, input.count, 20);
   const questions: EducationQuiz["questions"] = [];
   const seen = new Set<string>();
   let title = "";
@@ -147,7 +155,7 @@ SOURCE DOCUMENT:\n${chunk.text}`;
       }
       if (new Set(result.questions.map(q => key(q.question))).size !== count) throw new Error("Duplicate questions");
       return result;
-    });
+    }, deadline);
     title ||= quiz.title;
     for (const q of quiz.questions) {
       seen.add(key(q.question)); questions.push({ ...q, id: randomUUID() });
@@ -158,7 +166,8 @@ SOURCE DOCUMENT:\n${chunk.text}`;
 
 export async function generateFlashcards(input: EducationFlashcardInput): Promise<EducationDeck> {
   validateSource(input.pages);
-  const chunks = generationChunks(input.pages, input.count);
+  const deadline = Date.now() + 5 * 60_000;
+  const chunks = generationChunks(input.pages, input.count, 25);
   const cards: EducationDeck["cards"] = [], seen = new Set<string>();
   let title = "";
   for (let i = 0; i < chunks.length; i++) {
@@ -166,14 +175,17 @@ export async function generateFlashcards(input: EducationFlashcardInput): Promis
     const count = Math.floor(input.count / chunks.length) + (i < input.count % chunks.length ? 1 : 0);
     const deck = await validCompletion("flashcards", `Create exactly ${count} cards.
 Style: ${input.style}. ${languagePrompt(input.language)}
+${input.style === "cloze" ? "Cloze: each front is a source-grounded sentence with exactly one ____ blank; back is the missing word or phrase, optionally with a brief explanation." :
+input.style === "question-answer" ? "Each front must be a direct question; each back answers it using the source." : "Each front is a term or concept; each back defines or explains it using the source."}
 Keep each front brief and each back clear. Give a short document-specific title.
 Do not repeat previously generated fronts: ${JSON.stringify(cards.map(c => c.front))}.
 SOURCE DOCUMENT:\n${chunk.text}`, value => {
       const result = GenerateEducationFlashcardsResponse.parse(value);
       if (result.cards.length !== count || new Set(result.cards.map(c => key(c.front))).size !== count) throw new Error("Invalid card count or duplicate cards");
       if (result.cards.some(c => !chunk.pageNumbers.includes(c.sourcePage) || seen.has(key(c.front)))) throw new Error("Unsupported source page or duplicate card");
+      if (input.style === "cloze" && result.cards.some(c => c.front.split("____").length !== 2)) throw new Error("Missing or repeated Cloze blank");
       return result;
-    });
+    }, deadline);
     title ||= deck.title;
     for (const card of deck.cards) {
       seen.add(key(card.front)); cards.push({ ...card, id: randomUUID() });

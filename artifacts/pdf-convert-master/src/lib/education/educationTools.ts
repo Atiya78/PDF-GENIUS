@@ -40,23 +40,23 @@ export const EDUCATION_CATEGORIES: { id: "all" | EducationCategory; label: strin
   { id: "translate", label: "Translate" },
 ];
 
-export const EDUCATION_LIMITS = { maxMb: 20, maxPages: 50, maxPasteChars: 250000 } as const;
+export const EDUCATION_LIMITS = { maxMb: 20, maxPages: 500, maxPasteChars: 250000 } as const;
 
 const QUIZ_FAQS: Faq[] = [
   { q: "How does the quiz generator work?", a: "It reads the text of your PDF (or the text you paste) and asks an AI model to write questions using only that material. Each question carries a short explanation and, for PDFs, the page it came from." },
-  { q: "Can it read scanned PDFs?", a: "Yes. If a page has no selectable text, the server falls back to OCR for that page. OCR on blurry scans can be imperfect, so check the warnings shown after reading." },
+  { q: "Can it read scanned PDFs?", a: "A scan needs OCR first. If no readable text is found, the tool links to our OCR tool. OCR results can be imperfect, so review the text before generating study material." },
   { q: "How are short answers marked?", a: "Short answer and fill-in-the-blank responses are compared with the model answer after ignoring case, spacing and punctuation. A correct answer worded differently may be marked wrong, so you can override the mark yourself." },
   { q: "Can I edit questions before exporting?", a: "Yes. Change the type, wording, options, correct answer and explanation, or delete a question. Exports always use your edited version." },
-  { q: "What are the limits?", a: "Free use allows PDFs up to 20 MB and 50 pages, and 5 generations per day shared across both tools (resets at midnight UTC)." },
+  { q: "What are the limits?", a: "Upload up to 20 MB, select up to 500 pages, and use up to 250,000 source characters. Generate 5–50 questions. Five successful generations per day are free across both tools, resetting at midnight UTC; signed-in users can spend one credit for each additional successful generation." },
   { q: "Is my PDF stored?", a: "PDF Genius does not store the PDF or its extracted text, and your browser never saves them. The extracted text is sent to the configured AI provider to write the questions, and that provider\u2019s own retention policies apply." },
 ];
 
 const CARD_FAQS: Faq[] = [
-  { q: "What kinds of flashcards can I make?", a: "Term and definition, question and answer, or concept and explanation, in 10, 20, 40 or 60 cards." },
-  { q: "Will my deck survive a refresh?", a: "Yes. The finished deck and your know / still-learning marks are saved in this browser only. Use the Clear saved deck button to remove them." },
+  { q: "What kinds of flashcards can I make?", a: "Choose Basic (term and definition), Q&A, or Cloze (fill in the blank), with any count from 10 to 100." },
+  { q: "Will my deck survive a refresh?", a: "Your deck, local edits, and study progress are saved in this browser. Signed-in users also have the original generated result in account history for 24 hours. Export edited decks to keep them elsewhere." },
   { q: "Does the PDF get saved in my browser?", a: "No. Only the generated cards and your study progress are stored here. During generation the extracted text is sent to the configured AI provider, whose own retention policies apply." },
-  { q: "How do I print the cards?", a: "Export the PDF for 8 cut-out cards per page (2 by 4), fronts and backs included." },
-  { q: "Can I use the cards in Anki?", a: "Export the Anki TXT file and import it as a tab-separated text file with front and back fields." },
+  { q: "How do I print the cards?", a: "Export the PDF or choose Print. Each set has an eight-card front sheet and a mirrored back sheet, with matching cut lines. Use A4 duplex printing, flipped on the long edge." },
+  { q: "Can I use the cards in Anki?", a: "Export UTF-8 CSV with front and back columns, or Anki TXT as a tab-separated file. Import the two fields as front and back in Anki." },
   { q: "Can I change a card?", a: "Open the grid view to edit, delete or add cards. Changes are saved automatically." },
 ];
 
@@ -75,11 +75,11 @@ export const getEducationTool = (id: string) => educationTools.find((t) => t.id 
 
 export const EDUCATION_HUB_FAQS: Faq[] = [
   { q: "What is the Education Zone?", a: "A set of study tools that turn your own lecture notes and textbook PDFs into practice material, such as quizzes and flashcards." },
-  { q: "Is it free?", a: "Yes. Free use has 5 generations per day shared across both tools, a 20 MB file limit and a 50 page limit." },
-  { q: "Are my files private?", a: "PDF Genius does not store PDFs or extracted text. The text is sent to the configured AI provider to generate results, and its own retention policies apply. Your browser only keeps flashcard decks and progress." },
+  { q: "Is it free?", a: "Five successful generations per day are free across both tools. Signed-in users may spend one credit for each additional successful generation. Uploads are limited to 20 MB, 500 selected pages and 250,000 source characters. Failed generations do not spend credits." },
+  { q: "Are my files private?", a: "PDF Genius does not save PDFs or extracted text. Text is sent to the configured AI provider, whose retention policies apply. Signed-in accounts save generated results for 24 hours; flashcard progress and local edits are saved in this browser." },
   { q: "Does the AI make things up?", a: "The AI is told to use only your document. Language models can still make mistakes, so check answers against your source." },
   { q: "Does it work with Bangla?", a: "Yes. You can write the output in English, Bangla, or the language of your document." },
-  { q: "What tools are coming next?", a: "A PDF summarizer, chat with PDF, notes maker, Bangla and English translator, exam paper generator and mind maps." },
+  { q: "Which tools are available?", a: "Quiz Generator creates interactive quizzes with explanations and source pages. Flashcards creates Basic, Q&A and Cloze cards, with review rounds, printable cards and Anki-compatible export." },
 ];
 
 export const faqJsonLd = (faqs: Faq[]) => ({

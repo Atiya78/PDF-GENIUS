@@ -24,7 +24,7 @@ export interface EducationCard {
   back: string;
   /**
      * @minimum 1
-     * @maximum 50
+     * @maximum 100000
      * @nullable
      */
   sourcePage: number | null;

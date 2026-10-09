@@ -4,9 +4,10 @@ export type Mark = "know" | "learning";
 export interface SavedDeck { v: 1; deck: EducationDeck; marks: Record<string, Mark>; order: string[]; savedAt: number }
 export const DECK_KEY = "pdfgenius.education.flashcards.v1";
 
-export function loadSavedDeck(): SavedDeck | null {
+const storageKey = (owner: string) => owner === "guest" ? DECK_KEY : `${DECK_KEY}:${owner}`;
+export function loadSavedDeck(owner = "guest"): SavedDeck | null {
   try {
-    const raw = localStorage.getItem(DECK_KEY);
+    const raw = localStorage.getItem(storageKey(owner));
     if (!raw) return null;
     const p = JSON.parse(raw);
     if (!p || p.v !== 1 || !p.deck || typeof p.deck.title !== "string" || !Array.isArray(p.deck.cards)) return null;
@@ -22,7 +23,7 @@ export function loadSavedDeck(): SavedDeck | null {
 }
 
 /** Returns false when the browser refused to save (private mode, quota). */
-export function saveDeck(s: SavedDeck): boolean {
-  try { localStorage.setItem(DECK_KEY, JSON.stringify(s)); return true; } catch { return false; }
+export function saveDeck(s: SavedDeck, owner = "guest"): boolean {
+  try { localStorage.setItem(storageKey(owner), JSON.stringify(s)); return true; } catch { return false; }
 }
-export function clearSavedDeck() { try { localStorage.removeItem(DECK_KEY); } catch { /* nothing to clear */ } }
+export function clearSavedDeck(owner = "guest") { try { localStorage.removeItem(storageKey(owner)); } catch { /* nothing to clear */ } }

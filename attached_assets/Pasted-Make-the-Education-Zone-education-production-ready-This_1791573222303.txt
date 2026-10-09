@@ -1,0 +1,33 @@
+Make the Education Zone (/education) production-ready. This is Step 1 of 3.
+
+GLOBAL RULES (apply now and in all later steps)
+- No placeholders, mock data, fake responses, TODOs or "Coming soon" in anything you build.
+- Reuse the existing stack, PDF upload component (max 20MB), auth, existing AI provider helper, credit/usage system and current design. Don't add a new AI provider.
+- All AI calls happen in @workspace/api-server only. Never expose keys to the frontend.
+- Must work on Railway (railway.toml / railpack.json). If you add a package, use `pnpm --filter <correct package> add` and update pnpm-lock.yaml.
+- Do NOT run browser tests, screenshots, preview checks or end-to-end tests. I will test myself.
+
+BUILD THE SHARED FOUNDATION (used by every Education tool)
+1. Server-side PDF text extraction that keeps page numbers. Support a "pages" range option (e.g. 1-10). Chunk large PDFs and merge the results.
+2. Scanned PDF with no text → clear error: "This PDF has no readable text (scanned). Please use OCR first", plus a link to our OCR tool if it exists.
+3. AI helper that returns structured JSON validated with zod, and retries once if parsing fails.
+4. Language option for all tools: English, Bangla, Same as PDF. Embed a Bangla font (Noto Sans Bengali or Hind Siliguri) in all PDF exports so Bangla renders correctly.
+5. Shared export utilities: PDF, DOCX, TXT/Markdown, CSV, Print.
+6. Shared tool layout: upload → options → Generate (loading/progress) → result → Copy / Download / Print / Start over.
+7. Error states: wrong file type, too large, AI failure with Retry, rate limit, out of credits.
+8. Credits: deduct only on success. Never charge when the AI call fails. Block duplicate requests from a double-click.
+9. Save each result to the user's history if history already exists in the app.
+10. Routes under /api/education/* with zod validation and rate limiting. Each tool gets its own page route (e.g. /education/quiz-generator).
+
+TOOL 1 — QUIZ GENERATOR (finish completely)
+- Types: MCQ (4 options), True/False, Short answer, Fill in the blank, Mixed.
+- Count 5–50. Difficulty Easy/Medium/Hard.
+- Interactive mode: answer → submit → score, then for each question the correct answer, an explanation, and the source page number.
+- Export: quiz paper PDF, answer key PDF, DOCX.
+
+TOOL 2 — FLASHCARDS
+- Generate 10–100 cards. Card style: Basic (term→definition), Q&A, Cloze (fill-in).
+- Flip animation, next/prev, shuffle, mark Know / Don't know, then a review round for the "Don't know" cards.
+- Export: printable cards PDF (front/back with cut lines) and Anki-compatible CSV (front,back).
+
+When done, give me a short list of changed files and any new env variables needed in Railway.

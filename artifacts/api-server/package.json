@@ -7,6 +7,7 @@
     "dev": "export NODE_ENV=development && pnpm run build && pnpm run start",
     "build": "node ./build.mjs",
     "test:education": "tsx --test src/education/education.test.ts",
+    "test:education-foundation": "tsx --test src/education/foundation.test.ts",
     "test:phase-one": "tsx --test tests/phase-one-tools.test.ts",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",

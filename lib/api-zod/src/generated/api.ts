@@ -9,7 +9,13 @@ import * as zod from 'zod';
 
 
 /**
- * @summary Read a temporary PDF, using OCR for pages without text
+ * @summary Licensed Bengali font for study material
+ */
+export const GetEducationFontResponse = zod.unknown()
+
+
+/**
+ * @summary Read a temporary text PDF with numbered pages
  */
 export const extractEducationPdfBodyPageRangeMax = 100;
 
@@ -20,7 +26,7 @@ export const ExtractEducationPdfBody = zod.object({
   "pageRange": zod.string().max(extractEducationPdfBodyPageRangeMax).optional()
 })
 
-export const extractEducationPdfResponsePagesItemPageNumberMax = 50;
+export const extractEducationPdfResponsePagesItemPageNumberMax = 100000;
 
 export const extractEducationPdfResponsePagesItemTextMax = 250000;
 
@@ -40,11 +46,14 @@ export const ExtractEducationPdfResponse = zod.object({
 /**
  * @summary Generate a document-grounded quiz
  */
-export const generateEducationQuizBodyPagesItemPageNumberMax = 50;
+export const generateEducationQuizBodyPagesItemPageNumberMax = 100000;
 
 export const generateEducationQuizBodyPagesItemTextMax = 250000;
 
-export const generateEducationQuizBodyPagesMax = 50;
+export const generateEducationQuizBodyPagesMax = 500;
+
+export const generateEducationQuizBodyCountMin = 5;
+export const generateEducationQuizBodyCountMax = 50;
 
 
 export const generateEducationQuizBodyTopicFocusMax = 200;
@@ -56,7 +65,8 @@ export const GenerateEducationQuizBody = zod.object({
   "pageNumber": zod.number().int().min(1).max(generateEducationQuizBodyPagesItemPageNumberMax).nullable(),
   "text": zod.string().min(1).max(generateEducationQuizBodyPagesItemTextMax)
 })).min(1).max(generateEducationQuizBodyPagesMax),
-  "count": zod.union([zod.literal(5),zod.literal(10),zod.literal(20),zod.literal(30)]),
+  "count": zod.number().int().min(generateEducationQuizBodyCountMin).max(generateEducationQuizBodyCountMax),
+  "requestId": zod.string().uuid().optional(),
   "questionTypes": zod.array(zod.enum(['mcq', 'true-false', 'short-answer', 'fill-blank'])).min(1),
   "difficulty": zod.enum(['easy', 'medium', 'hard', 'mixed']),
   "language": zod.enum(['english', 'bangla', 'same']),
@@ -77,9 +87,9 @@ export const generateEducationQuizResponseQuestionsItemCorrectAnswerMax = 3000;
 
 export const generateEducationQuizResponseQuestionsItemExplanationMax = 3000;
 
-export const generateEducationQuizResponseQuestionsItemSourcePageMax = 50;
+export const generateEducationQuizResponseQuestionsItemSourcePageMax = 100000;
 
-export const generateEducationQuizResponseQuestionsMax = 30;
+export const generateEducationQuizResponseQuestionsMax = 50;
 
 
 
@@ -101,11 +111,14 @@ export const GenerateEducationQuizResponse = zod.object({
 /**
  * @summary Generate a document-grounded flashcard deck
  */
-export const generateEducationFlashcardsBodyPagesItemPageNumberMax = 50;
+export const generateEducationFlashcardsBodyPagesItemPageNumberMax = 100000;
 
 export const generateEducationFlashcardsBodyPagesItemTextMax = 250000;
 
-export const generateEducationFlashcardsBodyPagesMax = 50;
+export const generateEducationFlashcardsBodyPagesMax = 500;
+
+export const generateEducationFlashcardsBodyCountMin = 10;
+export const generateEducationFlashcardsBodyCountMax = 100;
 
 
 
@@ -114,8 +127,9 @@ export const GenerateEducationFlashcardsBody = zod.object({
   "pageNumber": zod.number().int().min(1).max(generateEducationFlashcardsBodyPagesItemPageNumberMax).nullable(),
   "text": zod.string().min(1).max(generateEducationFlashcardsBodyPagesItemTextMax)
 })).min(1).max(generateEducationFlashcardsBodyPagesMax),
-  "count": zod.union([zod.literal(10),zod.literal(20),zod.literal(40),zod.literal(60)]),
-  "style": zod.enum(['term-definition', 'question-answer', 'concept-explanation']),
+  "count": zod.number().int().min(generateEducationFlashcardsBodyCountMin).max(generateEducationFlashcardsBodyCountMax),
+  "requestId": zod.string().uuid().optional(),
+  "style": zod.enum(['term-definition', 'question-answer', 'concept-explanation', 'cloze']),
   "language": zod.enum(['english', 'bangla', 'same'])
 })
 
@@ -127,7 +141,7 @@ export const generateEducationFlashcardsResponseCardsItemFrontMax = 3000;
 
 export const generateEducationFlashcardsResponseCardsItemBackMax = 3000;
 
-export const generateEducationFlashcardsResponseCardsItemSourcePageMax = 50;
+export const generateEducationFlashcardsResponseCardsItemSourcePageMax = 100000;
 
 export const generateEducationFlashcardsResponseCardsMax = 100;
 
@@ -161,9 +175,9 @@ export const exportEducationBodyQuizQuestionsItemCorrectAnswerMax = 3000;
 
 export const exportEducationBodyQuizQuestionsItemExplanationMax = 3000;
 
-export const exportEducationBodyQuizQuestionsItemSourcePageMax = 50;
+export const exportEducationBodyQuizQuestionsItemSourcePageMax = 100000;
 
-export const exportEducationBodyQuizQuestionsMax = 30;
+export const exportEducationBodyQuizQuestionsMax = 50;
 
 export const exportEducationBodyDeckTitleMax = 200;
 
@@ -173,7 +187,7 @@ export const exportEducationBodyDeckCardsItemFrontMax = 3000;
 
 export const exportEducationBodyDeckCardsItemBackMax = 3000;
 
-export const exportEducationBodyDeckCardsItemSourcePageMax = 50;
+export const exportEducationBodyDeckCardsItemSourcePageMax = 100000;
 
 export const exportEducationBodyDeckCardsMax = 100;
 
@@ -181,7 +195,7 @@ export const exportEducationBodyDeckCardsMax = 100;
 
 export const ExportEducationBody = zod.object({
   "kind": zod.enum(['questions', 'answers', 'cards', 'quiz']),
-  "format": zod.enum(['pdf', 'docx']),
+  "format": zod.enum(['pdf', 'docx', 'txt', 'markdown', 'csv', 'html']),
   "quiz": zod.object({
   "title": zod.string().min(1).max(exportEducationBodyQuizTitleMax),
   "questions": zod.array(zod.object({
@@ -218,6 +232,91 @@ export const RecordEducationEventBody = zod.object({
 })
 
 export const RecordEducationEventResponse = zod.void()
+
+
+/**
+ * @summary List the signed-in user's successful study results from the last 24 hours
+ */
+export const ListEducationHistoryResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "kind": zod.enum(['quiz', 'flashcards']),
+  "title": zod.string(),
+  "createdAt": zod.string()
+})
+export const ListEducationHistoryResponse = zod.array(ListEducationHistoryResponseItem)
+
+
+export const GetEducationHistoryParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const getEducationHistoryResponseQuizTitleMax = 200;
+
+export const getEducationHistoryResponseQuizQuestionsItemIdMax = 100;
+
+export const getEducationHistoryResponseQuizQuestionsItemQuestionMax = 3000;
+
+export const getEducationHistoryResponseQuizQuestionsItemOptionsItemMax = 600;
+
+export const getEducationHistoryResponseQuizQuestionsItemOptionsMax = 4;
+
+export const getEducationHistoryResponseQuizQuestionsItemCorrectAnswerMax = 3000;
+
+export const getEducationHistoryResponseQuizQuestionsItemExplanationMax = 3000;
+
+export const getEducationHistoryResponseQuizQuestionsItemSourcePageMax = 100000;
+
+export const getEducationHistoryResponseQuizQuestionsMax = 50;
+
+export const getEducationHistoryResponseDeckTitleMax = 200;
+
+export const getEducationHistoryResponseDeckCardsItemIdMax = 100;
+
+export const getEducationHistoryResponseDeckCardsItemFrontMax = 3000;
+
+export const getEducationHistoryResponseDeckCardsItemBackMax = 3000;
+
+export const getEducationHistoryResponseDeckCardsItemSourcePageMax = 100000;
+
+export const getEducationHistoryResponseDeckCardsMax = 100;
+
+
+
+export const GetEducationHistoryResponse = zod.object({
+  "id": zod.string().uuid(),
+  "kind": zod.enum(['quiz', 'flashcards']),
+  "title": zod.string(),
+  "createdAt": zod.string(),
+  "quiz": zod.object({
+  "title": zod.string().min(1).max(getEducationHistoryResponseQuizTitleMax),
+  "questions": zod.array(zod.object({
+  "id": zod.string().min(1).max(getEducationHistoryResponseQuizQuestionsItemIdMax),
+  "type": zod.enum(['mcq', 'true-false', 'short-answer', 'fill-blank']),
+  "question": zod.string().min(1).max(getEducationHistoryResponseQuizQuestionsItemQuestionMax),
+  "options": zod.array(zod.string().max(getEducationHistoryResponseQuizQuestionsItemOptionsItemMax)).max(getEducationHistoryResponseQuizQuestionsItemOptionsMax),
+  "correctAnswer": zod.string().min(1).max(getEducationHistoryResponseQuizQuestionsItemCorrectAnswerMax),
+  "explanation": zod.string().min(1).max(getEducationHistoryResponseQuizQuestionsItemExplanationMax),
+  "difficulty": zod.enum(['easy', 'medium', 'hard']),
+  "sourcePage": zod.number().int().min(1).max(getEducationHistoryResponseQuizQuestionsItemSourcePageMax).nullable()
+})).min(1).max(getEducationHistoryResponseQuizQuestionsMax)
+}).optional(),
+  "deck": zod.object({
+  "title": zod.string().min(1).max(getEducationHistoryResponseDeckTitleMax),
+  "cards": zod.array(zod.object({
+  "id": zod.string().min(1).max(getEducationHistoryResponseDeckCardsItemIdMax),
+  "front": zod.string().min(1).max(getEducationHistoryResponseDeckCardsItemFrontMax),
+  "back": zod.string().min(1).max(getEducationHistoryResponseDeckCardsItemBackMax),
+  "sourcePage": zod.number().int().min(1).max(getEducationHistoryResponseDeckCardsItemSourcePageMax).nullable()
+})).min(1).max(getEducationHistoryResponseDeckCardsMax)
+}).optional()
+})
+
+
+export const DeleteEducationHistoryParams = zod.object({
+  "id": zod.coerce.string().uuid()
+})
+
+export const DeleteEducationHistoryResponse = zod.void()
 
 
 /**

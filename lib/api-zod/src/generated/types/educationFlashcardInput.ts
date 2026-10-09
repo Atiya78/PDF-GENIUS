@@ -5,7 +5,6 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { EducationFlashcardInputCount } from './educationFlashcardInputCount';
 import type { EducationFlashcardInputLanguage } from './educationFlashcardInputLanguage';
 import type { EducationFlashcardInputStyle } from './educationFlashcardInputStyle';
 import type { EducationSourcePage } from './educationSourcePage';
@@ -13,10 +12,15 @@ import type { EducationSourcePage } from './educationSourcePage';
 export interface EducationFlashcardInput {
   /**
      * @minItems 1
-     * @maxItems 50
+     * @maxItems 500
      */
   pages: EducationSourcePage[];
-  count: EducationFlashcardInputCount;
+  /**
+     * @minimum 10
+     * @maximum 100
+     */
+  count: number;
+  requestId?: string;
   style: EducationFlashcardInputStyle;
   language: EducationFlashcardInputLanguage;
 }

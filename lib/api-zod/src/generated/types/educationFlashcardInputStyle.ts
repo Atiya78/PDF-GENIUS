@@ -13,4 +13,5 @@ export const EducationFlashcardInputStyle = {
   'term-definition': 'term-definition',
   'question-answer': 'question-answer',
   'concept-explanation': 'concept-explanation',
+  cloze: 'cloze',
 } as const;

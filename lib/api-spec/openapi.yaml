@@ -11,11 +11,22 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /education/font:
+    get:
+      operationId: getEducationFont
+      tags: [education]
+      summary: Licensed Bengali font for study material
+      responses:
+        "200":
+          description: Noto Sans Bengali font
+          content:
+            font/ttf:
+              schema: { type: string, format: binary }
   /education/extract:
     post:
       operationId: extractEducationPdf
       tags: [education]
-      summary: Read a temporary PDF, using OCR for pages without text
+      summary: Read a temporary text PDF with numbered pages
       requestBody:
         required: true
         content:
@@ -120,6 +131,49 @@ paths:
       responses:
         "204":
           description: Recorded
+  /education/history:
+    get:
+      operationId: listEducationHistory
+      tags: [education]
+      summary: List the signed-in user's successful study results from the last 24 hours
+      responses:
+        "200":
+          description: Saved study results
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/EducationHistoryEntry" }
+        "401":
+          $ref: "#/components/responses/EducationError"
+  /education/history/{id}:
+    get:
+      operationId: getEducationHistory
+      tags: [education]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "200":
+          description: Saved study material
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationSavedResult" }
+        "404":
+          $ref: "#/components/responses/EducationError"
+    delete:
+      operationId: deleteEducationHistory
+      tags: [education]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        "204":
+          description: Deleted
   /healthz:
     get:
       operationId: healthCheck
@@ -147,6 +201,7 @@ components:
       required: [error]
       properties:
         error: { type: string }
+        ocrUrl: { type: string }
     EducationPdfInput:
       type: object
       required: [file]
@@ -157,7 +212,7 @@ components:
       type: object
       required: [pageNumber, text]
       properties:
-        pageNumber: { type: [integer, "null"], minimum: 1, maximum: 50 }
+        pageNumber: { type: [integer, "null"], minimum: 1, maximum: 100000 }
         text: { type: string, minLength: 1, maxLength: 250000 }
     EducationExtraction:
       type: object
@@ -176,9 +231,10 @@ components:
         pages:
           type: array
           minItems: 1
-          maxItems: 50
+          maxItems: 500
           items: { $ref: "#/components/schemas/EducationSourcePage" }
-        count: { type: integer, enum: [5, 10, 20, 30] }
+        count: { type: integer, minimum: 5, maximum: 50 }
+        requestId: { type: string, format: uuid }
         questionTypes:
           type: array
           minItems: 1
@@ -194,10 +250,11 @@ components:
         pages:
           type: array
           minItems: 1
-          maxItems: 50
+          maxItems: 500
           items: { $ref: "#/components/schemas/EducationSourcePage" }
-        count: { type: integer, enum: [10, 20, 40, 60] }
-        style: { type: string, enum: [term-definition, question-answer, concept-explanation] }
+        count: { type: integer, minimum: 10, maximum: 100 }
+        requestId: { type: string, format: uuid }
+        style: { type: string, enum: [term-definition, question-answer, concept-explanation, cloze] }
         language: { type: string, enum: [english, bangla, same] }
     EducationQuestion:
       type: object
@@ -210,7 +267,7 @@ components:
         correctAnswer: { type: string, minLength: 1, maxLength: 3000 }
         explanation: { type: string, minLength: 1, maxLength: 3000 }
         difficulty: { type: string, enum: [easy, medium, hard] }
-        sourcePage: { type: [integer, "null"], minimum: 1, maximum: 50 }
+        sourcePage: { type: [integer, "null"], minimum: 1, maximum: 100000 }
     EducationQuiz:
       type: object
       required: [title, questions]
@@ -219,7 +276,7 @@ components:
         questions:
           type: array
           minItems: 1
-          maxItems: 30
+          maxItems: 50
           items: { $ref: "#/components/schemas/EducationQuestion" }
     EducationCard:
       type: object
@@ -228,7 +285,7 @@ components:
         id: { type: string, minLength: 1, maxLength: 100 }
         front: { type: string, minLength: 1, maxLength: 3000 }
         back: { type: string, minLength: 1, maxLength: 3000 }
-        sourcePage: { type: [integer, "null"], minimum: 1, maximum: 50 }
+        sourcePage: { type: [integer, "null"], minimum: 1, maximum: 100000 }
     EducationDeck:
       type: object
       required: [title, cards]
@@ -244,7 +301,25 @@ components:
       required: [kind, format]
       properties:
         kind: { type: string, enum: [questions, answers, cards, quiz] }
-        format: { type: string, enum: [pdf, docx] }
+        format: { type: string, enum: [pdf, docx, txt, markdown, csv, html] }
+        quiz: { $ref: "#/components/schemas/EducationQuiz" }
+        deck: { $ref: "#/components/schemas/EducationDeck" }
+    EducationHistoryEntry:
+      type: object
+      required: [id, kind, title, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        kind: { type: string, enum: [quiz, flashcards] }
+        title: { type: string }
+        createdAt: { type: string }
+    EducationSavedResult:
+      type: object
+      required: [id, kind, title, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        kind: { type: string, enum: [quiz, flashcards] }
+        title: { type: string }
+        createdAt: { type: string }
         quiz: { $ref: "#/components/schemas/EducationQuiz" }
         deck: { $ref: "#/components/schemas/EducationDeck" }
     EducationEvent:

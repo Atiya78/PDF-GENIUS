@@ -9,7 +9,7 @@
 export interface EducationSourcePage {
   /**
      * @minimum 1
-     * @maximum 50
+     * @maximum 100000
      * @nullable
      */
   pageNumber: number | null;

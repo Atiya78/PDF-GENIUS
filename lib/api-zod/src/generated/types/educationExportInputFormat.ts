@@ -12,4 +12,8 @@ export type EducationExportInputFormat = typeof EducationExportInputFormat[keyof
 export const EducationExportInputFormat = {
   pdf: 'pdf',
   docx: 'docx',
+  txt: 'txt',
+  markdown: 'markdown',
+  csv: 'csv',
+  html: 'html',
 } as const;

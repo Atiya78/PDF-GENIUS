@@ -5,7 +5,6 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { EducationQuizInputCount } from './educationQuizInputCount';
 import type { EducationQuizInputDifficulty } from './educationQuizInputDifficulty';
 import type { EducationQuizInputLanguage } from './educationQuizInputLanguage';
 import type { EducationQuizInputQuestionTypesItem } from './educationQuizInputQuestionTypesItem';
@@ -14,10 +13,15 @@ import type { EducationSourcePage } from './educationSourcePage';
 export interface EducationQuizInput {
   /**
      * @minItems 1
-     * @maxItems 50
+     * @maxItems 500
      */
   pages: EducationSourcePage[];
-  count: EducationQuizInputCount;
+  /**
+     * @minimum 5
+     * @maximum 50
+     */
+  count: number;
+  requestId?: string;
   /** @minItems 1 */
   questionTypes: EducationQuizInputQuestionTypesItem[];
   difficulty: EducationQuizInputDifficulty;

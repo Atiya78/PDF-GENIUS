@@ -15,7 +15,7 @@ export interface EducationQuiz {
   title: string;
   /**
      * @minItems 1
-     * @maxItems 30
+     * @maxItems 50
      */
   questions: EducationQuestion[];
 }

@@ -1,11 +1,17 @@
 import type { EducationCard, EducationDeck, EducationExportInput, EducationQuestion, EducationQuiz } from "@workspace/api-client-react";
 import { downloadBlob } from "@/lib/download";
+import { educationHeaders } from "./requests";
 
 export async function requestExport(input: EducationExportInput, filename: string): Promise<void> {
+  const res = await exportResponse(input);
+  await downloadBlob(await res.blob(), filename);
+}
+
+async function exportResponse(input: EducationExportInput) {
   const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
   const res = await fetch(`${base}/api/education/export`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...educationHeaders() },
     credentials: "include",
     body: JSON.stringify(input),
   });
@@ -14,7 +20,42 @@ export async function requestExport(input: EducationExportInput, filename: strin
     try { msg = (await res.json())?.error ?? ""; } catch { /* non-JSON error body */ }
     throw new Error(msg || `Export failed (${res.status}). Please try again.`);
   }
-  await downloadBlob(await res.blob(), filename);
+  return res;
+}
+
+export async function printStudyMaterial(input: Omit<EducationExportInput, "format">): Promise<void> {
+  const res = await exportResponse({ ...input, format: "html" });
+  const frame = document.createElement("iframe");
+  frame.title = "Printable study material";
+  frame.setAttribute("aria-hidden", "true");
+  frame.style.cssText = "position:fixed;right:0;bottom:0;width:0;height:0;border:0";
+  const html = await res.text();
+  await new Promise<void>((resolve, reject) => {
+    const timeout = window.setTimeout(() => { frame.remove(); reject(new Error("Print preparation took too long. Please retry.")); }, 30_000);
+    frame.onload = async () => {
+      try {
+        const doc = frame.contentDocument, win = frame.contentWindow;
+        if (!doc || !win) throw new Error("Printing is not available in this browser.");
+        await doc.fonts.ready;
+        for (const card of doc.querySelectorAll<HTMLElement>(".cutout")) {
+          for (let size = 9; size >= 6; size -= 0.5) {
+            card.style.fontSize = `${size}pt`;
+            if (card.scrollHeight <= card.clientHeight + 1) break;
+          }
+          if (card.scrollHeight > card.clientHeight + 1)
+            throw new Error("A card is too long to print without clipping. Shorten it before printing.");
+        }
+        if (!win.print) throw new Error("Printing is not supported in this browser.");
+        window.clearTimeout(timeout);
+        win.addEventListener("afterprint", () => frame.remove(), { once: true });
+        win.focus(); win.print();
+        window.setTimeout(() => frame.remove(), 60_000);
+        resolve();
+      } catch (error) { window.clearTimeout(timeout); frame.remove(); reject(error); }
+    };
+    frame.srcdoc = html;
+    document.body.appendChild(frame);
+  });
 }
 
 export const slugify = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "study";
@@ -40,7 +81,7 @@ const neutralize = (s: string) => (/^[=+\-@\t\r]/.test(s) ? `'${s}` : s);
 const csvField = (s: string) => `"${neutralize(s).replace(/"/g, '""')}"`;
 
 export function cardsToCsv(cards: EducationCard[]): string {
-  const rows = ["Front,Back,Source page", ...cards.map((c) => [csvField(c.front), csvField(c.back), csvField(c.sourcePage ? String(c.sourcePage) : "")].join(","))];
+  const rows = ["front,back", ...cards.map((c) => [csvField(c.front), csvField(c.back)].join(","))];
   return "\uFEFF" + rows.join("\r\n");
 }
 

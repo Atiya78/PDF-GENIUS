@@ -20,6 +20,7 @@ export function QuizPlayer({ questions, onComplete }: { questions: EducationQues
   const [idx, setIdx] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [text, setText] = useState("");
+  const [selected, setSelected] = useState("");
   const [done, setDone] = useState(false);
   const completedRef = useRef(false);
   const cbRef = useRef(onComplete);
@@ -38,8 +39,8 @@ export function QuizPlayer({ questions, onComplete }: { questions: EducationQues
     if (!q || ans) return;
     setAnswers((p) => ({ ...p, [q.id]: { given, correct: norm(given) === norm(resolveCorrect(q)) } }));
   };
-  const next = () => { setText(""); if (idx + 1 >= pool.length) setDone(true); else setIdx(idx + 1); };
-  const restart = (qs: EducationQuestion[]) => { setPool(qs); setIdx(0); setAnswers({}); setText(""); setDone(false); completedRef.current = false; };
+  const next = () => { setText(""); setSelected(""); if (idx + 1 >= pool.length) setDone(true); else setIdx(idx + 1); };
+  const restart = (qs: EducationQuestion[]) => { setPool(qs); setIdx(0); setAnswers({}); setText(""); setSelected(""); setDone(false); completedRef.current = false; };
 
   if (done) {
     const total = pool.length;
@@ -54,16 +55,17 @@ export function QuizPlayer({ questions, onComplete }: { questions: EducationQues
             {wrong.length > 0 && pool === questions && <button type="button" onClick={() => restart(wrong)} className="h-10 rounded-full border border-gray-300 bg-white px-5 text-sm font-semibold text-gray-800 hover:border-[#f7433d]" data-testid="button-retry-wrong">Retry wrong answers only</button>}
           </div>
         </div>
-        {wrong.length > 0 && (
+        {pool.length > 0 && (
           <div className="mt-6">
-            <h3 className="font-['Poppins'] text-lg font-semibold text-gray-900">Review wrong answers</h3>
+            <h3 className="font-['Poppins'] text-lg font-semibold text-gray-900">Review every answer</h3>
             <ul className="mt-3 space-y-3">
-              {wrong.map((w) => (
+              {pool.map((w) => (
                 <li key={w.id} className="rounded-xl border border-red-100 bg-white p-4">
                   <p className="font-medium text-gray-900">{w.question}</p>
                   <p className="mt-2 text-sm text-red-700">Your answer: {answers[w.id].given || "(blank)"}</p>
                   <p className="text-sm text-green-700">Correct answer: {resolveCorrect(w)}</p>
                   <p className="mt-1 text-sm text-gray-600">{w.explanation}</p>
+                  <p className="mt-1 text-xs text-gray-500">{w.sourcePage ? `Source page ${w.sourcePage}` : "Source: pasted text"}</p>
                 </li>
               ))}
             </ul>
@@ -86,9 +88,9 @@ export function QuizPlayer({ questions, onComplete }: { questions: EducationQues
         <div className="mt-4 grid gap-2" role="group" aria-label="Answer options">
           {opts.map((o, i) => {
             const picked = ans?.given === o; const isRight = norm(o) === norm(correct);
-            const cls = !ans ? "border-gray-200 bg-white hover:border-[#f7433d]" : isRight ? "border-green-500 bg-green-50" : picked ? "border-red-400 bg-red-50" : "border-gray-200 bg-white opacity-70";
+            const cls = !ans ? selected === o ? "border-[#f7433d] bg-[#fff1f0]" : "border-gray-200 bg-white hover:border-[#f7433d]" : isRight ? "border-green-500 bg-green-50" : picked ? "border-red-400 bg-red-50" : "border-gray-200 bg-white opacity-70";
             return (
-              <button key={i} type="button" disabled={!!ans} onClick={() => submit(o)} data-testid={`button-option-${i}`} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-sm font-medium text-gray-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d] ${cls}`}>
+              <button key={i} type="button" disabled={!!ans} aria-pressed={selected === o} onClick={() => setSelected(o)} data-testid={`button-option-${i}`} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-sm font-medium text-gray-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d] ${cls}`}>
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold">{String.fromCharCode(65 + i)}</span>{o}
               </button>
             );
@@ -102,11 +104,13 @@ export function QuizPlayer({ questions, onComplete }: { questions: EducationQues
           <p className="mt-2 text-xs text-gray-500">Marking note: typed answers are checked by exact match after ignoring case, spacing and punctuation. A right answer in different words may be marked wrong.</p>
         </form>
       )}
+      {isChoice(q) && !ans && <button type="button" disabled={!selected} onClick={() => submit(selected)} className="mt-3 h-10 rounded-full bg-[#f7433d] px-5 text-sm font-semibold text-white disabled:opacity-50">Submit answer</button>}
       {ans && (
         <div role="status" aria-live="polite" className={`mt-4 rounded-xl p-4 ${ans.correct ? "bg-green-50" : "bg-red-50"}`} data-testid="panel-feedback">
           <p className={`flex items-center gap-2 font-semibold ${ans.correct ? "text-green-700" : "text-red-700"}`}>{ans.correct ? <CheckCircle2 className="h-5 w-5" aria-hidden="true" /> : <XCircle className="h-5 w-5" aria-hidden="true" />}{ans.correct ? "Correct" : "Not quite"}</p>
           {!ans.correct && <p className="mt-1 text-sm text-gray-800">Correct answer: <strong>{correct}</strong></p>}
           <p className="mt-1 text-sm text-gray-700">{q.explanation}</p>
+          <p className="mt-2 text-xs text-gray-500">{q.sourcePage ? `Source page ${q.sourcePage}` : "Source: pasted text"}</p>
           {!ans.correct && !isChoice(q) && !ans.overridden && (
             <button type="button" onClick={() => setAnswers((p) => ({ ...p, [q.id]: { ...p[q.id], correct: true, overridden: true } }))} className="mt-2 text-sm font-semibold text-[#d9322c] underline" data-testid="button-mark-correct">My answer was right, mark correct</button>
           )}

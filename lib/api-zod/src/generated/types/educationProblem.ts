@@ -8,4 +8,5 @@
 
 export interface EducationProblem {
   error: string;
+  ocrUrl?: string;
 }

@@ -16,11 +16,13 @@ const STEPS = [
 ];
 
 export function EducationHome(): JSX.Element {
-  useSeo({ title: "Education Zone — Free AI Study Tools for Students | PDF Genius", description: "Free AI study tools for students and teachers: turn lecture PDFs into quizzes and flashcards, with more tools on the way.", canonicalPath: "/education", jsonLd: faqJsonLd(EDUCATION_HUB_FAQS) });
+  useSeo({ title: "Education Zone — PDF Quizzes & Flashcards | PDF Genius", description: "Create PDF-grounded quizzes and flashcards in English or Bangla. Study with page references, export question papers or printable cards, and reopen account history.", canonicalPath: "/education", jsonLd: faqJsonLd(EDUCATION_HUB_FAQS) });
   const [, setLocation] = useLocation();
   const [cat, setCat] = useState<string>("all");
   const [picked, setPicked] = useState<File | null>(null);
-  const tools = educationTools.filter((t) => cat === "all" || t.category === cat);
+  const liveTools = educationTools.filter(t => t.status === "live");
+  const categories = EDUCATION_CATEGORIES.filter(c => c.id === "all" || liveTools.some(t => t.category === c.id));
+  const tools = liveTools.filter((t) => cat === "all" || t.category === cat);
   const go = (href: string) => { setPendingFile(picked); setLocation(href); };
 
   return (
@@ -49,7 +51,7 @@ export function EducationHome(): JSX.Element {
         <section className="mt-14" aria-labelledby="tools-heading">
           <h2 id="tools-heading" className="font-['Poppins'] text-2xl font-bold text-gray-900">Study tools</h2>
           <div role="tablist" aria-label="Category" className="mt-4 flex flex-wrap gap-2">
-            {EDUCATION_CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <button key={c.id} type="button" role="tab" aria-selected={cat === c.id} onClick={() => setCat(c.id)} data-testid={`tab-category-${c.id}`} className={cn("rounded-full px-4 py-1.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d]", cat === c.id ? "bg-[#f7433d] text-white" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:ring-[#f7433d]/50")}>{c.label}</button>
             ))}
           </div>

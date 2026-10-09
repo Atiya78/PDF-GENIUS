@@ -18,7 +18,7 @@ function quizHtml(quiz: EducationQuiz, answers: boolean) {
 }
 
 let bengaliFont: Promise<string> | undefined;
-function loadBengaliFont() {
+export function loadBengaliFont() {
   return bengaliFont ??= readFile(new URL("./assets/NotoSansBengali.ttf", import.meta.url))
     // Bundled API entry is dist/index.mjs; source-run tests use this module.
     .catch(() => readFile(new URL("../src/education/assets/NotoSansBengali.ttf", import.meta.url)))
@@ -31,10 +31,18 @@ export function exportHtml(input: EducationExportInput, fontData?: string): stri
   let content: string;
   if (input.kind === "cards") {
     const cards = input.deck!.cards;
-    content = Array.from({ length: Math.ceil(cards.length / 8) }, (_, page) =>
-      `<section class="sheet"><h1>${escapeHtml(title)}</h1><div class="card-grid">${
-        cards.slice(page * 8, page * 8 + 8).map(c => `<article class="cutout"><strong>${escapeHtml(c.front)}</strong><hr><p>${escapeHtml(c.back)}</p>${c.sourcePage ? `<small>Page ${c.sourcePage}</small>` : ""}</article>`).join("")
-      }</div></section>`).join("");
+    content = Array.from({ length: Math.ceil(cards.length / 8) }, (_, page) => {
+      const batch = Array.from({ length: 8 }, (_, i) => cards[page * 8 + i]);
+      const sheet = (back: boolean) => `<section class="sheet"><h1>${escapeHtml(title)} — ${back ? "Backs" : "Fronts"} (${page + 1})</h1><div class="card-grid">${
+        batch.map((_, index) => {
+          // Mirror each row on the back for A4 long-edge duplex printing.
+          const position = back ? index ^ 1 : index;
+          const card = batch[position];
+          return `<article class="cutout">${card ? `<small>Card ${page * 8 + position + 1}${card.sourcePage ? ` · Page ${card.sourcePage}` : ""}</small><p>${escapeHtml(back ? card.back : card.front)}</p>` : ""}</article>`;
+        }).join("")
+      }</div></section>`;
+      return sheet(false) + sheet(true);
+    }).join("");
   } else {
     const quiz = input.quiz!;
     content = `<h1>${escapeHtml(title)}${input.kind === "answers" ? " — Answer key" : ""}</h1>` +
@@ -42,7 +50,7 @@ export function exportHtml(input: EducationExportInput, fontData?: string): stri
     if (input.kind === "quiz") content += `<section class="answer-key"><h1>Answer key</h1>${quizHtml(quiz, true)}</section>`;
   }
   return `<!doctype html><html><head><meta charset="utf-8"><style>
-${fontData ? `@font-face{font-family:"Education Bengali";src:url(data:font/ttf;base64,${fontData}) format("truetype");font-weight:100 900;unicode-range:U+0980-09FF}` : ""}
+${fontData ? `@font-face{font-family:"Education Bengali";src:url(data:font/ttf;base64,${fontData}) format("truetype");font-weight:100 900}` : ""}
 @page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;width:182mm;max-width:100%;font-family:"Education Bengali","Noto Sans Bengali","Noto Sans",Arial,sans-serif;color:#17202b;font-size:11pt;line-height:1.45;overflow-wrap:anywhere}
 h1{font-size:19pt}h3{font-size:12pt}article{break-inside:avoid;margin-bottom:7mm}small{color:#596575;font-size:9pt}
 .blank{margin:8mm 0}.answer-key{break-before:page}.sheet{break-after:page}.sheet:last-child{break-after:auto}
@@ -60,20 +68,37 @@ async function browserPath() {
 }
 
 export async function exportFile(input: EducationExportInput): Promise<{ buffer: Buffer; extension: string; mime: string }> {
-  if (input.kind === "cards" && (!input.deck || input.format !== "pdf"))
-    throw new EducationError("Choose PDF to export printable flashcards.");
+  if (input.kind === "cards" && !input.deck) throw new EducationError("Flashcard data is missing.");
   if (input.kind !== "cards" && !input.quiz) throw new EducationError("Quiz data is missing.");
+  if (input.format === "html") return {
+    buffer: Buffer.from(exportHtml(input, await loadBengaliFont()), "utf8"), extension: "html", mime: "text/html; charset=utf-8",
+  };
+  if (["txt", "markdown", "csv"].includes(input.format)) return exportTextFile(input);
   if (input.format === "docx") {
-    const quiz = input.quiz!;
-    const children: Paragraph[] = [new Paragraph({ text: quiz.title, heading: HeadingLevel.TITLE })];
-    for (const [index, q] of quiz.questions.entries()) {
-      children.push(new Paragraph({ text: `${index + 1}. ${q.question}`, heading: HeadingLevel.HEADING_2 }));
-      children.push(...q.options.map((o, i) => new Paragraph(`${String.fromCharCode(65 + i)}. ${o}`)));
-      if (!q.options.length) children.push(new Paragraph("Answer: ____________________________________"));
+    const title = input.kind === "cards" ? input.deck!.title : input.quiz!.title;
+    const children: Paragraph[] = [new Paragraph({ text: title, heading: HeadingLevel.TITLE })];
+    if (input.kind === "cards") {
+      for (const [index, card] of input.deck!.cards.entries())
+        children.push(new Paragraph({ text: `${index + 1}. ${card.front}`, heading: HeadingLevel.HEADING_2 }),
+          new Paragraph(card.back), new Paragraph(card.sourcePage ? `Source page ${card.sourcePage}` : "Source: pasted text"));
+    } else {
+      const quiz = input.quiz!;
+      if (input.kind !== "answers") {
+        for (const [index, q] of quiz.questions.entries()) {
+          children.push(new Paragraph({ text: `${index + 1}. ${q.question}`, heading: HeadingLevel.HEADING_2 }));
+          children.push(...q.options.map((o, i) => new Paragraph(`${String.fromCharCode(65 + i)}. ${o}`)));
+          if (!q.options.length) children.push(new Paragraph("Answer: ____________________________________"));
+          children.push(new Paragraph(q.sourcePage ? `Source page ${q.sourcePage}` : "Source: pasted text"));
+        }
+      }
+      if (input.kind === "quiz" || input.kind === "answers") {
+        if (input.kind === "quiz") children.push(new Paragraph({ children: [new PageBreak()] }));
+        children.push(new Paragraph({ text: "Answer key", heading: HeadingLevel.HEADING_1 }));
+        for (const [index, q] of quiz.questions.entries())
+          children.push(new Paragraph({ children: [new TextRun({ text: `${index + 1}. ${q.correctAnswer}`, bold: true })] }), new Paragraph(q.explanation),
+            new Paragraph(q.sourcePage ? `Source page ${q.sourcePage}` : "Source: pasted text"));
+      }
     }
-    children.push(new Paragraph({ children: [new PageBreak()] }), new Paragraph({ text: "Answer key", heading: HeadingLevel.HEADING_1 }));
-    for (const [index, q] of quiz.questions.entries())
-      children.push(new Paragraph({ children: [new TextRun({ text: `${index + 1}. ${q.correctAnswer}`, bold: true })] }), new Paragraph(q.explanation));
     return {
       buffer: await Packer.toBuffer(new Document({ sections: [{ children }] })),
       extension: "docx", mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -90,7 +115,7 @@ export async function exportFile(input: EducationExportInput): Promise<{ buffer:
     // Exports are self-contained; no user HTML, remote assets or local file reads.
     await page.setRequestInterception(true);
     page.on("request", r => r.url().startsWith("data:font/ttf;base64,") ? r.continue() : r.abort());
-    const font = /[\u0980-\u09ff]/.test(JSON.stringify(input)) ? await loadBengaliFont() : undefined;
+    const font = await loadBengaliFont();
     await page.setContent(exportHtml(input, font), { waitUntil: "load", timeout: 30_000 });
     // This callback runs inside Chromium, not the Node/DOM-free TS project.
     const fits = await page.evaluate(`async () => {
@@ -112,6 +137,26 @@ export async function exportFile(input: EducationExportInput): Promise<{ buffer:
     throw new EducationError("Could not create the export. Please try again.", 503);
   }
   finally { await browser?.close().catch(() => {}); }
+}
+
+const csvField = (text: string) => `"${(/^[=+\-@\t\r]/.test(text) ? "'" : "") + text.replace(/"/g, '""')}"`;
+export function exportTextFile(input: EducationExportInput) {
+  const cards = input.deck?.cards;
+  const quiz = input.quiz;
+  let text: string;
+  if (input.format === "csv") {
+    text = input.kind === "cards"
+      ? ["front,back", ...cards!.map(c => `${csvField(c.front)},${csvField(c.back)}`)].join("\r\n")
+      : ["question,options,answer,explanation,source_page", ...quiz!.questions.map(q =>
+        [q.question, q.options.join(" | "), q.correctAnswer, q.explanation, String(q.sourcePage ?? "")].map(csvField).join(","))].join("\r\n");
+    return { buffer: Buffer.from("\uFEFF" + text, "utf8"), extension: "csv", mime: "text/csv; charset=utf-8" };
+  }
+  const markdown = input.format === "markdown";
+  const title = input.kind === "cards" ? input.deck!.title : quiz!.title;
+  text = `${markdown ? "# " : ""}${title}\n\n` + (input.kind === "cards"
+    ? cards!.map((c, i) => `${i + 1}. ${c.front}\n${c.back}\nSource page: ${c.sourcePage ?? "pasted text"}`).join("\n\n")
+    : quiz!.questions.map((q, i) => `${i + 1}. ${q.question}\n${input.kind !== "answers" ? q.options.map((o, j) => `${String.fromCharCode(65 + j)}. ${o}`).join("\n") : ""}${input.kind !== "questions" ? `\nAnswer: ${q.correctAnswer}\n${q.explanation}` : ""}\nSource page: ${q.sourcePage ?? "pasted text"}`).join("\n\n"));
+  return { buffer: Buffer.from(text, "utf8"), extension: markdown ? "md" : "txt", mime: `${markdown ? "text/markdown" : "text/plain"}; charset=utf-8` };
 }
 
 export function exportDisposition(title: string, extension: string) {

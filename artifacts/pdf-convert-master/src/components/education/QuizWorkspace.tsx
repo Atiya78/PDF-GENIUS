@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Copy, FileText, FileType2, Printer, Eye, EyeOff } from "lucide-react";
 import type { EducationQuiz } from "@workspace/api-client-react";
-import { copyText, effectiveOptions, formatQuizText, printQuiz, requestExport, slugify } from "@/lib/education/exportHelpers";
+import { copyText, effectiveOptions, formatQuizText, printStudyMaterial, requestExport, slugify } from "@/lib/education/exportHelpers";
 import { ExportMenu } from "./ExportMenu";
 import { QuizEditor, validateQuestion } from "./QuizEditor";
 import { QuizPlayer } from "./QuizPlayer";
@@ -34,6 +34,7 @@ export function QuizWorkspace({ quiz, onChange, onExported, onCompleted }: { qui
                   <p className="font-medium text-gray-900">{i + 1}. {q.question}</p>
                   {effectiveOptions(q).length > 0 && <ul className="mt-2 space-y-1 text-sm text-gray-700">{effectiveOptions(q).map((o, j) => <li key={j}>{String.fromCharCode(65 + j)}. {o}</li>)}</ul>}
                   {reveal && <p className="mt-2 text-sm text-green-700">Answer: {q.correctAnswer}<span className="block text-gray-600">{q.explanation}</span></p>}
+                  <p className="mt-2 text-xs text-gray-500">{q.sourcePage ? `Source page ${q.sourcePage}` : "Source: pasted text"}</p>
                 </li>
               ))}
             </ol>
@@ -47,8 +48,11 @@ export function QuizWorkspace({ quiz, onChange, onExported, onCompleted }: { qui
           { id: "questions-pdf", label: "Questions PDF", icon: FileText, run: () => requestExport({ kind: "questions", format: "pdf", quiz }, `${base}-questions.pdf`) },
           { id: "answers-pdf", label: "Answer key PDF", icon: FileText, run: () => requestExport({ kind: "answers", format: "pdf", quiz }, `${base}-answers.pdf`) },
           { id: "docx", label: "DOCX with answer key", icon: FileType2, run: () => requestExport({ kind: "quiz", format: "docx", quiz }, `${base}.docx`) },
+          { id: "txt", label: "TXT", icon: FileText, run: () => requestExport({ kind: "quiz", format: "txt", quiz }, `${base}.txt`) },
+          { id: "markdown", label: "Markdown", icon: FileText, run: () => requestExport({ kind: "quiz", format: "markdown", quiz }, `${base}.md`) },
+          { id: "csv", label: "CSV", icon: FileText, run: () => requestExport({ kind: "quiz", format: "csv", quiz }, `${base}.csv`) },
           { id: "copy", label: "Copy", icon: Copy, run: () => copyText(formatQuizText(quiz, true)) },
-          { id: "print", label: "Print", icon: Printer, run: () => printQuiz(quiz) },
+          { id: "print", label: "Print", icon: Printer, run: () => printStudyMaterial({ kind: "quiz", quiz }) },
         ]} />
       </div>
     </div>
