@@ -2,12 +2,17 @@ import { ReplitConnectors } from "@replit/connectors-sdk";
 
 /** Use the attached connection without retrieving, logging or caching credentials. */
 async function request(path: string, options: { method?: string; headers?: Record<string, string>; body?: string | FormData } = {}) {
-  // Preserve existing direct-key deployments; development uses the attached proxy.
+  // Keep direct-key deployments working, but don't let a rejected key hide an
+  // attached Replit connection. Only retry explicit authentication rejection:
+  // never duplicate a prediction after a timeout, rate limit or provider error.
   if (process.env.REPLICATE_API_TOKEN) {
-    return fetch(`https://api.replicate.com${path}`, {
+    const response = await fetch(`https://api.replicate.com${path}`, {
       ...options, headers: { ...options.headers, Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}` },
       signal: AbortSignal.timeout(60_000),
     });
+    if (response.status !== 401 || !(process.env.REPL_IDENTITY || process.env.WEB_REPL_RENEWAL))
+      return response;
+    await response.body?.cancel().catch(() => {});
   }
   return new ReplitConnectors().proxy("replicate", path, options);
 }
