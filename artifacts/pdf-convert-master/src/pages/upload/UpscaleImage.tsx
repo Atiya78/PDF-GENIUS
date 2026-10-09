@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ImageToolShell } from "@/components/image-tools/ImageToolShell";
 import { ImageDropzone } from "@/components/image-tools/ImageDropzone";
-import { loadImageFromFile, downloadBlob, withSuffix, formatBytes } from "@/lib/imageTools";
+import { loadImageFromFile, downloadBlob, formatBytes } from "@/lib/imageTools";
 import { useToast } from "@/hooks/use-toast";
 
 const ACCEPTED = [".jpg", ".jpeg", ".png", ".webp"];
@@ -139,7 +139,8 @@ export const UpscaleImageUpload = () => {
 
   const download = () => {
     if (!afterBlobRef.current || !file) return;
-    downloadBlob(afterBlobRef.current, withSuffix(file.name, `upscaled_${scale}x`));
+    const stem = file.name.replace(/\.[^./]+$/, "");
+    downloadBlob(afterBlobRef.current, `${stem}_upscaled_${scale}x.webp`);
   };
 
   const reset = () => {
@@ -156,7 +157,7 @@ export const UpscaleImageUpload = () => {
   return (
     <ImageToolShell
       title="AI Image Upscaler"
-      description="Enhance image resolution with real AI (Real-ESRGAN). Increase size 2× or 4× while keeping detail sharp, compare before and after, then download."
+      description="Upscale with Aura SR v2 and download WebP. Choose native 4× output or a 2× version resized from the AI result, then compare before and after."
       icon={<TrendingUp className="w-8 h-8 text-blue-500" />}
       iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
       hideHeader={!file}

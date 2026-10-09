@@ -18,7 +18,7 @@ import { encodeBitmap } from "./lib/bitmap";
 import { expiredCompletedJob } from "./lib/conversionRetention";
 import { resultFilename } from "./lib/resultFilename";
 import { planFileLimitMB } from "./lib/planFileLimit";
-import { removeBackgroundWithReplicate, runReplicateImage } from "./lib/replicateImage";
+import { AURA_SR_V2, removeBackgroundWithReplicate, runReplicateImage } from "./lib/replicateImage";
 import { compressDocumentPdf, compressionLevel, officeDocumentPdf, searchableOcrPdf } from "./lib/documentTools";
 import ffmpegStatic from "ffmpeg-static";
 import ffprobeStatic from "ffprobe-static";
@@ -2030,7 +2030,7 @@ async function convertHtmlToPdf(htmlBuffer: Buffer, outputFilename: string, opti
   }
 }
 
-// Real AI super-resolution via Replicate (Real-ESRGAN). We do NOT fake this with
+// Real AI super-resolution via Replicate (Aura SR v2). We do NOT fake this with
 // a plain resampling filter — if the integration isn't connected we fail loudly
 // so the output is always a genuine AI-enhanced image.
 async function upscaleImage(imageBuffer: Buffer, inputExt: string | undefined, outputFilename: string, options: Record<string, any> = {}) {
@@ -2040,27 +2040,17 @@ async function upscaleImage(imageBuffer: Buffer, inputExt: string | undefined, o
   try {
     const pngInput = await sharp(await normalizeImageInput(imageBuffer, inputExt)).png().toBuffer();
     const dimensions = await sharp(pngInput).metadata();
-    if ((dimensions.width ?? 0) * (dimensions.height ?? 0) * scale * scale > 40_000_000)
-      throw new Error("The upscaled image would exceed 40 megapixels. Choose 2× or resize the source image.");
-    const upscaledPng = await runReplicateImage(
-      "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b",
-      pngInput, { scale, face_enhance: false },
-    );
-
-    // Re-encode to the original format so the filename/MIME stay consistent.
-    const ext = (inputExt || 'png').toLowerCase();
-    let convertedBuffer: Buffer;
-    let mimeType: string;
-    if (ext === 'jpg' || ext === 'jpeg') {
-      convertedBuffer = await sharp(upscaledPng).jpeg({ quality: 95 }).toBuffer();
-      mimeType = 'image/jpeg';
-    } else if (ext === 'webp') {
-      convertedBuffer = await sharp(upscaledPng).webp({ quality: 95 }).toBuffer();
-      mimeType = 'image/webp';
-    } else {
-      convertedBuffer = await sharp(upscaledPng).png().toBuffer();
-      mimeType = 'image/png';
-    }
+    if ((dimensions.width ?? 0) * (dimensions.height ?? 0) * 16 > 40_000_000)
+      throw new Error("Aura SR processes at 4×. Please resize the source image below 2.5 megapixels.");
+    const upscaled = await runReplicateImage(AURA_SR_V2, pngInput);
+    const result = await sharp(upscaled).metadata();
+    const width = dimensions.width! * scale;
+    const height = dimensions.height! * scale;
+    if (result.width !== dimensions.width! * 4 || result.height !== dimensions.height! * 4)
+      throw new Error("The AI provider returned unexpected image dimensions. Please try again.");
+    const convertedBuffer = scale === 4 && result.format === "webp" ? upscaled
+      : await sharp(upscaled).resize(width, height).webp({ quality: 95 }).toBuffer();
+    const mimeType = "image/webp";
 
     console.log(`Image upscaled ${scale}x via Replicate (${convertedBuffer.length} bytes)`);
 
@@ -3110,7 +3100,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         outputFilename,
         options
       );
-      if (conversionResult.mimeType && ["pdf_to_images", "split_pdf", "convert_image_format", "compress_image"].includes(toolType))
+      if (conversionResult.mimeType && ["pdf_to_images", "split_pdf", "convert_image_format", "compress_image", "upscale_image"].includes(toolType))
         outputFilename = resultFilename(outputFilename, conversionResult.mimeType);
 
       // The raw input bytes are never read again after conversion — free them
@@ -4561,7 +4551,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           outputExtension = allowedFormats[requested] || "png";
         }
         if (toolType === ToolType.SPLIT_PDF) outputExtension = options?.mode === "extract" ? "pdf" : "zip";
-        const outputFilename = `${inputName}_converted.${outputExtension}`;
+        let outputFilename = `${inputName}_converted.${outputExtension}`;
 
         let result;
         try {
@@ -4580,6 +4570,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
           return res.status(422).json({ success: false, error: result.error || "Conversion failed" });
         }
+
+        if (toolType === ToolType.UPSCALE_IMAGE && result.mimeType)
+          outputFilename = resultFilename(outputFilename, result.mimeType);
 
         await storage.createConversionJob({
           userId, toolType, status: "completed", source: "api",

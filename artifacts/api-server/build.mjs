@@ -31,6 +31,8 @@ async function buildAll() {
       "*.node",
       "sharp",
       "heic-convert",
+      // Official SDK reads its own package.json and helper modules at runtime.
+      "replicate",
       "better-sqlite3",
       "sqlite3",
       "canvas",

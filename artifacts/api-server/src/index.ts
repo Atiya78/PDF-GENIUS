@@ -4,6 +4,10 @@ import { registerRoutes } from "./routes";
 import { serveWebApp } from "./static";
 import { startConversionCleanup } from "./lib/conversionRetention";
 
+if (!process.env.REPLICATE_API_TOKEN) {
+  logger.warn("REPLICATE_API_TOKEN is missing. Configure it in Railway → Service → Variables for production AI image tools. An attached Replit connection is only available in Replit.");
+}
+
 const rawPort = process.env["PORT"];
 
 if (!rawPort) {
