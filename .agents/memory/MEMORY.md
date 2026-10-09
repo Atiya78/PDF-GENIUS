@@ -39,6 +39,7 @@
 - [Conversion output persistence](conversion-output-persistence.md) — outputs persisted to object storage (key `conversions/<jobId>`); /api/download is memory-first then object-storage fallback, keep durable copy; native re-download must check HTTP status.
 - [Tool reliability scope](tool-reliability-scope.md) — Restore stays unchanged/disabled; preserve billing/auth/Education/branding/order and browser-local processing.
 - [Connector runtime access](connector-runtime-access.md) — attached metadata alone does not prove the app can call a provider; verify real proxy access before claiming activation.
+- [AI upscaling contract](ai-upscale-contract.md) — preserve scale choices and completed results; disclose native-scale resizing and deliver real bytes through owned downloads.
 - [iOS modal-defer share sheet](ios-modal-defer-share-sheet.md) — present OS Save/Share only from a closing RN modal's onDismiss on iOS (pendingActionRef); Android runs inline; the download itself succeeds — only the share-sheet presentation races. Android SAF failures fall back to shareFile.
 - [iOS file save / "download"](ios-file-save.md) — iOS Download must use the system Save sheet (expo-sharing); silent Documents copy is invisible in Expo Go; single Download button, defer sheet to modal onDismiss.
 - [Conversion stats pipeline](conversion-stats-pipeline.md) — /api/usage sums per-job output_file_size (set at completion via updateConversionJobStatus); conversions are async + anonymous-by-default; mobile attribution needs a fresh EAS APK.

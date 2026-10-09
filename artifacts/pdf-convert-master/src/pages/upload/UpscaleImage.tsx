@@ -28,6 +28,7 @@ export const UpscaleImageUpload = () => {
   const [afterDims, setAfterDims] = useState<{ w: number; h: number } | null>(null);
   const afterBlobRef = useRef<Blob | null>(null);
   const [scale, setScale] = useState(4);
+  const [resultScale, setResultScale] = useState<number | null>(null);
   const [stage, setStage] = useState<Stage>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -52,6 +53,7 @@ export const UpscaleImageUpload = () => {
         setBeforeDims({ w: img.naturalWidth, h: img.naturalHeight });
         setAfterUrl(null);
         setAfterDims(null);
+        setResultScale(null);
         afterBlobRef.current = null;
         setStage("idle");
         setError(null);
@@ -68,17 +70,14 @@ export const UpscaleImageUpload = () => {
 
   const changeScale = (s: number) => {
     setScale(s);
-    if (stage === "done" || stage === "error") {
-      setAfterUrl(null);
-      setAfterDims(null);
-      afterBlobRef.current = null;
-      setStage("idle");
+    if (stage === "error") {
+      setStage(afterUrl ? "done" : "idle");
       setError(null);
     }
   };
 
   const pollJob = async (jobId: number): Promise<void> => {
-    const maxAttempts = 90;
+    const maxAttempts = 120;
     for (let i = 0; i < maxAttempts; i++) {
       await new Promise((r) => setTimeout(r, i === 0 ? 1000 : 2000));
       const res = await fetch(`/api/jobs/${jobId}`);
@@ -122,6 +121,7 @@ export const UpscaleImageUpload = () => {
       afterBlobRef.current = blob;
       const url = URL.createObjectURL(blob);
       setAfterUrl(url);
+      setResultScale(scale);
 
       const img = new Image();
       img.onload = () => setAfterDims({ w: img.naturalWidth, h: img.naturalHeight });
@@ -140,7 +140,7 @@ export const UpscaleImageUpload = () => {
   const download = () => {
     if (!afterBlobRef.current || !file) return;
     const stem = file.name.replace(/\.[^./]+$/, "");
-    downloadBlob(afterBlobRef.current, `${stem}_upscaled_${scale}x.webp`);
+    downloadBlob(afterBlobRef.current, `${stem}_upscaled_${resultScale ?? scale}x.webp`);
   };
 
   const reset = () => {
@@ -149,6 +149,7 @@ export const UpscaleImageUpload = () => {
     setBeforeDims(null);
     setAfterUrl(null);
     setAfterDims(null);
+    setResultScale(null);
     afterBlobRef.current = null;
     setStage("idle");
     setError(null);
@@ -196,7 +197,7 @@ export const UpscaleImageUpload = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                  After (AI {scale}×)
+                   After (AI {resultScale ?? scale}×)
                 </span>
                 {afterDims && (
                   <span className="text-xs text-gray-500" data-testid="text-after-dims">
@@ -254,8 +255,8 @@ export const UpscaleImageUpload = () => {
               </div>
             </div>
 
-            <div className="flex gap-2 ml-auto">
-              {stage !== "done" ? (
+            <div className="flex flex-wrap gap-2 w-full sm:w-auto sm:ml-auto">
+              {(stage !== "done" || scale !== resultScale) && (
                 <Button
                   onClick={upscale}
                   disabled={stage === "processing"}
@@ -269,7 +270,8 @@ export const UpscaleImageUpload = () => {
                   )}
                   {stage === "processing" ? "Upscaling…" : "Upscale with AI"}
                 </Button>
-              ) : (
+              )}
+              {afterUrl && (
                 <Button
                   onClick={download}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -290,6 +292,10 @@ export const UpscaleImageUpload = () => {
               </Button>
             </div>
           </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400" data-testid="text-upscale-output-info">
+            Aura SR v2 generates a native 4× image. The 2× option resizes that AI result.
+            {" "}Downloads are WebP. Changing the selection keeps your completed result until you run another upscale.
+          </p>
         </div>
       )}
     </ImageToolShell>
