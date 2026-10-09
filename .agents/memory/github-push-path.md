@@ -21,6 +21,17 @@ are not reliable evidence of the current state.
 **How to apply:** Prefer source-control OAuth recovery before requesting a PAT.
 If a PAT fallback is needed, verify its secret exists and use a temporary
 GIT_ASKPASS script, never a token-bearing URL or a credential pasted in chat.
+An authenticated ASKPASS dry run confirms this alternate push route; it does not
+repair the Git pane's separate saved OAuth credential.
+
+Unset `GIT_CURL_VERBOSE` and other Git trace variables for credentialed commands
+rather than setting them to `"0"`.
+
+**Why:** `GIT_CURL_VERBOSE=0` still enabled curl diagnostics during a credentialed
+dry run; HTTP traces should not be included in user-facing authentication results.
+
+**How to apply:** Remove trace variables from the child process environment and
+print only sanitized Git result lines, never complete HTTP diagnostics.
 
 Source-control connections can appear healthy/already attached while generic
 integration authorization cards reject them as unconnected or lack a connector
