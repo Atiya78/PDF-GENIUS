@@ -1,0 +1,20 @@
+Add Replicate's official Node.js SDK to this project and make it work in Railway deployment.
+
+Context:
+- pnpm monorepo. The backend is @workspace/api-server (artifacts/api-server), built with `node ./build.mjs` and started from ./dist/index.mjs.
+- Railway deploys using railway.toml + railpack.json. It must install with the committed pnpm-lock.yaml.
+- Replicate is currently called with raw fetch in artifacts/api-server/src/lib/replicateImage.ts (runReplicateImage(version, image, options)), used by src/routes.ts.
+- REPLICATE_API_TOKEN already exists in Replit Secrets.
+
+Tasks:
+1. Install the SDK only in the api-server package: `pnpm --filter @workspace/api-server add replicate`. Do NOT use npm or yarn. Make sure pnpm-lock.yaml is updated and committed, so Railway's `pnpm install --frozen-lockfile` doesn't fail.
+2. Check build.mjs (esbuild). Either bundle `replicate` correctly or mark it external, and keep it in dependencies so it's present at runtime in dist. Confirm `pnpm --filter @workspace/api-server build` and start both work.
+3. Refactor replicateImage.ts to use the SDK:
+   import Replicate from "replicate";
+   const replicate = new Replicate({ auth: process.env.REPLICATE_API_TOKEN });
+   Use replicate.run("owner/model:version", { input }). Output is a FileOutput (or an array of them), so get the URL with output.url() and handle both cases. Keep the existing validations (allowed hostnames replicate.delivery / api.replicate.com), the timeout, and the friendly error messages. Keep the runReplicateImage function signature so routes.ts doesn't break.
+4. Add an image upscale tool using zsxkib/aura-sr-v2:
+   version "zsxkib/aura-sr-v2:5c137257cce8d5ce16e8a334b70e9e025106b5580affed0bc7d48940b594e74c", input { image }. Pass the uploaded image as a Buffer/data URI or an uploaded file URL. Return the output URL (.webp) to the frontend.
+5. At startup, throw a clear error/log if REPLICATE_API_TOKEN is missing. Never hardcode or log the token.
+6. Add REPLICATE_API_TOKEN to any .env.example and a short note in the README saying it must be set in Railway → Service → Variables.
+7. Test end to end in Replit (upload image → upscaled result), then make sure the production build works the same way Railway runs it.

@@ -1,0 +1,153 @@
+## Basic model info
+
+Model name: zsxkib/aura-sr-v2
+Model description: AuraSR v2: Second-gen GAN-based Super-Resolution for real-world applications
+
+
+## Model inputs
+
+- image (required): Input image to upscale (string)
+- max_batch_size (optional): Maximum number of tiles to process in a single batch. Higher values may increase speed but require more GPU memory. (integer)
+- output_format (optional): The image file format of the generated output images (string)
+- output_quality (optional): The image compression quality (for lossy formats like JPEG and WebP). 100 = best quality, 0 = lowest quality. (integer)
+
+
+## Model output schema
+
+{
+  "type": "string",
+  "title": "Output",
+  "format": "uri"
+}
+
+If the input or output schema includes a format of URI, it is referring to a file.
+
+
+## Example inputs and outputs
+
+Use these example outputs to better understand the types of inputs the model accepts, and the types of outputs the model returns:
+
+### Example (https://replicate.com/p/s0zxqgtmcxrgj0ch17x9fsesym)
+
+#### Input
+
+```json
+{
+  "image": "https://i.redd.it/low-res-loaf-v0-rnpzji4tnow91.jpg?width=256&format=pjpg&auto=webp&s=59192705b66485dcbed3d0727fbc950c355197a9",
+  "output_format": "webp",
+  "max_batch_size": 8,
+  "output_quality": 80
+}
+```
+
+#### Output
+
+```json
+"https://replicate.delivery/pbxt/bzfaLLYEj0UCG6OD2SedOnsSTsUAjfJsz587LA2WEWXN8FcmA/output.webp"
+```
+
+
+### Example (https://replicate.com/p/f951m1rahnrgj0ch17zaasn4n0)
+
+#### Input
+
+```json
+{
+  "image": "https://fastly.4sqi.net/img/general/128x128/518599985_KXFqFh337i1lrVzVrgUJQGxw8PffI0lEKL9HHvJfqFA.jpg",
+  "output_format": "webp",
+  "max_batch_size": 8,
+  "output_quality": 80
+}
+```
+
+#### Output
+
+```json
+"https://replicate.delivery/pbxt/96xe6QsDIRS9GyOdnYmcq63Qk9t1mGxSelRxBfAgXgKzDGcmA/output.webp"
+```
+
+
+## Model readme
+
+> # ✨ AuraSR v2: Advanced GAN Super-Resolution for Images 🖼️
+> 
+> [![Replicate](https://replicate.com/zsxkib/aura-sr-v2/badge)](https://replicate.com/zsxkib/aura-sr-v2)
+> 
+> AuraSR v2 is an improved GAN-based super-resolution tool that enhances image clarity and size. Based on the [GigaGAN](https://mingukkang.github.io/GigaGAN/) concept and optimized for real-world applications, it excels with a wide range of image types.
+> 
+> ![See AuraSR v2 in action](https://storage.googleapis.com/falserverless/gallery/aurasr-animated.webp)
+> 
+> ## 🎨 Features
+> 
+> - Upscales PNG, WebP, JPEG, and other common image formats
+> - Supports 4x upscaling with improved quality
+> - Efficient processing with overlapped tile technique
+> - Optimized for both AI-generated and high-quality photographs
+> 
+> ## ⚠️ Important Notes
+> 
+> AuraSR v2 is more versatile than its predecessor but still has some considerations:
+> 
+> 1. Excellent results with a wide range of image types, including compressed formats
+> 2. Improved handling of compression artifacts
+> 3. Enhanced performance on real-world photographs
+> 4. Ideal for upscaling both AI-generated and high-quality natural images
+> 
+> ## 🛠️ Usage
+> 
+> ### Input Parameters
+> 
+> - `image`: The input image to upscale (supports various formats including PNG, WebP, JPEG)
+> - `scale_factor`: Fixed at 4x upscaling
+> 
+> ### Example
+> 
+> ```python
+> import replicate
+> output = replicate.run(
+>     "zsxkib/aura-sr-v2:<VERSION>",
+>     input={
+>         "image": open("path/to/your/image.jpg", "rb"),
+>     }
+> )
+> print(output)
+> ```
+> 
+> ## 🙌 Acknowledgements
+> 
+> - [fal.ai](https://github.com/fal-ai/aura-sr/tree/main) for the original AuraSR implementation and v2 improvements
+> - [lucidrains](https://github.com/lucidrains/gigagan-pytorch) for the unofficial PyTorch implementation of GigaGAN
+> 
+> ## Citation
+> 
+> If you use this model in your research or applications, please cite the original GigaGAN paper:
+> 
+> ```
+> @article{DBLP:journals/corr/abs-2303-05511,
+>   author    = {Minguk Kang and
+>                Jaesik Park and
+>                Namhyuk Ahn and
+>                Sungsoo Ahn and
+>                Kibeom Hong and
+>                Bohyung Han},
+>   title     = {GigaGAN: Large-scale GAN for Text-to-Image Synthesis},
+>   journal   = {CoRR},
+>   volume    = {abs/2303.05511},
+>   year      = {2023},
+>   url       = {https://arxiv.org/abs/2303.05511},
+>   eprinttype = {arXiv},
+>   eprint    = {2303.05511},
+>   timestamp = {Tue, 14 Mar 2023 17:06:10 +0100},
+>   biburl    = {https://dblp.org/rec/journals/corr/abs-2303-05511.bib},
+>   bibsource = {dblp computer science bibliography, https://dblp.org}
+> }
+> ```
+> 
+> ## License
+> 
+> This model is released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0).
+> 
+> ## 🐦 Connect
+> 
+> Questions or feedback? Follow me on Twitter [@zsakib_](https://twitter.com/zsakib_) and let's chat!
+
