@@ -1,0 +1,65 @@
+Make the Education Zone (/education) fully functional, production-ready. No placeholders, no "Coming soon" badges, no mock data, no fake/demo responses, no TODOs. Every tool card must open a working tool.
+
+GENERAL RULES
+- Reuse the existing stack, PDF upload component (max 20MB), auth, AI provider helper, credit/usage limits, and styling already used by Quiz Generator. Don't add a new AI provider.
+- All AI calls happen in @workspace/api-server only. Never expose API keys to the frontend.
+- Extract PDF text server-side with page numbers kept, so every tool can use a "pages" range option (e.g. 1-10). For large PDFs, chunk the text and merge results.
+- For scanned PDFs with no extractable text, show a clear message: "This PDF has no readable text (scanned). Please use OCR first", with a link to our OCR tool if we have one.
+- Every tool has: upload → options → Generate button with loading/progress → result view → Copy, Download (PDF + DOCX or TXT where it makes sense), Print, and "Start over".
+- Proper error states: file too large, wrong type, AI failure (with retry), rate limit or out of credits.
+- Language option on every tool: English, Bangla, and "Same as PDF". Bangla output must render correctly in the UI and in exported PDFs, so embed a Bangla font (Noto Sans Bengali / Hind Siliguri) in the PDF export.
+- Use structured JSON output from the AI, validated with zod on the server. If parsing fails, retry once.
+- Mobile responsive. Keep the existing design.
+- Remove every "Coming soon" label and disabled state. Make the filter chips (All, Practice, Revision, Notes, Translate) filter the cards correctly.
+
+TOOLS (all must work end to end)
+
+1. Quiz Generator (Practice). Already exists; finish it fully.
+   - Question types: MCQ (4 options), True/False, Short answer, Fill in the blank. Mixed is allowed.
+   - Number of questions: 5–50. Difficulty: Easy/Medium/Hard.
+   - Interactive quiz mode: answer, submit, get a score, see the correct answer + explanation + source page number for each question.
+   - Export: quiz paper PDF, answer key PDF, DOCX.
+
+2. Flashcards (Revision)
+   - Generate front/back cards (term → definition, question → answer) from the PDF. Count 10–100.
+   - Card style option: Basic, Cloze (fill-in), Q&A.
+   - Flip animation, next/prev, shuffle, mark "Know / Don't know", and a review round for the "Don't know" cards.
+   - Export: printable cards PDF (cut lines, front/back), CSV (Anki-compatible: front,back).
+
+3. Ask the PDF / Study Q&A (Revision). The tool that answers questions and points to the page.
+   - Chat with the uploaded PDF. Retrieve the relevant chunks (simple embeddings or keyword ranking), then answer ONLY from the PDF.
+   - Every answer shows clickable page citations (e.g. "p. 12"). If the answer isn't in the PDF, say so.
+   - Keep the chat history for the session. Copy an answer, export the chat as PDF.
+
+4. Notes Maker (Notes)
+   - Turn slides or lecture PDFs into clean study notes.
+   - Styles: Detailed notes, Short summary, Bullet points, Cornell notes, Mind-map outline.
+   - Output: headings, key terms in bold, definitions, formulas kept as-is, and a "Key takeaways" section at the end.
+   - Editable result (rich text), then export as PDF / DOCX / Markdown.
+
+5. Bangla ↔ English PDF Translator (Translate)
+   - Direction: Bangla → English, English → Bangla, Auto-detect.
+   - Translate page by page, keeping headings, lists and paragraph structure. Show a side-by-side view (original | translated).
+   - Glossary option: keep technical terms in English inside the Bangla output (toggle).
+   - Export the translated document as PDF (with the Bangla font embedded) and DOCX. Show page-by-page progress for long files.
+
+6. Exam Question Paper Generator (Practice). Built for teachers.
+   - Inputs: institution name, exam name, subject, class, total marks, time, and sections (MCQ, Short questions, Creative/Broad questions) with a count and marks per section.
+   - Bangladesh board-style formatting option (Creative question with উদ্দীপক + ক/খ/গ/ঘ parts) as well as a standard format.
+   - Generates a properly formatted question paper plus a separate answer key / marking scheme.
+   - Export: print-ready A4 PDF and DOCX. "Regenerate question" button on each individual question.
+
+7. Any other card on /education that is currently a placeholder or "Coming soon": implement it fully following the same rules.
+
+BACKEND
+- One route per tool under /api/education/* (quiz, flashcards, ask, notes, translate, exam-paper) with zod input validation, file-size checks, rate limiting, and the existing credit deduction.
+- Don't charge credits when the AI call fails. Prevent duplicate charges if the user double-clicks Generate.
+- Save each generated result to the user's history if history already exists in the app, so they can reopen and download it later.
+- Must build and run on Railway with the existing railway.toml / railpack.json and pnpm lockfile. If you add packages, use pnpm --filter on the correct workspace package and update pnpm-lock.yaml.
+
+SEO / CONTENT
+- Update the /education page FAQ and meta title/description to match the real working tools.
+- Each tool gets its own route (e.g. /education/quiz-generator) with its own title and meta description.
+
+IMPORTANT – TESTING
+Do NOT run browser tests, screenshots, preview checks or end-to-end testing. I will test everything myself. Just implement it completely and correctly, then give me a short list of which files changed and any new environment variables I need to add in Railway.

@@ -88,7 +88,7 @@
 - [Video compression timeout](compress-video-timeout.md) — "Processing took longer than expected" = slow encode, not corrupt; use x264 `veryfast` (not medium) + 400-poll (~600s) client window for compress-video.
 - [Adding a conversion tool — sync points](adding-a-tool-sync-points.md) — new tool needs enum + BOTH storage tool registries + MIME + switch (backend) + web toolTypeMap/toolConfig/route/Tools + mobile tools.ts; each is a silent failure point.
 - [api-server in-memory buffer OOM](api-memory-oom.md) — job Buffer maps need touch/purge/TTL-sweep lifecycle + free input after conversion, or Railway OOM-kills prod; eviction safe via S3 fallback.
-- [GitHub push path](github-push-path.md) — Git pane token broken; push via GITHUB_PERSONAL_ACCESS_TOKEN secret + GIT_ASKPASS; push protection blocks committed secrets (filter-branch fix).
+- [GitHub push authentication](github-push-path.md) — verify current remote and real Git auth; prefer source-control OAuth recovery, secure PAT fallback only if needed.
 - [Hidden admin dashboard](admin-dashboard.md) — /admin + env-cred admin-scoped JWT (never give user tokens a scope); tool pause via tool_settings, new conversion endpoints must check isToolPaused.
 - [Compress Video (MP4) levels](compress-video-levels.md) — 3-level target-size two-pass; ratios lockstep web/mobile/backend (0.11/0.226/0.342); audio=20% share; corrupt-input friendly error; done-screen failure gates on status `failed`.
 - [Marketing claim verification](marketing-claims.md) — public claims need evidence or neutral wording; TODOs stay internal; keep mobile store declarations separate from web disclosures.

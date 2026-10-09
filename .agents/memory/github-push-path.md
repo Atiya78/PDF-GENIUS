@@ -1,26 +1,43 @@
 ---
-name: GitHub push path for this repo
-description: How to push to Disha7887/PDF_Convert_Master when the Git pane / account token fails, and the push-protection gotcha.
+name: GitHub push authentication
+description: Diagnose actual Git authentication, reconnect source-control OAuth, and handle push protection safely.
 ---
 
 # GitHub push path
 
-The Replit Git pane's GitHub token for this project is broken (GitHub returns
-"Invalid username or token"; pane shows PUSH_REJECTED/UNAUTHENTICATED). The Git pane
-uses a DIFFERENT connection than account-level "Connected services" — reconnecting
-there does not help. The `gitPush` callback fails the same way (it hides the real
-stderr; a manual `git push --dry-run` reveals it).
+Check the current remote and a non-mutating `git push --dry-run` before assuming
+an old authentication problem still applies. Do not print credentials embedded
+in a remote URL.
 
-**Working recipe:** user's fine-grained PAT is stored as secret
-`GITHUB_PERSONAL_ACCESS_TOKEN` (needs Contents: Read and write on the repo).
-Push via a temp GIT_ASKPASS script that echoes username `x-access-token` and the
-token — never inline the token in the URL/command.
+The GitHub source-control connection authenticates workspace Git CLIs
+automatically. When Git rejects its credentials, inspect its reauthorization
+context and reconnect OAuth through the existing connection. A nominally healthy
+connection status is not proof that Git authentication succeeds.
+
+**Why:** Repository targets and connections have changed across sessions.
+Older notes about permanently broken Git-pane authentication or available PATs
+are not reliable evidence of the current state.
+
+**How to apply:** Prefer source-control OAuth recovery before requesting a PAT.
+If a PAT fallback is needed, verify its secret exists and use a temporary
+GIT_ASKPASS script, never a token-bearing URL or a credential pasted in chat.
+
+Source-control connections can appear healthy/already attached while generic
+integration authorization cards reject them as unconnected or lack a connector
+identifier. This was observed on 2026-10-10.
+
+**Why:** Git-provider connections are special objects, not necessarily ordinary
+runtime integration connections that the generic reconnect form can handle.
+
+**How to apply:** Do not repeat failing authorization cards. Use the Git pane's
+own authorization controls or a secure repository-scoped PAT fallback, and
+confirm success with a dry run before any actual push.
 
 **Push protection:** the repo is push-protection eligible; any commit containing a
 real secret (e.g. files like `attached_assets/0_secrets_*.json`) blocks the whole
-push with GH013. Fix = `git filter-branch --index-filter 'git rm --cached ...'` over
-the unpushed range (history rewrite of unpushed commits IS allowed in this sandbox).
+push with GH013. Removing a secret from the latest file does not remove it from
+earlier commits. Obtain consent before rewriting history; do not force-push.
 `attached_assets/0_secrets_*` is gitignored — keep it that way.
 
-**Why:** avoids re-diagnosing a multi-step auth failure; the GitHub connector proxy
-cannot do git-over-https and withholds raw tokens.
+**Why:** Generic GitHub API connectors are distinct from the source-control
+connection and do not supply Git-over-HTTPS credentials.
