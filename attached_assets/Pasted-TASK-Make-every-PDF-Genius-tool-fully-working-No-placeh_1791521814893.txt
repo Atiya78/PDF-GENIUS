@@ -1,0 +1,33 @@
+TASK: Make every PDF Genius tool fully working. No placeholders, TODOs or partial features — EXCEPT Document Restore, which must stay exactly as it is (marked "coming soon").
+
+CONTEXT: The app lives in artifacts/pdf-convert-master and uses Wouter, the shared tool catalog, the shared header and ToolSearch, and Dodo billing. Keep the coral branding, homepage section order, auth guards, the tool-paused system, Education Zone, the API at /api/v1/*, and all billing behavior exactly as they are.
+
+1. FINISH THE PARTIALLY WORKING TOOLS
+- PDF to JPG: output real JPG files (not PNG), with a quality setting and a DPI choice (72/150/300), and a ZIP when there are multiple pages. Update the description and remove "current output: PNG".
+- Convert Image: let users pick the output format (JPG, PNG, WEBP, GIF, BMP, TIFF) and set quality for lossy formats.
+- Rotate PDF: offer 90° clockwise, 90° counter-clockwise and 180°, applied to all pages or selected pages with per-page thumbnails.
+- Split PDF: offer three modes: every page, custom ranges (e.g. 1-3,5,8-10), and every N pages. Return a ZIP for multiple outputs or a single PDF when there's one.
+- Compress PDF / Compress Image: offer Low/Medium/High levels and show the original vs new file size and the percentage saved.
+- Digital Signature (listed under Secure): make sure it links to a working tool. Users can draw, type or upload a signature, place it on any page, and download the signed PDF.
+- OCR PDF: output a searchable PDF (text layer) plus TXT/DOCX, with English and Bangla language options.
+
+2. REMOVE ALL PLACEHOLDERS SITE-WIDE
+- Search the whole codebase for TODO, placeholder, "not currently", lorem, mock and hard-coded fake data in any text a visitor can see. Fix or remove each one. Source-code comments are fine to leave.
+- Do NOT touch Document Restore: keep its "(coming soon)" label, its "Not currently available" card and its current disabled behavior everywhere (catalog, nav, search, homepage grid, SEO).
+- Remove the homepage line "TODO: Confirm and implement an automatic deletion period for stored conversion results." Build the real feature instead: stored conversion results auto-delete after 24 hours via a scheduled cleanup job, and the privacy text states that 24-hour period.
+- Every tool card and nav link (except Document Restore) must open a working page. No dead buttons, no "#" links.
+- Update the tool descriptions so they match what each tool now actually does.
+
+3. QUALITY REQUIREMENTS FOR EVERY TOOL
+- Validate file type and size against the existing plan limits. Show progress while processing. Show readable error messages (no raw stack traces). Make sure downloads work, and clean up temp files.
+- Tools must work on mobile (320px and up) and desktop.
+- Follow the existing pattern for each tool: browser-side tools stay browser-side, and server-side tools use the existing upload and storage flow.
+- Install any system packages the tools need (qpdf, ghostscript, tesseract with eng and ben, libreoffice) through the Replit Nix config.
+
+4. VERIFICATION (required before you finish)
+- Run every tool end-to-end with a real sample file and confirm the output file opens correctly.
+- Run the typecheck and build. Run a grep for visible TODO/placeholder text and confirm it returns zero results (Document Restore's "coming soon" is the only allowed exception).
+- Test at 320, 768, 1024 and 1440px.
+- Give me a final table with columns: tool, status, output format(s), and how you tested it.
+
+DO NOT CHANGE: pricing, plans, the Dodo webhook, authentication, Education Zone, branding, or Document Restore.
