@@ -14,6 +14,12 @@ import fsSync from "fs";
 import path from "path";
 import { promisify } from "util";
 import sharp from "sharp";
+import { encodeBitmap } from "./lib/bitmap";
+import { expiredCompletedJob } from "./lib/conversionRetention";
+import { resultFilename } from "./lib/resultFilename";
+import { planFileLimitMB } from "./lib/planFileLimit";
+import { removeBackgroundWithReplicate } from "./lib/replicateImage";
+import { compressDocumentPdf, compressionLevel, officeDocumentPdf, searchableOcrPdf } from "./lib/documentTools";
 import ffmpegStatic from "ffmpeg-static";
 import ffprobeStatic from "ffprobe-static";
 import { register, signin, verifySignupOtp, getCurrentUser, authenticateUser, updateProfile, changePassword, forgotPassword, resetPassword, googleAuth, googleConfig, googleMobileStart, googleMobileCallback } from "./auth";
@@ -446,16 +452,16 @@ async function performActualConversion(
         return await convertImageToPdf(fileBuffer, inputExtension, outputFilename);
         
       case 'compress_pdf':
-        return await compressPdf(fileBuffer, outputFilename);
+        return await compressDocumentPdf(fileBuffer, options);
         
       case 'rotate_pdf':
         return await rotatePdfPages(fileBuffer, options);
         
       case 'word_to_pdf':
-        return await convertWordToPdf(fileBuffer, outputFilename);
+        return await officeDocumentPdf(fileBuffer, "word");
         
       case 'excel_to_pdf':
-        return await convertExcelToPdf(fileBuffer, outputFilename);
+        return await officeDocumentPdf(fileBuffer, "excel");
       case 'csv_to_pdf': {
         const { html, print } = await buildCsvPdf(fileBuffer, inputFilename, options);
         return { success: true, convertedBuffer: await htmlToPdfBuffer(html, print), mimeType: 'application/pdf' };
@@ -492,7 +498,7 @@ async function performActualConversion(
         return await convertPdfToPowerPoint(fileBuffer, outputFilename);
         
       case 'powerpoint_to_pdf':
-        return await convertPowerPointToPdf(fileBuffer, outputFilename);
+        return await officeDocumentPdf(fileBuffer, "powerpoint");
         
       case 'html_to_pdf':
         return await convertHtmlToPdf(fileBuffer, outputFilename, options);
@@ -504,7 +510,7 @@ async function performActualConversion(
         return await removeBackground(fileBuffer, inputExtension, outputFilename);
 
       case 'ocr_pdf':
-        return await ocrPdf(fileBuffer, outputFilename);
+        return await searchableOcrPdf(fileBuffer, options);
 
       case 'restore_document':
         return await restoreDocument(fileBuffer, inputExtension, outputFilename);
@@ -750,7 +756,10 @@ async function compressImage(imageBuffer: Buffer, inputExt: string | undefined, 
     // User-selectable quality (10-100). Lower quality = smaller file = more
     // compression. Defaults to 80 when not provided. Clamped so a bad request
     // can't pass an out-of-range value to Sharp.
-    const quality = Math.min(100, Math.max(10, Math.round(Number(options.quality)) || 80));
+    const quality = options.compressionLevel === undefined
+      ? imageQuality(options.quality, 80)
+      : { low: 85, medium: 65, high: 40 }[compressionLevel(options)];
+    imageBuffer = await normalizeImageInput(imageBuffer, inputExt);
 
     let processedBuffer: Buffer;
     let mimeType: string;
@@ -781,6 +790,9 @@ async function compressImage(imageBuffer: Buffer, inputExt: string | undefined, 
       mimeType = 'image/jpeg';
     }
 
+    if (processedBuffer.length >= imageBuffer.length && ['jpg', 'jpeg', 'png', 'webp'].includes(inputExt ?? '')) {
+      processedBuffer = imageBuffer;
+    }
     const compressionRatio = ((imageBuffer.length - processedBuffer.length) / imageBuffer.length * 100).toFixed(1);
     console.log(`Image compressed: ${compressionRatio}% size reduction (quality ${quality})`);
 
@@ -1092,8 +1104,8 @@ async function rotateImage(imageBuffer: Buffer, inputExt: string | undefined, ou
 async function convertImageFormat(imageBuffer: Buffer, inputExt: string | undefined, outputExt: string | undefined, outputFilename: string, options: Record<string, unknown> = {}) {
   try {
     if (options.outputFormat !== undefined && (typeof options.outputFormat !== "string" ||
-      !["jpg", "jpeg", "png", "webp", "gif", "avif", "tiff", "tif"].includes(options.outputFormat.toLowerCase())))
-      throw new Error("Unsupported output format. Choose JPG, PNG or WebP.");
+      !["jpg", "jpeg", "png", "webp", "gif", "bmp", "avif", "tiff", "tif"].includes(options.outputFormat.toLowerCase())))
+      throw new Error("Unsupported output format. Choose JPG, PNG, WebP, GIF, BMP or TIFF.");
     imageBuffer = await normalizeImageInput(imageBuffer, inputExt);
     const quality = imageQuality(options.quality);
     let convertedBuffer: Buffer;
@@ -1117,18 +1129,21 @@ async function convertImageFormat(imageBuffer: Buffer, inputExt: string | undefi
         convertedBuffer = await sharp(imageBuffer).gif().toBuffer();
         mimeType = 'image/gif';
         break;
+      case 'bmp':
+        convertedBuffer = await encodeBitmap(imageBuffer);
+        mimeType = 'image/bmp';
+        break;
       case 'avif':
-        convertedBuffer = await sharp(imageBuffer).avif({ quality: 80 }).toBuffer();
+        convertedBuffer = await sharp(imageBuffer).avif({ quality }).toBuffer();
         mimeType = 'image/avif';
         break;
       case 'tif':
       case 'tiff':
-        convertedBuffer = await sharp(imageBuffer).tiff({ quality: 90 }).toBuffer();
+        convertedBuffer = await sharp(imageBuffer).tiff({ compression: "lzw" }).toBuffer();
         mimeType = 'image/tiff';
         break;
       default:
-        convertedBuffer = await sharp(imageBuffer).jpeg({ quality: 90 }).toBuffer();
-        mimeType = 'image/jpeg';
+        throw new Error("Choose a supported image output format.");
     }
     
     console.log(`Image converted from ${inputExt} to ${outputExt}`);
@@ -1200,6 +1215,8 @@ async function convertPdfToImages(pdfBuffer: Buffer, outputFilename: string, opt
   const format = options.outputFormat ?? "png";
   if (!["jpg", "png"].includes(format as string)) throw new Error("Choose JPG or PNG output for PDF page images.");
   const quality = imageQuality(options.quality);
+  const dpi = options.dpi ?? 150;
+  if (![72, 150, 300].includes(dpi as number)) throw new Error("Choose a resolution of 72, 150 or 300 DPI.");
   const document = await loadEditablePdf(pdfBuffer);
   const count = document.getPageCount();
   if (count > 500) throw new Error("This PDF has more than 500 pages. Split it into smaller documents before exporting images.");
@@ -1208,16 +1225,21 @@ async function convertPdfToImages(pdfBuffer: Buffer, outputFilename: string, opt
     const zip = new JSZip();
     let pageImages = 0;
     let outputBytes = 0;
+    let singleImage: Buffer | undefined;
     for (let page = 1; page <= count; page++) {
-      const result = await parser.getScreenshot({ scale: 2, partial: [page], imageDataUrl: false });
+      const sourcePage = document.getPage(page - 1);
+      if (sourcePage.getWidth() * sourcePage.getHeight() * ((dpi as number) / 72) ** 2 > 40_000_000)
+        throw new Error("A page exceeds the image rendering limit at this DPI. Choose a lower DPI.");
+      const result = await parser.getScreenshot({ scale: (dpi as number) / 72, partial: [page], imageDataUrl: false });
       const pg = result.pages[0];
       if (!pg?.data) throw new Error(`Page ${page} could not be rendered.`);
       const image = format === "jpg"
-        ? await sharp(Buffer.from(pg.data)).flatten({ background: "#ffffff" }).jpeg({ quality }).toBuffer()
-        : Buffer.from(pg.data);
+        ? await sharp(Buffer.from(pg.data)).flatten({ background: "#ffffff" }).withMetadata({ density: dpi as number }).jpeg({ quality }).toBuffer()
+        : await sharp(Buffer.from(pg.data)).withMetadata({ density: dpi as number }).png().toBuffer();
       outputBytes += image.length;
       if (outputBytes > 128 * 1024 * 1024) throw new Error("The exported images exceed 128 MB. Export fewer PDF pages at a time.");
       zip.file(`page_${page}.${format}`, image);
+      if (count === 1) singleImage = image;
       pageImages++;
     }
 
@@ -1225,6 +1247,7 @@ async function convertPdfToImages(pdfBuffer: Buffer, outputFilename: string, opt
       throw new Error('No pages could be rendered from this PDF.');
     }
 
+    if (singleImage) return { success: true, convertedBuffer: singleImage, mimeType: format === "jpg" ? "image/jpeg" : "image/png" };
     const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
 
     return {
@@ -2077,7 +2100,7 @@ async function upscaleImage(imageBuffer: Buffer, inputExt: string | undefined, o
     const dataUri = `data:image/png;base64,${pngInput.toString('base64')}`;
 
     const createResp = await fetch(
-      'https://api.replicate.com/v1/models/nightmareai/real-esrgan/predictions',
+      'https://api.replicate.com/v1/predictions',
       {
         method: 'POST',
         headers: {
@@ -2085,7 +2108,8 @@ async function upscaleImage(imageBuffer: Buffer, inputExt: string | undefined, o
           'Content-Type': 'application/json',
           Prefer: 'wait',
         },
-        body: JSON.stringify({ input: { image: dataUri, scale, face_enhance: false } }),
+        body: JSON.stringify({ version: "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b", input: { image: dataUri, scale, face_enhance: false } }),
+        signal: AbortSignal.timeout(60_000),
       }
     );
 
@@ -2157,9 +2181,11 @@ async function removeBackground(imageBuffer: Buffer, inputExt: string | undefine
   // a misleading "processed" image that still has its background.
   const apiKey = process.env.REMOVE_BG_API_KEY;
   if (!apiKey) {
-    throw new Error(
-      'Background removal requires an external AI service. Set the REMOVE_BG_API_KEY secret (from remove.bg) to enable this tool.'
-    );
+    const token = await getReplicateToken();
+    if (!token) throw new Error("Background removal needs a connected AI image provider. Please contact support while the provider is being configured.");
+    const input = await sharp(await normalizeImageInput(imageBuffer, inputExt)).png().toBuffer();
+    const output = await removeBackgroundWithReplicate(input, token);
+    return { success: true, convertedBuffer: await sharp(output).png().toBuffer(), mimeType: "image/png" };
   }
 
   try {
@@ -2293,7 +2319,7 @@ setInterval(() => {
 
 // Text-derived OCR export formats the client can request via /api/download?format=.
 type OcrExportFormat = "txt" | "doc" | "html" | "md";
-const OCR_EXPORT_FORMATS = new Set<string>(["txt", "doc", "html", "md"]);
+const OCR_EXPORT_FORMATS = new Set<string>(["txt", "doc", "docx", "html", "md"]);
 const OCR_FORMAT_MIME: Record<OcrExportFormat, string> = {
   txt: "text/plain; charset=utf-8",
   doc: "application/msword",
@@ -2733,10 +2759,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      if (fileSize > tool.maxFileSize * 1024 * 1024) {
+      const effectiveFileLimit = Math.min(tool.maxFileSize, planFileLimitMB(req.user?.plan ?? "free"));
+      if (fileSize > effectiveFileLimit * 1024 * 1024) {
         return res.status(400).json({
           success: false,
-          error: `File size exceeds maximum limit of ${tool.maxFileSize}MB`
+          error: `File size exceeds the ${effectiveFileLimit}MB upload limit for this tool and plan.`
         });
       }
 
@@ -2826,6 +2853,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const pdfBuffers: Buffer[] = [];
       for (const f of files) {
+        if (f.size > Math.min(100, planFileLimitMB(req.user?.plan ?? "free")) * 1024 * 1024)
+          return res.status(413).json({ success: false, error: `"${f.originalname}" exceeds your plan's upload limit.` });
         // Defense in depth: confirm real PDF bytes, not just a .pdf extension.
         const isPdfMagic = f.buffer.subarray(0, 5).toString('latin1').startsWith('%PDF');
         if (!isPdfMagic) {
@@ -2945,6 +2974,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const images = files.map((f) => ({ buffer: f.buffer, name: f.originalname }));
+      if (files.some(f => f.size > Math.min(100, planFileLimitMB(req.user?.plan ?? "free")) * 1024 * 1024))
+        return res.status(413).json({ success: false, error: "An image exceeds your plan's upload limit." });
       const totalInputSize = files.reduce((sum, f) => sum + f.size, 0);
       const outputFilename = "images.pdf";
 
@@ -3153,7 +3184,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       touchJobBuffers(jobId);
       
       // Simulate realistic conversion with progress updates (shortened)
-      await simulateConversionWithProgress(jobId, Math.min(processingTime, 3000), fileSizeMB);
+      // Conversion starts immediately; status polling tracks the real running job.
       
       const inputName = fileName.substring(0, fileName.lastIndexOf('.'));
       const fileExtension = fileName.split('.').pop()?.toLowerCase();
@@ -3166,6 +3197,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           jpeg: "jpg",
           webp: "webp",
           gif: "gif",
+          bmp: "bmp",
           avif: "avif",
           tiff: "tiff",
           tif: "tiff",
@@ -3174,7 +3206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         outputExtension = allowedFormats[requested] || "png";
       }
       if (toolType === ToolType.SPLIT_PDF) outputExtension = options?.mode === "extract" ? "pdf" : "zip";
-      const outputFilename = `${inputName}_converted.${outputExtension}`;
+      let outputFilename = `${inputName}_converted.${outputExtension}`;
       
       // PERFORM ACTUAL CONVERSION
       const conversionResult = await performActualConversion(
@@ -3184,6 +3216,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         outputFilename,
         options
       );
+      if (conversionResult.mimeType && ["pdf_to_images", "split_pdf", "convert_image_format", "compress_image"].includes(toolType))
+        outputFilename = resultFilename(outputFilename, conversionResult.mimeType);
 
       // The raw input bytes are never read again after conversion — free them
       // immediately instead of letting them sit in RAM until download/TTL.
@@ -3295,6 +3329,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           status: job.status,
           inputFilename: job.inputFilename,
           outputFilename: job.outputFilename,
+          outputFileSize: job.outputFileSize,
+          expiresAt: job.updatedAt && job.status === "completed" ? new Date(job.updatedAt.getTime() + 24 * 60 * 60 * 1000).toISOString() : null,
           processingTime: job.processingTime,
           errorMessage: job.errorMessage,
           createdAt: job.createdAt,
@@ -3326,11 +3362,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // (userId null) stay open. IDs are sequential, so without this anyone could
       // enumerate and read another user's extracted text.
       const job = await storage.getConversionJob(jobId);
-      if (job && job.userId && req.user?.id !== job.userId) {
+      if (!job) return res.status(404).json({ success: false, error: "Job not found" });
+      if (job.userId && req.user?.id !== job.userId) {
         return res.status(403).json({ success: false, error: "You don't have access to this file." });
       }
       // Prefer the fast in-memory copy; fall back to the durable object-storage
       // sidecar so the recognized text survives an in-memory purge / restart.
+      if (expiredCompletedJob(job)) return res.status(410).json({ success: false, error: "OCR results expired after 24 hours. Run OCR again." });
       const pages = await resolveOcrPages(jobId);
       if (!pages || pages.length === 0) {
         return res.status(404).json({ success: false, error: "No OCR text for this job" });
@@ -3346,7 +3384,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user's conversion history
-  app.get("/api/jobs", async (req, res) => {
+  app.get("/api/jobs", optionalAuth, async (req, res) => {
     try {
       const userId = (req as AuthenticatedRequest).user?.id;
       if (!userId) {
@@ -3356,7 +3394,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      const jobs: any[] = []; // For now, return empty array - getAllConversionJobs method doesn't exist
+      const jobs = await storage.getUserConversionJobs(userId);
       res.json({
         success: true,
         data: jobs,
@@ -3408,6 +3446,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      if (expiredCompletedJob(job)) {
+        purgeJobBuffers(jobId);
+        return res.status(410).json({ success: false, error: "This conversion result expired after 24 hours. Convert the original file again to download a new result." });
+      }
+
       // Format-aware download for OCR results. An OCR job's primary output is the
       // searchable PDF (served by the passthrough below), but the user can also
       // download the recognized text as TXT/DOC/HTML/Markdown. The first download
@@ -3422,9 +3465,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const fmt = requestedFormat as OcrExportFormat;
           const base = (job.outputFilename || `converted_file_${jobId}`).replace(/\.[^./]+$/, "");
           const textFilename = `${base}.${fmt}`;
-          const body = Buffer.from(buildOcrContent(fmt, pages, base), "utf-8");
+          const body = requestedFormat === "docx"
+            ? await Packer.toBuffer(new Document({ sections: pages.map(text => ({ children: text.split("\n").map(line => new Paragraph({ children: [new TextRun(line)] })) })) }))
+            : Buffer.from(buildOcrContent(fmt, pages, base), "utf-8");
           res.setHeader('Content-Disposition', contentDisposition('attachment', textFilename));
-          res.setHeader('Content-Type', OCR_FORMAT_MIME[fmt]);
+          res.setHeader('Content-Type', requestedFormat === "docx" ? "application/vnd.openxmlformats-officedocument.wordprocessingml.document" : OCR_FORMAT_MIME[fmt]);
           res.setHeader('Content-Length', body.length.toString());
           res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
           res.setHeader('Pragma', 'no-cache');
@@ -4541,7 +4586,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           success: false, error: 'No file uploaded. Send a multipart "file" field, or use html_to_pdf with options.inputMode="url" and options.url.',
         });
 
-        const maxBytes = tool.maxFileSize * 1024 * 1024;
+        const maxBytes = Math.min(tool.maxFileSize, planFileLimitMB(req.user?.plan ?? "free")) * 1024 * 1024;
         const startTime = Date.now();
 
         // --- merge_pdfs: combine >=2 PDFs into one ---------------------------
@@ -4616,7 +4661,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let outputExtension = tool.outputFormat === "same" ? fileExtension : tool.outputFormat;
         if (toolType === ToolType.CONVERT_IMAGE_FORMAT) {
           const allowedFormats: Record<string, string> = {
-            png: "png", jpg: "jpg", jpeg: "jpg", webp: "webp", gif: "gif", avif: "avif", tiff: "tiff", tif: "tiff",
+            png: "png", jpg: "jpg", jpeg: "jpg", webp: "webp", gif: "gif", bmp: "bmp", avif: "avif", tiff: "tiff", tif: "tiff",
           };
           const requested = (options?.outputFormat || "png").toString().toLowerCase();
           outputExtension = allowedFormats[requested] || "png";

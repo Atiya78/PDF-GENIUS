@@ -57,8 +57,8 @@
   },
   {
     "id":"pdf-to-images","path":"/pdf-to-jpg","name":"PDF to JPG","title":"PDF to JPG or PNG Converter",
-    "description":"Export PDF pages as JPG or PNG images in a ZIP archive. Choose JPG quality before converting your document.",
-    "why":"Create page images for presentations, documents or image workflows. Choose JPG for adjustable compression or PNG for lossless raster images.",
+    "description":"Export PDF pages as real JPG or PNG images at 72, 150 or 300 DPI, delivered in a ZIP archive. Set JPG quality before converting.",
+    "why":"Create page images for presentations, documents or image workflows. Choose JPG with adjustable quality or PNG for lossless raster images, and pick the resolution you need.",
     "steps":["Upload the PDF you want to export as page images.","Choose JPG or PNG and set JPG quality.","Download the ZIP and extract the page images."],
     "faqs":[["Why is the download a ZIP instead of one JPG?","Each PDF page becomes its own JPG or PNG image. The images are packaged together in one ZIP archive."],["Can I adjust JPG quality?","Yes. Choose JPG and a quality value from 10 to 100. PNG output does not use the JPG quality setting."],["Will I be able to select text in a page image?","A page image contains pixels, not selectable document text. Use OCR PDF when you need recognized text."]],
     "related":["images-to-pdf","convert-image-format","compress-image","crop-image"],"processing":"server"
@@ -88,8 +88,8 @@
     "related":["split-pdf","delete-pages-pdf","compress-pdf","images-to-pdf"],"processing":"server"
   },
   {
-    "id":"split-pdf","path":"/split-pdf","name":"Split PDF","title":"Split PDF by Pages or Ranges",
-    "description":"Split every PDF page, create separate PDFs from page ranges, or extract selected pages into one PDF.",
+    "id":"split-pdf","path":"/split-pdf","name":"Split PDF","title":"Split PDF by Pages, Ranges or Every N Pages",
+    "description":"Split every page, split by ranges like 1-3,5,8-10, split every N pages, or extract selected pages. One result downloads as a PDF, several as a ZIP.",
     "why":"Separate a document into useful sections or keep just the pages you need. Enter page numbers and ascending ranges separated by commas.",
     "steps":["Upload the PDF you want to split.","Choose every page, page ranges or extract selected pages and enter the selection.","Download the ZIP of separate PDFs or the single extracted PDF."],
     "faqs":[["What does the Split PDF download contain?","Every-page and page-range modes produce a ZIP of separate PDFs. Extract mode produces one PDF with the selected pages."],["How do page ranges work?","Enter a selection such as 1-3, 5, 8-10. In range mode each comma-separated group becomes a separate PDF; extract mode combines the selected pages."],["Will I lose the source PDF?","The tool creates a result without overwriting the source file on your device. Keep the original PDF for later use."]],
@@ -97,7 +97,7 @@
   },
   {
     "id":"compress-pdf","path":"/compress-pdf","name":"Compress PDF","title":"Compress PDF Files Online",
-    "description":"Process a PDF with the compression tool. Download the result and compare its file size and readability with the original document.",
+    "description":"Choose Low, Medium or High compression, then see the actual original and output sizes and the percentage change. Savings depend on the document.",
     "why":"A smaller PDF can be easier to attach or upload. Compression results depend on the document, and size reduction can affect image detail.",
     "steps":["Upload the PDF you want to compress.","Start the compression process.","Download the result and compare size and readability."],
     "faqs":[["How much smaller will my PDF become?","There is no fixed reduction for every document. The result depends on its images, structure and the compression process."],["Can compression change image quality?","Yes. Review diagrams, small print and photographs after compression."],["What if the compressed PDF is not smaller?","Some files already use efficient compression. Keep the original if the result does not suit your needs."]],
@@ -113,7 +113,7 @@
   },
   {
     "id":"rotate-pdf","path":"/rotate-pdf","name":"Rotate PDF","title":"Rotate Selected PDF Pages Online",
-    "description":"Preview your PDF pages and rotate selected pages or the whole document by 90, 180 or 270 degrees.",
+    "description":"Preview page thumbnails and rotate all or selected pages 90 degrees clockwise, 90 degrees counter-clockwise or 180 degrees.",
     "why":"Correct sideways or upside-down document pages so they are easier to read. Review pages with mixed orientations before saving.",
     "steps":["Upload your PDF to load its page thumbnails.","Choose all pages or select individual pages, then choose 90, 180 or 270 degrees.","Download the PDF and check the orientation of the changed pages."],
     "faqs":[["Can I choose a page or rotation angle?","Yes. Select pages by thumbnail or page number and choose 90, 180 or 270 degrees. You can also rotate all pages."],["Will rotating a scan recognize its text?","No. Rotation and text recognition are different tasks; use OCR PDF for recognition."],["What happens to pages that were already rotated?","The chosen angle is added to each selected page's existing rotation. Unselected pages keep their current orientation."]],
@@ -129,7 +129,7 @@
   },
   {
     "id":"sign-pdf","path":"/sign-pdf","name":"Sign PDF","title":"Add a Signature to a PDF",
-    "description":"Place a signature on a PDF in your browser. Position it on the page, export the document and check the result.",
+    "description":"Draw, type or upload a visual signature, place it on your PDF in the browser and download it. Not a certificate-backed digital signature.",
     "why":"Add a visible signature to a document using the available signature controls. Confirm the receiving party's requirements before relying on it.",
     "steps":["Open the PDF that needs a signature.","Create or choose a signature and position it on the page.","Save the signed PDF and review its placement."],
     "faqs":[["Is this a certificate-based digital signature?","This tool places a visible signature on the page. Do not assume it provides certificate-based identity verification."],["Can I move the signature before exporting?","Use the editor's placement controls to position the signature before saving."],["Is the signature legally valid for every document?","Requirements vary by document and jurisdiction. Ask the receiving party what signing method it accepts."]],
@@ -161,7 +161,7 @@
   },
   {
     "id":"ocr-pdf","path":"/ocr-pdf","name":"OCR PDF","title":"OCR PDF: Recognize Scanned Text",
-    "description":"Recognize text in scanned PDF pages using browser-based OCR. Review the extracted words and export an available result format.",
+    "description":"Recognize English, Bangla or both in scanned PDFs, in your browser. Download a searchable PDF with a text layer, plus TXT and DOCX text exports.",
     "why":"Turn photographed or scanned words into recognized text. OCR can misread letters, numbers and layout, so proofreading is part of the process.",
     "steps":["Open the scanned PDF in the OCR tool.","Choose the recognition options and process the pages.","Review the recognized text and export the result."],
     "faqs":[["What does OCR do to a scanned PDF?","OCR attempts to recognize words from the page images so you can work with the resulting text."],["Is recognized text always accurate?","No. Scan quality, language, handwriting and layout affect recognition. Review important text and numbers."],["Can OCR recover every table or document layout?","Text recognition does not guarantee that the original table structure or visual layout will be reconstructed."]],
@@ -169,15 +169,15 @@
   },
   {
     "id":"compress-image","path":"/compress-image","name":"Compress Image","title":"Compress Images Online",
-    "description":"Process an image with the compression tool. Download the result and compare its file size and visible detail with the original.",
+    "description":"Choose Low, Medium or High compression, then see the actual original and output sizes and the percentage change. Savings depend on the image.",
     "why":"Prepare an image for an upload limit or smaller attachment. Compare the resulting file size and visible detail before replacing the source.",
     "steps":["Upload the image you want to compress.","Start image compression.","Download the result and compare size and detail."],
     "faqs":[["Will every image become much smaller?","No. The source format, existing compression and processing determine the resulting size."],["Can compression affect visible detail?","Yes. Check text, edges and small features in the downloaded image."],["Should I discard the original picture?","Keep the original if you may need a higher-quality version for printing or later editing."]],
     "related":["convert-image-format","resize-image","crop-image","images-to-pdf"],"processing":"server"
   },
   {
-    "id":"convert-image-format","path":"/convert-image","name":"Convert Image","title":"Convert Images to JPG, PNG or WebP",
-    "description":"Convert supported images, including HEIC and HEIF photos, to JPG, PNG or WebP. Set quality for JPG and WebP output.",
+    "id":"convert-image-format","path":"/convert-image","name":"Convert Image","title":"Convert Images to JPG, PNG, WebP, GIF or TIFF",
+    "description":"Convert supported images, including HEIC and HEIF photos, to JPG, PNG, WebP, GIF, BMP or TIFF. Quality applies to JPG and WebP output.",
     "why":"Choose the image format your document, website or app needs. PNG and WebP can retain existing transparency; JPG uses a white background.",
     "steps":["Upload an image in a supported input format.","Choose JPG, PNG or WebP and adjust quality where available.","Download the converted image and check its appearance."],
     "faqs":[["Can I convert HEIC and HEIF photos?","Yes. HEIC and HEIF photos are decoded on the server. These inputs must be no larger than 25 MB or 40 megapixels."],["Does PNG conversion recover transparency from a JPG?","No. PNG can represent transparency, but conversion does not recover transparency that was absent from the source."],["Does changing the format improve image resolution?","Format conversion alone does not recover detail missing from the source image."]],

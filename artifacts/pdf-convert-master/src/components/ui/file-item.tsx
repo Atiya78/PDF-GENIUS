@@ -200,7 +200,7 @@ export const FileItem: React.FC<FileItemProps> = ({
             <div className="mt-3">
               <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                 <span>{progressLabel}...</span>
-                <span>{progress}%</span>
+                <span>In progress</span>
               </div>
               <Progress value={progress} className="h-2" />
             </div>

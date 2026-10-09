@@ -1,10 +1,11 @@
 import heicConvert from "heic-convert";
+import { normalizeBitmap } from "./bitmap";
 
 let codecQueue = Promise.resolve();
 
 export async function normalizeImageInput(input: Buffer, extension?: string): Promise<Buffer> {
   const brands = input.subarray(4, 48).toString("ascii");
-  if (!["heic", "heif"].includes(extension ?? "") && !/ftyp(?:heic|heix|hevc|hevx|mif1|msf1)/.test(brands)) return input;
+  if (!["heic", "heif"].includes(extension ?? "") && !/ftyp(?:heic|heix|hevc|hevx|mif1|msf1)/.test(brands)) return normalizeBitmap(input);
   if (input.length > 25 * 1024 * 1024) throw new Error("HEIC/HEIF input must be 25 MB or smaller.");
   // Walk actual ISO-BMFF properties, not matching bytes inside compressed
   // image data. Handle ordinary, 64-bit and extends-to-end box sizes.

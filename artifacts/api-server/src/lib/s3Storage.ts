@@ -21,6 +21,7 @@ import {
   GetObjectCommand,
   PutObjectCommand,
   DeleteObjectCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 
@@ -97,7 +98,7 @@ export async function putObject(
 /** Fetches the object at `key`, or null if it does not exist. */
 export async function getObject(
   key: string,
-): Promise<{ buffer: Buffer; contentType: string } | null> {
+): Promise<{ buffer: Buffer; contentType: string; lastModified?: Date } | null> {
   try {
     const out = await getClient().send(
       new GetObjectCommand({ Bucket: getBucket(), Key: fullKey(key) }),
@@ -107,6 +108,7 @@ export async function getObject(
     return {
       buffer,
       contentType: out.ContentType || "application/octet-stream",
+      lastModified: out.LastModified,
     };
   } catch (err) {
     const name = (err as { name?: string })?.name;
@@ -134,4 +136,18 @@ export async function deleteObject(key: string): Promise<void> {
     }
     throw err;
   }
+}
+
+/** Lists only the requested logical namespace, respecting the configured prefix. */
+export async function listObjects(prefix: string, continuationToken?: string) {
+  const result = await getClient().send(new ListObjectsV2Command({
+    Bucket: getBucket(), Prefix: fullKey(prefix), ContinuationToken: continuationToken, MaxKeys: 1000,
+  }));
+  const physicalPrefix = fullKey(prefix);
+  return {
+    objects: (result.Contents ?? []).filter(object => object.Key?.startsWith(physicalPrefix)).map(object => ({
+      key: prefix + object.Key!.slice(physicalPrefix.length), lastModified: object.LastModified,
+    })),
+    continuationToken: result.IsTruncated ? result.NextContinuationToken : undefined,
+  };
 }

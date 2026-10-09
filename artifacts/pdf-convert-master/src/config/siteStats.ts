@@ -6,7 +6,7 @@ export interface SiteStat {
   verified: boolean;
 }
 
-// TODO: Supply evidence and an approved value before enabling any statistic.
+// Supply evidence and an approved value before enabling any statistic.
 export const siteStats: SiteStat[] = [
   { group: "home", label: "Active Users", value: "", verified: false },
   { group: "home", label: "Files Processed", value: "", verified: false },

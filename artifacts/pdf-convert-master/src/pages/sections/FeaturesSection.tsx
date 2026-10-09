@@ -3,13 +3,19 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AnimatedBackground } from "@/components/ui/animated-background";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
+import { toolConfigs } from "@/lib/toolConfig";
 import { ArrowRightLeft, Layers, Play, Shield } from "lucide-react";
 import { LottieIcon } from "@/components/ui/lottie-icon";
 import featureConvert from "@/assets/lottie/feature-convert.json";
 import featureOrganize from "@/assets/lottie/feature-organize.json";
 import featureSecure from "@/assets/lottie/feature-secure.json";
 import { getVerifiedStats } from "@/config/siteStats";
+
+const FEATURE_TOOL: Record<string, string> = {
+  "Merge PDFs": "merge-pdfs", "Split PDFs": "split-pdf", "Compress Files": "compress-pdf", "Rotate Pages": "rotate-pdf",
+  "Password Protect": "lock-pdf", "Remove Password": "unlock-pdf", "Add Watermark": "watermark-pdf", "Digital Signature": "sign-pdf",
+};
 
 export const FeaturesSection = (): JSX.Element => {
   // Add CSS keyframes for the rotating border animation
@@ -336,7 +342,17 @@ export const FeaturesSection = (): JSX.Element => {
                               className="w-1.5 h-1.5 rounded-full mr-3 flex-shrink-0"
                               style={{ backgroundColor: card.iconColor }}
                             />
-                            {feature}
+                            {FEATURE_TOOL[feature] && toolConfigs[FEATURE_TOOL[feature]]?.route ? (
+                              <Link
+                                href={toolConfigs[FEATURE_TOOL[feature]].route as string}
+                                className="hover:text-[#f7433d] hover:underline"
+                                data-testid={`link-feature-${FEATURE_TOOL[feature]}`}
+                              >
+                                {feature}
+                              </Link>
+                            ) : (
+                              feature
+                            )}
                           </li>
                         ))}
                       </ul>

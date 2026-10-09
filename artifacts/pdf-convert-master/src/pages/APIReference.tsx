@@ -80,20 +80,22 @@ export const APIReference: React.FC<{ publicView?: boolean }> = ({ publicView = 
       { name: "fontSize", desc: "8, 10 (default) or 12 points" },
     ],
     convert_image_format: [
-      { name: "outputFormat", desc: "Target format — one of png, jpg, webp, gif, avif, tiff" },
-      { name: "quality", desc: "JPG/WebP quality 10–100 (default 90). HEIC/HEIF input: up to 25 MB and 40 megapixels." },
+      { name: "outputFormat", desc: "Lower-case target format: jpg, png, webp, gif, bmp or tiff. Output is a single image file with the matching extension." },
+      { name: "quality", desc: "Number 10-100 (default 90). Applies only to lossy formats (jpg, webp); ignored for others. HEIC/HEIF input: up to 25 MB and 40 megapixels." },
     ],
     pdf_to_images: [
-      { name: "outputFormat", desc: "jpg or png (default png for existing API callers); returns a ZIP of page images" },
-      { name: "quality", desc: "JPG quality 10–100 (default 90); ignored for PNG. Up to 500 pages and 128 MB of exported images." },
+      { name: "outputFormat", desc: "Lower-case jpg or png. Output is a ZIP with one image per page (.zip)." },
+      { name: "dpi", desc: "Number: 72, 150 (default) or 300. Render resolution." },
+      { name: "quality", desc: "Number 10-100 (default 90). JPG only. Up to 500 pages and 128 MB of exported images." },
     ],
     split_pdf: [
-      { name: "mode", desc: "all (default): one PDF per page; ranges: one PDF per comma-separated range; extract: one combined PDF. all/ranges return ZIP, extract returns PDF." },
-      { name: "ranges", desc: 'Required for ranges/extract, e.g. "1-3,5,8-10". Pages are 1-based. Invalid or out-of-bounds ranges fail. Up to 1,000 output files and 128 MB combined.' },
+      { name: "mode", desc: "all: one PDF per page; ranges: one PDF per comma-separated range; every_n: parts of pagesPerSplit pages; extract: selected pages combined into one PDF. One output file is a PDF; several are a ZIP. The real extension is in outputFilename on the completed job." },
+      { name: "ranges", desc: 'Required for ranges/extract, e.g. "1-3,5,8-10". Pages are 1-based. Invalid or out-of-bounds ranges fail.' },
+      { name: "pagesPerSplit", desc: "Integer 1 or more. Required for every_n. Also accepted as split.mode / split.pagesPerSplit." },
     ],
     rotate_pdf: [
-      { name: "angle", desc: "90 (default), 180 or 270 degrees clockwise, added to existing rotation" },
-      { name: "pages", desc: 'all (default) or 1-based page ranges, e.g. "1-3,5". Unselected pages are unchanged.' },
+      { name: "angle", desc: "90 (clockwise), 270 (90 counter-clockwise) or 180. Added to each page's existing rotation." },
+      { name: "pages", desc: 'all (default) or 1-based page ranges, e.g. "1-3,5". Unselected pages are unchanged. Output is a PDF.' },
     ],
     html_to_pdf: [
       { name: "inputMode", desc: 'file (default) or url. For url, the multipart "file" field is optional.' },
@@ -101,7 +103,13 @@ export const APIReference: React.FC<{ publicView?: boolean }> = ({ publicView = 
       { name: "URL limits", desc: "5 MB HTML, 2 MB per asset, 12 MB total, 40 requests, up to 3 redirects per resource. DNS: 5s; request: 10s; overall fetch budget: 30s. JavaScript/login-dependent pages may not render." },
     ],
     compress_image: [
-      { name: "quality", desc: "Compression quality 10–100 (default 80)" },
+      { name: "compressionLevel", desc: "low (best quality), medium (default) or high (smallest file). Compare outputFileSize on the completed job with your input size; savings are not guaranteed." },
+    ],
+    compress_pdf: [
+      { name: "compressionLevel", desc: "low (best quality), medium (default) or high (smallest file). Output is a PDF; outputFileSize reports the real size, which can be equal to or larger than the input." },
+    ],
+    ocr_pdf: [
+      { name: "language", desc: "eng, ben or eng+ben. API/native OCR runs server-side with native Tesseract and returns a searchable PDF. The recognised text is available at GET /api/ocr-text/:jobId. This is separate from the website OCR tool, which runs entirely in the browser." },
     ],
     resize_image: [
       { name: "width", desc: "Target width in px" },

@@ -16,7 +16,7 @@ export const RotatePdfUpload: React.FC = () => {
       <ConversionWorkflow
         toolType="rotate-pdf"
         toolTitle="PDF Rotator"
-        toolDescription="Rotate all pages or only the ones you pick by 90, 180 or 270 degrees, with page previews."
+        toolDescription="Rotate all pages or only the ones you pick 90 degrees clockwise, 90 degrees counter-clockwise or 180 degrees, with page previews."
         acceptedFormats={[".pdf"]}
         maxFileSize="100MB"
         maxFiles={1}

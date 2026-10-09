@@ -8,6 +8,7 @@ import { AuthErrorAction } from "@/components/AuthErrorAction";
 import { LoginRequiredDialog } from "@/components/LoginRequiredDialog";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { usePlanMaxFileMB, effectiveMaxMB } from "@/lib/usePlanUploadLimit";
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -59,6 +60,10 @@ interface ConversionWorkflowProps {
   hideDropzone?: boolean;
   /** Programmatically add files; processed whenever `key` changes. */
   injectedFiles?: { key: string; files: File[] } | null;
+  /** Use the filename the server produced (real extension) for downloads. */
+  useServerName?: boolean;
+  /** Show actual input/output sizes and percentage change on completion. */
+  showSizeComparison?: boolean;
 }
 
 interface FileUpload {
@@ -70,6 +75,8 @@ interface FileUpload {
   errorMessage?: string;
   validationMessage?: string;
   downloadUrl?: string;
+  outputName?: string;
+  outputSize?: number;
 }
 
 type ConversionStage = 'upload' | 'files-selected' | 'converting' | 'completed' | 'error';
@@ -103,6 +110,8 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
   uploadHeader,
   hideDropzone = false,
   injectedFiles,
+  useServerName = false,
+  showSizeComparison = false,
 }) => {
   const [stage, setStage] = useState<ConversionStage>('upload');
   const [selectedFiles, setSelectedFiles] = useState<FileUpload[]>([]);
@@ -129,7 +138,10 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
   const [compressionLevel, setCompressionLevel] = useState<'high' | 'medium' | 'low'>('high');
 
   const maxFiles = maxFilesProp;
-  const maxSizeInBytes = parseFloat(maxFileSize) * 1024 * 1024;
+  const planMaxMB = usePlanMaxFileMB();
+  const effectiveMaxMb = effectiveMaxMB(parseFloat(maxFileSize), planMaxMB);
+  const maxSizeInBytes = effectiveMaxMb * 1024 * 1024;
+  const effectiveMaxLabel = `${effectiveMaxMb}MB`;
 
   // Tool-specific upload copy so the upload page clearly states the conversion
   // (e.g. "Convert to Word") and matches every other tool's upload design.
@@ -202,7 +214,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
       // Validate file size
       if (file.size > maxSizeInBytes) {
         fileUpload.status = 'invalid';
-        fileUpload.errorMessage = `File size exceeds ${maxFileSize}`;
+        fileUpload.errorMessage = `File size exceeds ${effectiveMaxLabel}${effectiveMaxMb < parseFloat(maxFileSize) ? ' for your plan' : ''}`;
         return fileUpload;
       }
 
@@ -232,7 +244,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
         : `Files are ready to ${actionLabels.base}`,
       variant: invalidCount > 0 ? "destructive" : "default"
     });
-  }, [selectedFiles, maxFiles, acceptedFormats, maxSizeInBytes, maxFileSize, toast]);
+  }, [selectedFiles, maxFiles, acceptedFormats, maxSizeInBytes, maxFileSize, effectiveMaxLabel, toast]);
 
   const removeFile = useCallback((index: number) => {
     const fileToRemove = selectedFiles[index];
@@ -405,7 +417,9 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                     ...f, 
                     status: 'completed' as const, 
                     progress: 100,
-                    downloadUrl: `/api/download/${jobId}`
+                    downloadUrl: `/api/download/${jobId}`,
+                    outputName: job.outputFilename || undefined,
+                    outputSize: typeof job.outputFileSize === 'number' ? job.outputFileSize : Number(job.outputFileSize) || undefined,
                   }
                 : f
             );
@@ -517,7 +531,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
     const file = selectedFiles[index];
     if (!file?.downloadUrl) return;
     try {
-      await downloadFromUrl(file.downloadUrl, downloadName ? downloadName(file.file) : file.file.name);
+      await downloadFromUrl(file.downloadUrl, (useServerName ? file.outputName : undefined) || (downloadName ? downloadName(file.file) : file.file.name));
       toast({
         title: "Download Started",
         description: `${file.file.name} is being downloaded`,
@@ -546,7 +560,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
       for (const file of completedFiles) {
         if (!file.downloadUrl) continue;
         try {
-          await downloadFromUrl(file.downloadUrl, downloadName ? downloadName(file.file) : file.file.name);
+          await downloadFromUrl(file.downloadUrl, (useServerName ? file.outputName : undefined) || (downloadName ? downloadName(file.file) : file.file.name));
           succeeded += 1;
         } catch (err) {
           failed += 1;
@@ -672,7 +686,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
           {uploadHeader}
           {!hideDropzone && <EnhancedUploadArea
             acceptedFormats={acceptedFormats}
-            maxFileSize={maxFileSize}
+            maxFileSize={effectiveMaxLabel}
             maxFiles={maxFiles}
             onFilesSelected={handleFilesSelection}
             isDragOver={isDragOver}
@@ -774,7 +788,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
               <div className="border-2 border-dashed border-gray-200 rounded-lg p-4">
                 <EnhancedUploadArea
                   acceptedFormats={acceptedFormats}
-                  maxFileSize={maxFileSize}
+                  maxFileSize={effectiveMaxLabel}
                   maxFiles={maxFiles}
                   onFilesSelected={handleFilesSelection}
                   isDragOver={isDragOver}
@@ -943,6 +957,25 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                   </Button>
                 </div>
               )}
+            </div>
+          )}
+
+          {stage === 'completed' && showSizeComparison && selectedFiles.some(f => f.status === 'completed' && f.outputSize) && (
+            <div className="mt-6 space-y-2" data-testid="size-comparison">
+              {selectedFiles.filter(f => f.status === 'completed' && f.outputSize).map(f => {
+                const out = f.outputSize as number;
+                const pct = ((f.file.size - out) / f.file.size) * 100;
+                const saved = pct > 0;
+                return (
+                  <div key={f.id} className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm">
+                    <p className="font-medium text-gray-900 truncate">{f.file.name}</p>
+                    <p className="text-gray-700">Original {formatMB(f.file.size)} to {formatMB(out)} output</p>
+                    <p className={saved ? 'text-green-700 font-semibold' : 'text-amber-700 font-semibold'}>
+                      {saved ? `${pct.toFixed(1)}% smaller` : pct === 0 ? 'No size change' : `${Math.abs(pct).toFixed(1)}% larger - this file could not be reduced further`}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           )}
 

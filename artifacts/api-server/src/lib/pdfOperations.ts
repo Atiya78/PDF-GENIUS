@@ -42,27 +42,32 @@ export async function rotatePdfPages(bytes: Uint8Array, options: Record<string, 
 
 export async function splitPdfPages(bytes: Uint8Array, options: Record<string, unknown> = {}) {
   const mode = options.mode ?? "all";
-  if (!["all", "ranges", "extract"].includes(mode as string)) throw new Error("Choose split every page, split by ranges or extract selected pages.");
+  if (!["all", "ranges", "extract", "every_n"].includes(mode as string)) throw new Error("Choose every page, page ranges, every N pages or extract selected pages.");
   const source = await loadEditablePdf(bytes);
   const count = source.getPageCount();
-  const groups = mode === "all" ? Array.from({ length: count }, (_, i) => [i])
+  const size = options.pagesPerSplit;
+  if (mode === "every_n" && (typeof size !== "number" || !Number.isSafeInteger(size) || size < 1 || size > count))
+    throw new Error(`Pages per split must be a whole number between 1 and ${count}.`);
+  const groups = mode === "every_n" ? Array.from({ length: Math.ceil(count / (size as number)) }, (_, i) =>
+    Array.from({ length: Math.min(size as number, count - i * (size as number)) }, (_, j) => i * (size as number) + j))
+    : mode === "all" ? Array.from({ length: count }, (_, i) => [i])
     : pageRangeGroups(options.ranges, count);
   const exportPages = async (indices: number[]) => {
     const document = await PDFDocument.create();
     for (const page of await document.copyPages(source, indices)) document.addPage(page);
     return Buffer.from(await document.save());
   };
-  if (mode === "extract") return {
+  if (mode === "extract" || groups.length === 1) return {
     success: true, convertedBuffer: await exportPages([...new Set(groups.flat())]), mimeType: "application/pdf",
   };
   if (groups.length > 1000) throw new Error("This split would create more than 1,000 files. Use fewer page ranges.");
   const zip = new JSZip();
-  let size = 0;
+  let totalBytes = 0;
   for (let i = 0; i < groups.length; i++) {
     const group = groups[i];
     const output = await exportPages(group);
-    size += output.length;
-    if (size > 128 * 1024 * 1024) throw new Error("The split results exceed 128 MB. Split fewer pages at a time.");
+    totalBytes += output.length;
+    if (totalBytes > 128 * 1024 * 1024) throw new Error("The split results exceed 128 MB. Split fewer pages at a time.");
     const name = mode === "all" ? `page_${group[0] + 1}.pdf`
       : `part_${i + 1}_pages_${group[0] + 1}${group.length > 1 ? `-${group[group.length - 1] + 1}` : ""}.pdf`;
     zip.file(name, output);

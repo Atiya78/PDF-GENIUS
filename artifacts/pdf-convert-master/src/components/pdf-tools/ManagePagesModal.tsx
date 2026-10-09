@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ProcessingSpinner } from "@/components/processing-spinner";
 import { useToast } from "@/hooks/use-toast";
+import { usePlanMaxFileMB, effectiveMaxMB } from "@/lib/usePlanUploadLimit";
 import {
   readFileBytes,
   renderPdfPages,
@@ -62,6 +63,7 @@ export function ManagePagesModal({
   onApply,
 }: Props) {
   const { toast } = useToast();
+  const planMaxMB = usePlanMaxFileMB();
   const [plan, setPlan] = useState<PlanItem[]>([]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
@@ -179,6 +181,11 @@ export function ManagePagesModal({
     if (!f) return;
     if (!isPdfFile(f)) {
       toast({ title: "Please choose a PDF file", variant: "destructive" });
+      return;
+    }
+    const capMB = effectiveMaxMB(100, planMaxMB);
+    if (f.size > capMB * 1024 * 1024) {
+      toast({ title: "File too large", description: `Maximum file size is ${capMB}MB for your plan.`, variant: "destructive" });
       return;
     }
     setImporting(true);

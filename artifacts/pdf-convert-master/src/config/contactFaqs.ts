@@ -1,4 +1,4 @@
-import { FILE_RETENTION_COPY, FILE_RETENTION_TODO, SUPPORT_REPLY_COPY, SUPPORT_REPLY_TODO } from "./siteCopy";
+import { FILE_RETENTION_COPY, SUPPORT_REPLY_COPY } from "./siteCopy";
 
 export const contactFaqs = [
   {
@@ -11,10 +11,10 @@ export const contactFaqs = [
   },
   {
     question: "How is my file handled during conversion?",
-    answer: `Some tools process locally and others upload files. Transfers use HTTPS. ${FILE_RETENTION_COPY} ${FILE_RETENTION_TODO}`,
+    answer: `Some tools process locally and others upload files. Transfers use HTTPS. ${FILE_RETENTION_COPY}`,
   },
   {
     question: "How can I contact support?",
-    answer: `Email support@pdfgenius.app and describe the tool and issue. ${SUPPORT_REPLY_COPY}. ${SUPPORT_REPLY_TODO}`,
+    answer: `Email support@pdfgenius.app and describe the tool and issue. ${SUPPORT_REPLY_COPY}.`,
   },
 ];

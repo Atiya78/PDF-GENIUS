@@ -2,6 +2,7 @@ import { logger } from "./lib/logger";
 import app from "./app";
 import { registerRoutes } from "./routes";
 import { serveWebApp } from "./static";
+import { startConversionCleanup } from "./lib/conversionRetention";
 
 const rawPort = process.env["PORT"];
 
@@ -27,6 +28,7 @@ registerRoutes(app).then((httpServer) => {
       process.exit(1);
     }
     logger.info({ port }, "Server listening");
+    startConversionCleanup();
   });
 }).catch((err) => {
   logger.error({ err }, "Failed to register routes");

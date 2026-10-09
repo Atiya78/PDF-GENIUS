@@ -174,10 +174,10 @@ export const RotateSettings: React.FC<{
         options={[{ value: "all", label: "All pages" }, { value: "selected", label: "Selected pages" }]}
       />
       <OptionGroup
-        label="Rotate clockwise by" value={angle} disabled={disabled} testIdPrefix="select-rotate-angle" onChange={onAngle}
-        options={[{ value: 90, label: "90" }, { value: 180, label: "180" }, { value: 270, label: "270" }]}
+        label="Rotate direction" value={angle} disabled={disabled} testIdPrefix="select-rotate-angle" onChange={onAngle}
+        options={[{ value: 90, label: "90 clockwise" }, { value: 270, label: "90 counter-clockwise" }, { value: 180, label: "180" }]}
       />
-      <p className="text-xs text-gray-600">The angle is added to each page's existing rotation. Unselected pages stay as they are.</p>
+      <p className="text-xs text-gray-600">The rotation is added to each page's existing rotation. Unselected pages stay as they are.</p>
 
       {scope === "selected" && info.status === "ready" && (
         <div className="space-y-2">

@@ -10,17 +10,63 @@ import {
   loadPdfDocument,
   downloadPdf,
   downloadText,
+  downloadBytes,
   dataUrlToBytes,
   stripExt,
   isPdfFile,
 } from "@/lib/pdfClient";
 import { toolConfigs } from "@/lib/toolConfig";
 
+class UnsupportedGlyphError extends Error {}
+
+const BENGALI_RE = /[\u0980-\u09FF]/;
+
+// Embedded only when Bangla is selected; both packages and the font file are
+// loaded lazily so English-only OCR never pays for them.
+async function loadBengaliFont(): Promise<{ fontkit: any; bytes: ArrayBuffer }> {
+  const base: any = (await import("@pdf-lib/fontkit")).default;
+  // The hidden text layer must carry text in LOGICAL order so extractors
+  // (pdftotext, PDF.js) return the same Bangla that was recognised. fontkit's
+  // Indic shaping reorders glyphs into visual order, so the adapter lays out
+  // glyphs one per code point instead. Positioning is irrelevant because the
+  // layer is invisible; the subset font and ToUnicode mapping are unchanged.
+  const fontkit = {
+    ...base,
+    create(data: Uint8Array, postscriptName?: string) {
+      const font = base.create(data, postscriptName);
+      return new Proxy(font, {
+        get(target, prop, receiver) {
+          if (prop === "layout") {
+            return (text: string) => {
+              const glyphs = Array.from(text, (c) => target.glyphForCodePoint(c.codePointAt(0) as number));
+              const positions = glyphs.map((g: { advanceWidth: number }) => ({
+                xAdvance: g.advanceWidth,
+                yAdvance: 0,
+                xOffset: 0,
+                yOffset: 0,
+              }));
+              return { glyphs, positions };
+            };
+          }
+          const v = Reflect.get(target, prop, target);
+          return typeof v === "function" ? v.bind(target) : v;
+        },
+      });
+    },
+  };
+  const url: string = (await import("@/assets/fonts/NotoSansBengali-Regular.ttf?url")).default;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Bangla font could not be loaded");
+  return { fontkit, bytes: await res.arrayBuffer() };
+}
+
 const cfg = toolConfigs["ocr-pdf"];
 
 const OCR_SCALE = 2; // render pages at 2x for better recognition
 const LANGUAGES: { code: string; label: string }[] = [
   { code: "eng", label: "English" },
+  { code: "ben", label: "Bangla" },
+  { code: "eng+ben", label: "English + Bangla" },
   { code: "spa", label: "Spanish" },
   { code: "fra", label: "French" },
   { code: "deu", label: "German" },
@@ -165,7 +211,7 @@ export function OcrPdfUpload() {
           await page.render({ canvas, canvasContext: ctx, viewport }).promise;
           page.cleanup();
 
-          const { data } = await worker.recognize(canvas);
+          const { data } = await worker.recognize(canvas, {}, { blocks: true, text: true });
           pageResults.push({
             width: base.width,
             height: base.height,
@@ -232,6 +278,13 @@ export function OcrPdfUpload() {
     try {
       const out = await PDFDocument.create();
       const font = await out.embedFont(StandardFonts.Helvetica);
+      const failed: string[] = [];
+      let bnFont: any = null;
+      if (language.includes("ben")) {
+        const { fontkit, bytes: fontBytes } = await loadBengaliFont();
+        out.registerFontkit(fontkit);
+        bnFont = await out.embedFont(fontBytes, { subset: true });
+      }
       for (const pr of results) {
         const page = out.addPage([pr.width, pr.height]);
         const jpg = await out.embedJpg(dataUrlToBytes(pr.imgDataUrl));
@@ -241,17 +294,66 @@ export function OcrPdfUpload() {
           const wordH = (w.y1 - w.y0) / pr.imgScale;
           const size = Math.max(2, wordH * 0.86);
           const y = pr.height - w.y1 / pr.imgScale;
-          const safe = w.text.replace(/[^\x20-\x7E]/g, "");
-          if (!safe.trim()) continue;
-          page.drawText(safe, { x, y, size, font, opacity: 0 });
+          if (!w.text.trim()) continue;
+          const isBn = !!bnFont && BENGALI_RE.test(w.text);
+          try {
+            page.drawText(w.text, { x, y, size, font: isBn ? bnFont : font, opacity: 0 });
+          } catch {
+            failed.push(w.text);
+          }
         }
+      }
+      if (failed.length) {
+        throw new UnsupportedGlyphError(
+          `${failed.length} recognised word(s) contain characters the PDF text layer cannot encode (for example "${failed[0]}"). ` +
+            `The searchable PDF was not created so no text is lost. Download the TXT or DOCX instead, or choose a language that matches the document.`,
+        );
       }
       const saved = await out.save();
       downloadPdf(saved, `${stripExt(file?.name ?? "document")}-searchable.pdf`);
       toast({ title: "Searchable PDF downloaded" });
     } catch (e) {
       console.error(e);
-      toast({ title: "Could not build searchable PDF", variant: "destructive" });
+      toast({
+        title: "Could not build searchable PDF",
+        description: e instanceof UnsupportedGlyphError ? e.message : "Something went wrong while creating the PDF.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const downloadDocx = async () => {
+    if (!results) return;
+    try {
+      const { Document, Packer, Paragraph, TextRun, HeadingLevel } = await import("docx");
+      const children: any[] = [];
+      results.forEach((p, i) => {
+        children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun(`Page ${i + 1}`)] }));
+        p.text.trim().split(/\n+/).forEach((line) => {
+          children.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: line,
+                  font: BENGALI_RE.test(line) ? { name: "Noto Sans Bengali" } : undefined,
+                  ...(BENGALI_RE.test(line) ? { complexScript: true } : {}),
+                }),
+              ],
+            }),
+          );
+        });
+      });
+      const doc = new Document({ sections: [{ children }] });
+      const blob: Blob = await Packer.toBlob(doc);
+      downloadBytes(
+        new Uint8Array(await blob.arrayBuffer()),
+        `${stripExt(file?.name ?? "document")}-ocr.docx`,
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      );
+      toast({ title: "Word document downloaded" });
+    } catch (e) {
+      console.error(e);
+      toast({ title: "Could not build DOCX", variant: "destructive" });
     }
   };
 
@@ -350,6 +452,9 @@ export function OcrPdfUpload() {
                 </Button>
                 <Button variant="outline" onClick={downloadTxt} data-testid="button-download-txt">
                   <FileText className="w-4 h-4 mr-1" /> Download text (.txt)
+                </Button>
+                <Button variant="outline" onClick={downloadDocx} data-testid="button-download-docx">
+                  <FileText className="w-4 h-4 mr-1" /> Download Word (.docx)
                 </Button>
               </div>
               <div>

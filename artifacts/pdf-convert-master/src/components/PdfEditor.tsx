@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+import { usePlanMaxFileMB, effectiveMaxMB } from "@/lib/usePlanUploadLimit";
 import { ProcessingSpinner } from "@/components/processing-spinner";
 import { PdfDropzone } from "@/components/pdf-tools/PdfToolShell";
 import { toolConfigs } from "@/lib/toolConfig";
@@ -317,6 +318,7 @@ const InlineTextEditor: React.FC<{
 
 export const PdfEditor: React.FC = () => {
   const { toast } = useToast();
+  const planMaxMB = usePlanMaxFileMB();
   const [file, setFile] = useState<File | null>(null);
   const [srcBytes, setSrcBytes] = useState<Uint8Array | null>(null);
   const [pages, setPages] = useState<RenderedPage[]>([]);
@@ -436,6 +438,11 @@ export const PdfEditor: React.FC = () => {
         toast({ title: "Please choose a PDF file", variant: "destructive" });
         return;
       }
+      const capMB = effectiveMaxMB(100, planMaxMB);
+      if (f.size > capMB * 1024 * 1024) {
+        toast({ title: "File too large", description: `Maximum file size is ${capMB}MB for your plan.`, variant: "destructive" });
+        return;
+      }
       setLoading(true);
       try {
         const b = await readFileBytes(f);
@@ -453,7 +460,13 @@ export const PdfEditor: React.FC = () => {
         setSelectedId(null);
         setEditingTextId(null);
         setActivePage(0);
-        setZoom(1);
+        {
+          // Fit narrow viewports (no thumbnail rail below md) so the page starts
+          // centred and fully visible; users can still zoom freely afterwards.
+          const widest = Math.max(...rendered.map((r) => r.width), 1);
+          const avail = window.innerWidth < 768 ? window.innerWidth - 32 : Infinity;
+          setZoom(clamp(+Math.min(1, avail / widest).toFixed(2), 0.4, 3));
+        }
         setFile(f);
         creatingRef.current = null;
         dragRef.current = null;
@@ -487,7 +500,7 @@ export const PdfEditor: React.FC = () => {
         setLoading(false);
       }
     },
-    [toast],
+    [toast, planMaxMB],
   );
 
   // Apply a page-plan from the Manage Pages modal: swap in the rebuilt PDF,

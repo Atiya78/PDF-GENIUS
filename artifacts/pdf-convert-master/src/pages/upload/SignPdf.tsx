@@ -65,7 +65,7 @@ export function SignPdfUpload() {
     setLoading(true);
     try {
       const b = await readFileBytes(f);
-      const rendered = await renderPdfPages(b, 1.5);
+      const rendered = await renderPdfPages(b, 1.5, undefined, { forceUnrotated: true });
       setBytes(b);
       setPages(rendered);
       setPageIndex(0);
@@ -192,7 +192,7 @@ export function SignPdfUpload() {
       height: w * signature.aspect,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signature]);
+  }, [signature, pageIndex]);
 
   const apply = async () => {
     if (!bytes || !signature) {
@@ -207,10 +207,12 @@ export function SignPdfUpload() {
           ? await doc.embedPng(signature.bytes)
           : await doc.embedJpg(signature.bytes);
       const page = doc.getPages()[pageIndex];
-      const H = page.getSize().height;
+      // Preview is rendered unrotated in the page's visible box, so map back
+      // through the crop box origin (handles non-zero MediaBox/CropBox offsets).
+      const box = page.getCropBox();
       page.drawImage(embedded, {
-        x: placement.x,
-        y: H - placement.y - placement.height,
+        x: box.x + placement.x,
+        y: box.y + box.height - placement.y - placement.height,
         width: placement.width,
         height: placement.height,
       });
@@ -342,7 +344,7 @@ export function SignPdfUpload() {
             {signature && (
               <div className="rounded-lg border border-green-200 bg-green-50 p-3 flex items-center gap-3">
                 <img src={signature.url} alt="Signature" className="h-10 bg-white rounded border" />
-                <span className="text-sm text-green-700">Signature ready — drag it on the page.</span>
+                <span className="text-sm text-green-700">Signature ready. Drag it on the page, pick any page from the list, then download.</span>
               </div>
             )}
 

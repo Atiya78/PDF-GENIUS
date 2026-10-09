@@ -6,10 +6,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-import { Phone, Mail, MessageSquare, HeadphonesIcon, MapPin, Clock, Car, Train, Shield, Cloud, Lock, CheckCircle, Copy } from "lucide-react";
+import { Phone, Mail, MessageSquare, HeadphonesIcon, Clock, Shield, Cloud, Lock, CheckCircle, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useSeo } from "@/lib/useSeo";
-import { SUPPORT_REPLY_COPY, SUPPORT_REPLY_TODO, FILE_RETENTION_COPY, FILE_RETENTION_TODO } from "@/config/siteCopy";
+import { SUPPORT_REPLY_COPY, FILE_RETENTION_COPY } from "@/config/siteCopy";
 
 export const Contact = (): JSX.Element => {
   useSeo({
@@ -145,7 +145,6 @@ export const Contact = (): JSX.Element => {
 
                <div className="bg-white/10 rounded-lg p-4 mb-8">
                  <p>{SUPPORT_REPLY_COPY}</p>
-                 <p className="text-sm mt-2">{SUPPORT_REPLY_TODO}</p>
                </div>
             </div>
 
@@ -233,7 +232,7 @@ export const Contact = (): JSX.Element => {
                   <p className="text-gray-200 text-sm mb-3">Join our partner network, explore collaboration opportunities, or discuss integration possibilities.</p>
                   <div className="flex items-center text-blue-200 text-sm">
                     <Clock className="w-4 h-4 mr-2" />
-                    Response within: 3 business days
+                    Email support@pdfgenius.app
                   </div>
                 </div>
               )}
@@ -252,41 +251,7 @@ export const Contact = (): JSX.Element => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-            {/* Phone Support */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full">
-              <div className="bg-blue-600 bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                  <Phone className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">Phone Support</h3>
-                <p className="text-blue-100 text-sm">Call us directly for immediate assistance</p>
-              </div>
-              <div className="p-6 flex-grow flex flex-col">
-                <div className="mb-4 flex-grow">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">Contact Info:</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-blue-600 text-xs hover:bg-blue-50 transition-colors"
-                      onClick={() => copyToClipboard('+447429919748', 'Phone Number')}
-                    >
-                      Copy
-                    </Button>
-                  </div>
-                  <p className="text-sm font-medium">+447429919748</p>
-                </div>
-                <div className="flex items-center text-sm text-gray-600 mb-4">
-                  <Clock className="w-4 h-4 mr-2" />
-                   {SUPPORT_REPLY_COPY}
-                </div>
-                <Button variant="blue" className="w-full mt-auto">
-                  Call Now
-                </Button>
-              </div>
-            </div>
-
+          <div className="grid md:grid-cols-1 max-w-xl mx-auto gap-6">
             {/* Email Support */}
             <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full">
               <div className="bg-blue-600 bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
@@ -315,65 +280,14 @@ export const Contact = (): JSX.Element => {
                   <Clock className="w-4 h-4 mr-2" />
                    {SUPPORT_REPLY_COPY}
                 </div>
-                <Button variant="blue" className="w-full mt-auto">
+                <Button variant="blue" className="w-full mt-auto" onClick={() => window.open("mailto:support@pdfgenius.app", "_self", "noopener")}>
                   Send Email
                 </Button>
               </div>
             </div>
 
-            {/* WhatsApp */}
-            <div className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col h-full">
-              <div className="bg-blue-600 bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-white">
-                <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
-                  <MessageSquare className="w-6 h-6" />
-                </div>
-                <h3 className="text-lg font-bold mb-2">WhatsApp</h3>
-                <p className="text-blue-100 text-sm">Quick support via WhatsApp messaging</p>
-              </div>
-              <div className="p-6 flex-grow flex flex-col">
-                <div className="mb-4 flex-grow">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">Contact Info:</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="text-blue-600 text-xs hover:bg-blue-50 transition-colors"
-                      onClick={() => copyToClipboard('+447429919748', 'WhatsApp Number')}
-                    >
-                      Copy
-                    </Button>
-                  </div>
-                  <p className="text-sm font-medium">+447429919748</p>
-                </div>
-                <div className="flex items-center text-sm text-gray-600 mb-4">
-                  <Clock className="w-4 h-4 mr-2" />
-                   {SUPPORT_REPLY_COPY}
-                </div>
-                <Button variant="blue" className="w-full mt-auto">
-                  Message Us
-                </Button>
-              </div>
-            </div>
           </div>
 
-          {/* Social Media */}
-          <div className="text-center mb-16">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Follow Us on Social Media</h3>
-            <div className="flex justify-center space-x-4">
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
-              </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-              </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-              </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-200 transition-colors">
-                <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.746-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24c6.624 0 11.99-5.367 11.99-11.987C24.007 5.367 18.641.001 12.017.001z"/></svg>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -388,15 +302,22 @@ export const Contact = (): JSX.Element => {
           </div>
 
           <div className="bg-white rounded-2xl shadow-2xl p-8">
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={(e) => {
+              e.preventDefault();
+              const f = new FormData(e.currentTarget);
+              const subject = `[${selectedCategory} / ${selectedPriority}] ${f.get("subject") ?? ""}`;
+              const body = `${f.get("message") ?? ""}\n\nFrom: ${f.get("name") ?? ""} <${f.get("email") ?? ""}>`;
+              window.location.href = `mailto:support@pdfgenius.app?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+              toast({ title: "Opening your email app", description: "Send the drafted message to reach support." });
+            }}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <Label htmlFor="fullName" className="text-sm font-semibold text-gray-700">Full Name *</Label>
-                  <Input id="fullName" placeholder="Enter your full name" className="mt-2" />
+                  <Input id="fullName" name="name" placeholder="Enter your full name" className="mt-2" />
                 </div>
                 <div>
                   <Label htmlFor="email" className="text-sm font-semibold text-gray-700">Email Address *</Label>
-                  <Input id="email" type="email" placeholder="your@email.com" className="mt-2" />
+                  <Input id="email" name="email" type="email" required placeholder="your@email.com" className="mt-2" />
                 </div>
                 <div>
                   <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">Phone Number</Label>
@@ -452,16 +373,19 @@ export const Contact = (): JSX.Element => {
 
               <div>
                 <Label htmlFor="subject" className="text-sm font-semibold text-gray-700">Subject *</Label>
-                <Input id="subject" placeholder="Brief description of your inquiry" className="mt-2" />
+                <Input id="subject" name="subject" required placeholder="Brief description of your inquiry" className="mt-2" />
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <Label htmlFor="message" className="text-sm font-semibold text-gray-700">Message *</Label>
-                  <span className="text-sm text-gray-500">(0/500)</span>
+                  <span className="text-sm text-gray-500">Max 500 characters</span>
                 </div>
                 <Textarea
                   id="message"
+                  name="message"
+                  required
+                  maxLength={500}
                   placeholder="Please provide detailed information about your inquiry..."
                   className="min-h-[120px]"
                 />
@@ -489,7 +413,7 @@ export const Contact = (): JSX.Element => {
               <div className="flex justify-between items-center pt-6">
                 <div className="flex items-center text-sm text-gray-600">
                   <Shield className="w-4 h-4 mr-2 text-blue-600" />
-                  Your information is secure and confidential
+                  Sending opens your email app with the message drafted. Attach files there if needed.
                 </div>
                 <Button type="submit" className="px-8">
                   Send Message
@@ -589,133 +513,14 @@ export const Contact = (): JSX.Element => {
         </div>
       </section>
 
-      {/* Location & Office Hours */}
       <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Location & Office Hours</h2>
-            <p className="text-lg text-gray-600">
-              Find us in London, UK with global support coverage
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12">
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Office Information</h3>
-              
-              <div className="space-y-6">
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-                  <div className="flex items-start">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                      <MapPin className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">Headquarters</h4>
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>PDF Genius</span>
-                        </div>
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>London, United Kingdom</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Phone className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>+447429919748</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Mail className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>info@pdfgenius.app</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-6">
-                  <div className="flex items-start">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                      <HeadphonesIcon className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-semibold text-gray-900 mb-2">Technical Support</h4>
-                      <div className="space-y-2 text-sm text-gray-600">
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>PDF Genius</span>
-                        </div>
-                        <div className="flex items-center">
-                          <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>Technical Operations Center</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Phone className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>+447429919748</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Mail className="w-4 h-4 mr-2 text-blue-500" />
-                          <span>support@pdfgenius.app</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                  <h4 className="text-lg font-semibold text-blue-900 mb-4">Office Hours</h4>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-blue-800">Monday - Friday</span>
-                      <span className="text-blue-600">9:00 AM - 6:00 PM GMT</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-blue-800">Saturday</span>
-                      <span className="text-blue-600">10:00 AM - 4:00 PM GMT</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-blue-800">Sunday</span>
-                      <span className="text-blue-600">Emergency Support Only</span>
-                    </div>
-                  </div>
-                  <div className="border-t border-blue-200 mt-4 pt-4">
-                    <div className="flex items-center text-sm text-blue-800">
-                      <Phone className="w-4 h-4 mr-2 text-blue-600" />
-                      {SUPPORT_REPLY_COPY}. {SUPPORT_REPLY_TODO}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Find Us on Map</h3>
-              
-              <div className="bg-gray-200 rounded-xl h-96 mb-6 flex items-center justify-center">
-                <p className="text-gray-600">Interactive Map Placeholder</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center mb-2">
-                    <Car className="w-4 h-4 mr-2 text-blue-600" />
-                    <span className="font-semibold text-blue-800">Parking</span>
-                  </div>
-                  <p className="text-sm text-blue-700">Free parking available for visitors</p>
-                </div>
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <div className="flex items-center mb-2">
-                    <Train className="w-4 h-4 mr-2 text-blue-600" />
-                    <span className="font-semibold text-blue-800">Transit</span>
-                  </div>
-                  <p className="text-sm text-blue-700">Central London location, easily accessible</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Reach us directly</h2>
+          <p className="text-gray-600 mb-2">General: info@pdfgenius.app</p>
+          <p className="text-gray-600 mb-2">Support: support@pdfgenius.app</p>
+          <p className="text-gray-600">Based in London, United Kingdom.</p>
         </div>
       </section>
-
 
     </div>
   );

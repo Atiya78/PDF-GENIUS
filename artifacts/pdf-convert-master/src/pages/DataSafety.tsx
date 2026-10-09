@@ -1,5 +1,5 @@
 import React from "react";
-import { FILE_RETENTION_COPY, FILE_RETENTION_TODO, IMAGE_UPLOAD_RETENTION_COPY } from "@/config/siteCopy";
+import { FILE_RETENTION_COPY, IMAGE_UPLOAD_RETENTION_COPY } from "@/config/siteCopy";
 import {
   Shield,
   Lock,
@@ -151,7 +151,7 @@ export const DataSafety = (): JSX.Element => {
           </div>
           <p className="text-gray-600 mb-6">
             Some tools process files locally; others upload files for processing.
-            {" "}{FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY} {FILE_RETENTION_TODO}
+            {" "}{FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY}
           </p>
 
           <div className="space-y-4">

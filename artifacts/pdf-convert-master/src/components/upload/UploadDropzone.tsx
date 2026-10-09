@@ -3,6 +3,7 @@ import { ConverterStatusIcon } from "@/components/converter-status-icon";
 import { useToast } from "@/hooks/use-toast";
 import { getFileTypeErrorMessage } from "@/lib/toolConfig";
 import { cn } from "@/lib/utils";
+import { usePlanMaxFileMB, effectiveMaxMB } from "@/lib/usePlanUploadLimit";
 
 export interface UploadDropzoneProps {
   /** Accepted extensions, e.g. [".pdf"] or [".jpg", ".png"]. */
@@ -71,17 +72,19 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const { toast } = useToast();
+  const planMB = usePlanMaxFileMB();
 
+  // Effective cap = min(tool cap, the visitor's plan cap; guests use Free).
   const { maxBytes, maxSizeLabel } = useMemo(() => {
-    if (typeof maxFileSize === "number") {
-      return { maxBytes: maxFileSize * 1024 * 1024, maxSizeLabel: `${maxFileSize}MB` };
+    const toolMB = typeof maxFileSize === "number" ? maxFileSize : parseFloat(maxFileSize);
+    if (Number.isNaN(toolMB)) {
+      return planMB === null
+        ? { maxBytes: Infinity, maxSizeLabel: String(maxFileSize) }
+        : { maxBytes: planMB * 1024 * 1024, maxSizeLabel: `${planMB}MB` };
     }
-    const n = parseFloat(maxFileSize);
-    return {
-      maxBytes: Number.isNaN(n) ? Infinity : n * 1024 * 1024,
-      maxSizeLabel: maxFileSize,
-    };
-  }, [maxFileSize]);
+    const mb = effectiveMaxMB(toolMB, planMB);
+    return { maxBytes: mb * 1024 * 1024, maxSizeLabel: `${mb}MB` };
+  }, [maxFileSize, planMB]);
 
   const formatsList = useMemo(
     () => acceptedFormats.map((f) => f.replace(".", "").toUpperCase()).join(", "),

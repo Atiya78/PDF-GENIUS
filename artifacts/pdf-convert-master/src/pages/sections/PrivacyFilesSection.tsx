@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { FILE_RETENTION_COPY, FILE_RETENTION_TODO, HTTPS_COPY, IMAGE_UPLOAD_RETENTION_COPY } from "@/config/siteCopy";
+import { FILE_RETENTION_COPY, HTTPS_COPY, IMAGE_UPLOAD_RETENTION_COPY } from "@/config/siteCopy";
 import { browserOnlyTools, localToolsWithOptionalUpload, serverUploadTools, unavailableTools } from "@/config/toolProcessing";
 
 export function PrivacyFilesSection() {
@@ -10,7 +10,6 @@ export function PrivacyFilesSection() {
         <p>Some tools process files in your browser; others upload files to the server. {HTTPS_COPY}</p>
         <p>{FILE_RETENTION_COPY}</p>
         <p>{IMAGE_UPLOAD_RETENTION_COPY}</p>
-        <p className="text-sm">{FILE_RETENTION_TODO}</p>
         <details>
           <summary className="cursor-pointer font-medium text-gray-900">Where each tool processes your file</summary>
           <div className="mt-3 space-y-3 text-sm">

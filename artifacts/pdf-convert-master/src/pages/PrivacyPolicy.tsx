@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Calendar, Clock, Shield, Database, FileText, Lock, Cookie, Cloud, Timer, UserCheck, Globe, AlertTriangle, Mail, Edit, X, Eye, UserX, HardDrive, Trash2, FileCheck } from "lucide-react";
 import { DocumentSearch, SearchableSection } from "@/components/DocumentSearch";
 import { useDocumentSearch } from "@/hooks/useDocumentSearch";
-import { FILE_RETENTION_COPY, FILE_RETENTION_TODO, IMAGE_UPLOAD_RETENTION_COPY, HTTPS_COPY } from "@/config/siteCopy";
+import { FILE_RETENTION_COPY, IMAGE_UPLOAD_RETENTION_COPY, HTTPS_COPY } from "@/config/siteCopy";
 
 export const PrivacyPolicy = (): JSX.Element => {
   // Define table of contents items first
@@ -29,7 +29,7 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "information-we-collect",
       title: "Information We Collect",
-      content: `Personal Information: Account creation uses an email address and an optional display name. File Information: Some tools process locally; others upload files for processing. ${FILE_RETENTION_COPY} ${IMAGE_UPLOAD_RETENTION_COPY} ${FILE_RETENTION_TODO} Camera and Photos: File handling depends on the tool you choose. Usage Data: We record conversion types, file sizes and processing status. Purchase Information: Purchase and subscription status are used to activate your plan or credits. Account Information: Registered users have stored account credentials, preferences, subscription status, credit balance and profile information.`,
+      content: `Personal Information: Account creation uses an email address and an optional display name. File Information: Some tools process locally; others upload files for processing. ${FILE_RETENTION_COPY} ${IMAGE_UPLOAD_RETENTION_COPY} Camera and Photos: File handling depends on the tool you choose. Usage Data: We record conversion types, file sizes and processing status. Purchase Information: Purchase and subscription status are used to activate your plan or credits. Account Information: Registered users have stored account credentials, preferences, subscription status, credit balance and profile information.`,
       category: "Data Collection"
     },
     {
@@ -41,7 +41,7 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "file-processing-and-storage",
       title: "File Processing and Storage",
-      content: `File Processing: Some tools process locally; others upload files to the server. ${FILE_RETENTION_COPY} ${IMAGE_UPLOAD_RETENTION_COPY} ${FILE_RETENTION_TODO}`,
+      content: `File Processing: Some tools process locally; others upload files to the server. ${FILE_RETENTION_COPY} ${IMAGE_UPLOAD_RETENTION_COPY}`,
       category: "File Handling"
     },
     {
@@ -59,7 +59,7 @@ export const PrivacyPolicy = (): JSX.Element => {
     {
       id: "third-party-services",
       title: "Third-Party Services",
-      content: "Payment Processing (Web): Subscriptions and credit packs purchased on our website are sold and billed by our authorised reseller and Merchant of Record, Paddle.com Market Limited (Paddle) or Dodo Payments. As the seller of record, the Merchant of Record collects and processes your billing details (such as name, billing address, and payment card information) and handles taxes, invoicing, and refunds under its own privacy policy. We never receive or store your full payment card details; we only receive confirmation of your purchase and subscription status so we can activate your plan or credits. Payment Processing (Mobile): In-app subscriptions and credit packs are sold and billed through the official app stores (Google Play Billing and Apple App Store), which process all payment details under their own privacy policies. We use RevenueCat as our purchase-management provider to verify purchases and activate your plan or credits; it acts as our data processor and receives only purchase and device identifiers needed for that purpose. Analytics: We analyze anonymous, aggregated usage statistics using our own systems to improve performance. We do not use third-party advertising or analytics SDKs that track you across other apps or services. Customer Support: We may use third-party tools for customer support communications, subject to strict data protection agreements. Cloud Infrastructure: Our services are hosted on secure cloud infrastructure providers who comply with industry security standards. Data Sharing Limitations: We do not share your personal data or files with third parties for marketing or unrelated business purposes. Vendor Agreements: All third-party vendors are bound by data protection agreements and must comply with our privacy standards.",
+      content: "Payment Processing (Web): Subscriptions and credit packs purchased on our website are sold and billed by our authorised reseller and Merchant of Record, Paddle.com Market Limited (Paddle) or Dodo Payments. As the seller of record, the Merchant of Record collects and processes your billing details (such as name, billing address, and payment card information) and handles taxes, invoicing, and refunds under its own privacy policy. We never receive or store your full payment card details; we only receive confirmation of your purchase and subscription status so we can activate your plan or credits. Payment Processing (Mobile): In-app subscriptions and credit packs are sold and billed through the official app stores (Google Play Billing and Apple App Store), which process all payment details under their own privacy policies. We use RevenueCat as our purchase-management provider to verify purchases and activate your plan or credits; it acts as our data processor and receives only purchase and device identifiers needed for that purpose. Usage Statistics: The service records its own conversion and usage records (tool, status, file size) to show your history and enforce plan limits. The web app does not add third-party advertising or cross-app tracking SDKs of its own. Support: If you email us, we receive your message and address and use them to reply. Image AI Tools: Image tools that use AI (such as upscaling or background removal) send the selected image to the configured provider, such as Replicate or remove.bg. Those providers have their own data policies, which may differ from ours; our 24-hour deletion of results does not state or control their retention. Hosting: The service runs on third-party hosting infrastructure. Data Sharing: We do not sell your personal data; files go to third parties only where a tool needs them, as described above.",
       category: "Third Party"
     },
     {
@@ -287,7 +287,7 @@ export const PrivacyPolicy = (): JSX.Element => {
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-4">
                     <p><strong>Personal Information:</strong> We collect minimal personal information, including email addresses and an optional display name for account creation, user preferences, and customer support communications.</p>
-                    <p><strong>File Information:</strong> Some tools process locally; others upload files for processing. {FILE_RETENTION_COPY} {FILE_RETENTION_TODO}</p>
+                    <p><strong>File Information:</strong> Some tools process locally; others upload files for processing. {FILE_RETENTION_COPY}</p>
                     <p><strong>Camera and Photos:</strong> File handling depends on the tool you choose. Some tools process locally; others upload files for processing.</p>
                     <p><strong>Usage Data:</strong> We collect anonymous usage statistics, including conversion types, file sizes, processing times, and general usage patterns to improve our services.</p>
                     <p><strong>Purchase Information:</strong> When you buy a subscription or credit pack through the app, we receive purchase history (the products you bought and their status) from the app store so we can activate your plan or credits. Payment card details are handled entirely by the app store (Google Play or Apple) and are never collected or stored by us.</p>
@@ -322,7 +322,7 @@ export const PrivacyPolicy = (): JSX.Element => {
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-3">
                     <p><strong>File Processing:</strong> Some tools process locally; others upload files to the server.</p>
-                    <p><strong>Storage and Cleanup:</strong> {FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY} {FILE_RETENTION_TODO}</p>
+                    <p><strong>Storage and Cleanup:</strong> {FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY}</p>
                     <p><strong>Processing Purpose:</strong> Files are accessed only for the specific conversion or processing task requested and are not used for any other purpose.</p>
                     <p><strong>Server Security:</strong> Our processing servers are secured with encryption, access controls, and regular security monitoring.</p>
                     <p><strong>File Limitations:</strong> We may impose reasonable file size and processing time limits to ensure optimal service performance for all users.</p>
@@ -339,7 +339,7 @@ export const PrivacyPolicy = (): JSX.Element => {
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-3">
                     <p><strong>Encryption in Transit:</strong> All data transmission between your device and our servers is encrypted using SSL/TLS protocols (HTTPS).</p>
-                    <p><strong>File Cleanup:</strong> {FILE_RETENTION_COPY} {FILE_RETENTION_TODO}</p>
+                    <p><strong>File Cleanup:</strong> {FILE_RETENTION_COPY}</p>
                   </div>
                 </section>
 
@@ -369,11 +369,11 @@ export const PrivacyPolicy = (): JSX.Element => {
                   <div className="text-gray-700 leading-relaxed space-y-3">
                     <p><strong>Payment Processing (Web):</strong> Subscriptions and credit packs purchased on our website are sold and billed by our authorised reseller and Merchant of Record, Paddle.com Market Limited ("Paddle") or Dodo Payments. As the seller of record, the Merchant of Record collects and processes your billing details (such as name, billing address, and payment card information) and handles taxes, invoicing, and refunds under its own privacy policy. We never receive or store your full payment card details; we only receive confirmation of your purchase and subscription status so we can activate your plan or credits.</p>
                     <p><strong>Payment Processing (Mobile):</strong> In-app subscriptions and credit packs are sold and billed through the official app stores (Google Play Billing and Apple App Store), which process all payment details under their own privacy policies. We use RevenueCat as our purchase-management provider to verify purchases and activate your plan or credits; it acts as our data processor and receives only the purchase and device identifiers needed for that purpose.</p>
-                    <p><strong>Analytics:</strong> We analyze anonymous, aggregated usage statistics using our own systems to improve performance. We do not use third-party advertising or analytics SDKs that track you across other apps or services.</p>
-                    <p><strong>Customer Support:</strong> We may use third-party tools for customer support communications, subject to strict data protection agreements.</p>
-                    <p><strong>Cloud Infrastructure:</strong> Our services are hosted on secure cloud infrastructure providers who comply with industry security standards.</p>
-                    <p><strong>Data Sharing Limitations:</strong> We do not share your personal data or files with third parties for marketing or unrelated business purposes.</p>
-                    <p><strong>Vendor Agreements:</strong> All third-party vendors are bound by data protection agreements and must comply with our privacy standards.</p>
+                    <p><strong>Usage Statistics:</strong> The service records its own conversion and usage records (for example tool, status and file size) to show your history and enforce plan limits. The web app does not add third-party advertising or cross-app tracking SDKs of its own.</p>
+                    <p><strong>Support:</strong> If you email us, we receive the message and address you send from, and use them to reply.</p>
+                    <p><strong>Image AI Tools:</strong> Image tools that use AI (for example upscaling or background removal) send the selected image to the configured provider, such as Replicate or remove.bg, to produce the result. Those providers have their own data policies, which may differ from ours. Our 24-hour deletion of results applies to files we store and does not state or control how long those providers retain data.</p>
+                    <p><strong>Hosting:</strong> The service runs on third-party hosting infrastructure, so files and data you submit are processed there.</p>
+                    <p><strong>Data Sharing:</strong> We do not sell your personal data. Files are sent to third parties only where a tool needs them, as described above.</p>
                   </div>
                 </section>
 
@@ -386,7 +386,7 @@ export const PrivacyPolicy = (): JSX.Element => {
                     7. Data Retention
                   </h2>
                   <div className="text-gray-700 leading-relaxed space-y-3">
-                    <p><strong>File Retention:</strong> {FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY} {FILE_RETENTION_TODO}</p>
+                    <p><strong>File Retention:</strong> {FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY}</p>
                     <p><strong>Account Information:</strong> Account data is retained while your account is active and for a reasonable period after account closure to comply with legal obligations.</p>
                     <p><strong>Usage Analytics:</strong> Anonymous usage statistics may be retained for service improvement purposes, with personal identifiers removed.</p>
                     <p><strong>Legal Requirements:</strong> We may retain certain data longer when required by law, legal processes, or legitimate business purposes.</p>
