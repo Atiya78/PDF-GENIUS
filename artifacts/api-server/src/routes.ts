@@ -18,7 +18,7 @@ import { encodeBitmap } from "./lib/bitmap";
 import { expiredCompletedJob } from "./lib/conversionRetention";
 import { resultFilename } from "./lib/resultFilename";
 import { planFileLimitMB } from "./lib/planFileLimit";
-import { removeBackgroundWithReplicate } from "./lib/replicateImage";
+import { removeBackgroundWithReplicate, runReplicateImage } from "./lib/replicateImage";
 import { compressDocumentPdf, compressionLevel, officeDocumentPdf, searchableOcrPdf } from "./lib/documentTools";
 import ffmpegStatic from "ffmpeg-static";
 import ffprobeStatic from "ffprobe-static";
@@ -2030,126 +2030,22 @@ async function convertHtmlToPdf(htmlBuffer: Buffer, outputFilename: string, opti
   }
 }
 
-// Resolve the Replicate API token from the Replit connector (preferred) or a
-// REPLICATE_API_TOKEN env var fallback. Never cache it — tokens can rotate.
-async function getReplicateToken(): Promise<string | undefined> {
-  if (process.env.REPLICATE_API_TOKEN) return process.env.REPLICATE_API_TOKEN;
-
-  const hostname = process.env.REPLIT_CONNECTORS_HOSTNAME;
-  const xReplitToken = process.env.REPL_IDENTITY
-    ? 'repl ' + process.env.REPL_IDENTITY
-    : process.env.WEB_REPL_RENEWAL
-    ? 'depl ' + process.env.WEB_REPL_RENEWAL
-    : null;
-
-  if (!hostname || !xReplitToken) return undefined;
-
-  try {
-    const resp = await fetch(
-      `https://${hostname}/api/v2/connection?include_secrets=true&connector_names=replicate`,
-      { headers: { Accept: 'application/json', X_REPLIT_TOKEN: xReplitToken } }
-    );
-    if (!resp.ok) return undefined;
-    const data: any = await resp.json();
-    const settings = data.items?.[0]?.settings ?? {};
-    return (
-      settings.api_token ||
-      settings.api_key ||
-      settings.access_token ||
-      settings.oauth?.credentials?.access_token
-    );
-  } catch {
-    return undefined;
-  }
-}
-
-// Defence-in-depth: only fetch model output from Replicate's own delivery hosts.
-function isAllowedReplicateOutputHost(rawUrl: string): boolean {
-  try {
-    const u = new URL(rawUrl);
-    if (u.protocol !== 'https:') return false;
-    const host = u.hostname.toLowerCase();
-    return (
-      host === 'replicate.delivery' ||
-      host.endsWith('.replicate.delivery') ||
-      host === 'replicate.com' ||
-      host.endsWith('.replicate.com')
-    );
-  } catch {
-    return false;
-  }
-}
-
 // Real AI super-resolution via Replicate (Real-ESRGAN). We do NOT fake this with
 // a plain resampling filter — if the integration isn't connected we fail loudly
 // so the output is always a genuine AI-enhanced image.
 async function upscaleImage(imageBuffer: Buffer, inputExt: string | undefined, outputFilename: string, options: Record<string, any> = {}) {
-  const token = await getReplicateToken();
-  if (!token) {
-    throw new Error(
-      'AI upscaling requires the Replicate integration. Connect your Replicate account to enable this tool.'
-    );
-  }
-
-  let scale = parseInt(String(options.scale), 10);
-  if (![2, 4].includes(scale)) scale = 4;
+  const scale = options.scale === undefined ? 4 : Number(options.scale);
+  if (![2, 4].includes(scale)) throw new Error("Choose 2× or 4× image upscaling.");
 
   try {
-    // Normalize to PNG so any input format is accepted, then send as a data URI.
-    const pngInput = await sharp(imageBuffer).png().toBuffer();
-    const dataUri = `data:image/png;base64,${pngInput.toString('base64')}`;
-
-    const createResp = await fetch(
-      'https://api.replicate.com/v1/predictions',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          Prefer: 'wait',
-        },
-        body: JSON.stringify({ version: "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b", input: { image: dataUri, scale, face_enhance: false } }),
-        signal: AbortSignal.timeout(60_000),
-      }
+    const pngInput = await sharp(await normalizeImageInput(imageBuffer, inputExt)).png().toBuffer();
+    const dimensions = await sharp(pngInput).metadata();
+    if ((dimensions.width ?? 0) * (dimensions.height ?? 0) * scale * scale > 40_000_000)
+      throw new Error("The upscaled image would exceed 40 megapixels. Choose 2× or resize the source image.");
+    const upscaledPng = await runReplicateImage(
+      "42fed1c4974146d4d2414e2be2c5277c7fcf05fcc3a73abf41610695738c1d7b",
+      pngInput, { scale, face_enhance: false },
     );
-
-    if (!createResp.ok) {
-      const errText = await createResp.text();
-      throw new Error(`Replicate API error (${createResp.status}): ${errText}`);
-    }
-
-    let prediction: any = await createResp.json();
-    const startedAt = Date.now();
-    while (
-      ['starting', 'processing'].includes(prediction.status) &&
-      Date.now() - startedAt < 120000
-    ) {
-      await new Promise((r) => setTimeout(r, 2000));
-      const pollResp = await fetch(prediction.urls.get, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      prediction = await pollResp.json();
-    }
-
-    if (prediction.status !== 'succeeded') {
-      throw new Error(`Upscaling failed: ${prediction.error || prediction.status}`);
-    }
-
-    const outputUrl = Array.isArray(prediction.output)
-      ? prediction.output[0]
-      : prediction.output;
-    if (!outputUrl || typeof outputUrl !== 'string') {
-      throw new Error('Upscaling returned no output image');
-    }
-    if (!isAllowedReplicateOutputHost(outputUrl)) {
-      throw new Error('Upscaling returned an unexpected output location');
-    }
-
-    const imgResp = await fetch(outputUrl);
-    if (!imgResp.ok) {
-      throw new Error(`Failed to fetch upscaled image (${imgResp.status})`);
-    }
-    const upscaledPng = Buffer.from(await imgResp.arrayBuffer());
 
     // Re-encode to the original format so the filename/MIME stay consistent.
     const ext = (inputExt || 'png').toLowerCase();
@@ -2181,10 +2077,8 @@ async function removeBackground(imageBuffer: Buffer, inputExt: string | undefine
   // a misleading "processed" image that still has its background.
   const apiKey = process.env.REMOVE_BG_API_KEY;
   if (!apiKey) {
-    const token = await getReplicateToken();
-    if (!token) throw new Error("Background removal needs a connected AI image provider. Please contact support while the provider is being configured.");
     const input = await sharp(await normalizeImageInput(imageBuffer, inputExt)).png().toBuffer();
-    const output = await removeBackgroundWithReplicate(input, token);
+    const output = await removeBackgroundWithReplicate(input);
     return { success: true, convertedBuffer: await sharp(output).png().toBuffer(), mimeType: "image/png" };
   }
 
