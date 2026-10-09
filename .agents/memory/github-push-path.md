@@ -50,5 +50,26 @@ push with GH013. Removing a secret from the latest file does not remove it from
 earlier commits. Obtain consent before rewriting history; do not force-push.
 `attached_assets/0_secrets_*` is gitignored — keep it that way.
 
+Never bypass or allowlist a real credential flagged by GitHub push protection.
+Clean every unpublished commit, preserve the fetched published base, and rotate
+the exposed credential even after removal.
+
+**Why:** The owner explicitly requires proper removal, not approving the secret.
+An authenticated push dry run does not exercise GitHub's incoming secret scan.
+
+**How to apply:** Fetch the target branch before determining the unpublished range
+and inspect every rewritten commit's blobs, not only the current working file.
+Rewriting only local unpublished commits still permits a normal fast-forward
+push; unrelated branches and platform checkpoint refs should not be rewritten.
+
+Secrets must not be entered as ordinary shared environment variables.
+
+**Why:** Replit's shared variable settings can serialize plaintext into the
+tracked `.replit` userenv section even when the same key also exists in Secrets.
+
+**How to apply:** Remove the plaintext shared entry through the environment
+manager, retain environment-only application access, and have the owner replace
+the credential in Tools → Secrets. Do not request its value in chat.
+
 **Why:** Generic GitHub API connectors are distinct from the source-control
 connection and do not supply Git-over-HTTPS credentials.
