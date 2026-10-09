@@ -25,6 +25,8 @@ const named = <K extends string, M extends Record<K, React.ComponentType<any>>>(
 const EducationHome = named(() => import("@/pages/education/EducationHome"), "EducationHome");
 const QuizGeneratorPage = named(() => import("@/pages/education/QuizGeneratorPage"), "QuizGeneratorPage");
 const FlashcardsPage = named(() => import("@/pages/education/FlashcardsPage"), "FlashcardsPage");
+const AskPdfPage = named(() => import("@/pages/education/AskPdfPage"), "AskPdfPage");
+const NotesMakerPage = named(() => import("@/pages/education/NotesMakerPage"), "NotesMakerPage");
 const Body = named(() => import("@/pages/Body"), "Body");
 const Contact = named(() => import("@/pages/Contact"), "Contact");
 const Pricing = named(() => import("@/pages/Pricing"), "Pricing");
@@ -262,6 +264,18 @@ function Router() {
       <Route path="/education/quiz-generator">
         <DynamicLayout>
           <QuizGeneratorPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/education/ask-pdf">
+        <DynamicLayout>
+          <AskPdfPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/education/notes-maker">
+        <DynamicLayout>
+          <NotesMakerPage />
         </DynamicLayout>
       </Route>
 

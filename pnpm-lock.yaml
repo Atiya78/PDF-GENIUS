@@ -513,6 +513,9 @@ importers:
       '@pdf-lib/fontkit':
         specifier: ^1.1.1
         version: 1.1.1
+      '@workspace/api-zod':
+        specifier: workspace:*
+        version: link:../../lib/api-zod
       '@workspace/csv-utils':
         specifier: workspace:*
         version: link:../../lib/csv-utils

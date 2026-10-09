@@ -12,4 +12,6 @@ export type EducationSavedResultKind = typeof EducationSavedResultKind[keyof typ
 export const EducationSavedResultKind = {
   quiz: 'quiz',
   flashcards: 'flashcards',
+  chat: 'chat',
+  notes: 'notes',
 } as const;

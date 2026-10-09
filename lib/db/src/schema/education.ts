@@ -25,6 +25,6 @@ export const educationGenerationRequests = pgTable("education_generation_request
 }, table => [
   primaryKey({ name: "education_generation_requests_pkey", columns: [table.identityHash, table.requestKey] }),
   index("education_results_user_created").on(table.userId, table.createdAt.desc()),
-  check("education_generation_requests_kind_check", sql`${table.kind} IN ('quiz','flashcards')`),
+  check("education_generation_requests_kind_check", sql`${table.kind} IN ('quiz','flashcards','chat','notes')`),
   check("education_generation_requests_status_check", sql`${table.status} IN ('processing','succeeded')`),
 ]);

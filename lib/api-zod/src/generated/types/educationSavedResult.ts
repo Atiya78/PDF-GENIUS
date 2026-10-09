@@ -5,7 +5,9 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { EducationChatAnswer } from './educationChatAnswer';
 import type { EducationDeck } from './educationDeck';
+import type { EducationNotes } from './educationNotes';
 import type { EducationQuiz } from './educationQuiz';
 import type { EducationSavedResultKind } from './educationSavedResultKind';
 
@@ -16,4 +18,6 @@ export interface EducationSavedResult {
   createdAt: string;
   quiz?: EducationQuiz;
   deck?: EducationDeck;
+  chat?: EducationChatAnswer;
+  notes?: EducationNotes;
 }

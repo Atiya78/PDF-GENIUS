@@ -5,9 +5,11 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { EducationChatTranscript } from './educationChatTranscript';
 import type { EducationDeck } from './educationDeck';
 import type { EducationExportInputFormat } from './educationExportInputFormat';
 import type { EducationExportInputKind } from './educationExportInputKind';
+import type { EducationNotes } from './educationNotes';
 import type { EducationQuiz } from './educationQuiz';
 
 export interface EducationExportInput {
@@ -15,4 +17,6 @@ export interface EducationExportInput {
   format: EducationExportInputFormat;
   quiz?: EducationQuiz;
   deck?: EducationDeck;
+  chat?: EducationChatTranscript;
+  notes?: EducationNotes;
 }

@@ -234,6 +234,8 @@ export const EducationExportInputKind = {
   answers: 'answers',
   cards: 'cards',
   quiz: 'quiz',
+  chat: 'chat',
+  notes: 'notes',
 } as const;
 
 export type EducationExportInputFormat = typeof EducationExportInputFormat[keyof typeof EducationExportInputFormat];
@@ -248,11 +250,125 @@ export const EducationExportInputFormat = {
   html: 'html',
 } as const;
 
+export type EducationChatAnswerRetrieval = typeof EducationChatAnswerRetrieval[keyof typeof EducationChatAnswerRetrieval];
+
+
+export const EducationChatAnswerRetrieval = {
+  embeddings: 'embeddings',
+  bm25: 'bm25',
+} as const;
+
+export interface EducationCitation {
+  /**
+     * @minimum 1
+     * @maximum 100000
+     */
+  pageNumber: number;
+  /**
+     * @minLength 12
+     * @maxLength 600
+     */
+  quote: string;
+}
+
+export interface EducationChatAnswer {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  /**
+     * @minLength 2
+     * @maxLength 2000
+     */
+  question: string;
+  /**
+     * @minLength 1
+     * @maxLength 6000
+     */
+  answer: string;
+  found: boolean;
+  retrieval?: EducationChatAnswerRetrieval;
+  /** @maxItems 8 */
+  citations: EducationCitation[];
+}
+
+export interface EducationChatTranscript {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  /**
+     * @minItems 1
+     * @maxItems 100
+     */
+  turns: EducationChatAnswer[];
+}
+
+export type EducationNotesStyle = typeof EducationNotesStyle[keyof typeof EducationNotesStyle];
+
+
+export const EducationNotesStyle = {
+  detailed: 'detailed',
+  summary: 'summary',
+  bullets: 'bullets',
+  cornell: 'cornell',
+  'mind-map': 'mind-map',
+} as const;
+
+export interface EducationNoteSection {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  id: string;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  heading: string;
+  /**
+     * @minLength 1
+     * @maxLength 12000
+     */
+  body: string;
+  /**
+     * @maxItems 30
+     * @items.minimum 1
+     * @items.maximum 100000
+     */
+  sourcePages: number[];
+}
+
+export interface EducationNotes {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  style: EducationNotesStyle;
+  /**
+     * @minItems 1
+     * @maxItems 80
+     */
+  sections: EducationNoteSection[];
+  /**
+     * @minItems 1
+     * @maxItems 20
+     * @items.minLength 1
+     * @items.maxLength 2000
+     */
+  takeaways: string[];
+}
+
 export interface EducationExportInput {
   kind: EducationExportInputKind;
   format: EducationExportInputFormat;
   quiz?: EducationQuiz;
   deck?: EducationDeck;
+  chat?: EducationChatTranscript;
+  notes?: EducationNotes;
 }
 
 export type EducationHistoryEntryKind = typeof EducationHistoryEntryKind[keyof typeof EducationHistoryEntryKind];
@@ -261,6 +377,8 @@ export type EducationHistoryEntryKind = typeof EducationHistoryEntryKind[keyof t
 export const EducationHistoryEntryKind = {
   quiz: 'quiz',
   flashcards: 'flashcards',
+  chat: 'chat',
+  notes: 'notes',
 } as const;
 
 export interface EducationHistoryEntry {
@@ -276,6 +394,8 @@ export type EducationSavedResultKind = typeof EducationSavedResultKind[keyof typ
 export const EducationSavedResultKind = {
   quiz: 'quiz',
   flashcards: 'flashcards',
+  chat: 'chat',
+  notes: 'notes',
 } as const;
 
 export interface EducationSavedResult {
@@ -285,6 +405,106 @@ export interface EducationSavedResult {
   createdAt: string;
   quiz?: EducationQuiz;
   deck?: EducationDeck;
+  chat?: EducationChatAnswer;
+  notes?: EducationNotes;
+}
+
+export type EducationStudySourceLanguage = typeof EducationStudySourceLanguage[keyof typeof EducationStudySourceLanguage];
+
+
+export const EducationStudySourceLanguage = {
+  english: 'english',
+  bangla: 'bangla',
+  same: 'same',
+} as const;
+
+export interface EducationStudySource {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  pages: EducationSourcePage[];
+  language: EducationStudySourceLanguage;
+}
+
+export interface EducationStarters {
+  /**
+     * @minItems 1
+     * @maxItems 4
+     * @items.minLength 1
+     * @items.maxLength 300
+     */
+  questions: string[];
+}
+
+export type EducationChatInputLanguage = typeof EducationChatInputLanguage[keyof typeof EducationChatInputLanguage];
+
+
+export const EducationChatInputLanguage = {
+  english: 'english',
+  bangla: 'bangla',
+  same: 'same',
+} as const;
+
+export type EducationChatInputConversationItem = {
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  question: string;
+  /**
+     * @minLength 1
+     * @maxLength 6000
+     */
+  answer: string;
+};
+
+export interface EducationChatInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  pages: EducationSourcePage[];
+  language: EducationChatInputLanguage;
+  requestId?: string;
+  /**
+     * @minLength 2
+     * @maxLength 2000
+     */
+  question: string;
+  /** @maxItems 6 */
+  conversation?: EducationChatInputConversationItem[];
+}
+
+export type EducationNotesInputLanguage = typeof EducationNotesInputLanguage[keyof typeof EducationNotesInputLanguage];
+
+
+export const EducationNotesInputLanguage = {
+  english: 'english',
+  bangla: 'bangla',
+  same: 'same',
+} as const;
+
+export type EducationNotesInputStyle = typeof EducationNotesInputStyle[keyof typeof EducationNotesInputStyle];
+
+
+export const EducationNotesInputStyle = {
+  detailed: 'detailed',
+  summary: 'summary',
+  bullets: 'bullets',
+  cornell: 'cornell',
+  'mind-map': 'mind-map',
+} as const;
+
+export interface EducationNotesInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  pages: EducationSourcePage[];
+  language: EducationNotesInputLanguage;
+  requestId?: string;
+  style: EducationNotesInputStyle;
 }
 
 export type EducationEventEvent = typeof EducationEventEvent[keyof typeof EducationEventEvent];

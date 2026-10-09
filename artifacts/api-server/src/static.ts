@@ -32,7 +32,13 @@ export function serveWebApp(app: Express): void {
 
   // A missing SEO manifest is a broken deployment, not permission to serve the
   // homepage with 200 for arbitrary URLs.
-  const manifest = JSON.parse(fs.readFileSync(path.join(clientDir, "routes-manifest.json"), "utf8")) as {
+  const manifestPath = path.join(clientDir, "routes-manifest.json");
+  if (process.env.NODE_ENV === "development" &&
+      (!fs.existsSync(manifestPath) || !fs.existsSync(path.join(clientDir, "spa.html")))) {
+    logger.info("Browserless development bundle found; Vite serves the frontend. Running API-only.");
+    return;
+  }
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
     publicPaths: string[];
     knownPaths: string[];
     redirects: Record<string, string>;

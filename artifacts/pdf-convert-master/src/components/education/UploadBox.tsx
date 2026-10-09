@@ -4,7 +4,8 @@ import { EDUCATION_LIMITS } from "@/lib/education/educationTools";
 import type { SourceState } from "@/lib/education/useSource";
 import { cn } from "@/lib/utils";
 
-export function UploadBox({ src, disabled }: { src: SourceState; disabled: boolean }) {
+export function UploadBox({ src, disabled, pdfOnly }: { src: SourceState; disabled: boolean; pdfOnly?: boolean }) {
+  const upload = pdfOnly || src.mode === "upload";
   const tab = (m: "upload" | "paste", label: string) => (
     <button type="button" role="tab" aria-selected={src.mode === m} disabled={disabled} onClick={() => src.setMode(m)} data-testid={`tab-source-${m}`}
       className={cn("rounded-full px-4 py-1.5 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d]", src.mode === m ? "bg-[#f7433d] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")}>
@@ -13,11 +14,11 @@ export function UploadBox({ src, disabled }: { src: SourceState; disabled: boole
   );
   return (
     <div>
-      <div role="tablist" aria-label="Source" className="mb-4 flex gap-2">{tab("upload", "Upload PDF")}{tab("paste", "Paste text")}</div>
+      {!pdfOnly && <div role="tablist" aria-label="Source" className="mb-4 flex gap-2">{tab("upload", "Upload PDF")}{tab("paste", "Paste text")}</div>}
       <p className="mb-4 rounded-lg bg-gray-50 p-3 text-xs text-gray-600" data-testid="text-ai-disclosure">
-        Privacy: PDF Genius does not save your PDF or extracted text. The text is sent to the configured AI provider, whose own retention policies apply. Do not upload confidential material. Signed-in accounts save generated results for 24 hours; flashcard progress and local edits are kept in this browser. Five generations per day are free; signed-in users can spend one credit per additional successful generation. Failed generations do not spend credits.
+        Privacy: PDFs and extracted source text are processed in memory, not stored as uploaded-source files. Text is sent to the configured AI provider, whose retention policies apply. Do not upload confidential material. Signed-in accounts save generated results, including quoted citations, for 24 hours. Flashcard progress is saved on this device; chat sessions and note edits last only while this page remains open. Five successful generations per day are free across Education tools, then one credit per successful generation for signed-in users. Failed generations and unsupported Q&A answers do not spend credits.
       </p>
-      {src.mode === "upload" ? (
+      {upload ? (
         <div className="space-y-4">
           {src.file ? (
             <div className="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3" data-testid="text-selected-file">

@@ -12,4 +12,6 @@ export type EducationHistoryEntryKind = typeof EducationHistoryEntryKind[keyof t
 export const EducationHistoryEntryKind = {
   quiz: 'quiz',
   flashcards: 'flashcards',
+  chat: 'chat',
+  notes: 'notes',
 } as const;

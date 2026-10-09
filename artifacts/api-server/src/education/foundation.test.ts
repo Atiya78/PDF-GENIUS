@@ -96,7 +96,7 @@ test("request replay and credit settlement are duplicate-safe and transactional"
   const records = new Map<string, { id: string; digest: string; status: string; result: unknown }>();
   let creditWrites = 0, rollback = false, wallet = 1;
   context.mock.method(pool, "query", async (sql: string, args: unknown[] = []) => {
-    if (sql.startsWith("CREATE")) return { rows: [], rowCount: 0 };
+    if (sql.startsWith("CREATE") || sql.startsWith("ALTER")) return { rows: [], rowCount: 0 };
     if (sql.startsWith("INSERT")) {
       const key = `${args[1]}:${args[2]}`;
       if (records.has(key)) return { rows: [], rowCount: 0 };

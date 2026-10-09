@@ -8,7 +8,7 @@ import { chunkSource, validateSource } from "./source";
 
 // Provider configuration stays server-side and works on Replit or Railway.
 // Never import this module into browser code or expose the key in a response.
-function providerConfig() {
+export function providerConfig() {
   const provider = process.env.EDUCATION_AI_PROVIDER || (process.env.OPENROUTER_API_KEY ? "openrouter" : "openai");
   if (provider !== "openai" && provider !== "openrouter")
     throw new EducationError("Education AI provider configuration is invalid. Please contact support.", 503);
@@ -52,7 +52,7 @@ or unsupported inferences. If insufficient material exists, return fewer items r
 Questions/cards must be distinct and useful, not repetitions. sourcePage must be the exact supplied
 page number supporting the item, or null for pasted text. Return only the requested strict JSON.`;
 
-async function completion(kind: "quiz" | "flashcards", prompt: string, retry: boolean, deadline: number): Promise<unknown> {
+async function completion(kind: string, prompt: string, retry: boolean, deadline: number, schema?: object): Promise<unknown> {
   assertAiReady();
   const { base, model, key, openrouter } = providerConfig();
   let response: Response;
@@ -68,7 +68,7 @@ async function completion(kind: "quiz" | "flashcards", prompt: string, retry: bo
           { role: "system", content: documentPrompt },
           { role: "user", content: prompt + (retry ? "\nYour prior output was invalid. Follow every schema, count, source-page and answer constraint exactly." : "") },
         ],
-        response_format: { type: "json_schema", json_schema: { name: `education_${kind}`, strict: true, schema: jsonSchema(kind) } },
+        response_format: { type: "json_schema", json_schema: { name: `education_${kind}`, strict: true, schema: schema ?? jsonSchema(kind as "quiz" | "flashcards") } },
       }),
     });
   } catch { throw new EducationError("AI is busy or took too long. Please try again.", 503); }
@@ -82,10 +82,10 @@ async function completion(kind: "quiz" | "flashcards", prompt: string, retry: bo
   return JSON.parse(content);
 }
 
-async function validCompletion<T>(kind: "quiz" | "flashcards", prompt: string, parse: (value: unknown) => T, deadline: number): Promise<T> {
+export async function validCompletion<T>(kind: string, prompt: string, parse: (value: unknown) => T, deadline: number, schema?: object): Promise<T> {
   for (let attempt = 0; attempt < 2; attempt++) {
     if (Date.now() >= deadline) throw new EducationError("Generation took too long. Try fewer items or a smaller page range; no credits were charged.", 503);
-    try { return parse(await completion(kind, prompt, attempt === 1, deadline)); }
+    try { return parse(await completion(kind, prompt, attempt === 1, deadline, schema)); }
     catch (error) {
       if (error instanceof EducationError) throw error;
       if (attempt === 1) throw new EducationError("AI could not create valid study material from this text. Try fewer items or a clearer document.", 503);
@@ -94,7 +94,8 @@ async function validCompletion<T>(kind: "quiz" | "flashcards", prompt: string, p
   throw new EducationError("AI is busy. Please try again.", 503);
 }
 
-function languagePrompt(language: string) {
+export { validCompletion as studyCompletion };
+export function languagePrompt(language: string) {
   return language === "bangla" ? "Write questions, answers and explanations in Bangla (বাংলা)."
     : language === "english" ? "Write in English." : "Write in the source document's language.";
 }

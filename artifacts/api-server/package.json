@@ -8,6 +8,7 @@
     "build": "node ./build.mjs",
     "test:education": "tsx --test src/education/education.test.ts",
     "test:education-foundation": "tsx --test src/education/foundation.test.ts",
+    "test:education-study": "tsx --test src/education/study.test.ts",
     "test:phase-one": "tsx --test tests/phase-one-tools.test.ts",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",

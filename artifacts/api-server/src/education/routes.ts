@@ -4,6 +4,7 @@ import {
   ExtractEducationPdfBody, GenerateEducationQuizBody, GenerateEducationFlashcardsBody,
   ExportEducationBody, RecordEducationEventBody,
   GetEducationHistoryParams, DeleteEducationHistoryParams,
+  AskEducationPdfBody, GenerateEducationNotesBody, GenerateEducationStartersBody,
 } from "@workspace/api-zod";
 import { educationConfig, EducationError } from "./config";
 import { extractPdf, validateSource } from "./source";
@@ -14,6 +15,8 @@ import { authenticateUser } from "../auth";
 import { pool } from "@workspace/db";
 import { beginEducationRequest, ensureEducationHistory, purgeEducationHistory } from "./history";
 import { logger } from "../lib/logger";
+import { askPdf, makeNotes, starterQuestions } from "./study";
+import type { EducationKind } from "./history";
 
 export const educationApp = express();
 // Scope trusted-proxy behavior to Education; do not change existing endpoints.
@@ -72,12 +75,13 @@ educationApp.post("/extract", (req, res) => {
   });
 });
 
-async function generate(req: Request, res: Response, kind: "quiz" | "flashcards") {
+async function generate(req: Request, res: Response, kind: EducationKind) {
   let refund: (() => Promise<void>) | undefined, reserved = false;
   let cancel: (() => Promise<void>) | undefined;
   try {
     throttle(req, "generation-attempts", 20);
-    const schema = kind === "quiz" ? GenerateEducationQuizBody : GenerateEducationFlashcardsBody;
+    const schema = { quiz: GenerateEducationQuizBody, flashcards: GenerateEducationFlashcardsBody,
+      chat: AskEducationPdfBody, notes: GenerateEducationNotesBody }[kind];
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) throw new EducationError("Choose valid options and upload a PDF or paste readable text.");
     validateSource(parsed.data.pages);
@@ -90,10 +94,13 @@ async function generate(req: Request, res: Response, kind: "quiz" | "flashcards"
     generations++; reserved = true;
     const access = await reserveEducationAccess(req);
     refund = access.refund;
-    const result = kind === "quiz"
-      ? await generateQuiz(GenerateEducationQuizBody.parse(parsed.data))
-      : await generateFlashcards(GenerateEducationFlashcardsBody.parse(parsed.data));
-    await request.complete!(result, access.chargeCredit);
+    const result = kind === "quiz" ? await generateQuiz(GenerateEducationQuizBody.parse(parsed.data))
+      : kind === "flashcards" ? await generateFlashcards(GenerateEducationFlashcardsBody.parse(parsed.data))
+      : kind === "chat" ? await askPdf(AskEducationPdfBody.parse(parsed.data))
+      : await makeNotes(GenerateEducationNotesBody.parse(parsed.data));
+    const useful = kind !== "chat" || !("found" in result) || result.found;
+    if (!useful) { await refund(); refund = undefined; }
+    await request.complete!(result, access.chargeCredit && useful);
     refund = undefined; cancel = undefined;
     res.json(result);
   } catch (error) {
@@ -109,6 +116,20 @@ async function generate(req: Request, res: Response, kind: "quiz" | "flashcards"
 }
 educationApp.post("/quiz", (req, res) => generate(req, res, "quiz"));
 educationApp.post("/flashcards", (req, res) => generate(req, res, "flashcards"));
+educationApp.post("/ask-pdf", (req, res) => generate(req, res, "chat"));
+educationApp.post("/notes", (req, res) => generate(req, res, "notes"));
+educationApp.post("/ask-pdf/starters", async (req, res) => {
+  let reserved = false;
+  try {
+    throttle(req, "starters", 8);
+    const input = GenerateEducationStartersBody.safeParse(req.body);
+    if (!input.success) throw new EducationError("Upload a PDF and select a language.");
+    if (generations >= educationConfig.maxConcurrentGenerations) throw new EducationError("AI is busy. Please retry shortly.", 503);
+    generations++; reserved = true;
+    res.json(await starterQuestions(input.data));
+  } catch (error) { respondError(res, error); }
+  finally { req.body = undefined; if (reserved) generations--; }
+});
 educationApp.get("/font", async (_req, res) => {
   try {
     res.setHeader("Cache-Control", "public, max-age=86400");
@@ -137,8 +158,8 @@ educationApp.get("/history/:id", async (req, res) => {
       FROM education_generation_requests WHERE id=$1 AND user_id=$2 AND status='succeeded'
       AND result IS NOT NULL AND created_at > now() - interval '24 hours'`, [id.data.id, req.user.id])).rows[0];
     if (!row) throw new EducationError("This saved result is missing or expired.", 404);
-    res.json({ id: row.id, kind: row.kind, title: row.result.title, createdAt: row.createdAt,
-      ...(row.kind === "quiz" ? { quiz: row.result } : { deck: row.result }) });
+    const key = { quiz: "quiz", flashcards: "deck", chat: "chat", notes: "notes" }[row.kind as EducationKind];
+    res.json({ id: row.id, kind: row.kind, title: row.result.title, createdAt: row.createdAt, [key]: row.result });
   } catch (error) { respondError(res, error); }
 });
 educationApp.delete("/history/:id", async (req, res) => {
@@ -162,7 +183,8 @@ educationApp.post("/export", async (req, res) => {
     if (exports >= 2) throw new EducationError("Exports are busy. Try again shortly.", 503);
     exports++; reserved = true;
     const output = await exportFile(parsed.data);
-    const title = parsed.data.kind === "cards" ? parsed.data.deck!.title : parsed.data.quiz!.title;
+    const title = parsed.data.kind === "cards" ? parsed.data.deck!.title : parsed.data.kind === "chat"
+      ? parsed.data.chat!.title : parsed.data.kind === "notes" ? parsed.data.notes!.title : parsed.data.quiz!.title;
     res.type(output.mime).setHeader("Content-Disposition", exportDisposition(title, output.extension));
     res.send(output.buffer);
   } catch (error) { respondError(res, error); }

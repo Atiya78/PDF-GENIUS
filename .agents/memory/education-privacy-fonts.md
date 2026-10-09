@@ -27,8 +27,26 @@ Follow the latest step-scoped Education brief rather than implementing every too
 
 **How to apply:** Finish the tools named in the current step, use code-level checks, and carry the server-only AI, existing-provider and no-placeholder rules into later steps.
 
+Browserless Vite builds omit the production SEO manifest; development must keep the API running independently of that compiled frontend.
+
+**Why:** A standalone bundle check empties the web output directory without running browser-based prerendering. Treating that development bundle as a complete production snapshot crashed API startup.
+
+**How to apply:** Use the development Vite server and API-only mode for missing development snapshots. Keep missing production manifests a deployment error; do not manufacture placeholder SEO snapshots.
+
 Preserve the five-free-generations daily allowance; extra successful signed-in generations spend one existing account credit. Failed AI or failed saving must not spend credits, and retries must not spend twice.
 
 **Why:** This extends the existing free quota with the existing purchased-credit balance rather than replacing billing or adding a second allowance system.
 
 **How to apply:** Keep charging and saving generated results atomic, and distinguish request replay from deliberately asking for a new generation.
+
+Unsupported Study Q&A answers do not consume credits or the free allowance; PDF-grounded starter questions are also uncharged.
+
+**Why:** An explicit abstention is honest but does not deliver a supported study answer. Treating it as a billable success would conflict with success-only charging.
+
+**How to apply:** Preserve the same request replay and history behavior for abstentions, while charging only supported completed answers.
+
+Generated account history may contain source quotations and formulas, but must not become a store of uploaded PDFs or full extracted source text. Chat sessions and editable notes are page-local; history stores the generated answer or original generated notes.
+
+**Why:** Page citations require evidence quotes and history must retain generated results. Privacy copy must distinguish these generated excerpts from original source storage.
+
+**How to apply:** Describe quoted citations in the 24-hour account-history disclosure; require the original PDF again to inspect a saved answer's cited page, and warn before replacing unsaved note edits.

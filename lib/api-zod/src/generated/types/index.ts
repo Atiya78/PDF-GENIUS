@@ -7,6 +7,13 @@
  */
 
 export * from './educationCard';
+export * from './educationChatAnswer';
+export * from './educationChatAnswerRetrieval';
+export * from './educationChatInput';
+export * from './educationChatInputConversationItem';
+export * from './educationChatInputLanguage';
+export * from './educationChatTranscript';
+export * from './educationCitation';
 export * from './educationDeck';
 export * from './educationErrorResponse';
 export * from './educationEvent';
@@ -21,6 +28,12 @@ export * from './educationFlashcardInputLanguage';
 export * from './educationFlashcardInputStyle';
 export * from './educationHistoryEntry';
 export * from './educationHistoryEntryKind';
+export * from './educationNotes';
+export * from './educationNoteSection';
+export * from './educationNotesInput';
+export * from './educationNotesInputLanguage';
+export * from './educationNotesInputStyle';
+export * from './educationNotesStyle';
 export * from './educationPdfInput';
 export * from './educationProblem';
 export * from './educationQuestion';
@@ -34,4 +47,7 @@ export * from './educationQuizInputQuestionTypesItem';
 export * from './educationSavedResult';
 export * from './educationSavedResultKind';
 export * from './educationSourcePage';
+export * from './educationStarters';
+export * from './educationStudySource';
+export * from './educationStudySourceLanguage';
 export * from './healthStatus';

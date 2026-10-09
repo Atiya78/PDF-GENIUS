@@ -11,6 +11,74 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /education/ask-pdf/starters:
+    post:
+      operationId: generateEducationStarters
+      tags: [education]
+      summary: Generate source-grounded starter questions without spending credits
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EducationStudySource" }
+      responses:
+        "200":
+          description: Starter questions
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationStarters" }
+        "503":
+          description: AI unavailable
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationProblem" }
+  /education/ask-pdf:
+    post:
+      operationId: askEducationPdf
+      tags: [education]
+      summary: Answer from retrieved PDF passages; uses the shared successful-generation allowance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EducationChatInput" }
+      responses:
+        "200":
+          description: Grounded answer or explicit not-found response
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationChatAnswer" }
+        "402":
+          description: No credits
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationProblem" }
+        "409":
+          description: Duplicate request
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationProblem" }
+  /education/notes:
+    post:
+      operationId: generateEducationNotes
+      tags: [education]
+      summary: Generate editable study notes using every selected source chunk
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EducationNotesInput" }
+      responses:
+        "200":
+          description: Study notes
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationNotes" }
+        "402":
+          description: No credits
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationProblem" }
   /education/font:
     get:
       operationId: getEducationFont
@@ -300,16 +368,18 @@ components:
       type: object
       required: [kind, format]
       properties:
-        kind: { type: string, enum: [questions, answers, cards, quiz] }
+        kind: { type: string, enum: [questions, answers, cards, quiz, chat, notes] }
         format: { type: string, enum: [pdf, docx, txt, markdown, csv, html] }
         quiz: { $ref: "#/components/schemas/EducationQuiz" }
         deck: { $ref: "#/components/schemas/EducationDeck" }
+        chat: { $ref: "#/components/schemas/EducationChatTranscript" }
+        notes: { $ref: "#/components/schemas/EducationNotes" }
     EducationHistoryEntry:
       type: object
       required: [id, kind, title, createdAt]
       properties:
         id: { type: string, format: uuid }
-        kind: { type: string, enum: [quiz, flashcards] }
+        kind: { type: string, enum: [quiz, flashcards, chat, notes] }
         title: { type: string }
         createdAt: { type: string }
     EducationSavedResult:
@@ -317,11 +387,121 @@ components:
       required: [id, kind, title, createdAt]
       properties:
         id: { type: string, format: uuid }
-        kind: { type: string, enum: [quiz, flashcards] }
+        kind: { type: string, enum: [quiz, flashcards, chat, notes] }
         title: { type: string }
         createdAt: { type: string }
         quiz: { $ref: "#/components/schemas/EducationQuiz" }
         deck: { $ref: "#/components/schemas/EducationDeck" }
+        chat: { $ref: "#/components/schemas/EducationChatAnswer" }
+        notes: { $ref: "#/components/schemas/EducationNotes" }
+    EducationStudySource:
+      type: object
+      required: [pages, language]
+      properties:
+        pages:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: { $ref: "#/components/schemas/EducationSourcePage" }
+        language: { type: string, enum: [english, bangla, same] }
+    EducationStarters:
+      type: object
+      required: [questions]
+      properties:
+        questions:
+          type: array
+          minItems: 1
+          maxItems: 4
+          items: { type: string, minLength: 1, maxLength: 300 }
+    EducationChatInput:
+      type: object
+      required: [pages, language, question]
+      properties:
+        pages:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: { $ref: "#/components/schemas/EducationSourcePage" }
+        language: { type: string, enum: [english, bangla, same] }
+        requestId: { type: string, format: uuid }
+        question: { type: string, minLength: 2, maxLength: 2000 }
+        conversation:
+          type: array
+          maxItems: 6
+          items:
+            type: object
+            required: [question, answer]
+            properties:
+              question: { type: string, minLength: 1, maxLength: 2000 }
+              answer: { type: string, minLength: 1, maxLength: 6000 }
+    EducationCitation:
+      type: object
+      required: [pageNumber, quote]
+      properties:
+        pageNumber: { type: integer, minimum: 1, maximum: 100000 }
+        quote: { type: string, minLength: 12, maxLength: 600 }
+    EducationChatAnswer:
+      type: object
+      required: [title, question, answer, found, citations]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        question: { type: string, minLength: 2, maxLength: 2000 }
+        answer: { type: string, minLength: 1, maxLength: 6000 }
+        found: { type: boolean }
+        retrieval: { type: string, enum: [embeddings, bm25] }
+        citations:
+          type: array
+          maxItems: 8
+          items: { $ref: "#/components/schemas/EducationCitation" }
+    EducationChatTranscript:
+      type: object
+      required: [title, turns]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        turns:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items: { $ref: "#/components/schemas/EducationChatAnswer" }
+    EducationNotesInput:
+      type: object
+      required: [pages, language, style]
+      properties:
+        pages:
+          type: array
+          minItems: 1
+          maxItems: 500
+          items: { $ref: "#/components/schemas/EducationSourcePage" }
+        language: { type: string, enum: [english, bangla, same] }
+        requestId: { type: string, format: uuid }
+        style: { type: string, enum: [detailed, summary, bullets, cornell, mind-map] }
+    EducationNoteSection:
+      type: object
+      required: [id, heading, body, sourcePages]
+      properties:
+        id: { type: string, minLength: 1, maxLength: 100 }
+        heading: { type: string, minLength: 1, maxLength: 200 }
+        body: { type: string, minLength: 1, maxLength: 12000 }
+        sourcePages:
+          type: array
+          maxItems: 30
+          items: { type: integer, minimum: 1, maximum: 100000 }
+    EducationNotes:
+      type: object
+      required: [title, style, sections, takeaways]
+      properties:
+        title: { type: string, minLength: 1, maxLength: 200 }
+        style: { type: string, enum: [detailed, summary, bullets, cornell, mind-map] }
+        sections:
+          type: array
+          minItems: 1
+          maxItems: 80
+          items: { $ref: "#/components/schemas/EducationNoteSection" }
+        takeaways:
+          type: array
+          minItems: 1
+          maxItems: 20
+          items: { type: string, minLength: 1, maxLength: 2000 }
     EducationEvent:
       type: object
       required: [event, tool]

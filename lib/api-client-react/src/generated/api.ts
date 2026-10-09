@@ -20,6 +20,8 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  EducationChatAnswer,
+  EducationChatInput,
   EducationDeck,
   EducationErrorResponse,
   EducationEvent,
@@ -27,10 +29,15 @@ import type {
   EducationExtraction,
   EducationFlashcardInput,
   EducationHistoryEntry,
+  EducationNotes,
+  EducationNotesInput,
   EducationPdfInput,
+  EducationProblem,
   EducationQuiz,
   EducationQuizInput,
   EducationSavedResult,
+  EducationStarters,
+  EducationStudySource,
   HealthStatus
 } from './api.schemas';
 
@@ -60,6 +67,270 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGenerateEducationStartersUrl = () => {
+
+
+
+
+  return `/api/education/ask-pdf/starters`
+}
+
+/**
+ * @summary Generate source-grounded starter questions without spending credits
+ */
+export const generateEducationStarters = async (educationStudySource: EducationStudySource, options?: Parameters<typeof customFetch>[1]): Promise<EducationStarters> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EducationStarters>(getGenerateEducationStartersUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(educationStudySource)
+  }
+);}
+
+
+
+
+
+export const getGenerateEducationStartersMutationKey = () => ['generateEducationStarters'] as const;
+
+export const getGenerateEducationStartersMutationOptions = <TError = ErrorType<EducationProblem>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateEducationStarters>>, TError,GenerateEducationStartersMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof generateEducationStarters>>, TError,GenerateEducationStartersMutationVariables, TContext> => {
+
+const mutationKey = getGenerateEducationStartersMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateEducationStarters>>, GenerateEducationStartersMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  generateEducationStarters(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GenerateEducationStartersMutationResult = NonNullable<Awaited<ReturnType<typeof generateEducationStarters>>>
+    export type GenerateEducationStartersMutationBody = BodyType<EducationStudySource>
+    export type GenerateEducationStartersMutationError = ErrorType<EducationProblem>
+    export type GenerateEducationStartersMutationVariables = {data: BodyType<EducationStudySource>}
+
+    /**
+ * @summary Generate source-grounded starter questions without spending credits
+ */
+export const useGenerateEducationStarters = <TError = ErrorType<EducationProblem>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateEducationStarters>>, TError,GenerateEducationStartersMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof generateEducationStarters>>,
+        TError,
+        GenerateEducationStartersMutationVariables,
+        TContext
+      > => {
+      return useMutation(getGenerateEducationStartersMutationOptions(options));
+    }
+
+export const getAskEducationPdfUrl = () => {
+
+
+
+
+  return `/api/education/ask-pdf`
+}
+
+/**
+ * @summary Answer from retrieved PDF passages; uses the shared successful-generation allowance
+ */
+export const askEducationPdf = async (educationChatInput: EducationChatInput, options?: Parameters<typeof customFetch>[1]): Promise<EducationChatAnswer> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EducationChatAnswer>(getAskEducationPdfUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(educationChatInput)
+  }
+);}
+
+
+
+
+
+export const getAskEducationPdfMutationKey = () => ['askEducationPdf'] as const;
+
+export const getAskEducationPdfMutationOptions = <TError = ErrorType<EducationProblem>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askEducationPdf>>, TError,AskEducationPdfMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof askEducationPdf>>, TError,AskEducationPdfMutationVariables, TContext> => {
+
+const mutationKey = getAskEducationPdfMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof askEducationPdf>>, AskEducationPdfMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  askEducationPdf(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AskEducationPdfMutationResult = NonNullable<Awaited<ReturnType<typeof askEducationPdf>>>
+    export type AskEducationPdfMutationBody = BodyType<EducationChatInput>
+    export type AskEducationPdfMutationError = ErrorType<EducationProblem>
+    export type AskEducationPdfMutationVariables = {data: BodyType<EducationChatInput>}
+
+    /**
+ * @summary Answer from retrieved PDF passages; uses the shared successful-generation allowance
+ */
+export const useAskEducationPdf = <TError = ErrorType<EducationProblem>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof askEducationPdf>>, TError,AskEducationPdfMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof askEducationPdf>>,
+        TError,
+        AskEducationPdfMutationVariables,
+        TContext
+      > => {
+      return useMutation(getAskEducationPdfMutationOptions(options));
+    }
+
+export const getGenerateEducationNotesUrl = () => {
+
+
+
+
+  return `/api/education/notes`
+}
+
+/**
+ * @summary Generate editable study notes using every selected source chunk
+ */
+export const generateEducationNotes = async (educationNotesInput: EducationNotesInput, options?: Parameters<typeof customFetch>[1]): Promise<EducationNotes> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EducationNotes>(getGenerateEducationNotesUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(educationNotesInput)
+  }
+);}
+
+
+
+
+
+export const getGenerateEducationNotesMutationKey = () => ['generateEducationNotes'] as const;
+
+export const getGenerateEducationNotesMutationOptions = <TError = ErrorType<EducationProblem>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateEducationNotes>>, TError,GenerateEducationNotesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof generateEducationNotes>>, TError,GenerateEducationNotesMutationVariables, TContext> => {
+
+const mutationKey = getGenerateEducationNotesMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateEducationNotes>>, GenerateEducationNotesMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  generateEducationNotes(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type GenerateEducationNotesMutationResult = NonNullable<Awaited<ReturnType<typeof generateEducationNotes>>>
+    export type GenerateEducationNotesMutationBody = BodyType<EducationNotesInput>
+    export type GenerateEducationNotesMutationError = ErrorType<EducationProblem>
+    export type GenerateEducationNotesMutationVariables = {data: BodyType<EducationNotesInput>}
+
+    /**
+ * @summary Generate editable study notes using every selected source chunk
+ */
+export const useGenerateEducationNotes = <TError = ErrorType<EducationProblem>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateEducationNotes>>, TError,GenerateEducationNotesMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof generateEducationNotes>>,
+        TError,
+        GenerateEducationNotesMutationVariables,
+        TContext
+      > => {
+      return useMutation(getGenerateEducationNotesMutationOptions(options));
+    }
 
 export const getGetEducationFontUrl = () => {
 

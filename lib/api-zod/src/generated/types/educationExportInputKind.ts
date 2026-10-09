@@ -14,4 +14,6 @@ export const EducationExportInputKind = {
   answers: 'answers',
   cards: 'cards',
   quiz: 'quiz',
+  chat: 'chat',
+  notes: 'notes',
 } as const;

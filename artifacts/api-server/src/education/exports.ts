@@ -4,6 +4,7 @@ import puppeteer from "puppeteer";
 import { Document, HeadingLevel, Packer, Paragraph, PageBreak, TextRun } from "docx";
 import type { EducationExportInput, EducationQuiz } from "@workspace/api-zod";
 import { EducationError } from "./config";
+import { exportTitle, studyHtml, studyDocx, studyText } from "./studyExports";
 
 export const escapeHtml = (text: string) => text.replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
@@ -27,9 +28,10 @@ export function loadBengaliFont() {
 }
 
 export function exportHtml(input: EducationExportInput, fontData?: string): string {
-  const title = input.kind === "cards" ? input.deck!.title : input.quiz!.title;
+  const title = exportTitle(input);
   let content: string;
-  if (input.kind === "cards") {
+  if (input.kind === "chat" || input.kind === "notes") content = studyHtml(input);
+  else if (input.kind === "cards") {
     const cards = input.deck!.cards;
     content = Array.from({ length: Math.ceil(cards.length / 8) }, (_, page) => {
       const batch = Array.from({ length: 8 }, (_, i) => cards[page * 8 + i]);
@@ -68,16 +70,23 @@ async function browserPath() {
 }
 
 export async function exportFile(input: EducationExportInput): Promise<{ buffer: Buffer; extension: string; mime: string }> {
+  exportTitle(input);
+  const study = input.kind === "chat" || input.kind === "notes";
+  if (study && input.format === "csv") throw new EducationError("This study material cannot be exported as CSV. Use PDF, DOCX or Markdown.");
   if (input.kind === "cards" && !input.deck) throw new EducationError("Flashcard data is missing.");
-  if (input.kind !== "cards" && !input.quiz) throw new EducationError("Quiz data is missing.");
+  if (!study && input.kind !== "cards" && !input.quiz) throw new EducationError("Quiz data is missing.");
   if (input.format === "html") return {
     buffer: Buffer.from(exportHtml(input, await loadBengaliFont()), "utf8"), extension: "html", mime: "text/html; charset=utf-8",
   };
-  if (["txt", "markdown", "csv"].includes(input.format)) return exportTextFile(input);
+  if (["txt", "markdown", "csv"].includes(input.format)) {
+    if (!study) return exportTextFile(input);
+    return { buffer: Buffer.from(studyText(input), "utf8"), extension: input.format === "markdown" ? "md" : "txt", mime: "text/plain; charset=utf-8" };
+  }
   if (input.format === "docx") {
-    const title = input.kind === "cards" ? input.deck!.title : input.quiz!.title;
+    const title = exportTitle(input);
     const children: Paragraph[] = [new Paragraph({ text: title, heading: HeadingLevel.TITLE })];
-    if (input.kind === "cards") {
+    if (study) children.push(...studyDocx(input).slice(1));
+    else if (input.kind === "cards") {
       for (const [index, card] of input.deck!.cards.entries())
         children.push(new Paragraph({ text: `${index + 1}. ${card.front}`, heading: HeadingLevel.HEADING_2 }),
           new Paragraph(card.back), new Paragraph(card.sourcePage ? `Source page ${card.sourcePage}` : "Source: pasted text"));
