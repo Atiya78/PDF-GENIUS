@@ -13,9 +13,6 @@ export interface EducationSourcePage {
      * @nullable
      */
   pageNumber: number | null;
-  /**
-     * @minLength 1
-     * @maxLength 250000
-     */
+  /** @maxLength 250000 */
   text: string;
 }

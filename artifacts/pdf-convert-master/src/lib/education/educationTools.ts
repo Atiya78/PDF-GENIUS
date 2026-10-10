@@ -10,8 +10,7 @@ import {
   NotebookPen,
 } from "lucide-react";
 
-export type EducationCategory = "practice" | "revision" | "notes" | "translate";
-export type EducationToolStatus = "live" | "coming-soon";
+export type EducationCategory = "practice" | "revision" | "notes" | "translate" | "more";
 
 export interface Faq {
   q: string;
@@ -22,11 +21,9 @@ export interface EducationTool {
   id: string;
   name: string;
   slug: string;
-  /** Route. Live tools only. */
   href: string;
   description: string;
   icon: LucideIcon;
-  status: EducationToolStatus;
   category: EducationCategory;
   isNew: boolean;
   faqs: Faq[];
@@ -78,26 +75,61 @@ const NOTES_FAQS: Faq[] = [
   { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
 ];
 
+const TRANSLATE_FAQS: Faq[] = [
+  { q: "Which directions are supported?", a: "Bangla to English, English to Bangla, or auto-detect. Auto-detect picks the language for each page." },
+  { q: "How does page-by-page translation work?", a: "Each page is translated separately and streamed back, so you can read finished pages while the rest continue. Headings, lists, paragraphs and tables (as text tables) keep their structure." },
+  { q: "What if one page fails?", a: "Pages that succeed are kept in this tab. Retry only the failed page; finished pages are not translated or charged again." },
+  { q: "What does it cost?", a: "A whole document counts as one successful generation from the shared daily allowance (five free per day, then one credit for signed-in users). A partial result is never charged, and page retries do not charge twice." },
+  { q: "What can I export?", a: "A translated PDF with a Bangla font embedded, or DOCX. Exports use the translated pages you currently have." },
+  { q: "Is my PDF stored?", a: "No. The original pages stay in this tab's memory only and are discarded when you start over or leave. Text is sent to the configured AI provider, whose retention policies apply." },
+];
+
+const EXAM_FAQS: Faq[] = [
+  { q: "What do I enter?", a: "Institution, exam name, subject, class, total marks, time, and up to three sections: MCQ, short questions and broad or creative questions, each with a count and marks per question." },
+  { q: "How are marks checked?", a: "The section marks (count times marks per question) must add up exactly to the total marks before you can generate. Edited papers are re-checked before export." },
+  { q: "What is Bangladesh board style?", a: "Creative questions with a stimulus and four parts (ka, kha, ga, gha) worth 1, 2, 3 and 4 marks. Each creative question is worth 10 marks." },
+  { q: "Can I regenerate one question?", a: "Yes. Each question has its own Regenerate button, which replaces only that question and counts as one successful generation. Your other edits are kept." },
+  { q: "Is the answer key separate?", a: "Yes. Export the question paper and the answer key with marking scheme as separate PDF or DOCX files, or print either one." },
+  { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
+];
+
+const SUMMARY_FAQS: Faq[] = [
+  { q: "What does the summarizer produce?", a: "A short, editable summary organised into sections with key takeaways and the source pages for each section." },
+  { q: "Can I edit it?", a: "Yes. Edit the title, headings, text and takeaways. Exports use your latest edits." },
+  { q: "What can I export?", a: "PDF, Word (DOCX), Markdown, or print directly." },
+  { q: "Are edits saved?", a: "Edits stay in this page. Account history keeps the original generated summary for 24 hours." },
+  { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
+];
+
+const MIND_FAQS: Faq[] = [
+  { q: "How is the mind map built?", a: "The AI organises your material into a hierarchy of topics and sub-points. The map you see is drawn directly from that hierarchy, so every branch comes from the generated outline." },
+  { q: "Can I expand and collapse branches?", a: "Yes. Open or close any branch, or expand and collapse the whole tree." },
+  { q: "Can I edit it?", a: "Yes. The outline below the map is editable and the map updates when you apply your changes." },
+  { q: "What can I export?", a: "PDF, Word (DOCX), Markdown, or print the outline." },
+  { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
+];
+
 export const educationTools: EducationTool[] = [
-  { id: "quiz-generator", name: "Quiz Generator", slug: "quiz-generator", href: "/education/quiz-generator", description: "Create MCQ, True/False and short-answer quizzes from your PDF.", icon: ListChecks, status: "live", category: "practice", isNew: true, faqs: QUIZ_FAQS },
-  { id: "flashcards", name: "Flashcard Maker", slug: "flashcards", href: "/education/flashcards", description: "Auto-generate flip flashcards for fast revision.", icon: Layers, status: "live", category: "revision", isNew: true, faqs: CARD_FAQS },
-  { id: "pdf-summarizer", name: "AI PDF Summarizer", slug: "pdf-summarizer", href: "/education/pdf-summarizer", description: "Boil a long chapter down to the points that matter.", icon: FileText, status: "coming-soon", category: "notes", isNew: false, faqs: [] },
-  { id: "chat-with-pdf", name: "Ask your PDF", slug: "ask-pdf", href: "/education/ask-pdf", description: "Ask questions and get answers pointing to the page.", icon: MessageSquare, status: "live", category: "notes", isNew: true, faqs: CHAT_FAQS },
-  { id: "notes-maker", name: "Notes Maker", slug: "notes-maker", href: "/education/notes-maker", description: "Turn slides and lectures into tidy study notes.", icon: NotebookPen, status: "live", category: "notes", isNew: true, faqs: NOTES_FAQS },
-  { id: "pdf-translator", name: "Bangla \u2194 English PDF Translator", slug: "pdf-translator", href: "/education/pdf-translator", description: "Translate study material between Bangla and English.", icon: Languages, status: "coming-soon", category: "translate", isNew: false, faqs: [] },
-  { id: "exam-paper-generator", name: "Exam Question Paper Generator", slug: "exam-paper-generator", href: "/education/exam-paper-generator", description: "Build a balanced exam paper from your course material.", icon: FileQuestion, status: "coming-soon", category: "practice", isNew: false, faqs: [] },
-  { id: "mind-map", name: "Mind Map from PDF", slug: "mind-map", href: "/education/mind-map", description: "See how the ideas in a chapter connect.", icon: Network, status: "coming-soon", category: "revision", isNew: false, faqs: [] },
+  { id: "quiz-generator", name: "Quiz Generator", slug: "quiz-generator", href: "/education/quiz-generator", description: "Create MCQ, True/False and short-answer quizzes from your PDF.", icon: ListChecks, category: "practice", isNew: true, faqs: QUIZ_FAQS },
+  { id: "exam-paper-generator", name: "Exam Question Paper Generator", slug: "exam-paper-generator", href: "/education/exam-paper-generator", description: "Build a balanced exam paper and a separate marking key from your course material.", icon: FileQuestion, category: "practice", isNew: true, faqs: EXAM_FAQS },
+  { id: "flashcards", name: "Flashcard Maker", slug: "flashcards", href: "/education/flashcards", description: "Auto-generate flip flashcards for fast revision.", icon: Layers, category: "revision", isNew: true, faqs: CARD_FAQS },
+  { id: "chat-with-pdf", name: "Ask your PDF", slug: "ask-pdf", href: "/education/ask-pdf", description: "Ask questions and get answers pointing to the page.", icon: MessageSquare, category: "revision", isNew: true, faqs: CHAT_FAQS },
+  { id: "notes-maker", name: "Notes Maker", slug: "notes-maker", href: "/education/notes-maker", description: "Turn slides and lectures into tidy study notes.", icon: NotebookPen, category: "notes", isNew: true, faqs: NOTES_FAQS },
+  { id: "pdf-translator", name: "Bangla \u2194 English PDF Translator", slug: "pdf-translator", href: "/education/pdf-translator", description: "Translate study material between Bangla and English, page by page.", icon: Languages, category: "translate", isNew: true, faqs: TRANSLATE_FAQS },
+  { id: "pdf-summarizer", name: "AI PDF Summarizer", slug: "pdf-summarizer", href: "/education/pdf-summarizer", description: "Boil a long chapter down to the points that matter.", icon: FileText, category: "more", isNew: true, faqs: SUMMARY_FAQS },
+  { id: "mind-map", name: "Mind Map from PDF", slug: "mind-map", href: "/education/mind-map", description: "See how the ideas in a chapter connect as an expandable tree.", icon: Network, category: "more", isNew: true, faqs: MIND_FAQS },
 ];
 
 export const getEducationTool = (id: string) => educationTools.find((t) => t.id === id);
 
 export const EDUCATION_HUB_FAQS: Faq[] = [
-  { q: "What is the Education Zone?", a: "A set of study tools that turn your own lecture notes and textbook PDFs into practice material, such as quizzes and flashcards." },
-  { q: "Is it free?", a: "Five successful generations per day are free across Education tools. Signed-in users may spend one credit for each additional successful generation or answered study question. Failed generations and unsupported Q&A answers do not spend credits. Uploads are limited to 20 MB, 500 selected pages and 250,000 source characters." },
+  { q: "What is the Education Zone?", a: "A set of study tools that turn your own lecture notes and textbook PDFs into quizzes, exam papers, flashcards, notes, summaries, mind maps and translations." },
+  { q: "Is it free?", a: "Five successful generations per day are free across Education tools. Signed-in users may spend one credit for each additional successful generation or answered study question. A translated document counts once, not per page. Failed generations do not spend credits. Uploads are limited to 20 MB, 500 selected pages and 250,000 source characters." },
   { q: "Are my files private?", a: "PDF Genius does not save PDFs or extracted text. Text is sent to the configured AI provider, whose retention policies apply. Signed-in accounts save generated results for 24 hours; flashcard progress and local edits are saved in this browser." },
   { q: "Does the AI make things up?", a: "The AI is told to use only your document. Language models can still make mistakes, so check answers against your source." },
-  { q: "Does it work with Bangla?", a: "Yes. You can write the output in English, Bangla, or the language of your document." },
-  { q: "Which tools are available?", a: "Quiz Generator, Flashcards, Ask your PDF and Notes Maker are available. Study Q&A provides quoted page citations. Notes Maker creates editable notes in five styles. Each tool has exports and account history." },
+  { q: "Does it work with Bangla?", a: "Yes. Write output in English, Bangla, or the language of your document, translate whole PDFs in either direction, or build Bangladesh board style creative question papers." },
+  { q: "Which tools are available?", a: "Quiz Generator, Exam Question Paper Generator, Flashcards, Ask your PDF, Notes Maker, Bangla and English PDF Translator, AI PDF Summarizer and Mind Map from PDF. Each has exports and account history." },
+  { q: "How do I find a tool?", a: "Use the search box to find a tool by name, or the category chips: Practice, Revision, Notes and Translate. Summarizer and Mind Map appear under All." },
 ];
 
 export const faqJsonLd = (faqs: Faq[]) => ({

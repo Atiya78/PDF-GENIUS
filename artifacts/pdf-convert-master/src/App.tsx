@@ -26,6 +26,10 @@ const EducationHome = named(() => import("@/pages/education/EducationHome"), "Ed
 const QuizGeneratorPage = named(() => import("@/pages/education/QuizGeneratorPage"), "QuizGeneratorPage");
 const FlashcardsPage = named(() => import("@/pages/education/FlashcardsPage"), "FlashcardsPage");
 const AskPdfPage = named(() => import("@/pages/education/AskPdfPage"), "AskPdfPage");
+const PdfTranslatorPage = named(() => import("@/pages/education/PdfTranslatorPage"), "PdfTranslatorPage");
+const ExamPaperGeneratorPage = named(() => import("@/pages/education/ExamPaperGeneratorPage"), "ExamPaperGeneratorPage");
+const PdfSummarizerPage = named(() => import("@/pages/education/PdfSummarizerPage"), "PdfSummarizerPage");
+const MindMapPage = named(() => import("@/pages/education/MindMapPage"), "MindMapPage");
 const NotesMakerPage = named(() => import("@/pages/education/NotesMakerPage"), "NotesMakerPage");
 const Body = named(() => import("@/pages/Body"), "Body");
 const Contact = named(() => import("@/pages/Contact"), "Contact");
@@ -276,6 +280,30 @@ function Router() {
       <Route path="/education/notes-maker">
         <DynamicLayout>
           <NotesMakerPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/education/pdf-translator">
+        <DynamicLayout>
+          <PdfTranslatorPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/education/exam-paper-generator">
+        <DynamicLayout>
+          <ExamPaperGeneratorPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/education/pdf-summarizer">
+        <DynamicLayout>
+          <PdfSummarizerPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/education/mind-map">
+        <DynamicLayout>
+          <MindMapPage />
         </DynamicLayout>
       </Route>
 

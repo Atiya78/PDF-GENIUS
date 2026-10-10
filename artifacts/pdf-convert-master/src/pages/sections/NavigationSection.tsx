@@ -22,7 +22,6 @@ export const NavigationSection = (): JSX.Element => {
   // Simple (non-dropdown) navigation links; the tool categories render as dropdowns
   const leadingItem = { name: "Home", href: "/" };
   const trailingItems = [
-    { name: "Education Zone", href: "/education" },
     { name: "Pricing", href: "/pricing" },
     { name: "About", href: "/about" },
   ];

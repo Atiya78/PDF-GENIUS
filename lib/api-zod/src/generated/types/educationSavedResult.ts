@@ -7,9 +7,11 @@
  */
 import type { EducationChatAnswer } from './educationChatAnswer';
 import type { EducationDeck } from './educationDeck';
+import type { EducationExamPaper } from './educationExamPaper';
 import type { EducationNotes } from './educationNotes';
 import type { EducationQuiz } from './educationQuiz';
 import type { EducationSavedResultKind } from './educationSavedResultKind';
+import type { EducationTranslation } from './educationTranslation';
 
 export interface EducationSavedResult {
   id: string;
@@ -20,4 +22,6 @@ export interface EducationSavedResult {
   deck?: EducationDeck;
   chat?: EducationChatAnswer;
   notes?: EducationNotes;
+  translation?: EducationTranslation;
+  exam?: EducationExamPaper;
 }

@@ -14,4 +14,8 @@ export const EducationSavedResultKind = {
   flashcards: 'flashcards',
   chat: 'chat',
   notes: 'notes',
+  translation: 'translation',
+  exam: 'exam',
+  summary: 'summary',
+  mindmap: 'mindmap',
 } as const;

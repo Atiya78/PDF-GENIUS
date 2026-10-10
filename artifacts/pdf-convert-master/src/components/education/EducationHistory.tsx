@@ -6,7 +6,7 @@ import { educationHeaders } from "@/lib/education/requests";
 import { describeError } from "@/lib/education/errors";
 
 export function EducationHistory({ kind, revision, onOpen }: {
-  kind: "quiz" | "flashcards" | "chat" | "notes"; revision?: string; onOpen: (result: EducationSavedResult) => void;
+  kind: "quiz" | "flashcards" | "chat" | "notes" | "summary" | "mindmap" | "translation" | "exam"; revision?: string; onOpen: (result: EducationSavedResult) => void;
 }) {
   const { user, token } = useAuth();
   const [entries, setEntries] = useState<EducationHistoryEntry[]>([]);

@@ -9,6 +9,603 @@ import * as zod from 'zod';
 
 
 /**
+ * @summary Stream translated pages with signed resumable receipts; charge only a completed document
+ */
+export const translateEducationPdfBodyPagesItemPageNumberMax = 100000;
+
+export const translateEducationPdfBodyPagesItemTextMax = 250000;
+
+export const translateEducationPdfBodyPagesMax = 500;
+
+
+export const translateEducationPdfBodyCompletedItemPageTextMax = 500000;
+
+export const translateEducationPdfBodyCompletedItemSignatureMin = 40;
+export const translateEducationPdfBodyCompletedItemSignatureMax = 100;
+
+export const translateEducationPdfBodyCompletedMax = 500;
+
+
+export const translateEducationPdfBodyRetryPagesMax = 500;
+
+
+
+export const TranslateEducationPdfBody = zod.object({
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1).max(translateEducationPdfBodyPagesItemPageNumberMax).nullable(),
+  "text": zod.string().max(translateEducationPdfBodyPagesItemTextMax)
+})).min(1).max(translateEducationPdfBodyPagesMax),
+  "direction": zod.enum(['bangla-to-english', 'english-to-bangla', 'auto']),
+  "keepTechnicalEnglish": zod.boolean(),
+  "requestId": zod.string().uuid().optional(),
+  "completed": zod.array(zod.object({
+  "page": zod.object({
+  "pageNumber": zod.number().int().min(1),
+  "text": zod.string().max(translateEducationPdfBodyCompletedItemPageTextMax),
+  "sourceLanguage": zod.enum(['bangla', 'english']),
+  "targetLanguage": zod.enum(['bangla', 'english'])
+}),
+  "expiresAt": zod.number().int(),
+  "signature": zod.string().min(translateEducationPdfBodyCompletedItemSignatureMin).max(translateEducationPdfBodyCompletedItemSignatureMax)
+})).max(translateEducationPdfBodyCompletedMax).optional(),
+  "retryPages": zod.array(zod.number().int().min(1)).max(translateEducationPdfBodyRetryPagesMax).optional()
+})
+
+
+export const translateEducationPdfResponseReceiptPageTextMax = 500000;
+
+export const translateEducationPdfResponseReceiptSignatureMin = 40;
+export const translateEducationPdfResponseReceiptSignatureMax = 100;
+
+export const translateEducationPdfResponseResultTitleMax = 200;
+
+
+export const translateEducationPdfResponseResultPagesItemTextMax = 500000;
+
+export const translateEducationPdfResponseResultPagesMax = 500;
+
+
+
+export const TranslateEducationPdfResponse = zod.object({
+  "type": zod.enum(['progress', 'page', 'page-error', 'partial', 'complete', 'error', 'heartbeat']),
+  "pageNumber": zod.number().int().optional(),
+  "completed": zod.number().int().optional(),
+  "total": zod.number().int().optional(),
+  "message": zod.string().optional(),
+  "receipt": zod.object({
+  "page": zod.object({
+  "pageNumber": zod.number().int().min(1),
+  "text": zod.string().max(translateEducationPdfResponseReceiptPageTextMax),
+  "sourceLanguage": zod.enum(['bangla', 'english']),
+  "targetLanguage": zod.enum(['bangla', 'english'])
+}),
+  "expiresAt": zod.number().int(),
+  "signature": zod.string().min(translateEducationPdfResponseReceiptSignatureMin).max(translateEducationPdfResponseReceiptSignatureMax)
+}).optional(),
+  "result": zod.object({
+  "title": zod.string().min(1).max(translateEducationPdfResponseResultTitleMax),
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1),
+  "text": zod.string().max(translateEducationPdfResponseResultPagesItemTextMax),
+  "sourceLanguage": zod.enum(['bangla', 'english']),
+  "targetLanguage": zod.enum(['bangla', 'english'])
+})).min(1).max(translateEducationPdfResponseResultPagesMax)
+}).optional()
+})
+
+
+export const generateEducationExamBodyPagesItemPageNumberMax = 100000;
+
+export const generateEducationExamBodyPagesItemTextMax = 250000;
+
+export const generateEducationExamBodyPagesMax = 500;
+
+export const generateEducationExamBodySettingsInstitutionMax = 150;
+
+export const generateEducationExamBodySettingsExamNameMax = 150;
+
+export const generateEducationExamBodySettingsSubjectMax = 150;
+
+export const generateEducationExamBodySettingsClassNameMax = 100;
+
+export const generateEducationExamBodySettingsTotalMarksMax = 1000;
+
+export const generateEducationExamBodySettingsTimeMax = 100;
+
+export const generateEducationExamBodySettingsSectionsItemIdMax = 100;
+
+export const generateEducationExamBodySettingsSectionsItemCountMax = 30;
+
+export const generateEducationExamBodySettingsSectionsItemMarksPerQuestionMax = 100;
+
+export const generateEducationExamBodySettingsSectionsMax = 3;
+
+
+
+export const GenerateEducationExamBody = zod.object({
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1).max(generateEducationExamBodyPagesItemPageNumberMax).nullable(),
+  "text": zod.string().max(generateEducationExamBodyPagesItemTextMax)
+})).min(1).max(generateEducationExamBodyPagesMax),
+  "settings": zod.object({
+  "institution": zod.string().min(1).max(generateEducationExamBodySettingsInstitutionMax),
+  "examName": zod.string().min(1).max(generateEducationExamBodySettingsExamNameMax),
+  "subject": zod.string().min(1).max(generateEducationExamBodySettingsSubjectMax),
+  "className": zod.string().min(1).max(generateEducationExamBodySettingsClassNameMax),
+  "totalMarks": zod.number().int().min(1).max(generateEducationExamBodySettingsTotalMarksMax),
+  "time": zod.string().min(1).max(generateEducationExamBodySettingsTimeMax),
+  "format": zod.enum(['standard', 'bangladesh-board']),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(generateEducationExamBodySettingsSectionsItemIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "count": zod.number().int().min(1).max(generateEducationExamBodySettingsSectionsItemCountMax),
+  "marksPerQuestion": zod.number().int().min(1).max(generateEducationExamBodySettingsSectionsItemMarksPerQuestionMax)
+})).min(1).max(generateEducationExamBodySettingsSectionsMax)
+}),
+  "requestId": zod.string().uuid().optional()
+})
+
+export const generateEducationExamResponseTitleMax = 200;
+
+export const generateEducationExamResponseSettingsInstitutionMax = 150;
+
+export const generateEducationExamResponseSettingsExamNameMax = 150;
+
+export const generateEducationExamResponseSettingsSubjectMax = 150;
+
+export const generateEducationExamResponseSettingsClassNameMax = 100;
+
+export const generateEducationExamResponseSettingsTotalMarksMax = 1000;
+
+export const generateEducationExamResponseSettingsTimeMax = 100;
+
+export const generateEducationExamResponseSettingsSectionsItemIdMax = 100;
+
+export const generateEducationExamResponseSettingsSectionsItemCountMax = 30;
+
+export const generateEducationExamResponseSettingsSectionsItemMarksPerQuestionMax = 100;
+
+export const generateEducationExamResponseSettingsSectionsMax = 3;
+
+export const generateEducationExamResponseQuestionsItemIdMax = 100;
+
+export const generateEducationExamResponseQuestionsItemSectionIdMax = 100;
+
+export const generateEducationExamResponseQuestionsItemTextMax = 5000;
+
+export const generateEducationExamResponseQuestionsItemOptionsItemMax = 1000;
+
+export const generateEducationExamResponseQuestionsItemOptionsMax = 4;
+
+export const generateEducationExamResponseQuestionsItemCorrectOptionMin = 0;
+export const generateEducationExamResponseQuestionsItemCorrectOptionMax = 3;
+
+export const generateEducationExamResponseQuestionsItemStimulusMax = 8000;
+
+export const generateEducationExamResponseQuestionsItemPartsItemTextMax = 2000;
+
+export const generateEducationExamResponseQuestionsItemPartsItemAnswerMax = 5000;
+
+export const generateEducationExamResponseQuestionsItemPartsItemMarksMax = 4;
+
+export const generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeItemTextMax = 2000;
+
+export const generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeItemMarksMin = 0.5;
+export const generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeItemMarksMax = 100;
+
+export const generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeMax = 20;
+
+export const generateEducationExamResponseQuestionsItemPartsMax = 4;
+
+export const generateEducationExamResponseQuestionsItemAnswerMax = 8000;
+
+export const generateEducationExamResponseQuestionsItemMarkingSchemeItemTextMax = 2000;
+
+export const generateEducationExamResponseQuestionsItemMarkingSchemeItemMarksMin = 0.5;
+export const generateEducationExamResponseQuestionsItemMarkingSchemeItemMarksMax = 100;
+
+export const generateEducationExamResponseQuestionsItemMarkingSchemeMax = 20;
+
+
+export const generateEducationExamResponseQuestionsItemSourcePagesMax = 30;
+
+export const generateEducationExamResponseQuestionsMax = 100;
+
+
+
+export const GenerateEducationExamResponse = zod.object({
+  "title": zod.string().min(1).max(generateEducationExamResponseTitleMax),
+  "settings": zod.object({
+  "institution": zod.string().min(1).max(generateEducationExamResponseSettingsInstitutionMax),
+  "examName": zod.string().min(1).max(generateEducationExamResponseSettingsExamNameMax),
+  "subject": zod.string().min(1).max(generateEducationExamResponseSettingsSubjectMax),
+  "className": zod.string().min(1).max(generateEducationExamResponseSettingsClassNameMax),
+  "totalMarks": zod.number().int().min(1).max(generateEducationExamResponseSettingsTotalMarksMax),
+  "time": zod.string().min(1).max(generateEducationExamResponseSettingsTimeMax),
+  "format": zod.enum(['standard', 'bangladesh-board']),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(generateEducationExamResponseSettingsSectionsItemIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "count": zod.number().int().min(1).max(generateEducationExamResponseSettingsSectionsItemCountMax),
+  "marksPerQuestion": zod.number().int().min(1).max(generateEducationExamResponseSettingsSectionsItemMarksPerQuestionMax)
+})).min(1).max(generateEducationExamResponseSettingsSectionsMax)
+}),
+  "questions": zod.array(zod.object({
+  "id": zod.string().min(1).max(generateEducationExamResponseQuestionsItemIdMax),
+  "sectionId": zod.string().min(1).max(generateEducationExamResponseQuestionsItemSectionIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "text": zod.string().min(1).max(generateEducationExamResponseQuestionsItemTextMax),
+  "options": zod.array(zod.string().min(1).max(generateEducationExamResponseQuestionsItemOptionsItemMax)).max(generateEducationExamResponseQuestionsItemOptionsMax),
+  "correctOption": zod.number().int().min(generateEducationExamResponseQuestionsItemCorrectOptionMin).max(generateEducationExamResponseQuestionsItemCorrectOptionMax).nullable(),
+  "stimulus": zod.string().max(generateEducationExamResponseQuestionsItemStimulusMax),
+  "parts": zod.array(zod.object({
+  "label": zod.enum(['ক', 'খ', 'গ', 'ঘ']),
+  "text": zod.string().min(1).max(generateEducationExamResponseQuestionsItemPartsItemTextMax),
+  "answer": zod.string().min(1).max(generateEducationExamResponseQuestionsItemPartsItemAnswerMax),
+  "marks": zod.number().int().min(1).max(generateEducationExamResponseQuestionsItemPartsItemMarksMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeItemMarksMin).max(generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeItemMarksMax)
+})).min(1).max(generateEducationExamResponseQuestionsItemPartsItemMarkingSchemeMax)
+})).max(generateEducationExamResponseQuestionsItemPartsMax),
+  "answer": zod.string().min(1).max(generateEducationExamResponseQuestionsItemAnswerMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(generateEducationExamResponseQuestionsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(generateEducationExamResponseQuestionsItemMarkingSchemeItemMarksMin).max(generateEducationExamResponseQuestionsItemMarkingSchemeItemMarksMax)
+})).min(1).max(generateEducationExamResponseQuestionsItemMarkingSchemeMax),
+  "sourcePages": zod.array(zod.number().int().min(1)).max(generateEducationExamResponseQuestionsItemSourcePagesMax)
+})).min(1).max(generateEducationExamResponseQuestionsMax)
+})
+
+
+export const regenerateEducationExamQuestionBodyPagesItemPageNumberMax = 100000;
+
+export const regenerateEducationExamQuestionBodyPagesItemTextMax = 250000;
+
+export const regenerateEducationExamQuestionBodyPagesMax = 500;
+
+export const regenerateEducationExamQuestionBodyPaperTitleMax = 200;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsInstitutionMax = 150;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsExamNameMax = 150;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsSubjectMax = 150;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsClassNameMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsTotalMarksMax = 1000;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsTimeMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsSectionsItemIdMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsSectionsItemCountMax = 30;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsSectionsItemMarksPerQuestionMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperSettingsSectionsMax = 3;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemIdMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemSectionIdMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemTextMax = 5000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemOptionsItemMax = 1000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemOptionsMax = 4;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemCorrectOptionMin = 0;
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemCorrectOptionMax = 3;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemStimulusMax = 8000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemTextMax = 2000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemAnswerMax = 5000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarksMax = 4;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeItemTextMax = 2000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeItemMarksMin = 0.5;
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeItemMarksMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeMax = 20;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemPartsMax = 4;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemAnswerMax = 8000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeItemTextMax = 2000;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeItemMarksMin = 0.5;
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeItemMarksMax = 100;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeMax = 20;
+
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsItemSourcePagesMax = 30;
+
+export const regenerateEducationExamQuestionBodyPaperQuestionsMax = 100;
+
+export const regenerateEducationExamQuestionBodyQuestionIdMax = 100;
+
+
+
+export const RegenerateEducationExamQuestionBody = zod.object({
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1).max(regenerateEducationExamQuestionBodyPagesItemPageNumberMax).nullable(),
+  "text": zod.string().max(regenerateEducationExamQuestionBodyPagesItemTextMax)
+})).min(1).max(regenerateEducationExamQuestionBodyPagesMax),
+  "paper": zod.object({
+  "title": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperTitleMax),
+  "settings": zod.object({
+  "institution": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsInstitutionMax),
+  "examName": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsExamNameMax),
+  "subject": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsSubjectMax),
+  "className": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsClassNameMax),
+  "totalMarks": zod.number().int().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsTotalMarksMax),
+  "time": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsTimeMax),
+  "format": zod.enum(['standard', 'bangladesh-board']),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsSectionsItemIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "count": zod.number().int().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsSectionsItemCountMax),
+  "marksPerQuestion": zod.number().int().min(1).max(regenerateEducationExamQuestionBodyPaperSettingsSectionsItemMarksPerQuestionMax)
+})).min(1).max(regenerateEducationExamQuestionBodyPaperSettingsSectionsMax)
+}),
+  "questions": zod.array(zod.object({
+  "id": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemIdMax),
+  "sectionId": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemSectionIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemTextMax),
+  "options": zod.array(zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemOptionsItemMax)).max(regenerateEducationExamQuestionBodyPaperQuestionsItemOptionsMax),
+  "correctOption": zod.number().int().min(regenerateEducationExamQuestionBodyPaperQuestionsItemCorrectOptionMin).max(regenerateEducationExamQuestionBodyPaperQuestionsItemCorrectOptionMax).nullable(),
+  "stimulus": zod.string().max(regenerateEducationExamQuestionBodyPaperQuestionsItemStimulusMax),
+  "parts": zod.array(zod.object({
+  "label": zod.enum(['ক', 'খ', 'গ', 'ঘ']),
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemTextMax),
+  "answer": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemAnswerMax),
+  "marks": zod.number().int().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarksMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeItemMarksMin).max(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeItemMarksMax)
+})).min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsItemMarkingSchemeMax)
+})).max(regenerateEducationExamQuestionBodyPaperQuestionsItemPartsMax),
+  "answer": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemAnswerMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeItemMarksMin).max(regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeItemMarksMax)
+})).min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsItemMarkingSchemeMax),
+  "sourcePages": zod.array(zod.number().int().min(1)).max(regenerateEducationExamQuestionBodyPaperQuestionsItemSourcePagesMax)
+})).min(1).max(regenerateEducationExamQuestionBodyPaperQuestionsMax)
+}),
+  "questionId": zod.string().min(1).max(regenerateEducationExamQuestionBodyQuestionIdMax),
+  "requestId": zod.string().uuid().optional()
+})
+
+export const regenerateEducationExamQuestionResponseTitleMax = 200;
+
+export const regenerateEducationExamQuestionResponseSettingsInstitutionMax = 150;
+
+export const regenerateEducationExamQuestionResponseSettingsExamNameMax = 150;
+
+export const regenerateEducationExamQuestionResponseSettingsSubjectMax = 150;
+
+export const regenerateEducationExamQuestionResponseSettingsClassNameMax = 100;
+
+export const regenerateEducationExamQuestionResponseSettingsTotalMarksMax = 1000;
+
+export const regenerateEducationExamQuestionResponseSettingsTimeMax = 100;
+
+export const regenerateEducationExamQuestionResponseSettingsSectionsItemIdMax = 100;
+
+export const regenerateEducationExamQuestionResponseSettingsSectionsItemCountMax = 30;
+
+export const regenerateEducationExamQuestionResponseSettingsSectionsItemMarksPerQuestionMax = 100;
+
+export const regenerateEducationExamQuestionResponseSettingsSectionsMax = 3;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemIdMax = 100;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemSectionIdMax = 100;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemTextMax = 5000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemOptionsItemMax = 1000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemOptionsMax = 4;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemCorrectOptionMin = 0;
+export const regenerateEducationExamQuestionResponseQuestionsItemCorrectOptionMax = 3;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemStimulusMax = 8000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsItemTextMax = 2000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsItemAnswerMax = 5000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarksMax = 4;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeItemTextMax = 2000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeItemMarksMin = 0.5;
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeItemMarksMax = 100;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeMax = 20;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemPartsMax = 4;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemAnswerMax = 8000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeItemTextMax = 2000;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeItemMarksMin = 0.5;
+export const regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeItemMarksMax = 100;
+
+export const regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeMax = 20;
+
+
+export const regenerateEducationExamQuestionResponseQuestionsItemSourcePagesMax = 30;
+
+export const regenerateEducationExamQuestionResponseQuestionsMax = 100;
+
+
+
+export const RegenerateEducationExamQuestionResponse = zod.object({
+  "title": zod.string().min(1).max(regenerateEducationExamQuestionResponseTitleMax),
+  "settings": zod.object({
+  "institution": zod.string().min(1).max(regenerateEducationExamQuestionResponseSettingsInstitutionMax),
+  "examName": zod.string().min(1).max(regenerateEducationExamQuestionResponseSettingsExamNameMax),
+  "subject": zod.string().min(1).max(regenerateEducationExamQuestionResponseSettingsSubjectMax),
+  "className": zod.string().min(1).max(regenerateEducationExamQuestionResponseSettingsClassNameMax),
+  "totalMarks": zod.number().int().min(1).max(regenerateEducationExamQuestionResponseSettingsTotalMarksMax),
+  "time": zod.string().min(1).max(regenerateEducationExamQuestionResponseSettingsTimeMax),
+  "format": zod.enum(['standard', 'bangladesh-board']),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(regenerateEducationExamQuestionResponseSettingsSectionsItemIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "count": zod.number().int().min(1).max(regenerateEducationExamQuestionResponseSettingsSectionsItemCountMax),
+  "marksPerQuestion": zod.number().int().min(1).max(regenerateEducationExamQuestionResponseSettingsSectionsItemMarksPerQuestionMax)
+})).min(1).max(regenerateEducationExamQuestionResponseSettingsSectionsMax)
+}),
+  "questions": zod.array(zod.object({
+  "id": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemIdMax),
+  "sectionId": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemSectionIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemTextMax),
+  "options": zod.array(zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemOptionsItemMax)).max(regenerateEducationExamQuestionResponseQuestionsItemOptionsMax),
+  "correctOption": zod.number().int().min(regenerateEducationExamQuestionResponseQuestionsItemCorrectOptionMin).max(regenerateEducationExamQuestionResponseQuestionsItemCorrectOptionMax).nullable(),
+  "stimulus": zod.string().max(regenerateEducationExamQuestionResponseQuestionsItemStimulusMax),
+  "parts": zod.array(zod.object({
+  "label": zod.enum(['ক', 'খ', 'গ', 'ঘ']),
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemPartsItemTextMax),
+  "answer": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemPartsItemAnswerMax),
+  "marks": zod.number().int().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarksMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeItemMarksMin).max(regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeItemMarksMax)
+})).min(1).max(regenerateEducationExamQuestionResponseQuestionsItemPartsItemMarkingSchemeMax)
+})).max(regenerateEducationExamQuestionResponseQuestionsItemPartsMax),
+  "answer": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemAnswerMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeItemMarksMin).max(regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeItemMarksMax)
+})).min(1).max(regenerateEducationExamQuestionResponseQuestionsItemMarkingSchemeMax),
+  "sourcePages": zod.array(zod.number().int().min(1)).max(regenerateEducationExamQuestionResponseQuestionsItemSourcePagesMax)
+})).min(1).max(regenerateEducationExamQuestionResponseQuestionsMax)
+})
+
+
+export const generateEducationSummaryBodyPagesItemPageNumberMax = 100000;
+
+export const generateEducationSummaryBodyPagesItemTextMax = 250000;
+
+export const generateEducationSummaryBodyPagesMax = 500;
+
+
+
+export const GenerateEducationSummaryBody = zod.object({
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1).max(generateEducationSummaryBodyPagesItemPageNumberMax).nullable(),
+  "text": zod.string().max(generateEducationSummaryBodyPagesItemTextMax)
+})).min(1).max(generateEducationSummaryBodyPagesMax),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "requestId": zod.string().uuid().optional(),
+  "style": zod.enum(['detailed', 'summary', 'bullets', 'cornell', 'mind-map'])
+})
+
+export const generateEducationSummaryResponseTitleMax = 200;
+
+export const generateEducationSummaryResponseSectionsItemIdMax = 100;
+
+export const generateEducationSummaryResponseSectionsItemHeadingMax = 200;
+
+export const generateEducationSummaryResponseSectionsItemBodyMax = 12000;
+
+export const generateEducationSummaryResponseSectionsItemSourcePagesItemMax = 100000;
+
+export const generateEducationSummaryResponseSectionsItemSourcePagesMax = 30;
+
+export const generateEducationSummaryResponseSectionsMax = 80;
+
+export const generateEducationSummaryResponseTakeawaysItemMax = 2000;
+
+export const generateEducationSummaryResponseTakeawaysMax = 20;
+
+
+
+export const GenerateEducationSummaryResponse = zod.object({
+  "title": zod.string().min(1).max(generateEducationSummaryResponseTitleMax),
+  "style": zod.enum(['detailed', 'summary', 'bullets', 'cornell', 'mind-map']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(generateEducationSummaryResponseSectionsItemIdMax),
+  "heading": zod.string().min(1).max(generateEducationSummaryResponseSectionsItemHeadingMax),
+  "body": zod.string().min(1).max(generateEducationSummaryResponseSectionsItemBodyMax),
+  "sourcePages": zod.array(zod.number().int().min(1).max(generateEducationSummaryResponseSectionsItemSourcePagesItemMax)).max(generateEducationSummaryResponseSectionsItemSourcePagesMax)
+})).min(1).max(generateEducationSummaryResponseSectionsMax),
+  "takeaways": zod.array(zod.string().min(1).max(generateEducationSummaryResponseTakeawaysItemMax)).min(1).max(generateEducationSummaryResponseTakeawaysMax)
+})
+
+
+export const generateEducationMindMapBodyPagesItemPageNumberMax = 100000;
+
+export const generateEducationMindMapBodyPagesItemTextMax = 250000;
+
+export const generateEducationMindMapBodyPagesMax = 500;
+
+
+
+export const GenerateEducationMindMapBody = zod.object({
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1).max(generateEducationMindMapBodyPagesItemPageNumberMax).nullable(),
+  "text": zod.string().max(generateEducationMindMapBodyPagesItemTextMax)
+})).min(1).max(generateEducationMindMapBodyPagesMax),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "requestId": zod.string().uuid().optional(),
+  "style": zod.enum(['detailed', 'summary', 'bullets', 'cornell', 'mind-map'])
+})
+
+export const generateEducationMindMapResponseTitleMax = 200;
+
+export const generateEducationMindMapResponseSectionsItemIdMax = 100;
+
+export const generateEducationMindMapResponseSectionsItemHeadingMax = 200;
+
+export const generateEducationMindMapResponseSectionsItemBodyMax = 12000;
+
+export const generateEducationMindMapResponseSectionsItemSourcePagesItemMax = 100000;
+
+export const generateEducationMindMapResponseSectionsItemSourcePagesMax = 30;
+
+export const generateEducationMindMapResponseSectionsMax = 80;
+
+export const generateEducationMindMapResponseTakeawaysItemMax = 2000;
+
+export const generateEducationMindMapResponseTakeawaysMax = 20;
+
+
+
+export const GenerateEducationMindMapResponse = zod.object({
+  "title": zod.string().min(1).max(generateEducationMindMapResponseTitleMax),
+  "style": zod.enum(['detailed', 'summary', 'bullets', 'cornell', 'mind-map']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(generateEducationMindMapResponseSectionsItemIdMax),
+  "heading": zod.string().min(1).max(generateEducationMindMapResponseSectionsItemHeadingMax),
+  "body": zod.string().min(1).max(generateEducationMindMapResponseSectionsItemBodyMax),
+  "sourcePages": zod.array(zod.number().int().min(1).max(generateEducationMindMapResponseSectionsItemSourcePagesItemMax)).max(generateEducationMindMapResponseSectionsItemSourcePagesMax)
+})).min(1).max(generateEducationMindMapResponseSectionsMax),
+  "takeaways": zod.array(zod.string().min(1).max(generateEducationMindMapResponseTakeawaysItemMax)).min(1).max(generateEducationMindMapResponseTakeawaysMax)
+})
+
+
+/**
  * @summary Generate source-grounded starter questions without spending credits
  */
 export const generateEducationStartersBodyPagesItemPageNumberMax = 100000;
@@ -22,7 +619,7 @@ export const generateEducationStartersBodyPagesMax = 500;
 export const GenerateEducationStartersBody = zod.object({
   "pages": zod.array(zod.object({
   "pageNumber": zod.number().int().min(1).max(generateEducationStartersBodyPagesItemPageNumberMax).nullable(),
-  "text": zod.string().min(1).max(generateEducationStartersBodyPagesItemTextMax)
+  "text": zod.string().max(generateEducationStartersBodyPagesItemTextMax)
 })).min(1).max(generateEducationStartersBodyPagesMax),
   "language": zod.enum(['english', 'bangla', 'same'])
 })
@@ -61,7 +658,7 @@ export const askEducationPdfBodyConversationMax = 6;
 export const AskEducationPdfBody = zod.object({
   "pages": zod.array(zod.object({
   "pageNumber": zod.number().int().min(1).max(askEducationPdfBodyPagesItemPageNumberMax).nullable(),
-  "text": zod.string().min(1).max(askEducationPdfBodyPagesItemTextMax)
+  "text": zod.string().max(askEducationPdfBodyPagesItemTextMax)
 })).min(1).max(askEducationPdfBodyPagesMax),
   "language": zod.enum(['english', 'bangla', 'same']),
   "requestId": zod.string().uuid().optional(),
@@ -115,7 +712,7 @@ export const generateEducationNotesBodyPagesMax = 500;
 export const GenerateEducationNotesBody = zod.object({
   "pages": zod.array(zod.object({
   "pageNumber": zod.number().int().min(1).max(generateEducationNotesBodyPagesItemPageNumberMax).nullable(),
-  "text": zod.string().min(1).max(generateEducationNotesBodyPagesItemTextMax)
+  "text": zod.string().max(generateEducationNotesBodyPagesItemTextMax)
 })).min(1).max(generateEducationNotesBodyPagesMax),
   "language": zod.enum(['english', 'bangla', 'same']),
   "requestId": zod.string().uuid().optional(),
@@ -182,7 +779,7 @@ export const extractEducationPdfResponsePagesItemTextMax = 250000;
 export const ExtractEducationPdfResponse = zod.object({
   "pages": zod.array(zod.object({
   "pageNumber": zod.number().int().min(1).max(extractEducationPdfResponsePagesItemPageNumberMax).nullable(),
-  "text": zod.string().min(1).max(extractEducationPdfResponsePagesItemTextMax)
+  "text": zod.string().max(extractEducationPdfResponsePagesItemTextMax)
 })),
   "totalPages": zod.number().int(),
   "usedOcr": zod.boolean(),
@@ -210,7 +807,7 @@ export const generateEducationQuizBodyTopicFocusMax = 200;
 export const GenerateEducationQuizBody = zod.object({
   "pages": zod.array(zod.object({
   "pageNumber": zod.number().int().min(1).max(generateEducationQuizBodyPagesItemPageNumberMax).nullable(),
-  "text": zod.string().min(1).max(generateEducationQuizBodyPagesItemTextMax)
+  "text": zod.string().max(generateEducationQuizBodyPagesItemTextMax)
 })).min(1).max(generateEducationQuizBodyPagesMax),
   "count": zod.number().int().min(generateEducationQuizBodyCountMin).max(generateEducationQuizBodyCountMax),
   "requestId": zod.string().uuid().optional(),
@@ -272,7 +869,7 @@ export const generateEducationFlashcardsBodyCountMax = 100;
 export const GenerateEducationFlashcardsBody = zod.object({
   "pages": zod.array(zod.object({
   "pageNumber": zod.number().int().min(1).max(generateEducationFlashcardsBodyPagesItemPageNumberMax).nullable(),
-  "text": zod.string().min(1).max(generateEducationFlashcardsBodyPagesItemTextMax)
+  "text": zod.string().max(generateEducationFlashcardsBodyPagesItemTextMax)
 })).min(1).max(generateEducationFlashcardsBodyPagesMax),
   "count": zod.number().int().min(generateEducationFlashcardsBodyCountMin).max(generateEducationFlashcardsBodyCountMax),
   "requestId": zod.string().uuid().optional(),
@@ -374,10 +971,83 @@ export const exportEducationBodyNotesTakeawaysItemMax = 2000;
 
 export const exportEducationBodyNotesTakeawaysMax = 20;
 
+export const exportEducationBodyTranslationTitleMax = 200;
+
+
+export const exportEducationBodyTranslationPagesItemTextMax = 500000;
+
+export const exportEducationBodyTranslationPagesMax = 500;
+
+export const exportEducationBodyExamTitleMax = 200;
+
+export const exportEducationBodyExamSettingsInstitutionMax = 150;
+
+export const exportEducationBodyExamSettingsExamNameMax = 150;
+
+export const exportEducationBodyExamSettingsSubjectMax = 150;
+
+export const exportEducationBodyExamSettingsClassNameMax = 100;
+
+export const exportEducationBodyExamSettingsTotalMarksMax = 1000;
+
+export const exportEducationBodyExamSettingsTimeMax = 100;
+
+export const exportEducationBodyExamSettingsSectionsItemIdMax = 100;
+
+export const exportEducationBodyExamSettingsSectionsItemCountMax = 30;
+
+export const exportEducationBodyExamSettingsSectionsItemMarksPerQuestionMax = 100;
+
+export const exportEducationBodyExamSettingsSectionsMax = 3;
+
+export const exportEducationBodyExamQuestionsItemIdMax = 100;
+
+export const exportEducationBodyExamQuestionsItemSectionIdMax = 100;
+
+export const exportEducationBodyExamQuestionsItemTextMax = 5000;
+
+export const exportEducationBodyExamQuestionsItemOptionsItemMax = 1000;
+
+export const exportEducationBodyExamQuestionsItemOptionsMax = 4;
+
+export const exportEducationBodyExamQuestionsItemCorrectOptionMin = 0;
+export const exportEducationBodyExamQuestionsItemCorrectOptionMax = 3;
+
+export const exportEducationBodyExamQuestionsItemStimulusMax = 8000;
+
+export const exportEducationBodyExamQuestionsItemPartsItemTextMax = 2000;
+
+export const exportEducationBodyExamQuestionsItemPartsItemAnswerMax = 5000;
+
+export const exportEducationBodyExamQuestionsItemPartsItemMarksMax = 4;
+
+export const exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeItemTextMax = 2000;
+
+export const exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeItemMarksMin = 0.5;
+export const exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeItemMarksMax = 100;
+
+export const exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeMax = 20;
+
+export const exportEducationBodyExamQuestionsItemPartsMax = 4;
+
+export const exportEducationBodyExamQuestionsItemAnswerMax = 8000;
+
+export const exportEducationBodyExamQuestionsItemMarkingSchemeItemTextMax = 2000;
+
+export const exportEducationBodyExamQuestionsItemMarkingSchemeItemMarksMin = 0.5;
+export const exportEducationBodyExamQuestionsItemMarkingSchemeItemMarksMax = 100;
+
+export const exportEducationBodyExamQuestionsItemMarkingSchemeMax = 20;
+
+
+export const exportEducationBodyExamQuestionsItemSourcePagesMax = 30;
+
+export const exportEducationBodyExamQuestionsMax = 100;
+
 
 
 export const ExportEducationBody = zod.object({
-  "kind": zod.enum(['questions', 'answers', 'cards', 'quiz', 'chat', 'notes']),
+  "kind": zod.enum(['questions', 'answers', 'cards', 'quiz', 'chat', 'notes', 'translation', 'exam-paper', 'exam-key']),
   "format": zod.enum(['pdf', 'docx', 'txt', 'markdown', 'csv', 'html']),
   "quiz": zod.object({
   "title": zod.string().min(1).max(exportEducationBodyQuizTitleMax),
@@ -425,6 +1095,59 @@ export const ExportEducationBody = zod.object({
   "sourcePages": zod.array(zod.number().int().min(1).max(exportEducationBodyNotesSectionsItemSourcePagesItemMax)).max(exportEducationBodyNotesSectionsItemSourcePagesMax)
 })).min(1).max(exportEducationBodyNotesSectionsMax),
   "takeaways": zod.array(zod.string().min(1).max(exportEducationBodyNotesTakeawaysItemMax)).min(1).max(exportEducationBodyNotesTakeawaysMax)
+}).optional(),
+  "translation": zod.object({
+  "title": zod.string().min(1).max(exportEducationBodyTranslationTitleMax),
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1),
+  "text": zod.string().max(exportEducationBodyTranslationPagesItemTextMax),
+  "sourceLanguage": zod.enum(['bangla', 'english']),
+  "targetLanguage": zod.enum(['bangla', 'english'])
+})).min(1).max(exportEducationBodyTranslationPagesMax)
+}).optional(),
+  "exam": zod.object({
+  "title": zod.string().min(1).max(exportEducationBodyExamTitleMax),
+  "settings": zod.object({
+  "institution": zod.string().min(1).max(exportEducationBodyExamSettingsInstitutionMax),
+  "examName": zod.string().min(1).max(exportEducationBodyExamSettingsExamNameMax),
+  "subject": zod.string().min(1).max(exportEducationBodyExamSettingsSubjectMax),
+  "className": zod.string().min(1).max(exportEducationBodyExamSettingsClassNameMax),
+  "totalMarks": zod.number().int().min(1).max(exportEducationBodyExamSettingsTotalMarksMax),
+  "time": zod.string().min(1).max(exportEducationBodyExamSettingsTimeMax),
+  "format": zod.enum(['standard', 'bangladesh-board']),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(exportEducationBodyExamSettingsSectionsItemIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "count": zod.number().int().min(1).max(exportEducationBodyExamSettingsSectionsItemCountMax),
+  "marksPerQuestion": zod.number().int().min(1).max(exportEducationBodyExamSettingsSectionsItemMarksPerQuestionMax)
+})).min(1).max(exportEducationBodyExamSettingsSectionsMax)
+}),
+  "questions": zod.array(zod.object({
+  "id": zod.string().min(1).max(exportEducationBodyExamQuestionsItemIdMax),
+  "sectionId": zod.string().min(1).max(exportEducationBodyExamQuestionsItemSectionIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "text": zod.string().min(1).max(exportEducationBodyExamQuestionsItemTextMax),
+  "options": zod.array(zod.string().min(1).max(exportEducationBodyExamQuestionsItemOptionsItemMax)).max(exportEducationBodyExamQuestionsItemOptionsMax),
+  "correctOption": zod.number().int().min(exportEducationBodyExamQuestionsItemCorrectOptionMin).max(exportEducationBodyExamQuestionsItemCorrectOptionMax).nullable(),
+  "stimulus": zod.string().max(exportEducationBodyExamQuestionsItemStimulusMax),
+  "parts": zod.array(zod.object({
+  "label": zod.enum(['ক', 'খ', 'গ', 'ঘ']),
+  "text": zod.string().min(1).max(exportEducationBodyExamQuestionsItemPartsItemTextMax),
+  "answer": zod.string().min(1).max(exportEducationBodyExamQuestionsItemPartsItemAnswerMax),
+  "marks": zod.number().int().min(1).max(exportEducationBodyExamQuestionsItemPartsItemMarksMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeItemMarksMin).max(exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeItemMarksMax)
+})).min(1).max(exportEducationBodyExamQuestionsItemPartsItemMarkingSchemeMax)
+})).max(exportEducationBodyExamQuestionsItemPartsMax),
+  "answer": zod.string().min(1).max(exportEducationBodyExamQuestionsItemAnswerMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(exportEducationBodyExamQuestionsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(exportEducationBodyExamQuestionsItemMarkingSchemeItemMarksMin).max(exportEducationBodyExamQuestionsItemMarkingSchemeItemMarksMax)
+})).min(1).max(exportEducationBodyExamQuestionsItemMarkingSchemeMax),
+  "sourcePages": zod.array(zod.number().int().min(1)).max(exportEducationBodyExamQuestionsItemSourcePagesMax)
+})).min(1).max(exportEducationBodyExamQuestionsMax)
 }).optional()
 })
 
@@ -447,7 +1170,7 @@ export const RecordEducationEventResponse = zod.void()
  */
 export const ListEducationHistoryResponseItem = zod.object({
   "id": zod.string().uuid(),
-  "kind": zod.enum(['quiz', 'flashcards', 'chat', 'notes']),
+  "kind": zod.enum(['quiz', 'flashcards', 'chat', 'notes', 'translation', 'exam', 'summary', 'mindmap']),
   "title": zod.string(),
   "createdAt": zod.string()
 })
@@ -520,11 +1243,84 @@ export const getEducationHistoryResponseNotesTakeawaysItemMax = 2000;
 
 export const getEducationHistoryResponseNotesTakeawaysMax = 20;
 
+export const getEducationHistoryResponseTranslationTitleMax = 200;
+
+
+export const getEducationHistoryResponseTranslationPagesItemTextMax = 500000;
+
+export const getEducationHistoryResponseTranslationPagesMax = 500;
+
+export const getEducationHistoryResponseExamTitleMax = 200;
+
+export const getEducationHistoryResponseExamSettingsInstitutionMax = 150;
+
+export const getEducationHistoryResponseExamSettingsExamNameMax = 150;
+
+export const getEducationHistoryResponseExamSettingsSubjectMax = 150;
+
+export const getEducationHistoryResponseExamSettingsClassNameMax = 100;
+
+export const getEducationHistoryResponseExamSettingsTotalMarksMax = 1000;
+
+export const getEducationHistoryResponseExamSettingsTimeMax = 100;
+
+export const getEducationHistoryResponseExamSettingsSectionsItemIdMax = 100;
+
+export const getEducationHistoryResponseExamSettingsSectionsItemCountMax = 30;
+
+export const getEducationHistoryResponseExamSettingsSectionsItemMarksPerQuestionMax = 100;
+
+export const getEducationHistoryResponseExamSettingsSectionsMax = 3;
+
+export const getEducationHistoryResponseExamQuestionsItemIdMax = 100;
+
+export const getEducationHistoryResponseExamQuestionsItemSectionIdMax = 100;
+
+export const getEducationHistoryResponseExamQuestionsItemTextMax = 5000;
+
+export const getEducationHistoryResponseExamQuestionsItemOptionsItemMax = 1000;
+
+export const getEducationHistoryResponseExamQuestionsItemOptionsMax = 4;
+
+export const getEducationHistoryResponseExamQuestionsItemCorrectOptionMin = 0;
+export const getEducationHistoryResponseExamQuestionsItemCorrectOptionMax = 3;
+
+export const getEducationHistoryResponseExamQuestionsItemStimulusMax = 8000;
+
+export const getEducationHistoryResponseExamQuestionsItemPartsItemTextMax = 2000;
+
+export const getEducationHistoryResponseExamQuestionsItemPartsItemAnswerMax = 5000;
+
+export const getEducationHistoryResponseExamQuestionsItemPartsItemMarksMax = 4;
+
+export const getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeItemTextMax = 2000;
+
+export const getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeItemMarksMin = 0.5;
+export const getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeItemMarksMax = 100;
+
+export const getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeMax = 20;
+
+export const getEducationHistoryResponseExamQuestionsItemPartsMax = 4;
+
+export const getEducationHistoryResponseExamQuestionsItemAnswerMax = 8000;
+
+export const getEducationHistoryResponseExamQuestionsItemMarkingSchemeItemTextMax = 2000;
+
+export const getEducationHistoryResponseExamQuestionsItemMarkingSchemeItemMarksMin = 0.5;
+export const getEducationHistoryResponseExamQuestionsItemMarkingSchemeItemMarksMax = 100;
+
+export const getEducationHistoryResponseExamQuestionsItemMarkingSchemeMax = 20;
+
+
+export const getEducationHistoryResponseExamQuestionsItemSourcePagesMax = 30;
+
+export const getEducationHistoryResponseExamQuestionsMax = 100;
+
 
 
 export const GetEducationHistoryResponse = zod.object({
   "id": zod.string().uuid(),
-  "kind": zod.enum(['quiz', 'flashcards', 'chat', 'notes']),
+  "kind": zod.enum(['quiz', 'flashcards', 'chat', 'notes', 'translation', 'exam', 'summary', 'mindmap']),
   "title": zod.string(),
   "createdAt": zod.string(),
   "quiz": zod.object({
@@ -570,6 +1366,59 @@ export const GetEducationHistoryResponse = zod.object({
   "sourcePages": zod.array(zod.number().int().min(1).max(getEducationHistoryResponseNotesSectionsItemSourcePagesItemMax)).max(getEducationHistoryResponseNotesSectionsItemSourcePagesMax)
 })).min(1).max(getEducationHistoryResponseNotesSectionsMax),
   "takeaways": zod.array(zod.string().min(1).max(getEducationHistoryResponseNotesTakeawaysItemMax)).min(1).max(getEducationHistoryResponseNotesTakeawaysMax)
+}).optional(),
+  "translation": zod.object({
+  "title": zod.string().min(1).max(getEducationHistoryResponseTranslationTitleMax),
+  "pages": zod.array(zod.object({
+  "pageNumber": zod.number().int().min(1),
+  "text": zod.string().max(getEducationHistoryResponseTranslationPagesItemTextMax),
+  "sourceLanguage": zod.enum(['bangla', 'english']),
+  "targetLanguage": zod.enum(['bangla', 'english'])
+})).min(1).max(getEducationHistoryResponseTranslationPagesMax)
+}).optional(),
+  "exam": zod.object({
+  "title": zod.string().min(1).max(getEducationHistoryResponseExamTitleMax),
+  "settings": zod.object({
+  "institution": zod.string().min(1).max(getEducationHistoryResponseExamSettingsInstitutionMax),
+  "examName": zod.string().min(1).max(getEducationHistoryResponseExamSettingsExamNameMax),
+  "subject": zod.string().min(1).max(getEducationHistoryResponseExamSettingsSubjectMax),
+  "className": zod.string().min(1).max(getEducationHistoryResponseExamSettingsClassNameMax),
+  "totalMarks": zod.number().int().min(1).max(getEducationHistoryResponseExamSettingsTotalMarksMax),
+  "time": zod.string().min(1).max(getEducationHistoryResponseExamSettingsTimeMax),
+  "format": zod.enum(['standard', 'bangladesh-board']),
+  "language": zod.enum(['english', 'bangla', 'same']),
+  "sections": zod.array(zod.object({
+  "id": zod.string().min(1).max(getEducationHistoryResponseExamSettingsSectionsItemIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "count": zod.number().int().min(1).max(getEducationHistoryResponseExamSettingsSectionsItemCountMax),
+  "marksPerQuestion": zod.number().int().min(1).max(getEducationHistoryResponseExamSettingsSectionsItemMarksPerQuestionMax)
+})).min(1).max(getEducationHistoryResponseExamSettingsSectionsMax)
+}),
+  "questions": zod.array(zod.object({
+  "id": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemIdMax),
+  "sectionId": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemSectionIdMax),
+  "kind": zod.enum(['mcq', 'short', 'broad']),
+  "text": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemTextMax),
+  "options": zod.array(zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemOptionsItemMax)).max(getEducationHistoryResponseExamQuestionsItemOptionsMax),
+  "correctOption": zod.number().int().min(getEducationHistoryResponseExamQuestionsItemCorrectOptionMin).max(getEducationHistoryResponseExamQuestionsItemCorrectOptionMax).nullable(),
+  "stimulus": zod.string().max(getEducationHistoryResponseExamQuestionsItemStimulusMax),
+  "parts": zod.array(zod.object({
+  "label": zod.enum(['ক', 'খ', 'গ', 'ঘ']),
+  "text": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemPartsItemTextMax),
+  "answer": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemPartsItemAnswerMax),
+  "marks": zod.number().int().min(1).max(getEducationHistoryResponseExamQuestionsItemPartsItemMarksMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeItemMarksMin).max(getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeItemMarksMax)
+})).min(1).max(getEducationHistoryResponseExamQuestionsItemPartsItemMarkingSchemeMax)
+})).max(getEducationHistoryResponseExamQuestionsItemPartsMax),
+  "answer": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemAnswerMax),
+  "markingScheme": zod.array(zod.object({
+  "text": zod.string().min(1).max(getEducationHistoryResponseExamQuestionsItemMarkingSchemeItemTextMax),
+  "marks": zod.number().min(getEducationHistoryResponseExamQuestionsItemMarkingSchemeItemMarksMin).max(getEducationHistoryResponseExamQuestionsItemMarkingSchemeItemMarksMax)
+})).min(1).max(getEducationHistoryResponseExamQuestionsItemMarkingSchemeMax),
+  "sourcePages": zod.array(zod.number().int().min(1)).max(getEducationHistoryResponseExamQuestionsItemSourcePagesMax)
+})).min(1).max(getEducationHistoryResponseExamQuestionsMax)
 }).optional()
 })
 

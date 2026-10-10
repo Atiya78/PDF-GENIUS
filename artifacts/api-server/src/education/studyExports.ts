@@ -1,8 +1,10 @@
 import { Paragraph, HeadingLevel, TextRun } from "docx";
 import { escapeStudyHtml, renderStudyMarkdown, studyInlineRuns, type EducationExportInput } from "@workspace/api-zod";
 import { EducationError } from "./config";
+import { finalTitle } from "./finalExports";
 
 export const exportTitle = (input: EducationExportInput) => {
+  if (input.kind === "translation" || input.kind === "exam-paper" || input.kind === "exam-key") return finalTitle(input);
   const value = input.kind === "cards" ? input.deck : input.kind === "chat" ? input.chat : input.kind === "notes" ? input.notes : input.quiz;
   if (!value) throw new EducationError("Study material is missing. Generate or open a result before exporting.");
   return value.title;

@@ -1,23 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Check, Layers, ListChecks } from "lucide-react";
+import { ArrowRight, Check, FileQuestion, FileText, Languages, Layers, ListChecks, Network, NotebookPen } from "lucide-react";
 import { LottieIcon } from "@/components/ui/lottie-icon";
 import studentAnimation from "@/assets/lottie/student.json";
 
 const benefits = [
   "PDF or pasted notes",
   "English and Bangla",
-  "Multiple-choice quizzes",
+  "Quizzes and exam papers",
   "Flip flashcards",
   "Instant quiz feedback",
   "Saved flashcard progress",
   "Edit before exporting",
+  "Translate, summarize, mind-map",
   "PDF, DOCX and CSV",
 ];
 
 const actions = [
   { icon: ListChecks, label: "Quiz Generator", href: "/education/quiz-generator", id: "quiz" },
+  { icon: FileQuestion, label: "Exam Paper Generator", href: "/education/exam-paper-generator", id: "exam-paper-generator" },
   { icon: Layers, label: "Flashcard Maker", href: "/education/flashcards", id: "flashcards" },
+  { icon: NotebookPen, label: "Notes Maker", href: "/education/notes-maker", id: "notes-maker" },
+  { icon: Languages, label: "PDF Translator", href: "/education/pdf-translator", id: "pdf-translator" },
+  { icon: FileText, label: "PDF Summarizer", href: "/education/pdf-summarizer", id: "pdf-summarizer" },
+  { icon: Network, label: "Mind Map", href: "/education/mind-map", id: "mind-map" },
 ];
 
 export function EducationZoneSection(): JSX.Element {

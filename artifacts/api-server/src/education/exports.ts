@@ -5,6 +5,7 @@ import { Document, HeadingLevel, Packer, Paragraph, PageBreak, TextRun } from "d
 import type { EducationExportInput, EducationQuiz } from "@workspace/api-zod";
 import { EducationError } from "./config";
 import { exportTitle, studyHtml, studyDocx, studyText } from "./studyExports";
+import { finalHtml, finalDocx } from "./finalExports";
 
 export const escapeHtml = (text: string) => text.replace(/[&<>"']/g, c => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
@@ -30,7 +31,8 @@ export function loadBengaliFont() {
 export function exportHtml(input: EducationExportInput, fontData?: string): string {
   const title = exportTitle(input);
   let content: string;
-  if (input.kind === "chat" || input.kind === "notes") content = studyHtml(input);
+  if (input.kind === "translation" || input.kind === "exam-paper" || input.kind === "exam-key") content = finalHtml(input);
+  else if (input.kind === "chat" || input.kind === "notes") content = studyHtml(input);
   else if (input.kind === "cards") {
     const cards = input.deck!.cards;
     content = Array.from({ length: Math.ceil(cards.length / 8) }, (_, page) => {
@@ -56,6 +58,8 @@ ${fontData ? `@font-face{font-family:"Education Bengali";src:url(data:font/ttf;b
 @page{size:A4;margin:14mm}*{box-sizing:border-box}body{margin:0;width:182mm;max-width:100%;font-family:"Education Bengali","Noto Sans Bengali","Noto Sans",Arial,sans-serif;color:#17202b;font-size:11pt;line-height:1.45;overflow-wrap:anywhere}
 h1{font-size:19pt}h3{font-size:12pt}article{break-inside:avoid;margin-bottom:7mm}small{color:#596575;font-size:9pt}
 .blank{margin:8mm 0}.answer-key{break-before:page}.sheet{break-after:page}.sheet:last-child{break-after:auto}
+.translation-page{break-after:page}.translation-page:last-child{break-after:auto}.translated-text{white-space:pre-wrap;margin-top:4mm;line-height:1.6}
+.exam-header{text-align:center;border-bottom:1px solid #aab1b8;margin-bottom:6mm}.exam-header h1,.exam-header h2{margin:2mm 0}.exam-meta{display:flex;justify-content:space-between}.stimulus{border-left:2px solid #aab1b8;padding-left:4mm}.exam-question h3 small{float:right}.exam-question{break-inside:auto}
 .sheet h1{height:12mm;margin:0 0 4mm;font-size:14pt;overflow:hidden}.card-grid{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(4,59mm);gap:3mm}
 .cutout{border:1px dashed #929aa5;padding:4mm;margin:0;font-size:9pt;overflow:hidden}.cutout p{margin:2mm 0}.cutout hr{border:0;border-top:1px solid #ccc}
 </style></head><body>${content}</body></html>`;
@@ -72,9 +76,11 @@ async function browserPath() {
 export async function exportFile(input: EducationExportInput): Promise<{ buffer: Buffer; extension: string; mime: string }> {
   exportTitle(input);
   const study = input.kind === "chat" || input.kind === "notes";
+  const final = input.kind === "translation" || input.kind === "exam-paper" || input.kind === "exam-key";
+  if (final && !["pdf", "docx", "html"].includes(input.format)) throw new EducationError("Use PDF or DOCX for translations and exam papers.");
   if (study && input.format === "csv") throw new EducationError("This study material cannot be exported as CSV. Use PDF, DOCX or Markdown.");
   if (input.kind === "cards" && !input.deck) throw new EducationError("Flashcard data is missing.");
-  if (!study && input.kind !== "cards" && !input.quiz) throw new EducationError("Quiz data is missing.");
+  if (!study && !final && input.kind !== "cards" && !input.quiz) throw new EducationError("Quiz data is missing.");
   if (input.format === "html") return {
     buffer: Buffer.from(exportHtml(input, await loadBengaliFont()), "utf8"), extension: "html", mime: "text/html; charset=utf-8",
   };
@@ -85,7 +91,8 @@ export async function exportFile(input: EducationExportInput): Promise<{ buffer:
   if (input.format === "docx") {
     const title = exportTitle(input);
     const children: Paragraph[] = [new Paragraph({ text: title, heading: HeadingLevel.TITLE })];
-    if (study) children.push(...studyDocx(input).slice(1));
+    if (final) { children.length = 0; children.push(...finalDocx(input)); }
+    else if (study) children.push(...studyDocx(input).slice(1));
     else if (input.kind === "cards") {
       for (const [index, card] of input.deck!.cards.entries())
         children.push(new Paragraph({ text: `${index + 1}. ${card.front}`, heading: HeadingLevel.HEADING_2 }),
@@ -109,7 +116,8 @@ export async function exportFile(input: EducationExportInput): Promise<{ buffer:
       }
     }
     return {
-      buffer: await Packer.toBuffer(new Document({ sections: [{ children }] })),
+      buffer: await Packer.toBuffer(new Document({ styles: { default: { document: { run: { font: "Noto Sans Bengali", size: 22 } } } },
+        sections: [{ properties: { page: { size: { width: 11906, height: 16838 }, margin: { top: 794, bottom: 794, left: 794, right: 794 } } }, children }] })),
       extension: "docx", mime: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     };
   }

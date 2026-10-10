@@ -10,19 +10,20 @@ import { useSeo } from "@/lib/useSeo";
 import { cn } from "@/lib/utils";
 
 const STEPS = [
-  { n: "1", t: "Upload PDF", d: "Drop a lecture PDF or paste your notes." },
-  { n: "2", t: "Choose options", d: "Pick question types, card style, language and pages." },
-  { n: "3", t: "Study & export", d: "Take the quiz, flip the cards, then export or print." },
+  { n: "1", t: "Add your material", d: "Drop a lecture PDF or paste text. Pick a page range if you only need a chapter." },
+  { n: "2", t: "Pick a tool and options", d: "Quiz, exam paper, flashcards, notes, summary, mind map or translation, in English or Bangla." },
+  { n: "3", t: "Review, edit, export", d: "Edit the result, then export to PDF, DOCX or print. Signed-in results stay in history for 24 hours." },
 ];
 
 export function EducationHome(): JSX.Element {
-  useSeo({ title: "Education Zone — PDF Quizzes & Flashcards | PDF Genius", description: "Create PDF-grounded quizzes and flashcards in English or Bangla. Study with page references, export question papers or printable cards, and reopen account history.", canonicalPath: "/education", jsonLd: faqJsonLd(EDUCATION_HUB_FAQS) });
+  useSeo({ title: "Education Zone — Free AI Study Tools for Students | PDF Genius", description: "Create quizzes, exam papers, flashcards, notes, summaries and mind maps. Ask PDFs with page citations and translate Bangla-English. Edit and export your work.", canonicalPath: "/education", jsonLd: faqJsonLd(EDUCATION_HUB_FAQS) });
   const [, setLocation] = useLocation();
   const [cat, setCat] = useState<string>("all");
   const [picked, setPicked] = useState<File | null>(null);
-  const liveTools = educationTools.filter(t => t.status === "live");
-  const categories = EDUCATION_CATEGORIES.filter(c => c.id === "all" || liveTools.some(t => t.category === c.id));
-  const tools = liveTools.filter((t) => cat === "all" || t.category === cat);
+  const [query, setQuery] = useState("");
+  const categories = EDUCATION_CATEGORIES.filter(c => c.id === "all" || educationTools.some(t => t.category === c.id));
+  const q = query.trim().toLowerCase();
+  const tools = educationTools.filter((t) => (cat === "all" || t.category === cat) && (!q || t.name.toLowerCase().includes(q)));
   const go = (href: string) => { setPendingFile(picked); setLocation(href); };
 
   return (
@@ -55,8 +56,11 @@ export function EducationHome(): JSX.Element {
               <button key={c.id} type="button" role="tab" aria-selected={cat === c.id} onClick={() => setCat(c.id)} data-testid={`tab-category-${c.id}`} className={cn("rounded-full px-4 py-1.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d]", cat === c.id ? "bg-[#f7433d] text-white" : "bg-white text-gray-700 ring-1 ring-gray-200 hover:ring-[#f7433d]/50")}>{c.label}</button>
             ))}
           </div>
+          <label className="mt-4 block"><span className="sr-only">Search tools by name</span>
+            <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search tools by name" className="h-11 w-full max-w-sm rounded-full border border-gray-300 bg-white px-4 text-sm focus:border-[#f7433d] focus:outline-none" data-testid="input-education-search" />
+          </label>
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{tools.map((t) => <ToolCard key={t.id} tool={t} />)}</div>
-          {tools.length === 0 && <p className="mt-5 text-gray-600">Nothing in this category yet.</p>}
+          {tools.length === 0 && <p className="mt-5 text-gray-600">No tools match your search.</p>}
         </section>
 
         <section className="mt-16" aria-labelledby="how-heading">

@@ -7,10 +7,12 @@
  */
 import type { EducationChatTranscript } from './educationChatTranscript';
 import type { EducationDeck } from './educationDeck';
+import type { EducationExamPaper } from './educationExamPaper';
 import type { EducationExportInputFormat } from './educationExportInputFormat';
 import type { EducationExportInputKind } from './educationExportInputKind';
 import type { EducationNotes } from './educationNotes';
 import type { EducationQuiz } from './educationQuiz';
+import type { EducationTranslation } from './educationTranslation';
 
 export interface EducationExportInput {
   kind: EducationExportInputKind;
@@ -19,4 +21,6 @@ export interface EducationExportInput {
   deck?: EducationDeck;
   chat?: EducationChatTranscript;
   notes?: EducationNotes;
+  translation?: EducationTranslation;
+  exam?: EducationExamPaper;
 }

@@ -6,7 +6,8 @@ import { providerConfig } from "./ai";
 export interface Passage { pageNumber: number; text: string }
 const stop = new Set("a an the of in on to for and or is are was were be what why how which does do can explain describe tell me this that it as from with about কি কী কেন কিভাবে কীভাবে এবং এর এই একটি কোন হয় হয়".split(" "));
 function tokens(text: string) {
-  return (text.normalize("NFKC").toLowerCase().match(/[\p{L}\p{N}][\p{L}\p{N}\p{M}]*/gu) ?? [])
+  const matched: string[] = text.normalize("NFKC").toLowerCase().match(/[\p{L}\p{N}][\p{L}\p{N}\p{M}]*/gu) ?? [];
+  return matched
     .filter(token => token.length > 1 && !stop.has(token))
     .map(token => /^[a-z]{5,}$/.test(token) ? token.replace(/(?:ing|ed|s)$/, "") : token);
 }

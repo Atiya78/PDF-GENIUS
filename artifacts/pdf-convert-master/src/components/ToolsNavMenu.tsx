@@ -23,6 +23,7 @@ import { useToolPaused } from "@/lib/usePausedTools";
 import { Menu } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { canonicalToolPath } from "@/config/toolLandingPages";
+import { educationTools } from "@/lib/education/educationTools";
 import { PausedBadge } from "@/components/PausedBadge";
 import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 
@@ -91,13 +92,14 @@ const ColumnHeading = ({ children }: { children: React.ReactNode }): JSX.Element
 );
 
 export const ToolsNavDropdowns = (): JSX.Element => {
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const inEducation = location === "/education" || location.startsWith("/education/");
   const currentToolId = Object.values(toolConfigs).find(
     tool => tool.route === location || canonicalToolPath(tool.id) === location ||
       tool.route?.replace(/^\/upload(?=\/)/, "") === location,
   )?.id ?? "";
   // A few editor menus also link image tools; give each tool one category.
-  const currentCategory = IMAGE_TOOLS.includes(currentToolId) ? "image-tools"
+  const currentCategory = inEducation ? "education" : IMAGE_TOOLS.includes(currentToolId) ? "image-tools"
     : [...PDF_EDITOR_COL1, ...PDF_EDITOR_COL2].includes(currentToolId) ? "pdf-editor"
     : [...PDF_FROM, ...PDF_TO].includes(currentToolId) ? "pdf-converter" : undefined;
   return (
@@ -171,6 +173,30 @@ export const ToolsNavDropdowns = (): JSX.Element => {
             {IMAGE_TOOLS.map((id) => (
               <ToolLink key={id} id={id} />
             ))}
+          </div>
+        </NavigationMenuContent>
+      </NavigationMenuItem>
+
+      {/* Education Zone: click opens the hub, hover/focus shows the tools */}
+      <NavigationMenuItem>
+        <NavigationMenuTrigger hideChevron className={triggerClass} aria-current={currentCategory === "education" ? "page" : undefined} onClick={() => setLocation("/education")} data-testid="nav-education-zone">
+          Education Zone
+        </NavigationMenuTrigger>
+        <NavigationMenuContent>
+          <div className="grid w-[520px] grid-cols-2 gap-x-6 gap-y-0.5 p-4">
+            {educationTools.map((t) => (
+              <NavigationMenuLink key={t.id} asChild>
+                <Link href={t.href} className="site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left" data-testid={`nav-education-${t.id}`}>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><t.icon className="h-4 w-4" aria-hidden="true" /></span>
+                  <span className="text-sm font-medium text-gray-700">{t.name}</span>
+                </Link>
+              </NavigationMenuLink>
+            ))}
+          </div>
+          <div className="border-t border-gray-100 px-4 py-3">
+            <NavigationMenuLink asChild>
+              <Link href="/education" className="site-nav-row inline-block rounded-md px-2 py-1 text-sm font-semibold text-[#f7433d]" data-testid="nav-education-hub">Open Education Zone</Link>
+            </NavigationMenuLink>
           </div>
         </NavigationMenuContent>
       </NavigationMenuItem>
@@ -315,6 +341,23 @@ export const MobileNav = ({
               <AccordionContent className="pb-1">
                 {IMAGE_TOOLS.map((id) => (
                   <MobileToolButton key={id} id={id} onNavigate={close} />
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
+          <Accordion type="single" collapsible>
+            <AccordionItem value="education" className="border-none">
+              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline" data-testid="mobile-nav-education-zone">
+                Education Zone
+              </AccordionTrigger>
+              <AccordionContent className="pb-1">
+                <Link href="/education" onClick={(event) => closeOnNavigation(event, close)} className="site-nav-row flex w-full items-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700" data-testid="mobile-nav-education-hub">All Education tools</Link>
+                {educationTools.map((t) => (
+                  <Link key={t.id} href={t.href} onClick={(event) => closeOnNavigation(event, close)} className="site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left" data-testid={`mobile-nav-education-${t.id}`}>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><t.icon className="h-4 w-4" aria-hidden="true" /></span>
+                    <span className="text-sm font-medium text-gray-700">{t.name}</span>
+                  </Link>
                 ))}
               </AccordionContent>
             </AccordionItem>

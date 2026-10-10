@@ -23,10 +23,7 @@ export interface EducationSourcePage {
      * @nullable
      */
   pageNumber: number | null;
-  /**
-     * @minLength 1
-     * @maxLength 250000
-     */
+  /** @maxLength 250000 */
   text: string;
 }
 
@@ -236,6 +233,9 @@ export const EducationExportInputKind = {
   quiz: 'quiz',
   chat: 'chat',
   notes: 'notes',
+  translation: 'translation',
+  'exam-paper': 'exam-paper',
+  'exam-key': 'exam-key',
 } as const;
 
 export type EducationExportInputFormat = typeof EducationExportInputFormat[keyof typeof EducationExportInputFormat];
@@ -362,6 +362,249 @@ export interface EducationNotes {
   takeaways: string[];
 }
 
+export type EducationTranslatedPageSourceLanguage = typeof EducationTranslatedPageSourceLanguage[keyof typeof EducationTranslatedPageSourceLanguage];
+
+
+export const EducationTranslatedPageSourceLanguage = {
+  bangla: 'bangla',
+  english: 'english',
+} as const;
+
+export type EducationTranslatedPageTargetLanguage = typeof EducationTranslatedPageTargetLanguage[keyof typeof EducationTranslatedPageTargetLanguage];
+
+
+export const EducationTranslatedPageTargetLanguage = {
+  bangla: 'bangla',
+  english: 'english',
+} as const;
+
+export interface EducationTranslatedPage {
+  /** @minimum 1 */
+  pageNumber: number;
+  /** @maxLength 500000 */
+  text: string;
+  sourceLanguage: EducationTranslatedPageSourceLanguage;
+  targetLanguage: EducationTranslatedPageTargetLanguage;
+}
+
+export interface EducationTranslation {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  pages: EducationTranslatedPage[];
+}
+
+export type EducationExamSettingsFormat = typeof EducationExamSettingsFormat[keyof typeof EducationExamSettingsFormat];
+
+
+export const EducationExamSettingsFormat = {
+  standard: 'standard',
+  'bangladesh-board': 'bangladesh-board',
+} as const;
+
+export type EducationExamSettingsLanguage = typeof EducationExamSettingsLanguage[keyof typeof EducationExamSettingsLanguage];
+
+
+export const EducationExamSettingsLanguage = {
+  english: 'english',
+  bangla: 'bangla',
+  same: 'same',
+} as const;
+
+export type EducationExamSectionKind = typeof EducationExamSectionKind[keyof typeof EducationExamSectionKind];
+
+
+export const EducationExamSectionKind = {
+  mcq: 'mcq',
+  short: 'short',
+  broad: 'broad',
+} as const;
+
+export interface EducationExamSection {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  id: string;
+  kind: EducationExamSectionKind;
+  /**
+     * @minimum 1
+     * @maximum 30
+     */
+  count: number;
+  /**
+     * @minimum 1
+     * @maximum 100
+     */
+  marksPerQuestion: number;
+}
+
+export interface EducationExamSettings {
+  /**
+     * @minLength 1
+     * @maxLength 150
+     */
+  institution: string;
+  /**
+     * @minLength 1
+     * @maxLength 150
+     */
+  examName: string;
+  /**
+     * @minLength 1
+     * @maxLength 150
+     */
+  subject: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  className: string;
+  /**
+     * @minimum 1
+     * @maximum 1000
+     */
+  totalMarks: number;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  time: string;
+  format: EducationExamSettingsFormat;
+  language: EducationExamSettingsLanguage;
+  /**
+     * @minItems 1
+     * @maxItems 3
+     */
+  sections: EducationExamSection[];
+}
+
+export type EducationExamQuestionKind = typeof EducationExamQuestionKind[keyof typeof EducationExamQuestionKind];
+
+
+export const EducationExamQuestionKind = {
+  mcq: 'mcq',
+  short: 'short',
+  broad: 'broad',
+} as const;
+
+export type EducationCreativePartLabel = typeof EducationCreativePartLabel[keyof typeof EducationCreativePartLabel];
+
+
+export const EducationCreativePartLabel = {
+  ক: 'ক',
+  খ: 'খ',
+  গ: 'গ',
+  ঘ: 'ঘ',
+} as const;
+
+export interface EducationMarkingPoint {
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  text: string;
+  /**
+     * @minimum 0.5
+     * @maximum 100
+     */
+  marks: number;
+}
+
+export interface EducationCreativePart {
+  label: EducationCreativePartLabel;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  text: string;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  answer: string;
+  /**
+     * @minimum 1
+     * @maximum 4
+     */
+  marks: number;
+  /**
+     * @minItems 1
+     * @maxItems 20
+     */
+  markingScheme: EducationMarkingPoint[];
+}
+
+export interface EducationExamQuestion {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  id: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  sectionId: string;
+  kind: EducationExamQuestionKind;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  text: string;
+  /**
+     * @maxItems 4
+     * @items.minLength 1
+     * @items.maxLength 1000
+     */
+  options: string[];
+  /**
+     * @minimum 0
+     * @maximum 3
+     * @nullable
+     */
+  correctOption: number | null;
+  /** @maxLength 8000 */
+  stimulus: string;
+  /** @maxItems 4 */
+  parts: EducationCreativePart[];
+  /**
+     * @minLength 1
+     * @maxLength 8000
+     */
+  answer: string;
+  /**
+     * @minItems 1
+     * @maxItems 20
+     */
+  markingScheme: EducationMarkingPoint[];
+  /**
+     * @maxItems 30
+     * @items.minimum 1
+     */
+  sourcePages: number[];
+}
+
+export interface EducationExamPaper {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  settings: EducationExamSettings;
+  /**
+     * @minItems 1
+     * @maxItems 100
+     */
+  questions: EducationExamQuestion[];
+}
+
 export interface EducationExportInput {
   kind: EducationExportInputKind;
   format: EducationExportInputFormat;
@@ -369,6 +612,8 @@ export interface EducationExportInput {
   deck?: EducationDeck;
   chat?: EducationChatTranscript;
   notes?: EducationNotes;
+  translation?: EducationTranslation;
+  exam?: EducationExamPaper;
 }
 
 export type EducationHistoryEntryKind = typeof EducationHistoryEntryKind[keyof typeof EducationHistoryEntryKind];
@@ -379,6 +624,10 @@ export const EducationHistoryEntryKind = {
   flashcards: 'flashcards',
   chat: 'chat',
   notes: 'notes',
+  translation: 'translation',
+  exam: 'exam',
+  summary: 'summary',
+  mindmap: 'mindmap',
 } as const;
 
 export interface EducationHistoryEntry {
@@ -396,6 +645,10 @@ export const EducationSavedResultKind = {
   flashcards: 'flashcards',
   chat: 'chat',
   notes: 'notes',
+  translation: 'translation',
+  exam: 'exam',
+  summary: 'summary',
+  mindmap: 'mindmap',
 } as const;
 
 export interface EducationSavedResult {
@@ -407,6 +660,93 @@ export interface EducationSavedResult {
   deck?: EducationDeck;
   chat?: EducationChatAnswer;
   notes?: EducationNotes;
+  translation?: EducationTranslation;
+  exam?: EducationExamPaper;
+}
+
+export type EducationTranslationInputDirection = typeof EducationTranslationInputDirection[keyof typeof EducationTranslationInputDirection];
+
+
+export const EducationTranslationInputDirection = {
+  'bangla-to-english': 'bangla-to-english',
+  'english-to-bangla': 'english-to-bangla',
+  auto: 'auto',
+} as const;
+
+export interface EducationTranslationReceipt {
+  page: EducationTranslatedPage;
+  expiresAt: number;
+  /**
+     * @minLength 40
+     * @maxLength 100
+     */
+  signature: string;
+}
+
+export interface EducationTranslationInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  pages: EducationSourcePage[];
+  direction: EducationTranslationInputDirection;
+  keepTechnicalEnglish: boolean;
+  requestId?: string;
+  /** @maxItems 500 */
+  completed?: EducationTranslationReceipt[];
+  /**
+     * @maxItems 500
+     * @items.minimum 1
+     */
+  retryPages?: number[];
+}
+
+export type EducationTranslationEventType = typeof EducationTranslationEventType[keyof typeof EducationTranslationEventType];
+
+
+export const EducationTranslationEventType = {
+  progress: 'progress',
+  page: 'page',
+  'page-error': 'page-error',
+  partial: 'partial',
+  complete: 'complete',
+  error: 'error',
+  heartbeat: 'heartbeat',
+} as const;
+
+export interface EducationTranslationEvent {
+  type: EducationTranslationEventType;
+  pageNumber?: number;
+  completed?: number;
+  total?: number;
+  message?: string;
+  receipt?: EducationTranslationReceipt;
+  result?: EducationTranslation;
+}
+
+export interface EducationExamInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  pages: EducationSourcePage[];
+  settings: EducationExamSettings;
+  requestId?: string;
+}
+
+export interface EducationExamRegenerateInput {
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  pages: EducationSourcePage[];
+  paper: EducationExamPaper;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  questionId: string;
+  requestId?: string;
 }
 
 export type EducationStudySourceLanguage = typeof EducationStudySourceLanguage[keyof typeof EducationStudySourceLanguage];

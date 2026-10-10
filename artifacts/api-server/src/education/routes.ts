@@ -5,6 +5,8 @@ import {
   ExportEducationBody, RecordEducationEventBody,
   GetEducationHistoryParams, DeleteEducationHistoryParams,
   AskEducationPdfBody, GenerateEducationNotesBody, GenerateEducationStartersBody,
+  GenerateEducationExamBody, RegenerateEducationExamQuestionBody,
+  GenerateEducationSummaryBody, GenerateEducationMindMapBody,
 } from "@workspace/api-zod";
 import { educationConfig, EducationError } from "./config";
 import { extractPdf, validateSource } from "./source";
@@ -17,6 +19,8 @@ import { beginEducationRequest, ensureEducationHistory, purgeEducationHistory } 
 import { logger } from "../lib/logger";
 import { askPdf, makeNotes, starterQuestions } from "./study";
 import type { EducationKind } from "./history";
+import { makeExam, regenerateExam, validateExamSettings, validateExamPaper } from "./exams";
+import { streamTranslation } from "./translation";
 
 export const educationApp = express();
 // Scope trusted-proxy behavior to Education; do not change existing endpoints.
@@ -40,8 +44,15 @@ const upload = multer({
   limits: { fileSize: educationConfig.maxFileBytes, files: 1, fields: 1, fieldSize: 100, parts: 2 },
 });
 let extractions = 0, generations = 0, exports = 0;
+function reserveGeneration() {
+  if (generations >= educationConfig.maxConcurrentGenerations) throw new EducationError("AI is busy. Please retry shortly.", 503);
+  generations++;
+  return () => { generations--; };
+}
 
 function respondError(res: Response, error: unknown) {
+  if (error instanceof Error && "status" in error && error.status === 413)
+    return res.status(413).json({ error: "This study document is too large. Select a smaller page range or shorten your edits." });
   if (error instanceof multer.MulterError)
     return res.status(error.code === "LIMIT_FILE_SIZE" ? 413 : 400).json({ error: error.code === "LIMIT_FILE_SIZE" ? "File too large. Upload a PDF up to 20 MB." : "Upload one PDF and an optional page range." });
   const known = error instanceof EducationError;
@@ -75,16 +86,21 @@ educationApp.post("/extract", (req, res) => {
   });
 });
 
-async function generate(req: Request, res: Response, kind: EducationKind) {
+async function generate(req: Request, res: Response, kind: Exclude<EducationKind, "translation">, regenerate = false) {
   let refund: (() => Promise<void>) | undefined, reserved = false;
   let cancel: (() => Promise<void>) | undefined;
   try {
     throttle(req, "generation-attempts", 20);
     const schema = { quiz: GenerateEducationQuizBody, flashcards: GenerateEducationFlashcardsBody,
-      chat: AskEducationPdfBody, notes: GenerateEducationNotesBody }[kind];
+      chat: AskEducationPdfBody, notes: GenerateEducationNotesBody, summary: GenerateEducationSummaryBody,
+      mindmap: GenerateEducationMindMapBody, exam: regenerate ? RegenerateEducationExamQuestionBody : GenerateEducationExamBody }[kind];
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) throw new EducationError("Choose valid options and upload a PDF or paste readable text.");
     validateSource(parsed.data.pages);
+    if (kind === "exam") {
+      if (regenerate) validateExamPaper(RegenerateEducationExamQuestionBody.parse(parsed.data).paper);
+      else validateExamSettings(GenerateEducationExamBody.parse(parsed.data).settings);
+    }
     assertAiReady();
     const { requestId, ...content } = parsed.data;
     const request = await beginEducationRequest(req, kind, content, requestId);
@@ -97,6 +113,10 @@ async function generate(req: Request, res: Response, kind: EducationKind) {
     const result = kind === "quiz" ? await generateQuiz(GenerateEducationQuizBody.parse(parsed.data))
       : kind === "flashcards" ? await generateFlashcards(GenerateEducationFlashcardsBody.parse(parsed.data))
       : kind === "chat" ? await askPdf(AskEducationPdfBody.parse(parsed.data))
+      : kind === "exam" ? regenerate ? await regenerateExam(RegenerateEducationExamQuestionBody.parse(parsed.data))
+        : await makeExam(GenerateEducationExamBody.parse(parsed.data))
+      : kind === "summary" || kind === "mindmap" ? await makeNotes({ ...GenerateEducationNotesBody.parse(parsed.data),
+        style: kind === "summary" ? "summary" : "mind-map" })
       : await makeNotes(GenerateEducationNotesBody.parse(parsed.data));
     const useful = kind !== "chat" || !("found" in result) || result.found;
     if (!useful) { await refund(); refund = undefined; }
@@ -118,6 +138,11 @@ educationApp.post("/quiz", (req, res) => generate(req, res, "quiz"));
 educationApp.post("/flashcards", (req, res) => generate(req, res, "flashcards"));
 educationApp.post("/ask-pdf", (req, res) => generate(req, res, "chat"));
 educationApp.post("/notes", (req, res) => generate(req, res, "notes"));
+educationApp.post("/summary", (req, res) => generate(req, res, "summary"));
+educationApp.post("/mind-map", (req, res) => generate(req, res, "mindmap"));
+educationApp.post("/exam-paper", (req, res) => generate(req, res, "exam"));
+educationApp.post("/exam-paper/regenerate", (req, res) => generate(req, res, "exam", true));
+educationApp.post("/translate", (req, res) => streamTranslation(req, res, reserveGeneration, respondError));
 educationApp.post("/ask-pdf/starters", async (req, res) => {
   let reserved = false;
   try {
@@ -158,7 +183,8 @@ educationApp.get("/history/:id", async (req, res) => {
       FROM education_generation_requests WHERE id=$1 AND user_id=$2 AND status='succeeded'
       AND result IS NOT NULL AND created_at > now() - interval '24 hours'`, [id.data.id, req.user.id])).rows[0];
     if (!row) throw new EducationError("This saved result is missing or expired.", 404);
-    const key = { quiz: "quiz", flashcards: "deck", chat: "chat", notes: "notes" }[row.kind as EducationKind];
+    const key = { quiz: "quiz", flashcards: "deck", chat: "chat", notes: "notes", summary: "notes", mindmap: "notes",
+      translation: "translation", exam: "exam" }[row.kind as EducationKind];
     res.json({ id: row.id, kind: row.kind, title: row.result.title, createdAt: row.createdAt, [key]: row.result });
   } catch (error) { respondError(res, error); }
 });
@@ -184,7 +210,9 @@ educationApp.post("/export", async (req, res) => {
     exports++; reserved = true;
     const output = await exportFile(parsed.data);
     const title = parsed.data.kind === "cards" ? parsed.data.deck!.title : parsed.data.kind === "chat"
-      ? parsed.data.chat!.title : parsed.data.kind === "notes" ? parsed.data.notes!.title : parsed.data.quiz!.title;
+      ? parsed.data.chat!.title : parsed.data.kind === "notes" ? parsed.data.notes!.title
+      : parsed.data.kind === "translation" ? parsed.data.translation!.title
+      : parsed.data.kind === "exam-paper" || parsed.data.kind === "exam-key" ? parsed.data.exam!.title : parsed.data.quiz!.title;
     res.type(output.mime).setHeader("Content-Disposition", exportDisposition(title, output.extension));
     res.send(output.buffer);
   } catch (error) { respondError(res, error); }

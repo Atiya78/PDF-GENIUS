@@ -19,8 +19,8 @@ export function EducationToolLayout({ toolId, seoTitle, seoDescription, upload, 
   const tool = getEducationTool(toolId)!;
   const Icon = tool.icon;
   useSeo({ title: seoTitle, description: seoDescription, canonicalPath: tool.href, jsonLd: faqJsonLd(tool.faqs) });
-  const related = educationTools.filter((t) => t.id !== toolId && t.status === "live").slice(0, 3);
-  const more = related.length ? related : educationTools.filter((t) => t.status === "live" && t.id !== toolId).slice(0, 3);
+  const related = educationTools.filter((t) => t.id !== toolId && t.category === tool.category).slice(0, 3);
+  const more = related.length ? related : educationTools.filter((t) => t.id !== toolId).slice(0, 3);
   const base = (import.meta.env.BASE_URL || "/").replace(/\/$/, "");
 
   return (

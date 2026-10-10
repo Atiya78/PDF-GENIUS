@@ -1,0 +1,30 @@
+Education Zone, Step 3 of 3 (final). Follow the same global rules and reuse the shared foundation from Step 1.
+No placeholders, mock data or "Coming soon". Do NOT run browser tests, screenshots or preview checks. I will test myself.
+
+TOOL 5 — BANGLA ↔ ENGLISH PDF TRANSLATOR
+- Direction: Bangla→English, English→Bangla, Auto-detect.
+- Translate page by page, keeping headings, lists, tables (as text tables) and paragraph structure.
+- Side-by-side view (original | translated) with page navigation.
+- Toggle: keep technical terms in English inside the Bangla output.
+- Show page-by-page progress for long files. If one page fails, retry that page only.
+- Export: translated PDF (Bangla font embedded) and DOCX.
+- Route: /education/pdf-translator
+
+TOOL 6 — EXAM QUESTION PAPER GENERATOR (for teachers)
+- Inputs: institution name, exam name, subject, class, total marks, time, and sections (MCQ, Short questions, Creative/Broad questions) with a count and marks per section. Validate that the section marks add up to the total marks.
+- Format option: Bangladesh board style (সৃজনশীল প্রশ্ন with উদ্দীপক + ক/খ/গ/ঘ parts, with marks 1/2/3/4) or Standard.
+- Generates a properly formatted A4 question paper plus a separate answer key / marking scheme.
+- "Regenerate" button on each individual question. Edit any question text before export.
+- Export: print-ready A4 PDF and DOCX.
+- Route: /education/exam-paper-generator
+
+FINAL CLEANUP
+1. Any other card on /education that is still a placeholder or "Coming soon": implement it fully with the same rules.
+2. Remove every "Coming soon" label and disabled state on /education.
+3. Make the filter chips (All, Practice, Revision, Notes, Translate) filter the cards correctly:
+   Practice = Quiz, Exam Paper; Revision = Flashcards, Ask PDF; Notes = Notes Maker; Translate = Translator.
+4. Search on /education should find tools by name.
+5. Update the /education FAQ and the "How it works" steps to match the real tools. Set a unique meta title and description for /education and for each tool page, and add them to the sitemap.
+6. Add each tool to the main site navigation/search if the other tools are listed there.
+
+When done, give me a short list of changed files and any new env variables needed in Railway.

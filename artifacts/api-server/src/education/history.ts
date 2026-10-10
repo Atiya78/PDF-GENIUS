@@ -1,11 +1,11 @@
 import { createHash, createHmac, randomUUID } from "node:crypto";
 import type { Request } from "express";
 import { pool } from "@workspace/db";
-import type { EducationQuiz, EducationDeck, EducationChatAnswer, EducationNotes } from "@workspace/api-zod";
+import type { EducationQuiz, EducationDeck, EducationChatAnswer, EducationNotes, EducationTranslation, EducationExamPaper } from "@workspace/api-zod";
 import { EducationError } from "./config";
 
-type Result = EducationQuiz | EducationDeck | EducationChatAnswer | EducationNotes;
-export type EducationKind = "quiz" | "flashcards" | "chat" | "notes";
+type Result = EducationQuiz | EducationDeck | EducationChatAnswer | EducationNotes | EducationTranslation | EducationExamPaper;
+export type EducationKind = "quiz" | "flashcards" | "chat" | "notes" | "translation" | "exam" | "summary" | "mindmap";
 let ready: Promise<unknown> | undefined;
 export function ensureEducationHistory() {
   return ready ??= pool.query(`CREATE TABLE IF NOT EXISTS education_generation_requests (
@@ -14,14 +14,14 @@ export function ensureEducationHistory() {
     request_key uuid NOT NULL,
     request_hash text NOT NULL,
     user_id uuid REFERENCES users(id) ON DELETE CASCADE,
-    kind text NOT NULL CHECK (kind IN ('quiz','flashcards','chat','notes')),
+    kind text NOT NULL CHECK (kind IN ('quiz','flashcards','chat','notes','translation','exam','summary','mindmap')),
     status text NOT NULL CHECK (status IN ('processing','succeeded')),
     result jsonb,
     created_at timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (identity_hash, request_key)
   )`).then(() => pool.query(`ALTER TABLE education_generation_requests
     DROP CONSTRAINT IF EXISTS education_generation_requests_kind_check,
-    ADD CONSTRAINT education_generation_requests_kind_check CHECK (kind IN ('quiz','flashcards','chat','notes'))`))
+    ADD CONSTRAINT education_generation_requests_kind_check CHECK (kind IN ('quiz','flashcards','chat','notes','translation','exam','summary','mindmap'))`))
     .then(() => pool.query(`CREATE INDEX IF NOT EXISTS education_results_user_created
     ON education_generation_requests (user_id, created_at DESC)`))
     .catch(error => { ready = undefined; throw error; });

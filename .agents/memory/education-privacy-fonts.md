@@ -50,3 +50,15 @@ Generated account history may contain source quotations and formulas, but must n
 **Why:** Page citations require evidence quotes and history must retain generated results. Privacy copy must distinguish these generated excerpts from original source storage.
 
 **How to apply:** Describe quoted citations in the 24-hour account-history disclosure; require the original PDF again to inspect a saved answer's cited page, and warn before replacing unsaved note edits.
+
+Treat one fully completed PDF translation as one study generation, not a separate paid generation for each page. Partial translations do not spend the free allowance or account credits.
+
+**Why:** The shared success-only pricing applies to the user's finished document. Charging page retries would penalize provider failures and make long documents unexpectedly expensive.
+
+**How to apply:** Preserve completed-page resumability and whole-document duplicate protection without storing the uploaded PDF or extracted source. Generated translation history can contain the entire translated document; privacy wording must distinguish that output from original-source storage.
+
+The final Education rollout includes all eight tools. The four category chips have an exact six-tool mapping; Summarizer and Mind Map remain discoverable under All and in navigation/search.
+
+**Why:** The final brief explicitly requires finishing every remaining card while separately defining the chip membership. Removing the two extra tools would violate that completion scope.
+
+**How to apply:** Keep Practice = Quiz + Exam, Revision = Flashcards + Ask PDF, Notes = Notes Maker, Translate = Translator; do not restore staged or Coming soon cards.

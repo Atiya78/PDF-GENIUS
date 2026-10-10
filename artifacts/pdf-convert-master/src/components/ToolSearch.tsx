@@ -7,6 +7,7 @@ import { Command as CommandPrimitive } from "cmdk";
 import { toolConfigs, isHeroTool, getServerToolType, type ToolConfig } from "@/lib/toolConfig";
 import { usePausedTools } from "@/lib/usePausedTools";
 import { cn } from "@/lib/utils";
+import { educationTools } from "@/lib/education/educationTools";
 
 // Display order for the category groups inside the search dropdown.
 const CATEGORY_ORDER = ["Convert", "Image Tools", "Edit", "Organize"];
@@ -146,6 +147,28 @@ export const ToolSearch = ({
           })}
         </CommandPrimitive.Group>
       ))}
+      <CommandPrimitive.Group
+        heading="Education Zone"
+        className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-400"
+      >
+        {educationTools.map((t) => (
+          <CommandPrimitive.Item
+            key={t.id}
+            value={`${t.name} ${t.description} education ${t.id}`}
+            onSelect={() => { setOpen(false); setQuery(""); setLocation(t.href); }}
+            className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 text-sm outline-none data-[selected=true]:bg-gray-100"
+            data-testid={`search-tool-education-${t.id}`}
+          >
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]">
+              <t.icon className="h-4 w-4" aria-hidden="true" />
+            </span>
+            <div className="flex min-w-0 flex-col">
+              <span className="text-sm font-medium text-gray-800">{t.name}</span>
+              <span className="truncate text-xs text-gray-500">{t.description}</span>
+            </div>
+          </CommandPrimitive.Item>
+        ))}
+      </CommandPrimitive.Group>
     </CommandPrimitive.List>
   );
 
