@@ -96,3 +96,4 @@
 - [Education privacy & PDF fonts](education-privacy-fonts.md) — owner's OpenRouter key; transient sources, honest provider retention, and portable Bengali exports.
 - [URL rendering boundary](url-rendering-boundary.md) — static rendering is intentional; remote JavaScript requires a complete outbound-network sandbox, not just request interception.
 - [Rotated PDF text verification](rotated-text-verification.md) — normalize extraction layout whitespace before diagnosing Bangla text loss; keep page and rotation checks strict.
+- [Preview cold starts](preview-cold-start.md) — Vite's ready message can precede proxy readiness; cold startup timeouts are not evidence of broken application code.
