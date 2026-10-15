@@ -60,6 +60,7 @@ export const ToolSearch = ({
 
   // ⌘K / Ctrl+K toggles the inline search and focuses it.
   useEffect(() => {
+    if (variant === "full") return; // only the header trigger owns the shortcut
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -68,7 +69,7 @@ export const ToolSearch = ({
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [variant]);
 
   // Drop the blinking text cursor into the box the moment results open.
   useEffect(() => {
@@ -224,13 +225,13 @@ export const ToolSearch = ({
             aria-expanded={open}
             onClick={() => setOpen((prev) => !prev)}
             className={cn(
-              "inline-flex h-10 w-10 items-center justify-center rounded-lg border text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900",
-              open ? "border-gray-400 bg-gray-50" : "border-gray-300",
+              "inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#4B5563] transition-colors duration-150 hover:bg-[#F3F4F6] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5483B] focus-visible:ring-offset-2",
+              open && "bg-[#F3F4F6] text-[#111827]",
               className,
             )}
             data-testid="button-tool-search"
           >
-            <Search className="h-5 w-5" />
+            <Search className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
           </button>
         )}
 
@@ -242,7 +243,7 @@ export const ToolSearch = ({
                 ? "fixed left-4 right-4 top-[65px] md:absolute md:left-auto md:right-0 md:top-full md:w-[min(380px,90vw)]"
                 : !isIcon
                   ? "absolute left-0 w-[min(380px,90vw)]"
-                  : "fixed left-4 right-4 top-[73px] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-[min(320px,90vw)]",
+                  : "fixed left-4 right-4 top-[76px] sm:absolute sm:left-auto sm:right-0 sm:top-full sm:w-[min(320px,90vw)]",
             )}
           >
             {isIcon && (

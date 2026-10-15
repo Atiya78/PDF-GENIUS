@@ -8,6 +8,7 @@ import {
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -53,7 +54,7 @@ const IMAGE_TOOLS = [
 ];
 
 const triggerClass =
-  "site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 bg-transparent px-0 h-auto";
+  "site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 bg-transparent px-0 h-auto whitespace-nowrap";
 
 
 const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
@@ -241,6 +242,7 @@ interface MobileNavProps {
   homeItem: { name: string; href: string };
   trailingItems: { name: string; href: string }[];
   footer?: (close: () => void) => React.ReactNode;
+  modern?: boolean;
 }
 
 // Leave modifier/middle clicks to the browser so new-tab navigation still works.
@@ -253,6 +255,7 @@ export const MobileNav = ({
   homeItem,
   trailingItems,
   footer,
+  modern = false,
 }: MobileNavProps): JSX.Element => {
   const [open, setOpen] = useState(false);
 
@@ -264,27 +267,31 @@ export const MobileNav = ({
         <button
           type="button"
           aria-label="Open menu"
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 text-gray-700 transition-colors hover:bg-gray-50"
+          aria-expanded={open}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#4B5563] transition-colors duration-150 hover:bg-[#F3F4F6] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5483B] focus-visible:ring-offset-2"
           data-testid="button-mobile-menu"
         >
-          <Menu className="h-5 w-5" />
+          <Menu className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
         </button>
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="flex w-[300px] flex-col p-0 sm:w-[340px]"
+        className={`flex w-[min(340px,100vw)] max-w-full flex-col p-0 ${modern ? "site-header-drawer" : ""}`}
       >
         <SheetHeader className="border-b border-gray-100 px-5 py-4 text-left">
-          <SheetTitle className="font-['Poppins'] text-lg font-bold text-gray-900">
+          <SheetTitle className="text-lg font-bold text-gray-900">
             Menu
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Browse PDF, image, and education tools, or access your account.
+          </SheetDescription>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-3 py-4">
+        <nav aria-label="Mobile navigation" className="min-h-0 flex-1 overflow-y-auto px-3 py-4">
           <Link
             href={homeItem.href}
             onClick={(event) => closeOnNavigation(event, close)}
-            className="site-nav-row block w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700"
+            className="site-nav-row flex min-h-12 w-full items-center rounded-lg px-3 text-left text-base font-medium text-gray-700 border-b border-gray-100"
             data-testid="mobile-nav-home"
           >
             {homeItem.name}
@@ -292,7 +299,7 @@ export const MobileNav = ({
 
           <Accordion type="multiple" className="w-full">
             <AccordionItem value="pdf" className="border-none">
-              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline">
                 PDF Converter
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -324,7 +331,7 @@ export const MobileNav = ({
             </AccordionItem>
 
             <AccordionItem value="pdf-editor" className="border-none">
-              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline">
                 PDF Editor
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -335,7 +342,7 @@ export const MobileNav = ({
             </AccordionItem>
 
             <AccordionItem value="image" className="border-none">
-              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline">
                 Image Tools
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -348,7 +355,7 @@ export const MobileNav = ({
 
           <Accordion type="single" collapsible>
             <AccordionItem value="education" className="border-none">
-              <AccordionTrigger className="site-nav-row rounded-lg px-3 py-2.5 text-base font-medium text-gray-700 hover:no-underline" data-testid="mobile-nav-education-zone">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline" data-testid="mobile-nav-education-zone">
                 Education Zone
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -368,13 +375,13 @@ export const MobileNav = ({
               key={item.name}
               href={item.href}
               onClick={(event) => closeOnNavigation(event, close)}
-              className="site-nav-row block w-full rounded-lg px-3 py-2.5 text-left text-base font-medium text-gray-700"
+              className="site-nav-row flex min-h-12 w-full items-center rounded-lg px-3 text-left text-base font-medium text-gray-700 border-b border-gray-100"
               data-testid={`mobile-nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
             >
               {item.name}
             </Link>
           ))}
-        </div>
+        </nav>
 
         {footer ? (
           <div className="border-t border-gray-100 px-5 py-4">{footer(close)}</div>

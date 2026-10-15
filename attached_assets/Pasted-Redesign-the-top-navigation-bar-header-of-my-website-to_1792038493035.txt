@@ -1,0 +1,46 @@
+Redesign the top navigation bar (header) of my website to look fully professional, modern, and polished, like Stripe, Linear, or Smallpdf. Keep all existing links and functionality. Only change the layout, styling, and responsiveness. Do not break routing.
+
+CURRENT PROBLEMS TO FIX
+- Logo is too small and has no brand text.
+- Nav links are cramped, unevenly aligned ("Pricing" sits lower than the others).
+- Search, Log In, and API Access buttons have inconsistent styles, sizes, and borders.
+- Layout is not properly balanced or centered.
+
+LAYOUT
+- Sticky header, full width, height 72px, inner container max-width 1280px, centered, horizontal padding 24px.
+- Use flexbox with 3 zones: [Logo + brand name] on the left, [nav links] in the center, [actions] on the right. Use align-items: center so everything shares one vertical baseline.
+- Background: white with 80% opacity plus backdrop-filter: blur(12px). Add a 1px bottom border (#E5E7EB) and a very soft shadow that appears only after scrolling.
+
+LOGO
+- Logo image 40x40px, followed by the brand name in font-weight 700, 20px, color #111827, with 10px gap. The logo links to the home page.
+
+NAV LINKS (Home, PDF Converter, PDF Editor, Image Tools, Education Zone, Pricing, More)
+- Font: Inter, 15px, weight 500, color #4B5563.
+- Spacing: 4px gap between items, each link with padding 8px 14px and border-radius 8px.
+- Hover: background #F3F4F6, color #111827, with a 150ms transition.
+- Active link (Home): color #E5483B, background #FEF2F1. No heavy underline.
+- "More" becomes a dropdown with a small chevron icon. The dropdown is a white card with a 12px radius, a soft shadow, a 1px border, and 8px padding. Items are 10px 12px with a hover background.
+- Consider grouping PDF Converter, PDF Editor, and Image Tools as dropdown mega-menus with icons and short descriptions.
+
+RIGHT ACTIONS
+- Search: a 40x40 ghost icon button with no border. Hover background #F3F4F6, and a thin 20px icon. Optionally open a search modal with the Cmd/Ctrl+K shortcut.
+- Log In: a text/ghost button, 40px tall, padding 0 16px, weight 500, with a small user icon, no heavy border.
+- API Access: a primary button, 40px tall, padding 0 20px, border-radius 10px (not a full pill), solid #E5483B background, white text, weight 600. Remove the glow shadow and use a subtle shadow 0 1px 2px rgba(0,0,0,0.1). Hover: darker #D13A2D plus translateY(-1px).
+- 12px gap between the action buttons.
+
+DESIGN TOKENS
+- Font family: Inter (fallback system-ui). Primary color: #E5483B. Text: #111827 / #4B5563. Border: #E5E7EB.
+- Use consistent 8px spacing scale and consistent border-radius (8-10px).
+
+RESPONSIVE
+- Below 1024px: hide center links and show a hamburger button.
+- The hamburger opens a full-height slide-in drawer (or full-width panel) with large tappable links (48px rows), dividers, and Log In and API Access buttons stacked at the bottom, full width.
+- Make sure nothing overflows at 320px width.
+
+ACCESSIBILITY AND POLISH
+- Semantic <header> and <nav> tags, aria-labels on icon buttons, aria-expanded on dropdowns and the hamburger, visible focus rings (2px #E5483B offset 2px), keyboard navigable dropdowns, and Esc to close.
+- Smooth 150-200ms transitions. Respect prefers-reduced-motion.
+
+Also add a clean hero spacing fix: the hero heading "Transform Your PDF Workflow" should start 80px below the navbar, and the subtitle should be centered with max-width 640px.
+
+Show me the final result and list the files you changed.

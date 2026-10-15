@@ -278,15 +278,15 @@
   content: none;
 }
 
-header .site-nav-action {
+header:not(.site-header) .site-nav-action {
   background-color: transparent;
   box-shadow: none;
 }
 
-header .site-nav-action:hover,
-header .site-nav-action:focus-visible,
-header .site-nav-action[data-state="open"],
-header .site-nav-action[aria-current="page"] {
+header:not(.site-header) .site-nav-action:hover,
+header:not(.site-header) .site-nav-action:focus-visible,
+header:not(.site-header) .site-nav-action[data-state="open"],
+header:not(.site-header) .site-nav-action[aria-current="page"] {
   color: #cf302b;
   background-color: transparent;
   box-shadow: none;
@@ -294,18 +294,18 @@ header .site-nav-action[aria-current="page"] {
 
 /* An open menu replaces the page highlight; hovering or keyboard-focusing
    another heading takes priority. Never show two selected headings at once. */
-header nav:has(.site-nav-action[data-state="open"]) .site-nav-action:not([data-state="open"]),
-header nav:has(.site-nav-action:hover) .site-nav-action:not(:hover),
-header nav:has(.site-nav-action:focus-visible) .site-nav-action:not(:focus-visible) {
+header:not(.site-header) nav:has(.site-nav-action[data-state="open"]) .site-nav-action:not([data-state="open"]),
+header:not(.site-header) nav:has(.site-nav-action:hover) .site-nav-action:not(:hover),
+header:not(.site-header) nav:has(.site-nav-action:focus-visible) .site-nav-action:not(:focus-visible) {
   color: #4b5563;
 }
 
-header nav:has(.site-nav-action:hover):not(:has(.site-nav-action:focus-visible)) .site-nav-action:hover,
-header nav:has(.site-nav-action:focus-visible) .site-nav-action:focus-visible {
+header:not(.site-header) nav:has(.site-nav-action:hover):not(:has(.site-nav-action:focus-visible)) .site-nav-action:hover,
+header:not(.site-header) nav:has(.site-nav-action:focus-visible) .site-nav-action:focus-visible {
   color: #cf302b;
 }
 
-header .site-nav-action:focus-visible {
+header:not(.site-header) .site-nav-action:focus-visible {
   outline: 2px solid #f7433d;
   outline-offset: 6px;
 }
@@ -350,4 +350,30 @@ header .site-nav-row:is(:hover, :focus-visible) .text-gray-700 {
 }
 .pdf-inline-edit ::selection {
   background: transparent;
+}
+
+/* Public header (scoped): #E5483B accent, pill-free hover/active backgrounds */
+header.site-header nav .site-nav-action {
+  display: inline-flex; align-items: center; min-height: 40px;
+  padding: 8px 14px; border-radius: 8px; font-size: 15px; font-weight: 500; line-height: 24px;
+  color: #4b5563; background-color: transparent;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+header.site-header nav:not(:has(.site-nav-action:is(:hover, :focus-visible, [data-state="open"]))) .site-nav-action[aria-current="page"] { color: #e5483b; background-color: #fef2f1; }
+header.site-header nav:not(:has(.site-nav-action:is(:hover, :focus-visible))) .site-nav-action[data-state="open"],
+header.site-header nav:not(:has(.site-nav-action:focus-visible)) .site-nav-action:hover,
+header.site-header nav .site-nav-action:focus-visible { color: #111827; background-color: #f3f4f6; }
+header.site-header nav .site-nav-action:focus-visible { outline: 2px solid #e5483b; outline-offset: 2px; }
+:is(header.site-header, .site-header-drawer) .site-nav-row { transition: background-color 150ms ease, color 150ms ease; }
+:is(header.site-header, .site-header-drawer) .site-nav-row:is(:hover, :focus-visible) { color: #111827; background-color: #f3f4f6; }
+:is(header.site-header, .site-header-drawer) .site-nav-row:focus-visible { outline: 2px solid #e5483b; outline-offset: -2px; }
+.site-header-drawer [data-radix-collection-item],
+.site-header-drawer nav > div > div { border-bottom: 1px solid #f3f4f6; }
+@media (prefers-reduced-motion: reduce) {
+  header.site-header, header.site-header *, .site-header-drawer, .site-header-drawer * {
+    transition: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+  header.site-header button:hover { transform: none; }
 }

@@ -1,6 +1,5 @@
 import React from "react";
 import logoIcon from "@assets/IconOnly_Transparent_NoBuffer_1782108807761.png";
-import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -14,153 +13,155 @@ import { ToolsNavDropdowns, MobileNav } from "@/components/ToolsNavMenu";
 import { ToolSearch } from "@/components/ToolSearch";
 import { LottieIcon } from "@/components/ui/lottie-icon";
 import userAnim from "@/assets/lottie/user.json";
+import { cn } from "@/lib/utils";
+
+const ring =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5483B] focus-visible:ring-offset-2";
+const linkClass = "site-nav-action whitespace-nowrap";
 
 export const NavigationSection = (): JSX.Element => {
   const [location, setLocation] = useLocation();
   const [loginHover, setLoginHover] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
 
-  // Simple (non-dropdown) navigation links; the tool categories render as dropdowns
+  React.useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 4);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const leadingItem = { name: "Home", href: "/" };
   const trailingItems = [
     { name: "Pricing", href: "/pricing" },
     { name: "About", href: "/about" },
   ];
 
-  // Remove direct login functionality from navigation, redirect to sign-in page instead
-
-  const handleGetStarted = () => {
-    // Redirect to signup page
-    setLocation('/signup');
-  };
+  const handleGetStarted = () => setLocation("/signup");
 
   return (
-    <header className="sticky top-0 z-50 w-full h-[65px] bg-white/60 backdrop-blur-xl backdrop-saturate-150">
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 h-[65px]">
-        <div className="flex items-center justify-between gap-3 xl:gap-4 2xl:gap-6 h-full">
-          {/* Logo */}
-          <Link
-            href="/"
-            aria-label="PDF Genius home"
-            className="flex items-center gap-2 h-9 flex-shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded"
-          >
-            <img
-              src={logoIcon}
-              alt="PDF Genius"
-              width={1280}
-              height={1239}
-              className="h-9 w-auto"
-            />
-            <span className="hidden 2xl:block font-['Poppins'] font-bold text-gray-900 text-xl leading-7 whitespace-nowrap">
-              PDF Genius
-            </span>
-          </Link>
+    <header
+      className={cn(
+        "site-header sticky top-0 z-50 h-[72px] w-full border-b border-[#E5E7EB] bg-white/80 backdrop-blur-[12px] transition-shadow duration-200",
+        scrolled && "shadow-[0_4px_16px_-8px_rgba(17,24,39,0.12)]",
+      )}
+    >
+      <div className="mx-auto flex h-full w-full max-w-[1280px] items-center justify-between gap-3 px-4 sm:px-6">
+        <Link
+          href="/"
+          aria-label="PDF Genius home"
+          className={cn("flex shrink-0 items-center gap-[10px] rounded-lg", ring)}
+          data-testid="link-logo"
+        >
+          <img src={logoIcon} alt="" width={40} height={40} className="h-10 w-10 object-contain" />
+          <span className="whitespace-nowrap font-['Inter',system-ui,sans-serif] text-xl font-bold leading-7 text-[#111827]">
+            PDF Genius
+          </span>
+        </Link>
 
-          {/* Navigation Menu */}
-          <NavigationMenu className="hidden lg:flex justify-center">
-            <NavigationMenuList className="flex items-center space-x-0 gap-3 xl:gap-4 2xl:gap-6">
+        <div className="hidden min-w-0 flex-1 justify-center xl:flex">
+          <NavigationMenu aria-label="Primary" className="flex-none">
+            <NavigationMenuList className="gap-1 space-x-0">
               <NavigationMenuItem>
-                <NavigationMenuLink
-                  asChild
-                >
-                  <Link href={leadingItem.href} aria-current={location === leadingItem.href ? "page" : undefined} className="site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap" data-testid="nav-home">
-                  {leadingItem.name}
+                <NavigationMenuLink asChild>
+                  <Link href={leadingItem.href} aria-current={location === leadingItem.href ? "page" : undefined} className={linkClass} data-testid="nav-home">
+                    {leadingItem.name}
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
 
               <ToolsNavDropdowns />
 
-              {trailingItems.map((item, index) => (
-                <NavigationMenuItem key={index} className={item.name === "Pricing" ? "" : "hidden xl:block"}>
-                  <NavigationMenuLink
-                    asChild
-                  >
-                    <Link href={item.href} aria-current={location === item.href ? "page" : undefined} className="site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 whitespace-nowrap" data-testid={`nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}>
-                    {item.name}
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              ))}
-              <NavigationMenuItem className="xl:hidden">
-                <NavigationMenuTrigger hideChevron className="site-nav-action bg-transparent px-0 text-sm text-gray-600" aria-current={trailingItems.some(item => item.name !== "Pricing" && item.href === location) ? "page" : undefined} data-testid="nav-more">More</NavigationMenuTrigger>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link href="/pricing" aria-current={location === "/pricing" ? "page" : undefined} className={linkClass} data-testid="nav-pricing">
+                    Pricing
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={cn(linkClass, "bg-transparent px-0 h-auto")} aria-current={location === "/about" ? "page" : undefined} data-testid="nav-more">
+                  More
+                </NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <div className="w-48 p-2">
-                    {trailingItems.filter(item => item.name !== "Pricing").map(item => (
-                      <NavigationMenuLink key={item.href} asChild>
-                        <Link href={item.href} aria-current={location === item.href ? "page" : undefined} className="site-nav-row block rounded-md px-3 py-2 text-sm">{item.name}</Link>
-                      </NavigationMenuLink>
-                    ))}
+                    <NavigationMenuLink asChild>
+                      <Link href="/about" aria-current={location === "/about" ? "page" : undefined} className="site-nav-row block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700" data-testid="nav-about">
+                        About
+                      </Link>
+                    </NavigationMenuLink>
                   </div>
                 </NavigationMenuContent>
               </NavigationMenuItem>
+
             </NavigationMenuList>
           </NavigationMenu>
+        </div>
 
-          {/* Auth Buttons (desktop) */}
-          <div className="flex shrink-0 items-center gap-2 xl:gap-3">
-            <ToolSearch variant="responsive" />
-            <div className="hidden lg:flex items-center gap-2 xl:gap-3">
-            <Button
-              variant="outline"
-              className="group h-[42px] px-3 py-[9px] gap-1.5 rounded-lg border border-gray-300/70 font-medium !text-gray-700 text-sm xl:text-base hover:!text-gray-900 hover:bg-white/40 transition-colors bg-transparent"
-              onClick={() => setLocation('/signin')}
+        <div className="flex shrink-0 items-center gap-2 xl:gap-3">
+          <ToolSearch variant="icon" />
+          <div className="hidden items-center gap-3 xl:flex">
+            <button
+              type="button"
+              className={cn(
+                "inline-flex h-10 items-center gap-2 rounded-lg px-4 text-[15px] font-medium text-[#4B5563] transition-colors duration-150 hover:bg-[#F3F4F6] hover:text-[#111827]",
+                ring,
+              )}
+              onClick={() => setLocation("/signin")}
               onMouseEnter={() => setLoginHover(true)}
               onMouseLeave={() => setLoginHover(false)}
+              data-testid="button-nav-login"
             >
-              <LottieIcon
-                animationData={userAnim}
-                size={24}
-                play={loginHover}
-                ariaLabel="User account"
-              />
+              <LottieIcon animationData={userAnim} size={20} play={loginHover} ariaLabel="User account" />
               Log In
-            </Button>
-            <Button
-              className="h-10 px-3 xl:px-4 py-2 rounded-full font-medium text-sm xl:text-base [text-shadow:0px_10px_15px_#0000001a]"
+            </button>
+            <button
+              type="button"
+              className={cn(
+                "inline-flex h-10 items-center rounded-[10px] bg-[#E5483B] px-5 text-[15px] font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-[background-color,transform] duration-150 hover:-translate-y-px hover:bg-[#D13A2D]",
+                ring,
+              )}
               onClick={handleGetStarted}
               data-testid="button-nav-api-access"
             >
               API Access
-            </Button>
-            </div>
+            </button>
+          </div>
 
-          {/* Mobile menu */}
-          <div className="lg:hidden">
+          <div className="xl:hidden">
             <MobileNav
+              modern
               homeItem={leadingItem}
               trailingItems={trailingItems}
               footer={(close) => (
                 <div className="flex flex-col gap-3">
-                  <Button
-                    variant="outline"
-                    className="w-full h-[42px] gap-1.5 rounded-lg border border-gray-300 font-medium !text-gray-700 text-base hover:!text-gray-900 hover:bg-gray-50 transition-colors bg-white"
-                    onClick={() => {
-                      setLocation('/signin');
-                      close();
-                    }}
+                  <button
+                    type="button"
+                    className={cn(
+                      "inline-flex h-12 w-full items-center justify-center gap-2 rounded-[10px] border border-[#E5E7EB] bg-white text-base font-medium text-[#111827] transition-colors hover:bg-[#F3F4F6]",
+                      ring,
+                    )}
+                    onClick={() => { setLocation("/signin"); close(); }}
                     data-testid="mobile-button-login"
                   >
-                    <LottieIcon
-                      animationData={userAnim}
-                      size={24}
-                      ariaLabel="User account"
-                    />
+                    <LottieIcon animationData={userAnim} size={20} ariaLabel="User account" />
                     Log In
-                  </Button>
-                  <Button
-                    className="w-full h-10 rounded-full font-medium text-base"
-                    onClick={() => {
-                      handleGetStarted();
-                      close();
-                    }}
+                  </button>
+                  <button
+                    type="button"
+                    className={cn(
+                      "inline-flex h-12 w-full items-center justify-center rounded-[10px] bg-[#E5483B] text-base font-semibold text-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-colors hover:bg-[#D13A2D]",
+                      ring,
+                    )}
+                    onClick={() => { handleGetStarted(); close(); }}
                     data-testid="mobile-button-get-started"
                   >
-                    Get API Access
-                  </Button>
+                    API Access
+                  </button>
                 </div>
               )}
             />
-          </div>
           </div>
         </div>
       </div>
