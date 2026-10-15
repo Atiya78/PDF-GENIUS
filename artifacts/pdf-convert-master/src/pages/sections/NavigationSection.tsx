@@ -54,9 +54,6 @@ export const NavigationSection = (): JSX.Element => {
           data-testid="link-logo"
         >
           <img src={logoIcon} alt="" width={40} height={40} className="h-10 w-10 object-contain" />
-          <span className="whitespace-nowrap font-['Inter',system-ui,sans-serif] text-xl font-bold leading-7 text-[#111827]">
-            PDF Genius
-          </span>
         </Link>
 
         <div className="hidden min-w-0 flex-1 justify-center xl:flex">

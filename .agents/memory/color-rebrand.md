@@ -16,7 +16,7 @@ To change a brand color everywhere, a per-file find/replace is NOT enough — co
 
 **Why:** a "change the brand color" task looks done after a hex swap but blue visibly survives in particle effects, gradients, and the hero Lottie. Verify with screenshots, not just grep.
 
-**Brand mascot logo (PDF Genius):** the public website header pairs the mascot mark with the brand name, per the owner's updated header brief. Dashboard headers and mobile `TopNav` remain icon-only; full text-logo goes in both footers (web `FooterSection`, mobile `AppFooter`). Because the mark is coral on transparent, the Expo app icon + splash + Android adaptive-icon backgrounds MUST be white (`#ffffff`) in `app.json` — a coral logo on the old coral background is invisible. Web favicon/apple-touch-icon live in `public/`. Marketing/long pages exceed the 3000px screenshot cap, so footers can't be screenshotted directly — verify the page renders fully (no crash) instead, since the footer is the last element.
+**Brand mascot logo (PDF Genius):** public website headers, dashboard headers, and mobile `TopNav` are icon-only; full text-logo goes in both footers (web `FooterSection`, mobile `AppFooter`). The owner explicitly removed the public header's adjacent brand name after the redesign. Because the mark is coral on transparent, the Expo app icon + splash + Android adaptive-icon backgrounds MUST be white (`#ffffff`) in `app.json` — a coral logo on the old coral background is invisible. Web favicon/apple-touch-icon live in `public/`. Marketing/long pages exceed the 3000px screenshot cap, so footers can't be screenshotted directly — verify the page renders fully (no crash) instead, since the footer is the last element.
 
 ## Brand name: "PDF Genius" (June 2026)
 The product is named **PDF Genius** across web (`pdf-convert-master`), mobile
@@ -32,5 +32,5 @@ changed.
 `DashboardHeader.tsx` (web dashboard) intentionally renders ONLY the logo image
 inside the clickable logo container — the `<h1>` brand text was removed at the
 user's request so no brand text shows at any screen size. Do NOT re-add a brand
-`<h1>` there. (The marketing `NavigationSection.tsx` keeps its logo + name; only
-the dashboard header is text-free.)
+`<h1>` there. The public header is also logo-only per the owner's follow-up
+request after the header redesign.
