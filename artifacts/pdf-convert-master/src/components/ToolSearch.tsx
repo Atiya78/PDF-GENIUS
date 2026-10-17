@@ -161,7 +161,7 @@ export const ToolSearch = ({
             data-testid={`search-tool-education-${t.id}`}
           >
             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]">
-              <t.icon className="h-4 w-4" aria-hidden="true" />
+              <ToolLottieIcon toolId={t.id} size={28} />
             </span>
             <div className="flex min-w-0 flex-col">
               <span className="text-sm font-medium text-gray-800">{t.name}</span>

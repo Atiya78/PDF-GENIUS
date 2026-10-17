@@ -1,14 +1,14 @@
 import { Link } from "wouter";
 import { ArrowRight } from "lucide-react";
 import type { EducationTool } from "@/lib/education/educationTools";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 
 export function ToolCard({ tool }: { tool: EducationTool }) {
-  const Icon = tool.icon;
   const body = (
     <>
       <div className="flex items-start justify-between">
         <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#fff1f0] text-[#f7433d]">
-          <Icon className="h-5 w-5" aria-hidden="true" />
+          <ToolLottieIcon toolId={tool.id} size={40} />
         </span>
         {tool.isNew && <span className="rounded-full bg-[#f7433d] px-2.5 py-0.5 text-xs font-semibold text-white">New</span>}
       </div>

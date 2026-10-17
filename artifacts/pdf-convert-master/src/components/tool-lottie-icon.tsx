@@ -33,6 +33,14 @@ import deletePagesPdf from "@/assets/lottie/delete-page.json";
 import lockPdf from "@/assets/lottie/lock.json";
 import unlockPdf from "@/assets/lottie/unlock.json";
 import restoreDocument from "@/assets/lottie/restore-trash.json";
+import educationQuiz from "@/assets/lottie/education-quiz.json";
+import educationExam from "@/assets/lottie/education-exam-paper.json";
+import educationFlashcard from "@/assets/lottie/education-flashcard.json";
+import educationAsk from "@/assets/lottie/education-ask.json";
+import educationNotes from "@/assets/lottie/education-notes.json";
+import educationTranslator from "@/assets/lottie/education-translator.json";
+import educationSummary from "@/assets/lottie/education-summary.json";
+import educationMindMap from "@/assets/lottie/education-mind-map.json";
 
 /**
  * Maps each tool id to the Lottie animation the user provided. The filename of
@@ -41,6 +49,15 @@ import restoreDocument from "@/assets/lottie/restore-trash.json";
  * animation. The generic picture/image animations cover the image<->pdf tools.
  */
 export const TOOL_ANIMATIONS: Record<string, unknown> = {
+  // Education tools — owner-uploaded animations, shared across every surface.
+  "quiz-generator": educationQuiz,
+  "exam-paper-generator": educationExam,
+  "flashcards": educationFlashcard,
+  "chat-with-pdf": educationAsk,
+  "notes-maker": educationNotes,
+  "pdf-translator": educationTranslator,
+  "pdf-summarizer": educationSummary,
+  "mind-map": educationMindMap,
   // PDF conversion
   "pdf-to-word": pdfToWord,
   "word-to-pdf": wordFile,

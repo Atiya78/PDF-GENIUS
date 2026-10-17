@@ -188,7 +188,7 @@ export const ToolsNavDropdowns = (): JSX.Element => {
             {educationTools.map((t) => (
               <NavigationMenuLink key={t.id} asChild>
                 <Link href={t.href} className="site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left" data-testid={`nav-education-${t.id}`}>
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><t.icon className="h-4 w-4" aria-hidden="true" /></span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><ToolLottieIcon toolId={t.id} size={28} /></span>
                   <span className="text-sm font-medium text-gray-700">{t.name}</span>
                 </Link>
               </NavigationMenuLink>
@@ -362,7 +362,7 @@ export const MobileNav = ({
                 <Link href="/education" onClick={(event) => closeOnNavigation(event, close)} className="site-nav-row flex w-full items-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700" data-testid="mobile-nav-education-hub">All Education tools</Link>
                 {educationTools.map((t) => (
                   <Link key={t.id} href={t.href} onClick={(event) => closeOnNavigation(event, close)} className="site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left" data-testid={`mobile-nav-education-${t.id}`}>
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><t.icon className="h-4 w-4" aria-hidden="true" /></span>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><ToolLottieIcon toolId={t.id} size={28} /></span>
                     <span className="text-sm font-medium text-gray-700">{t.name}</span>
                   </Link>
                 ))}

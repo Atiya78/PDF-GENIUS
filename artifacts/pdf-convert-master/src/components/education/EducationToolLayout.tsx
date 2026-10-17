@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useSeo } from "@/lib/useSeo";
 import { educationTools, faqJsonLd, getEducationTool } from "@/lib/education/educationTools";
 import { ToolCard } from "./ToolCard";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 
 interface Props {
   toolId: string;
@@ -17,7 +18,6 @@ interface Props {
 
 export function EducationToolLayout({ toolId, seoTitle, seoDescription, upload, options, result }: Props) {
   const tool = getEducationTool(toolId)!;
-  const Icon = tool.icon;
   useSeo({ title: seoTitle, description: seoDescription, canonicalPath: tool.href, jsonLd: faqJsonLd(tool.faqs) });
   const related = educationTools.filter((t) => t.id !== toolId && t.category === tool.category).slice(0, 3);
   const more = related.length ? related : educationTools.filter((t) => t.id !== toolId).slice(0, 3);
@@ -35,7 +35,7 @@ export function EducationToolLayout({ toolId, seoTitle, seoDescription, upload, 
           <span aria-current="page" className="font-medium text-gray-900">{tool.name}</span>
         </nav>
         <header className="mb-8 flex items-start gap-4">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#f7433d] text-white"><Icon className="h-6 w-6" aria-hidden="true" /></span>
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#fff1f0]"><ToolLottieIcon toolId={tool.id} size={44} /></span>
           <div>
             <h1 className="font-['Poppins'] text-3xl font-bold text-gray-900 sm:text-4xl" data-testid="text-tool-title">{tool.name}</h1>
             <p className="mt-2 text-gray-600">{tool.description}</p>
