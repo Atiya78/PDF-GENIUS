@@ -5,6 +5,7 @@ import {
 import { randomUUID } from "node:crypto";
 import { EducationError } from "./config";
 import { chunkSource, validateSource } from "./source";
+import { randomizeQuizOptions } from "./quizOptions";
 
 // Provider configuration stays server-side and works on Replit or Railway.
 // Never import this module into browser code or expose the key in a response.
@@ -136,6 +137,7 @@ export async function generateQuiz(input: EducationQuizInput): Promise<Education
 Difficulty: ${input.difficulty}. ${languagePrompt(input.language)}
 Topic focus (only if present in the document): ${input.topicFocus || "none"}.
 MCQ: exactly four distinct options; correctAnswer is EXACTLY one option.
+MCQ options will be shuffled after generation. Each option must be self-contained, without references to option letters or positions (such as "A and B" or "all of the above"). Explanations must identify the answer by its text, not its option letter.
 True/false: options ${JSON.stringify(booleanOptions)}; correctAnswer EXACTLY one of these options.
 Short-answer/fill-blank: options []; concise correctAnswer. Fill blanks must contain ____.
 Include an explanation grounded in the source, and a short document-specific title.
@@ -162,7 +164,7 @@ SOURCE DOCUMENT:\n${chunk.text}`;
       seen.add(key(q.question)); questions.push({ ...q, id: randomUUID() });
     }
   }
-  return GenerateEducationQuizResponse.parse({ title, questions });
+  return GenerateEducationQuizResponse.parse({ title, questions: randomizeQuizOptions(questions) });
 }
 
 export async function generateFlashcards(input: EducationFlashcardInput): Promise<EducationDeck> {

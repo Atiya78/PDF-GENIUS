@@ -97,3 +97,4 @@
 - [URL rendering boundary](url-rendering-boundary.md) — static rendering is intentional; remote JavaScript requires a complete outbound-network sandbox, not just request interception.
 - [Rotated PDF text verification](rotated-text-verification.md) — normalize extraction layout whitespace before diagnosing Bangla text loss; keep page and rotation checks strict.
 - [Preview cold starts](preview-cold-start.md) — Vite's ready message can precede proxy readiness; cold startup timeouts are not evidence of broken application code.
+- [Quiz answer positions](education-quiz-randomization.md) — independently randomize MCQ choices, never rotate A/B/C/D; keep each generated quiz's order stable.
