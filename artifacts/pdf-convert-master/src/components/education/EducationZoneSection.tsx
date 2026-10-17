@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Check, FileQuestion, FileText, Languages, Layers, ListChecks, Network, NotebookPen } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { LottieIcon } from "@/components/ui/lottie-icon";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 import studentAnimation from "@/assets/lottie/student.json";
 
 const benefits = [
@@ -17,13 +18,13 @@ const benefits = [
 ];
 
 const actions = [
-  { icon: ListChecks, label: "Quiz Generator", href: "/education/quiz-generator", id: "quiz" },
-  { icon: FileQuestion, label: "Exam Paper Generator", href: "/education/exam-paper-generator", id: "exam-paper-generator" },
-  { icon: Layers, label: "Flashcard Maker", href: "/education/flashcards", id: "flashcards" },
-  { icon: NotebookPen, label: "Notes Maker", href: "/education/notes-maker", id: "notes-maker" },
-  { icon: Languages, label: "PDF Translator", href: "/education/pdf-translator", id: "pdf-translator" },
-  { icon: FileText, label: "PDF Summarizer", href: "/education/pdf-summarizer", id: "pdf-summarizer" },
-  { icon: Network, label: "Mind Map", href: "/education/mind-map", id: "mind-map" },
+  { toolId: "quiz-generator", label: "Quiz Generator", href: "/education/quiz-generator", id: "quiz" },
+  { toolId: "exam-paper-generator", label: "Exam Paper Generator", href: "/education/exam-paper-generator", id: "exam-paper-generator" },
+  { toolId: "flashcards", label: "Flashcard Maker", href: "/education/flashcards", id: "flashcards" },
+  { toolId: "notes-maker", label: "Notes Maker", href: "/education/notes-maker", id: "notes-maker" },
+  { toolId: "pdf-translator", label: "PDF Translator", href: "/education/pdf-translator", id: "pdf-translator" },
+  { toolId: "pdf-summarizer", label: "PDF Summarizer", href: "/education/pdf-summarizer", id: "pdf-summarizer" },
+  { toolId: "mind-map", label: "Mind Map", href: "/education/mind-map", id: "mind-map" },
 ];
 
 export function EducationZoneSection(): JSX.Element {
@@ -66,7 +67,7 @@ export function EducationZoneSection(): JSX.Element {
             <div className="mt-6 space-y-3">
               {actions.map((a) => (
                 <Link key={a.id} href={a.href} className="flex h-12 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-900 transition-colors hover:border-[#f7433d]/40 hover:bg-[#fff1f0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7433d]" data-testid={`link-education-${a.id}`}>
-                  <a.icon className="h-4 w-4 text-[#f7433d]" aria-hidden="true" /> {a.label}
+                  <ToolLottieIcon toolId={a.toolId} size={28} /> {a.label}
                 </Link>
               ))}
             </div>

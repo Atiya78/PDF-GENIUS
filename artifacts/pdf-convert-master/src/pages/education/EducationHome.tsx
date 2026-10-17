@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { ArrowRight, GraduationCap, Layers, ListChecks } from "lucide-react";
+import { ArrowRight, GraduationCap } from "lucide-react";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { UploadDropzone } from "@/components/upload/UploadDropzone";
 import { ToolCard } from "@/components/education/ToolCard";
@@ -41,8 +42,8 @@ export function EducationHome(): JSX.Element {
             <div data-testid="panel-hub-choice">
               <p className="mb-3 truncate text-sm font-semibold text-gray-900">{picked.name}</p>
               <div className="grid gap-3 sm:grid-cols-2">
-                <button type="button" onClick={() => go("/education/quiz-generator")} className="flex items-center gap-3 rounded-xl bg-[#f7433d] p-4 text-left font-semibold text-white hover:bg-[#e03832]" data-testid="button-hub-quiz"><ListChecks className="h-5 w-5" aria-hidden="true" />Make a quiz</button>
-                <button type="button" onClick={() => go("/education/flashcards")} className="flex items-center gap-3 rounded-xl bg-[#f7433d] p-4 text-left font-semibold text-white hover:bg-[#e03832]" data-testid="button-hub-flashcards"><Layers className="h-5 w-5" aria-hidden="true" />Make flashcards</button>
+                <button type="button" onClick={() => go("/education/quiz-generator")} className="flex items-center gap-3 rounded-xl bg-[#f7433d] p-4 text-left font-semibold text-white hover:bg-[#e03832]" data-testid="button-hub-quiz"><ToolLottieIcon toolId="quiz-generator" size={28} />Make a quiz</button>
+                <button type="button" onClick={() => go("/education/flashcards")} className="flex items-center gap-3 rounded-xl bg-[#f7433d] p-4 text-left font-semibold text-white hover:bg-[#e03832]" data-testid="button-hub-flashcards"><ToolLottieIcon toolId="flashcards" size={28} />Make flashcards</button>
               </div>
               <button type="button" onClick={() => setPicked(null)} className="mt-3 text-sm font-semibold text-gray-600 underline" data-testid="button-hub-change-file">Choose a different file</button>
             </div>
