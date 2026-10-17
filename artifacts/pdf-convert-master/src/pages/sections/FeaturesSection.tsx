@@ -11,7 +11,7 @@ import featureConvert from "@/assets/lottie/feature-convert.json";
 import featureOrganize from "@/assets/lottie/feature-organize.json";
 import featureSecure from "@/assets/lottie/feature-secure.json";
 import { getVerifiedStats } from "@/config/siteStats";
-import workflowBanner from "@/assets/pdf-workflow-banner.png";
+import workflowBanner from "@/assets/pdf-workflow-banner-white.png";
 
 const FEATURE_TOOL: Record<string, string> = {
   "Merge PDFs": "merge-pdfs", "Split PDFs": "split-pdf", "Compress Files": "compress-pdf", "Rotate Pages": "rotate-pdf",
