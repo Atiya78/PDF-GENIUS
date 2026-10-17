@@ -4,8 +4,6 @@ import logoFull from "@assets/FullLogo_Transparent_NoBuffer_1782108807761.png";
 import { Link } from "wouter";
 import { toolLandingPages } from "@/config/toolLandingPages";
 import { SOCIAL_FACEBOOK_URL, SOCIAL_INSTAGRAM_URL, SOCIAL_LINKEDIN_URL } from "@/lib/socialLinks";
-import { educationTools } from "@/lib/education/educationTools";
-import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 
 const linkClass =
   "text-gray-600 hover:text-[#f7433d] focus-visible:text-[#f7433d] focus-visible:outline-none focus-visible:underline transition-colors";
@@ -169,29 +167,7 @@ export const FooterSection = (): JSX.Element => {
               </ul>
             </nav>
 
-            <nav aria-label="Education Zone tools" className="border-t border-gray-100 pt-6">
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-900">
-                <Link href="/education" className="hover:text-[#f7433d] focus-visible:outline-none focus-visible:underline">
-                  Education Zone
-                </Link>
-              </h3>
-              <ul className="grid grid-cols-1 gap-x-5 gap-y-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
-                {educationTools.map((tool) => (
-                  <li key={tool.id} className="min-w-0">
-                    <Link
-                      href={tool.href}
-                      className={`${linkClass} inline-flex min-h-11 items-center gap-2 py-1`}
-                      data-testid={`footer-education-${tool.id}`}
-                    >
-                      <ToolLottieIcon toolId={tool.id} size={28} />
-                      <span>{tool.name}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-              <div className="grid grid-cols-3 gap-x-4 gap-y-6 pt-6 border-t border-gray-100">
+             <div className="grid grid-cols-3 gap-x-4 gap-y-6 pt-6 border-t border-gray-100">
               <LinkList title="Product" links={productLinks} />
               <LinkList title="Help" links={helpLinks} />
               <LinkList title="Legal" links={legalLinks} />
