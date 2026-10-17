@@ -11,6 +11,7 @@ import featureConvert from "@/assets/lottie/feature-convert.json";
 import featureOrganize from "@/assets/lottie/feature-organize.json";
 import featureSecure from "@/assets/lottie/feature-secure.json";
 import { getVerifiedStats } from "@/config/siteStats";
+import workflowBanner from "@/assets/pdf-workflow-banner.png";
 
 const FEATURE_TOOL: Record<string, string> = {
   "Merge PDFs": "merge-pdfs", "Split PDFs": "split-pdf", "Compress Files": "compress-pdf", "Rotate Pages": "rotate-pdf",
@@ -124,14 +125,18 @@ export const FeaturesSection = (): JSX.Element => {
       <AnimatedBackground particleCount={25} />
 
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
-        <div className="mb-20 text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            Transform Your PDF Workflow
-          </h2>
-          <p className="text-xl text-gray-600 max-w-screen-md mx-auto leading-[32.5px]">
-            Free tools. No signup required. Convert, organize and edit documents.
-          </p>
+        {/* Uploaded section banner, scaled without cropping. */}
+        <div className="mb-12 sm:mb-16 lg:mb-20">
+          <h2 className="sr-only">Transform Your PDF Workflow</h2>
+          <img
+            src={workflowBanner}
+            alt="Free tools. No signup required. Convert, organize and edit documents."
+            width={1671}
+            height={941}
+            loading="lazy"
+            decoding="async"
+            className="block h-auto w-full"
+          />
         </div>
 
         {/* Main Content - Two Column Layout */}
