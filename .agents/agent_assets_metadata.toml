@@ -26,3 +26,31 @@ uri = "file://docs/PDF-Genius-TestSprite-PRD.md"
 type = "text"
 title = "PDF Genius — TestSprite PRD"
 logical_id = "1a15123b-f892-40a6-987f-6e7c5607fec1"
+
+[[outputs]]
+id = "waNzWyO3IzIJAKEHK-Mep"
+uri = "file://generated-artifacts/homepage-spacing-before.jpg"
+type = "image"
+title = "Before — homepage spacing"
+description = "Hero and banner area before cropping and spacing adjustments, at 1280px width."
+logical_id = "cfeffc6d-f4a6-4244-9d7f-fb3c650d7abc"
+content_hash = "sha256:14ff158e2008edda6dfed80e8642452cfefa030889fef9dae8e4efc2e132a7ee"
+size = 141298
+mtime_ms = 1792263154462
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:033d96ef-b973-4c8b-b8c9-9a5ac3019373/cfeffc6d-f4a6-4244-9d7f-fb3c650d7abc/e2d5acfd-4645-470b-9bf0-f7b4a21e578e"
+storage_version_token = "1792263570861393"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "03ZcvOQ8Y_0wajsMHAFWA"
+uri = "file://generated-artifacts/homepage-spacing-after.jpg"
+type = "image"
+title = "After — tighter homepage spacing"
+description = "Same 1280px view after cropping the banner and reducing homepage spacing."
+logical_id = "0d748dec-5c63-4a24-b5cc-38ac51d21575"
+content_hash = "sha256:ad6eb55e96da982643604b30179c1bf06af6a0f1b6b24f41d51e28573f70c0ec"
+size = 174091
+mtime_ms = 1792263552762
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:033d96ef-b973-4c8b-b8c9-9a5ac3019373/0d748dec-5c63-4a24-b5cc-38ac51d21575/b85b7c2e-910f-4347-b331-c87cab549a85"
+storage_version_token = "1792263572116739"
+content_type = "image/jpeg"

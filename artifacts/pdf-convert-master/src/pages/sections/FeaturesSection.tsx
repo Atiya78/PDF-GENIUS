@@ -11,7 +11,7 @@ import featureConvert from "@/assets/lottie/feature-convert.json";
 import featureOrganize from "@/assets/lottie/feature-organize.json";
 import featureSecure from "@/assets/lottie/feature-secure.json";
 import { getVerifiedStats } from "@/config/siteStats";
-import workflowBanner from "@/assets/pdf-workflow-banner-white.png";
+import workflowBanner from "@/assets/pdf-workflow-banner-white-cropped.png";
 
 const FEATURE_TOOL: Record<string, string> = {
   "Merge PDFs": "merge-pdfs", "Split PDFs": "split-pdf", "Compress Files": "compress-pdf", "Rotate Pages": "rotate-pdf",
@@ -120,27 +120,27 @@ export const FeaturesSection = (): JSX.Element => {
   ];
 
   return (
-    <section className="relative w-full py-16 sm:py-20 lg:py-24 bg-white overflow-hidden">
+    <section className="relative w-full pt-6 pb-12 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-16 bg-white overflow-hidden">
       {/* Animated background */}
       <AnimatedBackground particleCount={25} />
 
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Uploaded section banner, scaled without cropping. */}
-        <div className="mb-12 sm:mb-16 lg:mb-20">
+        {/* Banner's baked-in white margins are cropped in the source asset. */}
+        <div className="mb-8 sm:mb-10 lg:mb-12">
           <h2 className="sr-only">Transform Your PDF Workflow</h2>
           <img
             src={workflowBanner}
             alt="Free tools. No signup required. Convert, organize and edit documents."
             width={1671}
-            height={941}
+            height={655}
             loading="lazy"
             decoding="async"
-            className="block h-auto w-full"
+            className="block h-auto w-full max-w-5xl mx-auto"
           />
         </div>
 
         {/* Main Content - Two Column Layout */}
-        <div className="flex flex-wrap gap-16 mb-20 items-center">
+        <div className="flex flex-wrap gap-10 lg:gap-16 mb-12 items-center">
           {/* Left Column - Features */}
           <div className="flex-1 min-w-[300px]">
             {/* Performance Badge */}

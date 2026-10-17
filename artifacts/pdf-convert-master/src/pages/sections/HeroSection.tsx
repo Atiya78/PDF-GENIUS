@@ -55,7 +55,7 @@ export const HeroSection = (): JSX.Element => {
       <div className="flex flex-col w-full items-start relative">
 
         <div className="flex w-full items-center relative z-10">
-          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-[26px] pb-12 sm:pb-16 lg:pb-20 w-full relative">
+          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-[26px] pb-8 lg:pb-12 w-full relative">
               <div className="flex flex-wrap w-full items-center gap-12 relative">
                 {/* Left column - Text content */}
                 <div className="flex flex-col w-full md:w-[584px] items-start relative">

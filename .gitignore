@@ -54,6 +54,7 @@ Thumbs.db
 
 # Replit
 .cache/
+/generated-artifacts/
 .local/
 .puppeteer-cache/
 attached_assets/0_secrets_*

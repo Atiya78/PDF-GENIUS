@@ -1,0 +1,20 @@
+Fix excessive vertical whitespace on the homepage. Do NOT change any content, colors, or images' visual design — only spacing/cropping.
+
+1. Banner image "Transform Your PDF Workflow" (src/assets/pdf-workflow-banner-white.png, 1671x941):
+   The PNG has ~133px of empty white at the top and ~180px at the bottom baked in. Crop it to its visible content (rows ~120 to ~775) and save it as pdf-workflow-banner-white-cropped.png. Use the cropped file in the <img> and keep "block h-auto w-full". Also add max-w-5xl mx-auto so it doesn't grow huge on wide screens.
+   Wrapper div "mb-12 sm:mb-16 lg:mb-20" → change to "mb-8 sm:mb-10 lg:mb-12".
+
+2. Hero section (first <section>, the one with "Free PDF tools. No signup required." and the "Drop your PDF here" upload box):
+   Remove the empty space under the upload box. Check for min-h-screen / fixed heights / extra bottom padding or margin on the section or its inner wrappers, and make the section end ~48px (pb-12) below the upload box on desktop, ~32px on mobile.
+
+3. Second section (the one containing the banner + "Professional PDF Tools Built for Modern Workflows" + Convert/Organize/Secure cards):
+   Change "py-16 sm:py-20 lg:py-24" → "pt-6 pb-12 sm:pt-8 sm:pb-16 lg:pt-10 lg:pb-16" so the banner sits close to the hero.
+   The "flex flex-wrap gap-16 mb-20 items-center" block → "gap-10 lg:gap-16 mb-12".
+
+4. Make section spacing consistent across the whole page:
+   Every top-level section that uses "py-16 sm:py-20 lg:py-24" (Developer API section, "Everything You Need for PDF Success" section) → "py-12 sm:py-14 lg:py-16".
+   Keep "py-12" sections (Education Zone, Privacy, All tools) as is.
+
+5. Check at 375px, 768px, 1280px and 1920px widths. No section should have more than ~120px of blank space between the end of one block's content and the start of the next heading. Nothing should overlap, and the decorative absolute-positioned blobs/circles must not change section height.
+
+Show me before/after screenshots of the hero → banner area.
