@@ -10,6 +10,7 @@ import appleUnavailableAnim from "@/assets/lottie/apple-unavailable.json";
 import { SIGN_UP_XML } from "@/lib/signUpIcon";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { requestGoogleAuthCode } from "@/lib/googleAuth";
+import { authEmailSchema, signupInputSchema } from "@/lib/authValidation";
 
 type Mode = "signin" | "signup";
 
@@ -118,10 +119,12 @@ export function AuthCard({ mode }: { mode: Mode }) {
       setError("Please enter your email address");
       return;
     }
-    if (!email.includes("@")) {
+    const parsedEmail = authEmailSchema.safeParse(email);
+    if (!parsedEmail.success) {
       setError("Please enter a valid email address");
       return;
     }
+    setEmail(parsedEmail.data);
     setStep("credentials");
   };
 
@@ -129,11 +132,13 @@ export function AuthCard({ mode }: { mode: Mode }) {
     setError(null);
     setInfo(null);
 
-    if (!email.includes("@")) {
+    const parsedEmail = authEmailSchema.safeParse(email);
+    if (!parsedEmail.success) {
       setStep("email");
       setError("Please enter a valid email address");
       return;
     }
+    setEmail(parsedEmail.data);
 
     if (mode === "signup") {
       if (!name.trim() || !password || !confirmPassword) {
@@ -148,6 +153,11 @@ export function AuthCard({ mode }: { mode: Mode }) {
         setError("Passwords do not match");
         return;
       }
+      const input = signupInputSchema.safeParse({ email: parsedEmail.data, password, name });
+      if (!input.success) {
+        setError(input.error.issues[0].message);
+        return;
+      }
     } else if (!password) {
       setError("Please enter your password");
       return;
@@ -157,7 +167,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
     setIsSubmitting(true);
     try {
       const res =
-        mode === "signup" ? await signup(email, password, name) : await signin(email, password);
+        mode === "signup" ? await signup(parsedEmail.data, password, name) : await signin(parsedEmail.data, password);
       if (res.success) {
         if (mode === "signup") {
           // Account isn't created yet — move to the email-verification step.

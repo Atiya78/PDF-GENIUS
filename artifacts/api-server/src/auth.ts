@@ -228,7 +228,7 @@ export async function register(req: Request, res: Response) {
     if (!validation.success) {
       return res.status(400).json({
         success: false,
-        error: "Validation failed",
+        error: validation.error.issues[0]?.message || "Please check your signup details",
         details: validation.error.issues
       });
     }
@@ -294,7 +294,7 @@ export async function verifySignupOtp(req: Request, res: Response) {
     if (!validation.success) {
       return res.status(400).json({
         success: false,
-        error: "Validation failed",
+        error: validation.error.issues[0]?.message || "Please check your verification details",
         details: validation.error.issues,
       });
     }

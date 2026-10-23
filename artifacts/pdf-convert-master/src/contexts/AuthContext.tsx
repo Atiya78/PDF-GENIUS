@@ -1,3 +1,4 @@
+import { authErrorMessage, signupInputSchema, signupVerificationSchema } from "@/lib/authValidation";
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { User } from "@workspace/db";
 
@@ -108,13 +109,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     password: string,
     name?: string,
   ): Promise<{ success: boolean; error?: string }> => {
+    const input = signupInputSchema.safeParse({ email, password, ...(name !== undefined ? { name } : {}) });
+    if (!input.success) return { success: false, error: input.error.issues[0].message };
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password, ...(name ? { name } : {}) }),
+        body: JSON.stringify(input.data),
       });
 
       const data = await response.json();
@@ -122,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.success) {
         return { success: true };
       } else {
-        return { success: false, error: data.error || "Sign up failed" };
+        return { success: false, error: authErrorMessage(data, "Sign up failed") };
       }
     } catch (error) {
       console.error("Sign up error:", error);
@@ -137,11 +140,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string,
     code: string,
   ): Promise<{ success: boolean; error?: string }> => {
+    const input = signupVerificationSchema.safeParse({ email, code });
+    if (!input.success) return { success: false, error: input.error.issues[0].message };
     try {
       const response = await fetch("/api/auth/verify-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, code }),
+        body: JSON.stringify(input.data),
       });
 
       const data = await response.json();
@@ -156,7 +161,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem("auth_token", authToken);
         return { success: true };
       } else {
-        return { success: false, error: data.error || "Invalid or expired code" };
+        return { success: false, error: authErrorMessage(data, "Invalid or expired code") };
       }
     } catch (error) {
       console.error("Verify signup error:", error);

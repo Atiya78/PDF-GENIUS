@@ -125,9 +125,9 @@ export const insertUserSchema = createInsertSchema(users, {
 });
 
 export const registerUserSchema = z.object({
-  email: z.string().email("Invalid email format"),
+  email: z.string().trim().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  name: z.string().trim().min(1, "Name is required").max(120).optional(),
+  name: z.string().trim().min(1, "Name is required").max(120, "Name must be 120 characters or fewer").optional(),
 });
 
 export const loginUserSchema = z.object({
@@ -163,7 +163,7 @@ export const resetPasswordSchema = z.object({
 // Verify a signup OTP. The pending registration (name/password) is already
 // stored server-side, so the client only needs to echo back the email + code.
 export const verifySignupOtpSchema = z.object({
-  email: z.string().email("Invalid email format"),
+  email: z.string().trim().email("Please enter a valid email address"),
   // The emailed OTP is always exactly 6 digits.
   code: z
     .string()
