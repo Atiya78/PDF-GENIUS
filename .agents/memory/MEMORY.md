@@ -98,3 +98,4 @@
 - [Rotated PDF text verification](rotated-text-verification.md) — normalize extraction layout whitespace before diagnosing Bangla text loss; keep page and rotation checks strict.
 - [Preview cold starts](preview-cold-start.md) — Vite's ready message can precede proxy readiness; cold startup timeouts are not evidence of broken application code.
 - [Quiz answer positions](education-quiz-randomization.md) — independently randomize MCQ choices, never rotate A/B/C/D; keep each generated quiz's order stable.
+- [Education payments](education-payment-provider.md) — Paddle is for Education Zone only; preserve Dodo elsewhere and clarify wallet separation before changing credit rules.
