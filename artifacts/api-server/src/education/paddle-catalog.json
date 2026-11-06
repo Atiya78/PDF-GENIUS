@@ -1,0 +1,42 @@
+{
+  "plans": {
+    "basic": {
+      "productId": "pro_01m6rkx90vw4v1978ypbw0kq2k",
+      "credits": 500,
+      "month": { "priceId": "pri_01m6rkx9gvxhhg5zat13fd2pxr", "amount": 900 },
+      "year": { "priceId": "pri_01m6rkxa0gt4gzes3f4srxwy97", "amount": 9000 }
+    },
+    "pro": {
+      "productId": "pro_01m6rkxaj25ewza2k963ejvm5b",
+      "credits": 2000,
+      "month": { "priceId": "pri_01m6rkxb0snndzbcd1k5nf8w43", "amount": 2900 },
+      "year": { "priceId": "pri_01m6rkxbekjjzxw22nrp84wpxt", "amount": 29000 }
+    },
+    "max": {
+      "productId": "pro_01m6rkxbzz58tfvq1zxmbgc605",
+      "credits": 6000,
+      "month": { "priceId": "pri_01m6rkxcf0dcpvysv5rxe2wjmg", "amount": 7900 },
+      "year": { "priceId": "pri_01m6rkxcy9m74q3vn21acrqyrm", "amount": 79000 }
+    }
+  },
+  "packs": {
+    "small": {
+      "productId": "pro_01m6rkxdg5rx8bw20599h28q1b",
+      "credits": 200,
+      "standard": { "priceId": "pri_01m6rkxdytp3tfx7aspbk4w0ss", "amount": 500 },
+      "subscriber": { "priceId": "pri_01m6rkxeep59ahe2abtrswz6xf", "amount": 400 }
+    },
+    "medium": {
+      "productId": "pro_01m6rkxez9rsjpzxbfacbsy79n",
+      "credits": 1000,
+      "standard": { "priceId": "pri_01m6rkxff7zyp2vrhn5gq4ph06", "amount": 2200 },
+      "subscriber": { "priceId": "pri_01m6rkxg30tjw7a5tyab5t2vkj", "amount": 1760 }
+    },
+    "large": {
+      "productId": "pro_01m6rkxgncjaap89dp6xctw9bv",
+      "credits": 3000,
+      "standard": { "priceId": "pri_01m6rkxh50n24bww1phpf4h9t0", "amount": 6000 },
+      "subscriber": { "priceId": "pri_01m6rkxhnsk5zj3r8xq3q9w335", "amount": 4800 }
+    }
+  }
+}
