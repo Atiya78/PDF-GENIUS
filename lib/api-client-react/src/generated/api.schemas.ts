@@ -5,17 +5,6 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-export interface EducationProblem {
-  error: string;
-  ocrUrl?: string;
-}
-
-export interface EducationPdfInput {
-  file: Blob | File;
-  /** @maxLength 100 */
-  pageRange?: string;
-}
-
 export interface EducationSourcePage {
   /**
      * @minimum 1
@@ -25,6 +14,237 @@ export interface EducationSourcePage {
   pageNumber: number | null;
   /** @maxLength 250000 */
   text: string;
+}
+
+export type EducationExamSettingsFormat = typeof EducationExamSettingsFormat[keyof typeof EducationExamSettingsFormat];
+
+
+export const EducationExamSettingsFormat = {
+  standard: 'standard',
+  'bangladesh-board': 'bangladesh-board',
+} as const;
+
+export type EducationExamSettingsLanguage = typeof EducationExamSettingsLanguage[keyof typeof EducationExamSettingsLanguage];
+
+
+export const EducationExamSettingsLanguage = {
+  english: 'english',
+  bangla: 'bangla',
+  same: 'same',
+} as const;
+
+export type EducationExamSectionKind = typeof EducationExamSectionKind[keyof typeof EducationExamSectionKind];
+
+
+export const EducationExamSectionKind = {
+  mcq: 'mcq',
+  short: 'short',
+  broad: 'broad',
+} as const;
+
+export interface EducationExamSection {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  id: string;
+  kind: EducationExamSectionKind;
+  /**
+     * @minimum 1
+     * @maximum 30
+     */
+  count: number;
+  /**
+     * @minimum 1
+     * @maximum 100
+     */
+  marksPerQuestion: number;
+}
+
+export interface EducationExamSettings {
+  /**
+     * @minLength 1
+     * @maxLength 150
+     */
+  institution: string;
+  /**
+     * @minLength 1
+     * @maxLength 150
+     */
+  examName: string;
+  /**
+     * @minLength 1
+     * @maxLength 150
+     */
+  subject: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  className: string;
+  /**
+     * @minimum 1
+     * @maximum 1000
+     */
+  totalMarks: number;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  time: string;
+  format: EducationExamSettingsFormat;
+  language: EducationExamSettingsLanguage;
+  /**
+     * @minItems 1
+     * @maxItems 3
+     */
+  sections: EducationExamSection[];
+}
+
+export type EducationExamQuestionKind = typeof EducationExamQuestionKind[keyof typeof EducationExamQuestionKind];
+
+
+export const EducationExamQuestionKind = {
+  mcq: 'mcq',
+  short: 'short',
+  broad: 'broad',
+} as const;
+
+export type EducationCreativePartLabel = typeof EducationCreativePartLabel[keyof typeof EducationCreativePartLabel];
+
+
+export const EducationCreativePartLabel = {
+  ক: 'ক',
+  খ: 'খ',
+  গ: 'গ',
+  ঘ: 'ঘ',
+} as const;
+
+export interface EducationMarkingPoint {
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  text: string;
+  /**
+     * @minimum 0.5
+     * @maximum 100
+     */
+  marks: number;
+}
+
+export interface EducationCreativePart {
+  label: EducationCreativePartLabel;
+  /**
+     * @minLength 1
+     * @maxLength 2000
+     */
+  text: string;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  answer: string;
+  /**
+     * @minimum 1
+     * @maximum 4
+     */
+  marks: number;
+  /**
+     * @minItems 1
+     * @maxItems 20
+     */
+  markingScheme: EducationMarkingPoint[];
+}
+
+export interface EducationExamQuestion {
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  id: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  sectionId: string;
+  kind: EducationExamQuestionKind;
+  /**
+     * @minLength 1
+     * @maxLength 5000
+     */
+  text: string;
+  /**
+     * @maxItems 4
+     * @items.minLength 1
+     * @items.maxLength 1000
+     */
+  options: string[];
+  /**
+     * @minimum 0
+     * @maximum 3
+     * @nullable
+     */
+  correctOption: number | null;
+  /** @maxLength 8000 */
+  stimulus: string;
+  /** @maxItems 4 */
+  parts: EducationCreativePart[];
+  /**
+     * @minLength 1
+     * @maxLength 8000
+     */
+  answer: string;
+  /**
+     * @minItems 1
+     * @maxItems 20
+     */
+  markingScheme: EducationMarkingPoint[];
+  /**
+     * @maxItems 30
+     * @items.minimum 1
+     */
+  sourcePages: number[];
+}
+
+export interface EducationExamPaper {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  settings: EducationExamSettings;
+  /**
+     * @minItems 1
+     * @maxItems 100
+     */
+  questions: EducationExamQuestion[];
+}
+
+export interface EducationExamRegenerateSectionInput {
+  /**
+     * @minItems 1
+     * @maxItems 300
+     */
+  pages: EducationSourcePage[];
+  paper: EducationExamPaper;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  sectionId: string;
+  requestId?: string;
+}
+
+export interface EducationProblem {
+  error: string;
+  ocrUrl?: string;
+}
+
+export interface EducationPdfInput {
+  file: Blob | File;
+  /** @maxLength 100 */
+  pageRange?: string;
 }
 
 export interface EducationExtraction {
@@ -400,211 +620,6 @@ export interface EducationTranslation {
   pages: EducationTranslatedPage[];
 }
 
-export type EducationExamSettingsFormat = typeof EducationExamSettingsFormat[keyof typeof EducationExamSettingsFormat];
-
-
-export const EducationExamSettingsFormat = {
-  standard: 'standard',
-  'bangladesh-board': 'bangladesh-board',
-} as const;
-
-export type EducationExamSettingsLanguage = typeof EducationExamSettingsLanguage[keyof typeof EducationExamSettingsLanguage];
-
-
-export const EducationExamSettingsLanguage = {
-  english: 'english',
-  bangla: 'bangla',
-  same: 'same',
-} as const;
-
-export type EducationExamSectionKind = typeof EducationExamSectionKind[keyof typeof EducationExamSectionKind];
-
-
-export const EducationExamSectionKind = {
-  mcq: 'mcq',
-  short: 'short',
-  broad: 'broad',
-} as const;
-
-export interface EducationExamSection {
-  /**
-     * @minLength 1
-     * @maxLength 100
-     */
-  id: string;
-  kind: EducationExamSectionKind;
-  /**
-     * @minimum 1
-     * @maximum 30
-     */
-  count: number;
-  /**
-     * @minimum 1
-     * @maximum 100
-     */
-  marksPerQuestion: number;
-}
-
-export interface EducationExamSettings {
-  /**
-     * @minLength 1
-     * @maxLength 150
-     */
-  institution: string;
-  /**
-     * @minLength 1
-     * @maxLength 150
-     */
-  examName: string;
-  /**
-     * @minLength 1
-     * @maxLength 150
-     */
-  subject: string;
-  /**
-     * @minLength 1
-     * @maxLength 100
-     */
-  className: string;
-  /**
-     * @minimum 1
-     * @maximum 1000
-     */
-  totalMarks: number;
-  /**
-     * @minLength 1
-     * @maxLength 100
-     */
-  time: string;
-  format: EducationExamSettingsFormat;
-  language: EducationExamSettingsLanguage;
-  /**
-     * @minItems 1
-     * @maxItems 3
-     */
-  sections: EducationExamSection[];
-}
-
-export type EducationExamQuestionKind = typeof EducationExamQuestionKind[keyof typeof EducationExamQuestionKind];
-
-
-export const EducationExamQuestionKind = {
-  mcq: 'mcq',
-  short: 'short',
-  broad: 'broad',
-} as const;
-
-export type EducationCreativePartLabel = typeof EducationCreativePartLabel[keyof typeof EducationCreativePartLabel];
-
-
-export const EducationCreativePartLabel = {
-  ক: 'ক',
-  খ: 'খ',
-  গ: 'গ',
-  ঘ: 'ঘ',
-} as const;
-
-export interface EducationMarkingPoint {
-  /**
-     * @minLength 1
-     * @maxLength 2000
-     */
-  text: string;
-  /**
-     * @minimum 0.5
-     * @maximum 100
-     */
-  marks: number;
-}
-
-export interface EducationCreativePart {
-  label: EducationCreativePartLabel;
-  /**
-     * @minLength 1
-     * @maxLength 2000
-     */
-  text: string;
-  /**
-     * @minLength 1
-     * @maxLength 5000
-     */
-  answer: string;
-  /**
-     * @minimum 1
-     * @maximum 4
-     */
-  marks: number;
-  /**
-     * @minItems 1
-     * @maxItems 20
-     */
-  markingScheme: EducationMarkingPoint[];
-}
-
-export interface EducationExamQuestion {
-  /**
-     * @minLength 1
-     * @maxLength 100
-     */
-  id: string;
-  /**
-     * @minLength 1
-     * @maxLength 100
-     */
-  sectionId: string;
-  kind: EducationExamQuestionKind;
-  /**
-     * @minLength 1
-     * @maxLength 5000
-     */
-  text: string;
-  /**
-     * @maxItems 4
-     * @items.minLength 1
-     * @items.maxLength 1000
-     */
-  options: string[];
-  /**
-     * @minimum 0
-     * @maximum 3
-     * @nullable
-     */
-  correctOption: number | null;
-  /** @maxLength 8000 */
-  stimulus: string;
-  /** @maxItems 4 */
-  parts: EducationCreativePart[];
-  /**
-     * @minLength 1
-     * @maxLength 8000
-     */
-  answer: string;
-  /**
-     * @minItems 1
-     * @maxItems 20
-     */
-  markingScheme: EducationMarkingPoint[];
-  /**
-     * @maxItems 30
-     * @items.minimum 1
-     */
-  sourcePages: number[];
-}
-
-export interface EducationExamPaper {
-  /**
-     * @minLength 1
-     * @maxLength 200
-     */
-  title: string;
-  settings: EducationExamSettings;
-  /**
-     * @minItems 1
-     * @maxItems 100
-     */
-  questions: EducationExamQuestion[];
-}
-
 export interface EducationExportInput {
   kind: EducationExportInputKind;
   format: EducationExportInputFormat;
@@ -874,8 +889,214 @@ export interface HealthStatus {
   status: string;
 }
 
+export type EducationCheckoutInputKind = typeof EducationCheckoutInputKind[keyof typeof EducationCheckoutInputKind];
+
+
+export const EducationCheckoutInputKind = {
+  plan: 'plan',
+  pack: 'pack',
+} as const;
+
+export type EducationCheckoutInputId = typeof EducationCheckoutInputId[keyof typeof EducationCheckoutInputId];
+
+
+export const EducationCheckoutInputId = {
+  basic: 'basic',
+  pro: 'pro',
+  max: 'max',
+  small: 'small',
+  medium: 'medium',
+  large: 'large',
+} as const;
+
+export type EducationCheckoutInputPeriod = typeof EducationCheckoutInputPeriod[keyof typeof EducationCheckoutInputPeriod];
+
+
+export const EducationCheckoutInputPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export interface EducationCheckoutInput {
+  kind: EducationCheckoutInputKind;
+  id: EducationCheckoutInputId;
+  period?: EducationCheckoutInputPeriod;
+}
+
+export interface EducationApiKeyInput {
+  /**
+     * @minLength 1
+     * @maxLength 80
+     */
+  name: string;
+}
+
+export type EducationBillingConfigEnvironment = typeof EducationBillingConfigEnvironment[keyof typeof EducationBillingConfigEnvironment];
+
+
+export const EducationBillingConfigEnvironment = {
+  live: 'live',
+  sandbox: 'sandbox',
+} as const;
+
+export type EducationBillingConfigPlansItemId = typeof EducationBillingConfigPlansItemId[keyof typeof EducationBillingConfigPlansItemId];
+
+
+export const EducationBillingConfigPlansItemId = {
+  basic: 'basic',
+  pro: 'pro',
+  max: 'max',
+} as const;
+
+export type EducationBillingConfigPlansItem = {
+  id: EducationBillingConfigPlansItemId;
+  name: string;
+  monthlyCents: number;
+  yearlyCents: number;
+  monthlyCredits: number;
+  maxPages: number;
+  quizDailyLimit: number;
+  examDailyLimit: number;
+  queue: string;
+  commercialUse: boolean;
+  apiAccess: boolean;
+};
+
+export type EducationBillingConfigPacksItemId = typeof EducationBillingConfigPacksItemId[keyof typeof EducationBillingConfigPacksItemId];
+
+
+export const EducationBillingConfigPacksItemId = {
+  small: 'small',
+  medium: 'medium',
+  large: 'large',
+} as const;
+
+export type EducationBillingConfigPacksItem = {
+  id: EducationBillingConfigPacksItemId;
+  credits: number;
+  priceCents: number;
+  subscriberPriceCents: number;
+};
+
+export type EducationBillingConfigPolicies = {
+  purchasedExpiryMonths: number;
+  monthlyCreditsRollover: boolean;
+  otherToolsCredits: number;
+  freeGenerationsPerDay: number;
+};
+
+export interface EducationBillingConfig {
+  enabled: boolean;
+  /** @nullable */
+  clientToken: string | null;
+  environment: EducationBillingConfigEnvironment;
+  plans: EducationBillingConfigPlansItem[];
+  packs: EducationBillingConfigPacksItem[];
+  policies: EducationBillingConfigPolicies;
+}
+
+export type EducationBillingAccountTier = typeof EducationBillingAccountTier[keyof typeof EducationBillingAccountTier];
+
+
+export const EducationBillingAccountTier = {
+  none: 'none',
+  basic: 'basic',
+  pro: 'pro',
+  max: 'max',
+} as const;
+
+/**
+ * @nullable
+ */
+export type EducationBillingAccountBillingPeriod = typeof EducationBillingAccountBillingPeriod[keyof typeof EducationBillingAccountBillingPeriod] | null;
+
+
+export const EducationBillingAccountBillingPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export type EducationBillingAccountUsage = {
+  quiz: number;
+  exam: number;
+};
+
+export type EducationBillingAccountLotsItemKind = typeof EducationBillingAccountLotsItemKind[keyof typeof EducationBillingAccountLotsItemKind];
+
+
+export const EducationBillingAccountLotsItemKind = {
+  subscription: 'subscription',
+  purchase: 'purchase',
+} as const;
+
+export type EducationBillingAccountLotsItem = {
+  credits: number;
+  expiresAt: string;
+  kind: EducationBillingAccountLotsItemKind;
+};
+
+export type EducationBillingAccountApiKeysItem = {
+  id: string;
+  name: string;
+  createdAt: string;
+  /** @nullable */
+  lastUsedAt: string | null;
+};
+
+export interface EducationBillingAccount {
+  tier: EducationBillingAccountTier;
+  status: string;
+  /** @nullable */
+  periodEnd: string | null;
+  /** @nullable */
+  billingPeriod: EducationBillingAccountBillingPeriod;
+  balance: number;
+  includedCredits: number;
+  purchasedCredits: number;
+  /** @nullable */
+  nextGrantAt: string | null;
+  /** @nullable */
+  subscriptionId: string | null;
+  canManage: boolean;
+  usage: EducationBillingAccountUsage;
+  lots: EducationBillingAccountLotsItem[];
+  apiKeys: EducationBillingAccountApiKeysItem[];
+}
+
 /**
  * Friendly processing error
  */
 export type EducationErrorResponse = EducationProblem;
+
+export type CreateEducationCheckout200 = {
+  url: string;
+  transactionId: string;
+};
+
+export type GetEducationCheckoutStatus200Status = typeof GetEducationCheckoutStatus200Status[keyof typeof GetEducationCheckoutStatus200Status];
+
+
+export const GetEducationCheckoutStatus200Status = {
+  pending: 'pending',
+  completed: 'completed',
+  canceled: 'canceled',
+} as const;
+
+export type GetEducationCheckoutStatus200 = {
+  status: GetEducationCheckoutStatus200Status;
+  balance: number;
+};
+
+export type CreateEducationPortal200 = {
+  url: string;
+};
+
+export type CreateEducationApiKey201 = {
+  id: string;
+  key: string;
+};
+
+export type RevokeEducationApiKey200 = {
+  success: boolean;
+};
 

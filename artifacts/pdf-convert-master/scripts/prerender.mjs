@@ -67,7 +67,9 @@ try {
   page.on("pageerror", error => pageErrors.push(String(error)));
   for (const route of [...publicPaths, "/404"]) {
     pageErrors = [];
-    await page.goto(origin + route, { waitUntil:"networkidle0", timeout:45000 });
+    // Readiness is the rendered route/metadata predicate below, not a quiet
+    // network. Background requests must not stall the production SEO build.
+    await page.goto(origin + route, { waitUntil:"domcontentloaded", timeout:45000 });
     await page.waitForFunction(route => document.documentElement.dataset.seoPath === route && (document.querySelector("#root main")?.textContent.length ?? 0) > 100, { timeout:15000 }, route);
     if (pageErrors.length) throw new Error(`${route}: ${pageErrors.join("; ")}`);
     const metadata = await page.evaluate(() => ({

@@ -20,14 +20,22 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  CreateEducationApiKey201,
+  CreateEducationCheckout200,
+  CreateEducationPortal200,
+  EducationApiKeyInput,
+  EducationBillingAccount,
+  EducationBillingConfig,
   EducationChatAnswer,
   EducationChatInput,
+  EducationCheckoutInput,
   EducationDeck,
   EducationErrorResponse,
   EducationEvent,
   EducationExamInput,
   EducationExamPaper,
   EducationExamRegenerateInput,
+  EducationExamRegenerateSectionInput,
   EducationExportInput,
   EducationExtraction,
   EducationFlashcardInput,
@@ -42,7 +50,9 @@ import type {
   EducationStarters,
   EducationStudySource,
   EducationTranslationInput,
-  HealthStatus
+  GetEducationCheckoutStatus200,
+  HealthStatus,
+  RevokeEducationApiKey200
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -71,6 +81,607 @@ const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKe
   }
   return result;
 };
+
+export const getGetEducationBillingConfigUrl = () => {
+
+
+
+
+  return `/api/education/billing/config`
+}
+
+export const getEducationBillingConfig = async ( options?: Parameters<typeof customFetch>[1]): Promise<EducationBillingConfig> => {
+
+  return customFetch<EducationBillingConfig>(getGetEducationBillingConfigUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEducationBillingConfigQueryKey = () => {
+    return [
+    `/api/education/billing/config`
+    ] as const;
+    }
+
+
+export const getGetEducationBillingConfigQueryOptions = <TData = Awaited<ReturnType<typeof getEducationBillingConfig>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationBillingConfig>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEducationBillingConfigQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEducationBillingConfig>>> = ({ signal }) => getEducationBillingConfig({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEducationBillingConfig>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEducationBillingConfigQueryResult = NonNullable<Awaited<ReturnType<typeof getEducationBillingConfig>>>
+export type GetEducationBillingConfigQueryError = ErrorType<unknown>
+
+
+
+export function useGetEducationBillingConfig<TData = Awaited<ReturnType<typeof getEducationBillingConfig>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationBillingConfig>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEducationBillingConfigQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetEducationBillingAccountUrl = () => {
+
+
+
+
+  return `/api/education/billing/account`
+}
+
+export const getEducationBillingAccount = async ( options?: Parameters<typeof customFetch>[1]): Promise<EducationBillingAccount> => {
+
+  return customFetch<EducationBillingAccount>(getGetEducationBillingAccountUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEducationBillingAccountQueryKey = () => {
+    return [
+    `/api/education/billing/account`
+    ] as const;
+    }
+
+
+export const getGetEducationBillingAccountQueryOptions = <TData = Awaited<ReturnType<typeof getEducationBillingAccount>>, TError = ErrorType<void>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationBillingAccount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEducationBillingAccountQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEducationBillingAccount>>> = ({ signal }) => getEducationBillingAccount({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEducationBillingAccount>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEducationBillingAccountQueryResult = NonNullable<Awaited<ReturnType<typeof getEducationBillingAccount>>>
+export type GetEducationBillingAccountQueryError = ErrorType<void>
+
+
+
+export function useGetEducationBillingAccount<TData = Awaited<ReturnType<typeof getEducationBillingAccount>>, TError = ErrorType<void>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationBillingAccount>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEducationBillingAccountQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateEducationCheckoutUrl = () => {
+
+
+
+
+  return `/api/education/billing/checkout`
+}
+
+export const createEducationCheckout = async (educationCheckoutInput: EducationCheckoutInput, options?: Parameters<typeof customFetch>[1]): Promise<CreateEducationCheckout200> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CreateEducationCheckout200>(getCreateEducationCheckoutUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(educationCheckoutInput)
+  }
+);}
+
+
+
+
+
+export const getCreateEducationCheckoutMutationKey = () => ['createEducationCheckout'] as const;
+
+export const getCreateEducationCheckoutMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEducationCheckout>>, TError,CreateEducationCheckoutMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createEducationCheckout>>, TError,CreateEducationCheckoutMutationVariables, TContext> => {
+
+const mutationKey = getCreateEducationCheckoutMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createEducationCheckout>>, CreateEducationCheckoutMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createEducationCheckout(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateEducationCheckoutMutationResult = NonNullable<Awaited<ReturnType<typeof createEducationCheckout>>>
+    export type CreateEducationCheckoutMutationBody = BodyType<EducationCheckoutInput>
+    export type CreateEducationCheckoutMutationError = ErrorType<void>
+    export type CreateEducationCheckoutMutationVariables = {data: BodyType<EducationCheckoutInput>}
+
+    export const useCreateEducationCheckout = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEducationCheckout>>, TError,CreateEducationCheckoutMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createEducationCheckout>>,
+        TError,
+        CreateEducationCheckoutMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateEducationCheckoutMutationOptions(options));
+    }
+
+export const getGetEducationCheckoutStatusUrl = (id: string,) => {
+
+
+
+
+  return `/api/education/billing/checkout/${id}`
+}
+
+export const getEducationCheckoutStatus = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<GetEducationCheckoutStatus200> => {
+
+  return customFetch<GetEducationCheckoutStatus200>(getGetEducationCheckoutStatusUrl(id),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEducationCheckoutStatusQueryKey = (id: string,) => {
+    return [
+    `/api/education/billing/checkout/${id}`
+    ] as const;
+    }
+
+
+export const getGetEducationCheckoutStatusQueryOptions = <TData = Awaited<ReturnType<typeof getEducationCheckoutStatus>>, TError = ErrorType<void>>(id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationCheckoutStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEducationCheckoutStatusQueryKey(id);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEducationCheckoutStatus>>> = ({ signal }) => getEducationCheckoutStatus(id, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: id !== null && id !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEducationCheckoutStatus>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEducationCheckoutStatusQueryResult = NonNullable<Awaited<ReturnType<typeof getEducationCheckoutStatus>>>
+export type GetEducationCheckoutStatusQueryError = ErrorType<void>
+
+
+
+export function useGetEducationCheckoutStatus<TData = Awaited<ReturnType<typeof getEducationCheckoutStatus>>, TError = ErrorType<void>>(
+ id: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEducationCheckoutStatus>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEducationCheckoutStatusQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateEducationPortalUrl = () => {
+
+
+
+
+  return `/api/education/billing/portal`
+}
+
+export const createEducationPortal = async ( options?: Parameters<typeof customFetch>[1]): Promise<CreateEducationPortal200> => {
+
+  return customFetch<CreateEducationPortal200>(getCreateEducationPortalUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getCreateEducationPortalMutationKey = () => ['createEducationPortal'] as const;
+
+export const getCreateEducationPortalMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEducationPortal>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createEducationPortal>>, TError,void, TContext> => {
+
+const mutationKey = getCreateEducationPortalMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createEducationPortal>>, void> = () => {
+
+
+          return  createEducationPortal(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateEducationPortalMutationResult = NonNullable<Awaited<ReturnType<typeof createEducationPortal>>>
+
+    export type CreateEducationPortalMutationError = ErrorType<unknown>
+
+
+    export const useCreateEducationPortal = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEducationPortal>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createEducationPortal>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getCreateEducationPortalMutationOptions(options));
+    }
+
+export const getCreateEducationApiKeyUrl = () => {
+
+
+
+
+  return `/api/education/billing/api-keys`
+}
+
+export const createEducationApiKey = async (educationApiKeyInput: EducationApiKeyInput, options?: Parameters<typeof customFetch>[1]): Promise<CreateEducationApiKey201> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<CreateEducationApiKey201>(getCreateEducationApiKeyUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(educationApiKeyInput)
+  }
+);}
+
+
+
+
+
+export const getCreateEducationApiKeyMutationKey = () => ['createEducationApiKey'] as const;
+
+export const getCreateEducationApiKeyMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEducationApiKey>>, TError,CreateEducationApiKeyMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createEducationApiKey>>, TError,CreateEducationApiKeyMutationVariables, TContext> => {
+
+const mutationKey = getCreateEducationApiKeyMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createEducationApiKey>>, CreateEducationApiKeyMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createEducationApiKey(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateEducationApiKeyMutationResult = NonNullable<Awaited<ReturnType<typeof createEducationApiKey>>>
+    export type CreateEducationApiKeyMutationBody = BodyType<EducationApiKeyInput>
+    export type CreateEducationApiKeyMutationError = ErrorType<void>
+    export type CreateEducationApiKeyMutationVariables = {data: BodyType<EducationApiKeyInput>}
+
+    export const useCreateEducationApiKey = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createEducationApiKey>>, TError,CreateEducationApiKeyMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createEducationApiKey>>,
+        TError,
+        CreateEducationApiKeyMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateEducationApiKeyMutationOptions(options));
+    }
+
+export const getRevokeEducationApiKeyUrl = (id: string,) => {
+
+
+
+
+  return `/api/education/billing/api-keys/${id}`
+}
+
+export const revokeEducationApiKey = async (id: string, options?: Parameters<typeof customFetch>[1]): Promise<RevokeEducationApiKey200> => {
+
+  return customFetch<RevokeEducationApiKey200>(getRevokeEducationApiKeyUrl(id),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getRevokeEducationApiKeyMutationKey = () => ['revokeEducationApiKey'] as const;
+
+export const getRevokeEducationApiKeyMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeEducationApiKey>>, TError,RevokeEducationApiKeyMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof revokeEducationApiKey>>, TError,RevokeEducationApiKeyMutationVariables, TContext> => {
+
+const mutationKey = getRevokeEducationApiKeyMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof revokeEducationApiKey>>, RevokeEducationApiKeyMutationVariables> = (props) => {
+          const {id} = props ?? {};
+
+          return  revokeEducationApiKey(id,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RevokeEducationApiKeyMutationResult = NonNullable<Awaited<ReturnType<typeof revokeEducationApiKey>>>
+
+    export type RevokeEducationApiKeyMutationError = ErrorType<unknown>
+    export type RevokeEducationApiKeyMutationVariables = {id: string}
+
+    export const useRevokeEducationApiKey = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeEducationApiKey>>, TError,RevokeEducationApiKeyMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof revokeEducationApiKey>>,
+        TError,
+        RevokeEducationApiKeyMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRevokeEducationApiKeyMutationOptions(options));
+    }
+
+export const getRegenerateEducationExamSectionUrl = () => {
+
+
+
+
+  return `/api/education/exam-paper/regenerate-section`
+}
+
+/**
+ * @summary Regenerate one section without changing the other questions
+ */
+export const regenerateEducationExamSection = async (educationExamRegenerateSectionInput: EducationExamRegenerateSectionInput, options?: Parameters<typeof customFetch>[1]): Promise<EducationExamPaper> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EducationExamPaper>(getRegenerateEducationExamSectionUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(educationExamRegenerateSectionInput)
+  }
+);}
+
+
+
+
+
+export const getRegenerateEducationExamSectionMutationKey = () => ['regenerateEducationExamSection'] as const;
+
+export const getRegenerateEducationExamSectionMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof regenerateEducationExamSection>>, TError,RegenerateEducationExamSectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof regenerateEducationExamSection>>, TError,RegenerateEducationExamSectionMutationVariables, TContext> => {
+
+const mutationKey = getRegenerateEducationExamSectionMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof regenerateEducationExamSection>>, RegenerateEducationExamSectionMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  regenerateEducationExamSection(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RegenerateEducationExamSectionMutationResult = NonNullable<Awaited<ReturnType<typeof regenerateEducationExamSection>>>
+    export type RegenerateEducationExamSectionMutationBody = BodyType<EducationExamRegenerateSectionInput>
+    export type RegenerateEducationExamSectionMutationError = ErrorType<unknown>
+    export type RegenerateEducationExamSectionMutationVariables = {data: BodyType<EducationExamRegenerateSectionInput>}
+
+    /**
+ * @summary Regenerate one section without changing the other questions
+ */
+export const useRegenerateEducationExamSection = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof regenerateEducationExamSection>>, TError,RegenerateEducationExamSectionMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof regenerateEducationExamSection>>,
+        TError,
+        RegenerateEducationExamSectionMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRegenerateEducationExamSectionMutationOptions(options));
+    }
 
 export const getTranslateEducationPdfUrl = () => {
 

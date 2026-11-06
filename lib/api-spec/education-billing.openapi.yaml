@@ -1,0 +1,219 @@
+openapi: 3.1.0
+info: { title: Education Billing, version: 1.0.0 }
+servers: [{ url: /api }]
+paths:
+  /education/billing/config:
+    get:
+      operationId: getEducationBillingConfig
+      tags: [education-billing]
+      responses:
+        "200":
+          description: Public catalog and browser-only Paddle token, never server credentials
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationBillingConfig" }
+  /education/billing/account:
+    get:
+      operationId: getEducationBillingAccount
+      tags: [education-billing]
+      security: [{ educationBillingBearer: [] }]
+      responses:
+        "200":
+          description: Separate Education wallet, paid access, usage and hashed-key metadata
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationBillingAccount" }
+        "401": { description: Sign in required }
+  /education/billing/checkout:
+    post:
+      operationId: createEducationCheckout
+      tags: [education-billing]
+      security: [{ educationBillingBearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EducationCheckoutInput" }
+      responses:
+        "200":
+          description: Server-owned transaction. Open its ID using Paddle.js; no entitlements granted yet.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, transactionId]
+                properties:
+                  url: { type: string }
+                  transactionId: { type: string }
+        "409": { description: Subscription or pending checkout already exists }
+        "503": { description: Paddle or checkout configuration unavailable }
+  /education/billing/checkout/{id}:
+    get:
+      operationId: getEducationCheckoutStatus
+      tags: [education-billing]
+      security: [{ educationBillingBearer: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          description: Ownership-checked, reconciled Paddle payment status
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, balance]
+                properties:
+                  status: { type: string, enum: [pending, completed, canceled] }
+                  balance: { type: integer }
+        "404": { description: Checkout not owned by this user }
+  /education/billing/portal:
+    post:
+      operationId: createEducationPortal
+      tags: [education-billing]
+      security: [{ educationBillingBearer: [] }]
+      responses:
+        "200":
+          description: Authenticated Paddle customer portal for this Education subscription
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url]
+                properties:
+                  url: { type: string }
+  /education/billing/api-keys:
+    post:
+      operationId: createEducationApiKey
+      tags: [education-billing]
+      security: [{ educationBillingBearer: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EducationApiKeyInput" }
+      responses:
+        "201":
+          description: Max-only API key, returned once; server retains only its SHA-256 hash
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, key]
+                properties:
+                  id: { type: string, format: uuid }
+                  key: { type: string }
+        "403": { description: Active Max subscription required }
+  /education/billing/api-keys/{id}:
+    delete:
+      operationId: revokeEducationApiKey
+      tags: [education-billing]
+      security: [{ educationBillingBearer: [] }]
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          description: Owned key revoked
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [success]
+                properties:
+                  success: { type: boolean }
+components:
+  securitySchemes:
+    educationBillingBearer: { type: http, scheme: bearer }
+  schemas:
+    EducationCheckoutInput:
+      type: object
+      required: [kind, id]
+      properties:
+        kind: { type: string, enum: [plan, pack] }
+        id: { type: string, enum: [basic, pro, max, small, medium, large] }
+        period: { type: string, enum: [month, year] }
+    EducationApiKeyInput:
+      type: object
+      required: [name]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 80 }
+    EducationBillingConfig:
+      type: object
+      required: [enabled, clientToken, environment, plans, packs, policies]
+      properties:
+        enabled: { type: boolean }
+        clientToken: { type: [string, "null"] }
+        environment: { type: string, enum: [live, sandbox] }
+        plans:
+          type: array
+          items:
+            type: object
+            required: [id, name, monthlyCents, yearlyCents, monthlyCredits, maxPages, quizDailyLimit, examDailyLimit, queue, commercialUse, apiAccess]
+            properties:
+              id: { type: string, enum: [basic, pro, max] }
+              name: { type: string }
+              monthlyCents: { type: integer }
+              yearlyCents: { type: integer }
+              monthlyCredits: { type: integer }
+              maxPages: { type: integer }
+              quizDailyLimit: { type: integer }
+              examDailyLimit: { type: integer }
+              queue: { type: string }
+              commercialUse: { type: boolean }
+              apiAccess: { type: boolean }
+        packs:
+          type: array
+          items:
+            type: object
+            required: [id, credits, priceCents, subscriberPriceCents]
+            properties:
+              id: { type: string, enum: [small, medium, large] }
+              credits: { type: integer }
+              priceCents: { type: integer }
+              subscriberPriceCents: { type: integer }
+        policies:
+          type: object
+          required: [purchasedExpiryMonths, monthlyCreditsRollover, otherToolsCredits, freeGenerationsPerDay]
+          properties:
+            purchasedExpiryMonths: { type: integer }
+            monthlyCreditsRollover: { type: boolean }
+            otherToolsCredits: { type: integer }
+            freeGenerationsPerDay: { type: integer }
+    EducationBillingAccount:
+      type: object
+      required: [tier, status, periodEnd, billingPeriod, balance, includedCredits, purchasedCredits, nextGrantAt, subscriptionId, canManage, usage, lots, apiKeys]
+      properties:
+        tier: { type: string, enum: [none, basic, pro, max] }
+        status: { type: string }
+        periodEnd: { type: [string, "null"] }
+        billingPeriod: { type: [string, "null"], enum: [month, year, null] }
+        balance: { type: integer }
+        includedCredits: { type: integer }
+        purchasedCredits: { type: integer }
+        nextGrantAt: { type: [string, "null"] }
+        subscriptionId: { type: [string, "null"] }
+        canManage: { type: boolean }
+        usage:
+          type: object
+          required: [quiz, exam]
+          properties:
+            quiz: { type: integer }
+            exam: { type: integer }
+        lots:
+          type: array
+          items:
+            type: object
+            required: [credits, expiresAt, kind]
+            properties:
+              credits: { type: integer }
+              expiresAt: { type: string }
+              kind: { type: string, enum: [subscription, purchase] }
+        apiKeys:
+          type: array
+          items:
+            type: object
+            required: [id, name, createdAt, lastUsedAt]
+            properties:
+              id: { type: string }
+              name: { type: string }
+              createdAt: { type: string }
+              lastUsedAt: { type: [string, "null"] }

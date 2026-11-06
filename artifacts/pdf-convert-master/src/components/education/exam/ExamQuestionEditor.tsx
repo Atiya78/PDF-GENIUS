@@ -19,9 +19,9 @@ function Scheme({ points, onChange, expected, disabled, id }: { points: Educatio
   </div>;
 }
 
-interface Props { q: EducationExamQuestion; index: number; marks: number; board: boolean; disabled: boolean; regenerating: boolean; onChange: (q: EducationExamQuestion) => void; onRegenerate: () => void }
+interface Props { q: EducationExamQuestion; index: number; marks: number; board: boolean; disabled: boolean; regenerating: boolean; onChange: (q: EducationExamQuestion) => void; onRegenerate: () => void; regenerateDisabled?: boolean }
 
-export function ExamQuestionEditor({ q, index, marks, board, disabled, regenerating, onChange, onRegenerate }: Props) {
+export function ExamQuestionEditor({ q, index, marks, board, disabled, regenerating, onChange, onRegenerate, regenerateDisabled }: Props) {
   const id = `q${index + 1}`;
   const off = disabled || regenerating;
   const set = (patch: Partial<EducationExamQuestion>) => onChange({ ...q, ...patch });
@@ -30,7 +30,7 @@ export function ExamQuestionEditor({ q, index, marks, board, disabled, regenerat
     <article className="rounded-xl border border-gray-200 bg-white p-4" aria-busy={regenerating} data-testid={`card-question-${q.id}`}>
       <header className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold text-gray-900">Question {index + 1} <span className="font-normal text-gray-500">({marks} {marks === 1 ? "mark" : "marks"}{q.sourcePages.length ? `, p. ${q.sourcePages.join(", ")}` : ""})</span></h3>
-        <button type="button" disabled={off} onClick={onRegenerate} className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold disabled:opacity-50" data-testid={`button-regenerate-${q.id}`}>
+        <button type="button" disabled={off || !!regenerateDisabled} onClick={onRegenerate} className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold disabled:opacity-50" data-testid={`button-regenerate-${q.id}`}>
           {regenerating ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <RefreshCw className="h-4 w-4" aria-hidden="true" />}{regenerating ? "Regenerating..." : "Regenerate"}
         </button>
       </header>

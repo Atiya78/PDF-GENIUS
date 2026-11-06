@@ -6,6 +6,7 @@ import {
   GetEducationHistoryParams, DeleteEducationHistoryParams,
   AskEducationPdfBody, GenerateEducationNotesBody, GenerateEducationStartersBody,
   GenerateEducationExamBody, RegenerateEducationExamQuestionBody,
+  RegenerateEducationExamSectionBody,
   GenerateEducationSummaryBody, GenerateEducationMindMapBody,
 } from "@workspace/api-zod";
 import { educationConfig, EducationError } from "./config";
@@ -19,8 +20,13 @@ import { beginEducationRequest, ensureEducationHistory, purgeEducationHistory } 
 import { logger } from "../lib/logger";
 import { askPdf, makeNotes, starterQuestions } from "./study";
 import type { EducationKind } from "./history";
-import { makeExam, regenerateExam, validateExamSettings, validateExamPaper } from "./exams";
+import { makeExam, regenerateExam, regenerateExamSection, validateExamSettings, validateExamPaper } from "./exams";
 import { streamTranslation } from "./translation";
+import { educationBillingRouter, paddleWebhook } from "./billing/routes";
+import { getEducationAccount, userForEducationKey } from "./billing/store";
+import { planFor } from "./billing/catalog";
+import { runEducationJob } from "./billing/queue";
+import { storage } from "../storage";
 
 export const educationApp = express();
 // Scope trusted-proxy behavior to Education; do not change existing endpoints.
@@ -30,11 +36,25 @@ educationApp.use((_req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   next();
 });
+// Paddle's signature is over exact raw bytes. Keep this before JSON parsing,
+// separate from the existing Dodo webhook/parser.
+educationApp.use("/billing/paddle/webhook", paddleWebhook);
 educationApp.use(express.json({ limit: "3mb" }));
 educationApp.use((req, res, next) => {
   if (req.headers.authorization) void authenticateUser(req, res, next);
+  else if (req.get("X-Education-API-Key")) {
+    void (async () => {
+      try {
+        const userId = await userForEducationKey(req.get("X-Education-API-Key")!);
+        const user = await storage.getUserById(userId);
+        if (!user) throw new EducationError("Education API account not found.", 401);
+        req.user = user; next();
+      } catch (error) { respondError(res, error); }
+    })();
+  }
   else next();
 });
+educationApp.use("/billing", educationBillingRouter);
 const historySweep = setInterval(() => {
   void purgeEducationHistory().catch(() => { logger.warn("Education history retention cleanup failed"); });
 }, 60_000);
@@ -43,12 +63,7 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: educationConfig.maxFileBytes, files: 1, fields: 1, fieldSize: 100, parts: 2 },
 });
-let extractions = 0, generations = 0, exports = 0;
-function reserveGeneration() {
-  if (generations >= educationConfig.maxConcurrentGenerations) throw new EducationError("AI is busy. Please retry shortly.", 503);
-  generations++;
-  return () => { generations--; };
-}
+let extractions = 0, exports = 0;
 
 function respondError(res: Response, error: unknown) {
   if (error instanceof Error && "status" in error && error.status === 413)
@@ -77,7 +92,8 @@ educationApp.post("/extract", (req, res) => {
       if (!/\.pdf$/i.test(req.file.originalname)) throw new EducationError("Wrong file type. Please upload a PDF file.");
       const input = ExtractEducationPdfBody.omit({ file: true }).safeParse(req.body);
       if (!input.success) throw new EducationError("Please enter a valid page range.");
-      res.json(await extractPdf(req.file.buffer, input.data.pageRange));
+      const tier = req.user ? (await getEducationAccount(req.user.id)).tier : "none";
+      res.json(await extractPdf(req.file.buffer, input.data.pageRange, planFor(tier).maxPages));
     } catch (failure) { respondError(res, failure); }
     finally {
       req.file?.buffer.fill(0); req.file = undefined; req.body = undefined;
@@ -86,19 +102,20 @@ educationApp.post("/extract", (req, res) => {
   });
 });
 
-async function generate(req: Request, res: Response, kind: Exclude<EducationKind, "translation">, regenerate = false) {
-  let refund: (() => Promise<void>) | undefined, reserved = false;
+const regenerateSectionSchema = RegenerateEducationExamSectionBody;
+async function generate(req: Request, res: Response, kind: Exclude<EducationKind, "translation">, regenerate = false, section = false) {
+  let refund: (() => Promise<void>) | undefined;
   let cancel: (() => Promise<void>) | undefined;
   try {
-    throttle(req, "generation-attempts", 20);
+    throttle(req, "generation-attempts", 180);
     const schema = { quiz: GenerateEducationQuizBody, flashcards: GenerateEducationFlashcardsBody,
       chat: AskEducationPdfBody, notes: GenerateEducationNotesBody, summary: GenerateEducationSummaryBody,
-      mindmap: GenerateEducationMindMapBody, exam: regenerate ? RegenerateEducationExamQuestionBody : GenerateEducationExamBody }[kind];
+      mindmap: GenerateEducationMindMapBody, exam: section ? regenerateSectionSchema : regenerate ? RegenerateEducationExamQuestionBody : GenerateEducationExamBody }[kind];
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) throw new EducationError("Choose valid options and upload a PDF or paste readable text.");
     validateSource(parsed.data.pages);
     if (kind === "exam") {
-      if (regenerate) validateExamPaper(RegenerateEducationExamQuestionBody.parse(parsed.data).paper);
+      if (regenerate) validateExamPaper(section ? regenerateSectionSchema.parse(parsed.data).paper : RegenerateEducationExamQuestionBody.parse(parsed.data).paper);
       else validateExamSettings(GenerateEducationExamBody.parse(parsed.data).settings);
     }
     assertAiReady();
@@ -106,18 +123,18 @@ async function generate(req: Request, res: Response, kind: Exclude<EducationKind
     const request = await beginEducationRequest(req, kind, content, requestId);
     if (request.cached) { res.json(request.cached); return; }
     cancel = request.cancel;
-    if (generations >= educationConfig.maxConcurrentGenerations) throw new EducationError("AI is busy. Please try again shortly.", 503);
-    generations++; reserved = true;
-    const access = await reserveEducationAccess(req);
+    const access = await reserveEducationAccess(req, { kind, pages: parsed.data.pages,
+      questions: kind === "quiz" ? GenerateEducationQuizBody.parse(parsed.data).count : 0, regeneration: regenerate });
     refund = access.refund;
-    const result = kind === "quiz" ? await generateQuiz(GenerateEducationQuizBody.parse(parsed.data))
+    const result = await runEducationJob(access.priority, async () => kind === "quiz" ? await generateQuiz(GenerateEducationQuizBody.parse(parsed.data))
       : kind === "flashcards" ? await generateFlashcards(GenerateEducationFlashcardsBody.parse(parsed.data))
       : kind === "chat" ? await askPdf(AskEducationPdfBody.parse(parsed.data))
-      : kind === "exam" ? regenerate ? await regenerateExam(RegenerateEducationExamQuestionBody.parse(parsed.data))
+      : kind === "exam" ? section ? await regenerateExamSection(regenerateSectionSchema.parse(parsed.data))
+        : regenerate ? await regenerateExam(RegenerateEducationExamQuestionBody.parse(parsed.data))
         : await makeExam(GenerateEducationExamBody.parse(parsed.data))
       : kind === "summary" || kind === "mindmap" ? await makeNotes({ ...GenerateEducationNotesBody.parse(parsed.data),
         style: kind === "summary" ? "summary" : "mind-map" })
-      : await makeNotes(GenerateEducationNotesBody.parse(parsed.data));
+      : await makeNotes(GenerateEducationNotesBody.parse(parsed.data)), () => res.destroyed);
     const useful = kind !== "chat" || !("found" in result) || result.found;
     if (!useful) { await refund(); refund = undefined; }
     await request.complete!(result, access.chargeCredit && useful);
@@ -131,7 +148,6 @@ async function generate(req: Request, res: Response, kind: Exclude<EducationKind
     respondError(res, error);
   } finally {
     req.body = undefined; // No PDF bytes or extracted text enters persistent storage.
-    if (reserved) generations--;
   }
 }
 educationApp.post("/quiz", (req, res) => generate(req, res, "quiz"));
@@ -142,18 +158,24 @@ educationApp.post("/summary", (req, res) => generate(req, res, "summary"));
 educationApp.post("/mind-map", (req, res) => generate(req, res, "mindmap"));
 educationApp.post("/exam-paper", (req, res) => generate(req, res, "exam"));
 educationApp.post("/exam-paper/regenerate", (req, res) => generate(req, res, "exam", true));
-educationApp.post("/translate", (req, res) => streamTranslation(req, res, reserveGeneration, respondError));
+educationApp.post("/exam-paper/regenerate-section", (req, res) => generate(req, res, "exam", true, true));
+educationApp.post("/translate", async (req, res) => {
+  try {
+    const tier = req.user ? (await getEducationAccount(req.user.id)).tier : "none";
+    await runEducationJob(tier === "max" ? 2 : tier === "pro" ? 1 : 0,
+      () => streamTranslation(req, res, () => () => {}, respondError), () => res.destroyed);
+  } catch (error) { respondError(res, error); }
+});
 educationApp.post("/ask-pdf/starters", async (req, res) => {
-  let reserved = false;
   try {
     throttle(req, "starters", 8);
     const input = GenerateEducationStartersBody.safeParse(req.body);
     if (!input.success) throw new EducationError("Upload a PDF and select a language.");
-    if (generations >= educationConfig.maxConcurrentGenerations) throw new EducationError("AI is busy. Please retry shortly.", 503);
-    generations++; reserved = true;
-    res.json(await starterQuestions(input.data));
+    const tier = req.user ? (await getEducationAccount(req.user.id)).tier : "none";
+    res.json(await runEducationJob(tier === "max" ? 2 : tier === "pro" ? 1 : 0,
+      () => starterQuestions(input.data), () => res.destroyed));
   } catch (error) { respondError(res, error); }
-  finally { req.body = undefined; if (reserved) generations--; }
+  finally { req.body = undefined; }
 });
 educationApp.get("/font", async (_req, res) => {
   try {

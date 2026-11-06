@@ -1,7 +1,9 @@
-import { createHmac } from "node:crypto";
+import { createHmac, createHash } from "node:crypto";
 import { pool } from "@workspace/db";
 import type { Request } from "express";
 import { EducationError, educationConfig } from "./config";
+import { getEducationAccount, reservePaidUsage, type EducationCharge } from "./billing/store";
+import { usagePrice } from "./billing/catalog";
 
 let ready: Promise<unknown> | undefined;
 function ensureUsageTable() {
@@ -37,15 +39,28 @@ export async function reserveGeneration(req: Request): Promise<() => Promise<voi
   }
 }
 
-export async function reserveEducationAccess(req: Request) {
+export async function reserveEducationAccess(req: Request, options: {
+  kind?: string; pages?: unknown[]; questions?: number; regeneration?: boolean;
+} = {}): Promise<{ refund: () => Promise<void>; chargeCredit: false | EducationCharge; priority: number }> {
+  const kind = options.kind ?? "other";
+  const pages = options.pages ?? [];
+  const tier = req.user ? (await getEducationAccount(req.user.id)).tier : "none";
+  const price = usagePrice(tier, kind, pages.length, options.questions ?? 0, options.regeneration);
+  // Premium tools follow their own Education prices and included allowances.
+  // General-site plans and the Dodo/mobile wallet never grant these benefits.
+  if (kind === "quiz" || kind === "exam") {
+    if (!req.user) throw new EducationError("Please sign in and choose Education credits or an Education subscription to use this tool.", 402);
+    const access = await reservePaidUsage(req.user.id, kind, pages, options.questions ?? 0,
+      createHash("sha256").update(JSON.stringify(pages)).digest("hex"), options.regeneration);
+    return { refund: access.refund, chargeCredit: access.charge, priority: access.priority };
+  }
   try {
-    return { refund: await reserveGeneration(req), chargeCredit: false };
+    return { refund: await reserveGeneration(req), chargeCredit: false, priority: price.priority };
   } catch (error) {
     if (!(error instanceof EducationError) || error.status !== 429 || !req.user) throw error;
-    const available = await pool.query("SELECT credits FROM users WHERE id = $1", [req.user.id]);
-    if (!available.rows[0]?.credits)
-      throw new EducationError("You've used your five free generations today and have no credits left. Add credits or return tomorrow (UTC).", 402);
-    return { refund: async () => {}, chargeCredit: true };
+    const access = await reservePaidUsage(req.user.id, kind, pages, options.questions ?? 0,
+      createHash("sha256").update(JSON.stringify(pages)).digest("hex"));
+    return { refund: access.refund, chargeCredit: access.charge, priority: access.priority };
   }
 }
 

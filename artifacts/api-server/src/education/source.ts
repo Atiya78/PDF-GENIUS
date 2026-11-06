@@ -29,13 +29,15 @@ export function validateSource(pages: EducationSourcePage[]): void {
     throw new EducationError("Duplicate source pages. Please upload the PDF again.");
 }
 
-export async function extractPdf(buffer: Buffer, range?: string): Promise<EducationExtraction> {
+export async function extractPdf(buffer: Buffer, range?: string, uploadPageLimit = educationConfig.maxPages): Promise<EducationExtraction> {
   if (buffer.length > educationConfig.maxFileBytes) throw new EducationError("File too large. Upload a PDF up to 20 MB.", 413);
   if (!buffer.subarray(0, 1024).toString("latin1").includes("%PDF-"))
     throw new EducationError("Please upload a valid PDF file.");
   const parser = new PDFParse({ data: new Uint8Array(buffer) });
   try {
     const info = await parser.getInfo();
+    if (info.total > uploadPageLimit)
+      throw new EducationError(`Your Education access allows PDFs up to ${uploadPageLimit} pages per upload. Choose a smaller PDF or upgrade your Education plan.`, 403);
     if (!range?.trim() && info.total > educationConfig.maxPages)
       throw new EducationError("Select up to 500 pages at a time using the page range.", 413);
     const selected = parsePageRange(range, info.total);

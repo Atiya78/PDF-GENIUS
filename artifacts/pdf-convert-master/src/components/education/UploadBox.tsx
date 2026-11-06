@@ -16,7 +16,7 @@ export function UploadBox({ src, disabled, pdfOnly }: { src: SourceState; disabl
     <div>
       {!pdfOnly && <div role="tablist" aria-label="Source" className="mb-4 flex gap-2">{tab("upload", "Upload PDF")}{tab("paste", "Paste text")}</div>}
       <p className="mb-4 rounded-lg bg-gray-50 p-3 text-xs text-gray-600" data-testid="text-ai-disclosure">
-        Privacy: PDFs and extracted source text are processed in memory, not stored as uploaded-source files. Text is sent to the configured AI provider, whose retention policies apply. Do not upload confidential material. Signed-in accounts save generated results, including quoted citations, for 24 hours. Flashcard progress is saved on this device; chat sessions and note edits last only while this page remains open. Five successful generations per day are free across Education tools, then one credit per successful generation for signed-in users. Failed generations and unsupported Q&A answers do not spend credits.
+        Privacy: PDFs and extracted source text are processed in memory, not stored as uploaded-source files. Text is sent to the configured AI provider, whose retention policies apply. Do not upload confidential material. Signed-in accounts save generated results, including quoted citations, for 24 hours. Flashcard progress is saved on this device; chat sessions and note edits last only while this page remains open. Quizzes and exam papers use Education credits (see Education plans). Other tools give five free successful generations per day, then one Education credit each. Failed generations and unsupported Q&A answers do not spend credits.
       </p>
       {upload ? (
         <div className="space-y-4">
@@ -27,7 +27,7 @@ export function UploadBox({ src, disabled, pdfOnly }: { src: SourceState; disabl
               <button type="button" disabled={disabled} onClick={() => src.setFile(null)} aria-label="Remove file" className="rounded-lg p-2 text-gray-500 hover:bg-gray-200 disabled:opacity-50" data-testid="button-remove-file"><X className="h-4 w-4" /></button>
             </div>
           ) : (
-            <UploadDropzone acceptedFormats={[".pdf"]} maxFileSize={EDUCATION_LIMITS.maxMb} disabled={disabled} title="Drop your lecture PDF here" subtitle={`Up to ${EDUCATION_LIMITS.maxMb} MB and ${EDUCATION_LIMITS.maxPages} pages`} onFiles={(f) => src.setFile(f[0])} testId="dropzone-education" />
+            <UploadDropzone acceptedFormats={[".pdf"]} maxFileSize={EDUCATION_LIMITS.maxMb} disabled={disabled} title="Drop your lecture PDF here" subtitle={`Up to ${EDUCATION_LIMITS.maxMb} MB ; page cap 50 (free/Basic), 100 (Pro), ${EDUCATION_LIMITS.maxPages} (Max)`} onFiles={(f) => src.setFile(f[0])} testId="dropzone-education" />
           )}
           <div>
             <label htmlFor="page-range" className="mb-1 block text-sm font-semibold text-gray-900">Page range <span className="font-normal text-gray-500">(optional)</span></label>

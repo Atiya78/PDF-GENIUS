@@ -37,14 +37,14 @@ export const EDUCATION_CATEGORIES: { id: "all" | EducationCategory; label: strin
   { id: "translate", label: "Translate" },
 ];
 
-export const EDUCATION_LIMITS = { maxMb: 20, maxPages: 500, maxPasteChars: 250000 } as const;
+export const EDUCATION_LIMITS = { maxMb: 20, maxPages: 300, maxPasteChars: 250000 } as const;
 
 const QUIZ_FAQS: Faq[] = [
   { q: "How does the quiz generator work?", a: "It reads the text of your PDF (or the text you paste) and asks an AI model to write questions using only that material. Each question carries a short explanation and, for PDFs, the page it came from." },
   { q: "Can it read scanned PDFs?", a: "A scan needs OCR first. If no readable text is found, the tool links to our OCR tool. OCR results can be imperfect, so review the text before generating study material." },
   { q: "How are short answers marked?", a: "Short answer and fill-in-the-blank responses are compared with the model answer after ignoring case, spacing and punctuation. A correct answer worded differently may be marked wrong, so you can override the mark yourself." },
   { q: "Can I edit questions before exporting?", a: "Yes. Change the type, wording, options, correct answer and explanation, or delete a question. Exports always use your edited version." },
-  { q: "What are the limits?", a: "Upload up to 20 MB, select up to 500 pages, and use up to 250,000 source characters. Generate 5–50 questions. Five successful generations per day are free across Education tools, resetting at midnight UTC; signed-in users can spend one credit for each additional successful generation." },
+  { q: "What are the limits?", a: "Upload up to 20 MB and 250,000 source characters. Page caps per document: 50 pages without a plan or on Basic, 100 on Pro, 300 on Max. Generate 5 to 20 questions without a plan or on Basic, up to 50 on Pro and Max. A quiz costs 5 Education credits plus 1 per 10 questions above 20 and 1 per 20 pages above 20; Pro and Max include 30 quizzes per day. See Education plans for details." },
   { q: "Is my PDF stored?", a: "PDF Genius does not store the PDF or its extracted text, and your browser never saves them. The extracted text is sent to the configured AI provider to write the questions, and that provider\u2019s own retention policies apply." },
 ];
 
@@ -61,7 +61,7 @@ const CHAT_FAQS: Faq[] = [
   { q: "How are answers grounded?", a: "Relevant passages from your PDF are retrieved for each question. Answers carry page citations with a short quote, and you can open the cited page from your own file." },
   { q: "What if the PDF does not contain the answer?", a: "The answer is marked as not found in the document instead of guessing." },
   { q: "Is the PDF kept?", a: "Your PDF and its extracted pages stay in this tab's memory for the session only. They are never written to browser storage, and closing or resetting the chat discards them." },
-  { q: "What does each question cost?", a: "Each answered question counts as one successful generation: five are free per day across the education tools, then signed-in users spend one credit. Failed questions are not charged, and a retry never charges twice." },
+  { q: "What does each question cost?", a: "Each answered question counts as one successful generation: five are free per day, then signed-in users spend one Education credit. Failed questions are not charged, and a retry never charges twice." },
   { q: "Why does a saved answer have no page preview?", a: "History stores only the answer, never your PDF. Upload the original PDF and start a session to preview pages for new questions." },
   { q: "How long can a chat be?", a: "Up to 100 questions per session. The last six exchanges are sent as context for follow-ups." },
 ];
@@ -72,14 +72,14 @@ const NOTES_FAQS: Faq[] = [
   { q: "Are my edits saved?", a: "Edits live in this page only and are not saved automatically. Account history keeps the original generated notes for 24 hours. Export to keep your edited version." },
   { q: "What can I export?", a: "PDF, Word (DOCX), Markdown, or print directly." },
   { q: "Are source pages shown?", a: "Each section lists the PDF pages it was built from when you upload a PDF." },
-  { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
+  { q: "What are the limits?", a: "Upload up to 20 MB and 250,000 source characters. Page caps per document: 50 pages without a plan or on Basic, 100 on Pro, 300 on Max. Five successful generations per day are free, then each uses one Education credit." },
 ];
 
 const TRANSLATE_FAQS: Faq[] = [
   { q: "Which directions are supported?", a: "Bangla to English, English to Bangla, or auto-detect. Auto-detect picks the language for each page." },
   { q: "How does page-by-page translation work?", a: "Each page is translated separately and streamed back, so you can read finished pages while the rest continue. Headings, lists, paragraphs and tables (as text tables) keep their structure." },
   { q: "What if one page fails?", a: "Pages that succeed are kept in this tab. Retry only the failed page; finished pages are not translated or charged again." },
-  { q: "What does it cost?", a: "A whole document counts as one successful generation from the shared daily allowance (five free per day, then one credit for signed-in users). A partial result is never charged, and page retries do not charge twice." },
+  { q: "What does it cost?", a: "A whole document counts as one successful generation: five are free per day, then one Education credit for signed-in users. A partial result is never charged, and page retries do not charge twice." },
   { q: "What can I export?", a: "A translated PDF with a Bangla font embedded, or DOCX. Exports use the translated pages you currently have." },
   { q: "Is my PDF stored?", a: "No. The original pages stay in this tab's memory only and are discarded when you start over or leave. Text is sent to the configured AI provider, whose retention policies apply." },
 ];
@@ -88,9 +88,9 @@ const EXAM_FAQS: Faq[] = [
   { q: "What do I enter?", a: "Institution, exam name, subject, class, total marks, time, and up to three sections: MCQ, short questions and broad or creative questions, each with a count and marks per question." },
   { q: "How are marks checked?", a: "The section marks (count times marks per question) must add up exactly to the total marks before you can generate. Edited papers are re-checked before export." },
   { q: "What is Bangladesh board style?", a: "Creative questions with a stimulus and four parts (ka, kha, ga, gha) worth 1, 2, 3 and 4 marks. Each creative question is worth 10 marks." },
-  { q: "Can I regenerate one question?", a: "Yes. Each question has its own Regenerate button, which replaces only that question and counts as one successful generation. Your other edits are kept." },
+  { q: "Can I regenerate one question?", a: "Yes. Each question has its own Regenerate button, which replaces only that question for 3 Education credits. Each section also has a Regenerate section button (3 credits) that replaces only that section. Your other sections and edits are kept." },
   { q: "Is the answer key separate?", a: "Yes. Export the question paper and the answer key with marking scheme as separate PDF or DOCX files, or print either one." },
-  { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
+  { q: "What are the limits?", a: "Upload up to 20 MB and 250,000 source characters. Page caps per document: 50 pages without a plan or on Basic, 100 on Pro, 300 on Max. An exam paper costs 15 Education credits plus 3 per 50 pages above 50. Max includes 10 exam papers per day; other plans pay with credits." },
 ];
 
 const SUMMARY_FAQS: Faq[] = [
@@ -98,7 +98,7 @@ const SUMMARY_FAQS: Faq[] = [
   { q: "Can I edit it?", a: "Yes. Edit the title, headings, text and takeaways. Exports use your latest edits." },
   { q: "What can I export?", a: "PDF, Word (DOCX), Markdown, or print directly." },
   { q: "Are edits saved?", a: "Edits stay in this page. Account history keeps the original generated summary for 24 hours." },
-  { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
+  { q: "What are the limits?", a: "Upload up to 20 MB and 250,000 source characters. Page caps per document: 50 pages without a plan or on Basic, 100 on Pro, 300 on Max. Five successful generations per day are free, then each uses one Education credit." },
 ];
 
 const MIND_FAQS: Faq[] = [
@@ -106,7 +106,7 @@ const MIND_FAQS: Faq[] = [
   { q: "Can I expand and collapse branches?", a: "Yes. Open or close any branch, or expand and collapse the whole tree." },
   { q: "Can I edit it?", a: "Yes. The outline below the map is editable and the map updates when you apply your changes." },
   { q: "What can I export?", a: "PDF, Word (DOCX), Markdown, or print the outline." },
-  { q: "What are the limits?", a: "Up to 20 MB, 500 selected pages and 250,000 source characters. Each successful generation uses the shared daily allowance." },
+  { q: "What are the limits?", a: "Upload up to 20 MB and 250,000 source characters. Page caps per document: 50 pages without a plan or on Basic, 100 on Pro, 300 on Max. Five successful generations per day are free, then each uses one Education credit." },
 ];
 
 export const educationTools: EducationTool[] = [
@@ -124,7 +124,7 @@ export const getEducationTool = (id: string) => educationTools.find((t) => t.id 
 
 export const EDUCATION_HUB_FAQS: Faq[] = [
   { q: "What is the Education Zone?", a: "A set of study tools that turn your own lecture notes and textbook PDFs into quizzes, exam papers, flashcards, notes, summaries, mind maps and translations." },
-  { q: "Is it free?", a: "Five successful generations per day are free across Education tools. Signed-in users may spend one credit for each additional successful generation or answered study question. A translated document counts once, not per page. Failed generations do not spend credits. Uploads are limited to 20 MB, 500 selected pages and 250,000 source characters." },
+  { q: "Is it free?", a: "Quizzes and exam papers use Education credits from a plan or pack (Pro and Max include daily quiz allowances, Max also exam papers). Other tools give five free successful generations per day, then one Education credit each. A translated document counts once, not per page. Failed generations do not spend credits. Upload up to 20 MB and 250,000 source characters. Page caps per document: 50 pages without a plan or on Basic, 100 on Pro, 300 on Max." },
   { q: "Are my files private?", a: "PDF Genius does not save PDFs or extracted text. Text is sent to the configured AI provider, whose retention policies apply. Signed-in accounts save generated results for 24 hours; flashcard progress and local edits are saved in this browser." },
   { q: "Does the AI make things up?", a: "The AI is told to use only your document. Language models can still make mistakes, so check answers against your source." },
   { q: "Does it work with Bangla?", a: "Yes. Write output in English, Bangla, or the language of your document, translate whole PDFs in either direction, or build Bangladesh board style creative question papers." },

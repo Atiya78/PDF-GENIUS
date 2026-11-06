@@ -11,6 +11,36 @@ tags:
   - name: health
     description: Health operations
 paths:
+  /education/billing/config:
+    $ref: "./education-billing.openapi.yaml#/paths/~1education~1billing~1config"
+  /education/billing/account:
+    $ref: "./education-billing.openapi.yaml#/paths/~1education~1billing~1account"
+  /education/billing/checkout:
+    $ref: "./education-billing.openapi.yaml#/paths/~1education~1billing~1checkout"
+  /education/billing/checkout/{id}:
+    $ref: "./education-billing.openapi.yaml#/paths/~1education~1billing~1checkout~1{id}"
+  /education/billing/portal:
+    $ref: "./education-billing.openapi.yaml#/paths/~1education~1billing~1portal"
+  /education/billing/api-keys:
+    $ref: "./education-billing.openapi.yaml#/paths/~1education~1billing~1api-keys"
+  /education/billing/api-keys/{id}:
+    $ref: "./education-billing.openapi.yaml#/paths/~1education~1billing~1api-keys~1{id}"
+  /education/exam-paper/regenerate-section:
+    post:
+      operationId: regenerateEducationExamSection
+      tags: [education]
+      summary: Regenerate one section without changing the other questions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EducationExamRegenerateSectionInput" }
+      responses:
+        "200":
+          description: Complete updated exam paper and marking key
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/EducationExamPaper" }
   /education/translate:
     post:
       operationId: translateEducationPdf
@@ -342,6 +372,18 @@ components:
           schema:
             $ref: "#/components/schemas/EducationProblem"
   schemas:
+    EducationExamRegenerateSectionInput:
+      type: object
+      required: [pages, paper, sectionId]
+      properties:
+        pages:
+          type: array
+          minItems: 1
+          maxItems: 300
+          items: { $ref: "#/components/schemas/EducationSourcePage" }
+        paper: { $ref: "#/components/schemas/EducationExamPaper" }
+        sectionId: { type: string, minLength: 1, maxLength: 100 }
+        requestId: { type: string, format: uuid }
     EducationProblem:
       type: object
       required: [error]

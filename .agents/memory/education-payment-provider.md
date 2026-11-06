@@ -7,7 +7,7 @@ Use Paddle for Education Zone payments only. Keep Dodo Payments for the rest of 
 
 **Why:** The owner explicitly requested this provider split; connecting Paddle is not authorization to replace existing Dodo subscriptions or general credit checkout.
 
-**How to apply:** Keep Education checkout and fulfillment scoped separately. Clarify whether Education balances are separate before changing the shared credit wallet or spending rules.
+**How to apply:** Keep Education checkout and fulfillment scoped separately. Do not repurpose the general wallet or Dodo subscription fields.
 
 Education credits are Education-only, separate from the general wallet. Education has its own Basic, Pro, and Max subscriptions through Paddle.
 
@@ -28,4 +28,10 @@ Education credits are Education-only, separate from the general wallet. Educatio
 - Max: quizzes included up to 30/day; exams included up to 10/day; maximum 300 pages per upload; fastest/priority queue, commercial use, and API access.
 - Non-subscriber pack buyers follow Basic credit costs.
 
-Monthly-credit rollover/expiry, other Education tools' costs, and behavior after a fair-use cap have not been explicitly specified. Do not silently present invented rules as owner-approved.
+## Implementation defaults for unspecified rules
+
+Included credits roll over within the already-paid billing period, not beyond it. Annual payments grant credits monthly, including missed months when the user next visits. Other tools retain five free successful generations per day, then cost one Education credit. Included-tool daily caps stop further generation until midnight UTC, rather than silently switching to paid credits. These are implementation defaults, not additional owner-specified commercial terms.
+
+**Why:** The owner specified pack expiry and premium-tool tiers but not these edge cases. These defaults preserve the existing free allowance while preventing unexpected charges or granting unpaid future months.
+
+**How to apply:** Keep these policies visible on Education pricing. Change them deliberately if the owner provides different rules; do not describe them as explicit user requirements.

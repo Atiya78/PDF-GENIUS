@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { FileQuestion, Loader2 } from "lucide-react";
+import { FileQuestion, Loader2, RefreshCw } from "lucide-react";
+import { Link } from "wouter";
 import { generateEducationExam, regenerateEducationExamQuestion, useExtractEducationPdf } from "@workspace/api-client-react";
 import type { EducationExamPaper, EducationExamSettings, EducationSourcePage } from "@workspace/api-client-react";
 import { EducationToolLayout } from "@/components/education/EducationToolLayout";
@@ -16,6 +17,7 @@ import { educationHeaders, requestIdentity } from "@/lib/education/requests";
 import { requestExport, printStudyMaterial, slugify } from "@/lib/education/exportHelpers";
 import { marksFor, validatePaper, validateSettings } from "@/lib/education/examValidation";
 import { useAuth } from "@/contexts/AuthContext";
+import { CAP_MESSAGE, EXAM_QUESTION_REGEN_CREDITS, EXAM_SECTION_REGEN_CREDITS, countRangePages, examCredits, includedStatus, regenerateExamSection, useEducationAccount, useEducationConfig } from "@/lib/education/billing";
 
 const btn = "rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50";
 type ExportKind = "exam-paper" | "exam-key";
@@ -23,7 +25,10 @@ type ExportKind = "exam-paper" | "exam-key";
 export function ExamPaperGeneratorPage(): JSX.Element {
   const src = useSourceInput();
   const extract = useExtractEducationPdf();
-  const { user, refreshUser } = useAuth();
+  const { user, token, isAuthenticated, refreshUser } = useAuth();
+  const { account, refresh: refreshAccount } = useEducationAccount(isAuthenticated ? token : null);
+  const config = useEducationConfig();
+  const sectionRequest = useRef<{ signature: string; id: string } | null>(null);
   const owner = user?.id ?? "guest";
   const previousOwner = useRef(owner);
   const request = useRef<{ signature: string; id: string } | null>(null);
@@ -42,14 +47,16 @@ export function ExamPaperGeneratorPage(): JSX.Element {
   const [exportBusy, setExportBusy] = useState(false);
   const [version, setVersion] = useState(0);
 
-  const reset = () => { setPaper(null); setError(null); setWarnings([]); setRegenError(null); setExportErrors([]); src.clear(); request.current = null; regenRequest.current = null; pagesRef.current = null; setVersion((v) => v + 1); };
+  const reset = () => { setPaper(null); setError(null); setWarnings([]); setRegenError(null); setExportErrors([]); src.clear(); request.current = null; regenRequest.current = null; sectionRequest.current = null; pagesRef.current = null; setVersion((v) => v + 1); };
   const resetRef = useRef(reset); resetRef.current = reset;
   useEffect(() => { if (previousOwner.current !== owner) { previousOwner.current = owner; resetRef.current(); } }, [owner]);
   useEffect(() => () => { pagesRef.current = null; }, []);
 
   const settingsErrors = useMemo(() => validateSettings(settings), [settings]);
   const running = phase !== "idle" || regenId !== null;
-  const can = src.canSubmit && !running && settingsErrors.length === 0;
+  const examInc = includedStatus(account, config, "exam");
+  const examCapped = examInc.capped;
+  const can = src.canSubmit && !running && settingsErrors.length === 0 && !examCapped;
   const paperErrors = useMemo(() => (paper ? validatePaper(paper) : []), [paper]);
 
   const run = async () => {
@@ -71,8 +78,9 @@ export function ExamPaperGeneratorPage(): JSX.Element {
   };
 
   const regenerate = async (questionId: string) => {
-    if (busy.current || !paper) return;
-    if (!window.confirm("Regenerate this question? Your edits to it are replaced and it counts as one successful generation from your daily allowance.")) return;
+    if (busy.current || !paper || examCapped) return;
+    const qNote = examInc.included ? `This uses 1 of your ${examInc.left} remaining included exam generations today.` : `This costs ${EXAM_QUESTION_REGEN_CREDITS} Education credits, charged only if it succeeds.`;
+    if (!window.confirm(`Regenerate this one question? Your edits to it are replaced. ${qNote}`)) return;
     busy.current = true; setRegenId(questionId); setRegenError(null);
     const caller = educationHeaders().Authorization;
     try {
@@ -85,10 +93,48 @@ export function ExamPaperGeneratorPage(): JSX.Element {
       const updated = await regenerateEducationExamQuestion({ pages, paper, questionId, requestId: requestIdentity(regenRequest, { questionId, paper }) }, { headers: educationHeaders() });
       if (educationHeaders().Authorization !== caller) return;
       regenRequest.current = null; setPaper(updated); setExportErrors([]);
-      void refreshUser();
+      void refreshUser(); void refreshAccount();
     } catch (e) { setRegenError(describeError(e)); }
     finally { setRegenId(null); busy.current = false; }
   };
+
+  const regenerateSection = async (sectionId: string) => {
+    if (busy.current || !paper || examCapped) return;
+    const note = examInc.included ? `This uses 1 of your ${examInc.left} remaining included exam generations today.` : `This costs ${EXAM_SECTION_REGEN_CREDITS} Education credits, charged only if it succeeds.`;
+    if (!window.confirm(`Regenerate every question in this section? Edits in this section are replaced; other sections are kept. ${note}`)) return;
+    busy.current = true; setRegenId(`section:${sectionId}`); setRegenError(null);
+    const caller = educationHeaders().Authorization;
+    try {
+      let pages = pagesRef.current;
+      if (!pages) {
+        if (!src.canSubmit) throw new Error("Add the source PDF or text again above, then regenerate this section.");
+        pages = (await readSourcePages(src, extract.mutateAsync)).pages;
+        pagesRef.current = pages;
+      }
+      const updated = await regenerateExamSection({ pages, paper, sectionId, requestId: requestIdentity(sectionRequest, { sectionId, paper }) }, educationHeaders());
+      if (educationHeaders().Authorization !== caller) return;
+      sectionRequest.current = null;
+      // Keep other sections exactly as the user has them.
+      setPaper((cur) => cur ? { ...updated, title: cur.title, questions: [
+        ...cur.questions.filter((q) => q.sectionId !== sectionId),
+        ...updated.questions.filter((q) => q.sectionId === sectionId),
+      ].sort((a, b) => cur.settings.sections.findIndex((x) => x.id === a.sectionId) - cur.settings.sections.findIndex((x) => x.id === b.sectionId)) } : updated);
+      setExportErrors([]);
+      void refreshUser(); void refreshAccount();
+    } catch (e) { setRegenError(describeError(e)); }
+    finally { setRegenId(null); busy.current = false; }
+  };
+
+  const knownPages = src.mode === "paste" ? (src.text.trim() ? 1 : null) : countRangePages(src.normalized);
+  const costLine = !isAuthenticated
+    ? "Exam papers use Education credits. Sign in to see your balance."
+    : examCapped
+      ? CAP_MESSAGE("exam")
+      : examInc.included
+      ? `Included in your plan: ${examInc.left} exam generations left today (resets at midnight UTC). No credits are used.`
+      : knownPages !== null
+        ? `Estimated cost: ${examCredits(knownPages)} Education credits for ${knownPages} page${knownPages === 1 ? "" : "s"}. Charged only on success.`
+        : "Estimated cost: 15 credits for up to 50 pages, plus 3 per 50 pages above 50. Set a page range for an exact figure.";
 
   const doExport = async (kind: ExportKind, format: "pdf" | "docx" | "print") => {
     if (exporting.current || !paper) return;
@@ -109,7 +155,7 @@ export function ExamPaperGeneratorPage(): JSX.Element {
       <button type="button" onClick={run} disabled={!can} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f7433d] px-8 text-base font-semibold text-white shadow-sm hover:bg-[#e03832] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" data-testid="button-generate-exam">
         {phase !== "idle" ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <FileQuestion className="h-5 w-5" aria-hidden="true" />}{phase !== "idle" ? "Generating..." : "Generate paper"}
       </button>
-      <p className="text-xs text-gray-500">One successful generation uses your normal daily allowance. Regenerating a single question also counts as one.</p>
+      <p className="text-xs text-gray-600" data-testid="text-exam-cost">{costLine}{account ? ` Balance: ${account.balance.toLocaleString()} credits.` : ""} {examInc.included ? "Regenerating a section or question also uses the included allowance." : "Regenerating a section or a single question costs 3 credits each."} <Link href="/education/pricing" className="font-semibold text-[#d9322c] underline">Pricing</Link></p>
       {paper && <p className="text-xs text-gray-500">Generating again replaces the paper below, including your edits.</p>}
       {!src.canSubmit && !running && <p className="text-xs text-gray-500">Add a PDF or paste some text to continue.</p>}
       <GenerationProgress phase={phase} noun="exam paper" skipReading={src.mode === "paste"} />
@@ -153,8 +199,10 @@ export function ExamPaperGeneratorPage(): JSX.Element {
             {paper.settings.sections.map((s) => {
               const qs = paper.questions.map((q, i) => [q, i] as const).filter(([q]) => q.sectionId === s.id);
               return <section key={s.id} aria-label={`${s.kind} section`}>
-                <h2 className="mb-2 font-['Poppins'] text-base font-semibold text-gray-900">{s.kind === "mcq" ? "MCQ" : s.kind === "short" ? "Short questions" : board ? "Creative questions" : "Broad questions"} <span className="text-sm font-normal text-gray-500">({s.count} x {s.marksPerQuestion} = {s.count * s.marksPerQuestion} marks)</span></h2>
-                <div className="space-y-3">{qs.map(([q, i]) => <ExamQuestionEditor key={q.id} q={q} index={i} marks={marksFor(paper.settings, q)} board={!!board} disabled={running && regenId === null} regenerating={regenId === q.id} onChange={(nq) => updateQ(i, nq)} onRegenerate={() => regenerate(q.id)} />)}</div>
+                <h2 className="mb-2 font-['Poppins'] text-base font-semibold text-gray-900">{s.kind === "mcq" ? "MCQ" : s.kind === "short" ? "Short questions" : board ? "Creative questions" : "Broad questions"} <span className="text-sm font-normal text-gray-500">({s.count} x {s.marksPerQuestion} = {s.count * s.marksPerQuestion} marks)</span>
+                  <button type="button" disabled={running || examCapped} onClick={() => regenerateSection(s.id)} className="ml-3 inline-flex items-center gap-1 align-middle rounded-full border bg-white px-3 py-1 text-xs font-semibold text-gray-700 disabled:opacity-50" data-testid={`button-regenerate-section-${s.id}`}>
+                    {regenId === `section:${s.id}` ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />}Regenerate section</button></h2>
+                <div className="space-y-3">{qs.map(([q, i]) => <ExamQuestionEditor key={q.id} q={q} index={i} marks={marksFor(paper.settings, q)} board={!!board} disabled={running && regenId === null} regenerating={regenId === q.id} onChange={(nq) => updateQ(i, nq)} onRegenerate={() => regenerate(q.id)} regenerateDisabled={examCapped} />)}</div>
               </section>;
             })}
           </div>

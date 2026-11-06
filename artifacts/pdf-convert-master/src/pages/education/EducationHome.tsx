@@ -5,6 +5,7 @@ import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { UploadDropzone } from "@/components/upload/UploadDropzone";
 import { ToolCard } from "@/components/education/ToolCard";
+import { EducationBillingStatus } from "@/components/education/EducationBillingStatus";
 import { EDUCATION_CATEGORIES, EDUCATION_HUB_FAQS, EDUCATION_LIMITS, educationTools, faqJsonLd } from "@/lib/education/educationTools";
 import { setPendingFile } from "@/lib/education/pendingFile";
 import { useSeo } from "@/lib/useSeo";
@@ -17,7 +18,7 @@ const STEPS = [
 ];
 
 export function EducationHome(): JSX.Element {
-  useSeo({ title: "Education Zone — Free AI Study Tools for Students | PDF Genius", description: "Create quizzes, exam papers, flashcards, notes, summaries and mind maps. Ask PDFs with page citations and translate Bangla-English. Edit and export your work.", canonicalPath: "/education", jsonLd: faqJsonLd(EDUCATION_HUB_FAQS) });
+  useSeo({ title: "Education Zone — AI Study Tools, Plans and Credits | PDF Genius", description: "Create quizzes, exam papers, flashcards, notes, summaries and mind maps. Ask PDFs with page citations and translate Bangla-English. Edit and export your work.", canonicalPath: "/education", jsonLd: faqJsonLd(EDUCATION_HUB_FAQS) });
   const [, setLocation] = useLocation();
   const [cat, setCat] = useState<string>("all");
   const [picked, setPicked] = useState<File | null>(null);
@@ -33,11 +34,12 @@ export function EducationHome(): JSX.Element {
         <header className="mx-auto max-w-3xl text-center">
           <span className="inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1 text-xs font-semibold text-[#d9322c] shadow-sm ring-1 ring-[#f7433d]/20"><GraduationCap className="h-4 w-4" aria-hidden="true" />For Students</span>
           <h1 className="mt-4 font-['Poppins'] text-4xl font-bold text-gray-900 sm:text-5xl" data-testid="text-education-title">Education Zone</h1>
-          <p className="mt-3 text-lg text-gray-600">Free AI study tools for students and teachers</p>
+          <p className="mt-3 text-lg text-gray-600">AI study tools for students and teachers, with flexible Education plans and credits.</p>
         </header>
-        <div className="mx-auto mt-8 max-w-2xl rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+        <EducationBillingStatus className="mx-auto mt-6 max-w-2xl" />
+        <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
           {!picked ? (
-            <UploadDropzone acceptedFormats={[".pdf"]} maxFileSize={EDUCATION_LIMITS.maxMb} title="Start with a PDF" subtitle={`Up to ${EDUCATION_LIMITS.maxMb} MB and ${EDUCATION_LIMITS.maxPages} pages`} onFiles={(f) => setPicked(f[0])} testId="dropzone-education-hub" />
+            <UploadDropzone acceptedFormats={[".pdf"]} maxFileSize={EDUCATION_LIMITS.maxMb} title="Start with a PDF" subtitle={`Up to ${EDUCATION_LIMITS.maxMb} MB ; page cap 50 (free/Basic), 100 (Pro), ${EDUCATION_LIMITS.maxPages} (Max)`} onFiles={(f) => setPicked(f[0])} testId="dropzone-education-hub" />
           ) : (
             <div data-testid="panel-hub-choice">
               <p className="mb-3 truncate text-sm font-semibold text-gray-900">{picked.name}</p>

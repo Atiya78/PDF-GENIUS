@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { useSeo } from "@/lib/useSeo";
 import { educationTools, faqJsonLd, getEducationTool } from "@/lib/education/educationTools";
 import { ToolCard } from "./ToolCard";
+import { EducationBillingStatus } from "./EducationBillingStatus";
 import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 
 interface Props {
@@ -42,6 +43,7 @@ export function EducationToolLayout({ toolId, seoTitle, seoDescription, upload, 
           </div>
         </header>
         <div className="space-y-6">
+          <EducationBillingStatus />
           <section aria-label="Upload" className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">{upload}</section>
           <section aria-label="Options" className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">{options}</section>
           {result && <section aria-label="Results" className="scroll-mt-20">{result}</section>}

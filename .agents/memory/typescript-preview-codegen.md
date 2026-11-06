@@ -14,3 +14,9 @@ Keep Orval's Zod target aligned with the workspace's installed major version. Mu
 **Why:** Orval 8 defaulted to Zod 4 constructs in a Zod 3 workspace. Adding multipart education contracts exposed separate missing browser-type libraries, even though the existing simple health contract had compiled.
 
 **How to apply:** Check the actual generator output and workspace library versions when introducing new request shapes; do not manually patch generated files.
+
+Use named component schemas for new OpenAPI request bodies rather than anonymous inline objects when exporting both generated validators and generated types from the same barrel.
+
+**Why:** Inline objects can generate identical `*Body` names for a Zod value and an independently re-exported TypeScript type, producing duplicate-export errors. Named input schemas keep the model name distinct from its validator.
+
+**How to apply:** Reference an `*Input` component from each new operation's request body, then regenerate. Allowlist only the specific local files needed if the generator requires permission for external references.

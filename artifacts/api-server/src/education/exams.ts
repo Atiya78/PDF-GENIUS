@@ -127,3 +127,21 @@ export async function regenerateExam(input: EducationExamRegenerateInput) {
   const [replacement] = await batch(section, paper.settings, 1, chunk, paper.questions.map(fingerprint), Date.now() + 120_000);
   return validateExamPaper({ ...paper, questions: paper.questions.map(q => q.id === original.id ? { ...replacement!, id: original.id } : q) });
 }
+
+export async function regenerateExamSection(input: Omit<EducationExamRegenerateInput, "questionId"> & { sectionId: string }) {
+  validateSource(input.pages);
+  const paper = validateExamPaper(input.paper);
+  const section = paper.settings.sections.find(section => section.id === input.sectionId);
+  if (!section) throw new EducationError("This section is not part of the exam paper.");
+  const originals = paper.questions.filter(question => question.sectionId === section.id);
+  const chunks = chunkSource(input.pages), used = paper.questions.map(fingerprint);
+  const replacements = new Map<string, EducationExamQuestion>();
+  const deadline = Date.now() + 120_000;
+  for (let index = 0; index < originals.length; index++) {
+    if (Date.now() >= deadline) throw new EducationError("Section regeneration took too long. Try a smaller section; no credits were charged.", 503);
+    const [replacement] = await batch(section, paper.settings, 1, chunks[index % chunks.length]!, used, deadline);
+    used.push(fingerprint(replacement!));
+    replacements.set(originals[index]!.id, { ...replacement!, id: originals[index]!.id });
+  }
+  return validateExamPaper({ ...paper, questions: paper.questions.map(question => replacements.get(question.id) ?? question) });
+}

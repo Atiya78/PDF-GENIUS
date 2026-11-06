@@ -114,9 +114,15 @@ test("request replay and credit settlement are duplicate-safe and transactional"
     async query(sql: string, args: unknown[] = []) {
       if (sql === "ROLLBACK") { rollback = true; return {}; }
       if (sql === "BEGIN" || sql === "COMMIT") return {};
+      if (sql.startsWith("INSERT INTO education_billing_accounts")) return { rows: [], rowCount: 0 };
+      if (sql.includes("SELECT * FROM education_billing_accounts")) return { rows: [{}], rowCount: 1 };
+      if (sql.includes("SELECT * FROM education_usage_holds")) return { rows: [{ status: "pending", cost: 1 }], rowCount: 1 };
+      if (sql.includes("SELECT id,remaining")) return { rows: wallet ? [{ id: "education-lot", remaining: wallet }] : [], rowCount: wallet ? 1 : 0 };
+      if (sql.startsWith("UPDATE education_credit_lots")) { wallet -= Number(args[1]); creditWrites++; return { rowCount: 1 }; }
+      if (sql.startsWith("UPDATE education_usage_holds")) return { rowCount: 1 };
       const row = [...records.values()].find(record => record.id === args[0]);
       if (sql.startsWith("SELECT status")) return { rows: [{ status: row?.status }], rowCount: row ? 1 : 0 };
-      if (sql.startsWith("UPDATE users")) { if (!wallet) return { rowCount: 0 }; wallet--; creditWrites++; return { rowCount: 1 }; }
+      if (sql.startsWith("UPDATE users")) throw new Error("Education must never spend the general Dodo wallet");
       if (sql.startsWith("UPDATE education_generation")) { row!.status = "succeeded"; row!.result = JSON.parse(String(args[1])); return { rowCount: 1 }; }
       throw new Error("Unexpected test transaction");
     },
@@ -127,37 +133,43 @@ test("request replay and credit settlement are duplicate-safe and transactional"
     const first = await beginEducationRequest(req, "quiz", input, key);
     await assert.rejects(beginEducationRequest(req, "quiz", input, key), /already processing/);
     assert.equal(creditWrites, 0);
-    await first.complete!(quiz, true);
+    await first.complete!(quiz, { holdId: randomUUID(), userId: req.user!.id });
     assert.equal(creditWrites, 1);
     assert.deepEqual((await beginEducationRequest(req, "quiz", input, key)).cached, quiz);
     await assert.rejects(beginEducationRequest(req, "quiz", { pages, count: 6 }, key), /different options/);
     const second = await beginEducationRequest(req, "quiz", input, randomUUID());
-    await assert.rejects(second.complete!(quiz, true), error => error instanceof EducationError && error.status === 402);
+    await assert.rejects(second.complete!(quiz, { holdId: randomUUID(), userId: req.user!.id }), error => error instanceof EducationError && error.status === 402);
     assert.equal(creditWrites, 1); assert.equal(rollback, true);
   } finally {
     if (savedSecret === undefined) delete process.env.JWT_SECRET; else process.env.JWT_SECRET = savedSecret;
   }
 });
 
-test("failed generation refunds free usage and overflow checks existing credits without spending", async context => {
+test("failed generation refunds free usage and overflow reserves Education credits without spending", async context => {
   let used = 0, wallet = 1;
   const original = process.env.JWT_SECRET;
   process.env.JWT_SECRET = "education-unit-only-hmac-fixture";
   context.mock.method(pool, "query", async (sql: string) => {
     if (sql.includes("CREATE TABLE") || sql.startsWith("DELETE")) return { rows: [], rowCount: 0 };
+    if (["BEGIN", "COMMIT", "ROLLBACK"].includes(sql)) return { rows: [], rowCount: 0 };
+    if (sql.includes("SELECT * FROM education_billing_accounts")) return { rows: [{ tier: "none", status: "none" }], rowCount: 1 };
+    if (sql.includes("SELECT remaining AS credits")) return { rows: wallet ? [{ credits: wallet, kind: "purchase", expiresAt: new Date(Date.now() + 86400000) }] : [], rowCount: wallet ? 1 : 0 };
+    if (sql.includes("SELECT COALESCE(sum(cost),0)")) return { rows: [{ held: 0 }], rowCount: 1 };
+    if (sql.includes("SELECT kind,count(*)") || sql.includes("FROM education_api_keys")) return { rows: [], rowCount: 0 };
+    if (sql.startsWith("INSERT INTO education_billing_accounts") || sql.startsWith("INSERT INTO education_usage_holds")) return { rows: [], rowCount: 1 };
     if (sql.startsWith("INSERT INTO education_daily_usage")) {
       if (used >= 5) return { rows: [], rowCount: 0 };
       return { rows: [{ used: ++used }], rowCount: 1 };
     }
     if (sql.startsWith("UPDATE education_daily_usage")) { used--; return { rows: [], rowCount: 1 }; }
-    if (sql.startsWith("SELECT credits")) return { rows: [{ credits: wallet }], rowCount: 1 };
     throw new Error("Unexpected query: credit spending must not happen before AI succeeds");
   });
+  context.mock.method(pool, "connect", async () => ({ release() {}, query: (sql: string) => pool.query(sql) }));
   try {
     const req = { ip: "127.0.0.101", user: { id: randomUUID(), credits: 1 } } as Request;
     const first = await reserveEducationAccess(req);
     for (let index = 0; index < 4; index++) assert.equal((await reserveEducationAccess(req)).chargeCredit, false);
-    assert.equal((await reserveEducationAccess(req)).chargeCredit, true);
+    assert.ok((await reserveEducationAccess(req)).chargeCredit);
     assert.equal(wallet, 1);
     await first.refund(); assert.equal(used, 4);
     assert.equal((await reserveEducationAccess(req)).chargeCredit, false);

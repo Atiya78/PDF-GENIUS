@@ -109,7 +109,7 @@ export async function streamTranslation(req: Request, res: Response, reserve: ()
       return;
     }
     cancel = request.cancel; release = reserve();
-    const access = await reserveEducationAccess(req); refund = access.refund;
+    const access = await reserveEducationAccess(req, { kind: "translation", pages: input.pages }); refund = access.refund;
     emit({ type: "progress", completed: receipts.size, total: input.pages.length });
     if (wantsStream) { heartbeat = setInterval(() => emit({ type: "heartbeat" }), 10_000); heartbeat.unref(); }
     const deadline = Date.now() + 30 * 60_000; let consecutiveFailures = 0;

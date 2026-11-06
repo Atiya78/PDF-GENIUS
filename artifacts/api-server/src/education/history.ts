@@ -3,6 +3,7 @@ import type { Request } from "express";
 import { pool } from "@workspace/db";
 import type { EducationQuiz, EducationDeck, EducationChatAnswer, EducationNotes, EducationTranslation, EducationExamPaper } from "@workspace/api-zod";
 import { EducationError } from "./config";
+import { settleEducationCharge, type EducationCharge } from "./billing/store";
 
 type Result = EducationQuiz | EducationDeck | EducationChatAnswer | EducationNotes | EducationTranslation | EducationExamPaper;
 export type EducationKind = "quiz" | "flashcards" | "chat" | "notes" | "translation" | "exam" | "summary" | "mindmap";
@@ -68,7 +69,7 @@ export async function beginEducationRequest(req: Request, kind: EducationKind, i
     cancel: async () => {
       await pool.query("DELETE FROM education_generation_requests WHERE id=$1 AND status='processing'", [id]);
     },
-    complete: async (result: Result, chargeCredit: boolean) => {
+    complete: async (result: Result, chargeCredit: boolean | EducationCharge) => {
       const client = await pool.connect();
       try {
         await client.query("BEGIN");
@@ -77,8 +78,9 @@ export async function beginEducationRequest(req: Request, kind: EducationKind, i
         if (request.rows[0]?.status !== "processing") throw new EducationError("This request has already been completed.", 409);
         if (chargeCredit) {
           if (!req.user) throw new EducationError("Please sign in to use credits.", 401);
-          const charged = await client.query("UPDATE users SET credits=credits-1 WHERE id=$1 AND credits>=1 RETURNING credits", [req.user.id]);
-          if (!charged.rowCount) throw new EducationError("You have no credits left. Add credits or return tomorrow.", 402);
+          if (chargeCredit === true) throw new EducationError("A valid Education credit reservation is required.", 409);
+          if (chargeCredit.userId !== req.user.id) throw new EducationError("Invalid Education credit reservation.", 403);
+          await settleEducationCharge(client, chargeCredit);
         }
         // Generated study material only; never PDF bytes, extracted text, or prompts.
         await client.query(`UPDATE education_generation_requests SET status='succeeded', result=$2, created_at=now() WHERE id=$1`,

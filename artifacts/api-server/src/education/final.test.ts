@@ -101,9 +101,13 @@ test("page-only retry reuses receipts, completion charges once and replay does n
   const rows = new Map<string, { id: string; digest: string; status: string; result: unknown }>();
   let wallet = 1, charges = 0, calls = 0, failSecond = true;
   context.mock.method(pool, "query", async (sql: string, args: unknown[] = []) => {
-    if (sql.startsWith("CREATE") || sql.startsWith("ALTER")) return { rows: [], rowCount: 0 };
+    if (sql.includes("CREATE TABLE") || sql.startsWith("CREATE") || sql.startsWith("ALTER")) return { rows: [], rowCount: 0 };
+    if (sql.includes("SELECT * FROM education_billing_accounts")) return { rows: [{ tier: "none", status: "none" }], rowCount: 1 };
+    if (sql.includes("SELECT remaining AS credits")) return { rows: wallet ? [{ credits: wallet, kind: "purchase", expiresAt: new Date(Date.now() + 86400000) }] : [], rowCount: wallet ? 1 : 0 };
+    if (sql.includes("SELECT COALESCE(sum(cost),0)")) return { rows: [{ held: 0 }], rowCount: 1 };
+    if (sql.includes("SELECT kind,count(*)") || sql.includes("FROM education_api_keys")) return { rows: [], rowCount: 0 };
+    if (sql.startsWith("INSERT INTO education_billing_accounts") || sql.startsWith("INSERT INTO education_usage_holds")) return { rows: [], rowCount: 1 };
     if (sql.startsWith("INSERT INTO education_daily_usage")) return { rows: [], rowCount: 0 }; // Five free already used.
-    if (sql.startsWith("SELECT credits")) return { rows: [{ credits: wallet }], rowCount: 1 };
     if (sql.startsWith("INSERT INTO education_generation_requests")) {
       const key = `${args[1]}:${args[2]}`; if (rows.has(key)) return { rows: [], rowCount: 0 };
       rows.set(key, { id: String(args[0]), digest: String(args[3]), status: "processing", result: null });
@@ -122,11 +126,15 @@ test("page-only retry reuses receipts, completion charges once and replay does n
   });
   context.mock.method(pool, "connect", async () => ({ release() {}, async query(sql: string, args: unknown[] = []) {
     if (["BEGIN", "COMMIT", "ROLLBACK"].includes(sql)) return {};
+    if (sql.includes("SELECT * FROM education_usage_holds")) return { rows: [{ status: "pending", cost: 1 }], rowCount: 1 };
+    if (sql.includes("SELECT id,remaining")) return { rows: wallet ? [{ id: "education-lot", remaining: wallet }] : [], rowCount: wallet ? 1 : 0 };
+    if (sql.startsWith("UPDATE education_credit_lots")) { wallet -= Number(args[1]); charges++; return { rowCount: 1 }; }
+    if (sql.startsWith("UPDATE education_usage_holds")) return { rowCount: 1 };
     const row = [...rows.values()].find(r => r.id === args[0]);
     if (sql.startsWith("SELECT status")) return { rows: [{ status: row!.status }] };
-    if (sql.startsWith("UPDATE users")) { if (!wallet) return { rowCount: 0 }; wallet--; charges++; return { rowCount: 1 }; }
+    if (sql.startsWith("UPDATE users")) throw new Error("Education must never spend the general Dodo wallet");
     if (sql.startsWith("UPDATE education_generation_requests")) { row!.status = "succeeded"; row!.result = JSON.parse(String(args[1])); return { rowCount: 1 }; }
-    throw new Error("Unexpected transaction");
+    return pool.query(sql, args);
   } }));
   const provider = createServer(async (req, res) => {
     let raw = ""; for await (const chunk of req) raw += chunk;

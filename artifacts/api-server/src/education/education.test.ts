@@ -50,7 +50,7 @@ test("real PDF text extraction respects selected pages, rejects damaged and >50-
   await assert.rejects(extractPdf(Buffer.from("not a pdf")), /valid PDF/);
   const long = await PDFDocument.create();
   for (let i = 0; i < 51; i++) long.addPage();
-  await assert.rejects(extractPdf(Buffer.from(await long.save())), /50 pages/);
+  await assert.rejects(extractPdf(Buffer.from(await long.save()), undefined, 50), /50 pages/);
 });
 test("scanned-page extraction directs users to OCR without persisting the upload", async () => {
   const image = await sharp(Buffer.from(`<svg width="1400" height="900" xmlns="http://www.w3.org/2000/svg">
