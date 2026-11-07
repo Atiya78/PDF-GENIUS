@@ -39,12 +39,16 @@ const socials = [
   { url: SOCIAL_LINKEDIN_URL, label: "LinkedIn", Icon: Linkedin },
 ];
 
+// Methods offered at checkout by our Merchants of Record (Paddle / Dodo Payments).
 const payments = [
   { file: "visa.svg", alt: "Visa" },
   { file: "mastercard.svg", alt: "Mastercard" },
-  { file: "upi.svg", alt: "UPI" },
+  { file: "amex.svg", alt: "American Express" },
+  { file: "discover.svg", alt: "Discover" },
+  { file: "paypal.svg", alt: "PayPal" },
   { file: "apple-pay.svg", alt: "Apple Pay" },
   { file: "google-pay.svg", alt: "Google Pay" },
+  { file: "upi.svg", alt: "UPI" },
 ];
 
 const trustItems = [
@@ -67,7 +71,7 @@ const LinkList = ({ title, links, className = "", listClassName = "" }: { title:
 );
 
 const FooterAppLinks = () => (
-  <div className="min-w-0 border-t border-[#e2d9cc] pt-5 sm:border-t-0 sm:pt-0 lg:border-t lg:pt-5">
+  <div className="min-w-0">
     <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a] mb-3">Get the App</h3>
     <div className="flex items-center gap-3">
       <img
@@ -229,14 +233,16 @@ export const FooterSection = (): JSX.Element => {
             ))}
           </ul>
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="mr-1.5 font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#8a837b]">Secure payments</span>
+            <span className="mr-2 font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#8a837b]">Secure payments</span>
             {payments.map((pm) => (
               <img
                 key={pm.file}
                 src={`${import.meta.env.BASE_URL}payments/${pm.file}`}
                 alt={pm.alt}
                 title={pm.alt}
-                className="h-8 w-8"
+                width={38}
+                height={24}
+                className="h-6 w-[38px]"
                 loading="lazy"
               />
             ))}
@@ -244,7 +250,7 @@ export const FooterSection = (): JSX.Element => {
         </div>
 
         {/* Copyright + legal fine print */}
-        <div className="mt-5 pt-5 border-t border-[#e2d9cc]">
+        <div className="mt-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <p className="text-sm font-medium text-[#1c1917]" data-testid="text-copyright">
               © {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
