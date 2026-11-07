@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, CloudIcon, LockIcon, PhoneIcon, ShieldIcon, Mail, Facebook, Instagram, Linkedin } from "lucide-react";
+import { ChevronDown, CloudIcon, LockIcon, PhoneIcon, Mail, Facebook, Instagram, Linkedin } from "lucide-react";
 import logoFull from "@assets/FullLogo_Transparent_NoBuffer_1782108807761.png";
 import { Link } from "wouter";
 import { COMPANY, LEGAL_PAGES } from "@/content/legal/company";
@@ -54,7 +54,6 @@ const payments = [
 const trustItems = [
   { Icon: LockIcon, text: "SSL Secured" },
   { Icon: CloudIcon, text: "Cloud Processing" },
-  { Icon: ShieldIcon, text: "Privacy Protected" },
 ];
 
 const LinkList = ({ title, links, className = "", listClassName = "" }: { title: string; links: { text: string; path: string }[]; className?: string; listClassName?: string }) => (
