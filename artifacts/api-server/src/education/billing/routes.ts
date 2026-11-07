@@ -1,8 +1,10 @@
 import express, { type Request, type Response } from "express";
 import { z } from "zod/v4";
+import { CreateEducationCheckoutBody } from "@workspace/api-zod";
 import { pool } from "@workspace/db";
 import { EducationError } from "../config";
 import { catalog, plans, packs, policies } from "./catalog";
+import { customTopUp, customTopUpQuote } from "./custom-topups";
 import { activeTier, billingTransaction, createEducationKey, ensureEducationBilling, getEducationAccount, lockAccount } from "./store";
 import { billingEnabled, fulfillTransaction, handlePaddleEvent, paddle, paddleWebhookSecret, verifyPaddleSignature } from "./paddle";
 import { throttle } from "../limits";
@@ -44,7 +46,7 @@ export const educationBillingRouter = express.Router();
 educationBillingRouter.get("/config", async (_req, res) => {
   const token = await clientToken();
   res.json({ enabled: billingEnabled() && Boolean(token), clientToken: token,
-    environment: process.env.PADDLE_ENVIRONMENT === "sandbox" ? "sandbox" : "live", plans, packs, policies });
+    environment: process.env.PADDLE_ENVIRONMENT === "sandbox" ? "sandbox" : "live", plans, packs, policies, customTopUp });
 });
 educationBillingRouter.use((req, res, next) => {
   if (!req.user || !req.headers.authorization) { res.status(401).json({ error: "Please sign in to manage Education billing." }); return; }
@@ -53,10 +55,6 @@ educationBillingRouter.use((req, res, next) => {
 educationBillingRouter.get("/account", async (req, res) => {
   try { res.json(await getEducationAccount(req.user!.id)); } catch (error) { fail(res, error); }
 });
-const checkoutSchema = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("plan"), id: z.enum(["basic", "pro", "max"]), period: z.enum(["month", "year"]).default("month") }),
-  z.object({ kind: z.literal("pack"), id: z.enum(["small", "medium", "large"]) }),
-]);
 function checkoutBase(req: Request) {
   // Production can configure an explicitly approved checkout website. Dev
   // host fallback supports preview without hardcoding localhost into the UI.
@@ -74,15 +72,17 @@ educationBillingRouter.post("/checkout", async (req, res) => {
   try {
     throttle(req, `education-checkout:${req.user!.id}`, 15);
     if (!billingEnabled() || !(await clientToken())) throw new EducationError("Education payments are not ready yet. Please contact support.", 503);
-    const input = checkoutSchema.safeParse(req.body);
-    if (!input.success) throw new EducationError("Please choose an Education plan or credit pack.");
+    const input = CreateEducationCheckoutBody.safeParse(req.body);
+    if (!input.success) throw new EducationError("Choose an Education plan, credit pack, or a custom top-up from $5 to $500.");
     const result = await billingTransaction(async client => {
       const account = await lockAccount(client, req.user!.id);
       const purchase = input.data;
       if (purchase.kind === "plan" && account.subscription_id && !["canceled", "none"].includes(account.status))
         throw new EducationError("Manage your existing Education subscription through the Paddle customer portal instead of creating a second subscription.", 409);
-      const price = purchase.kind === "plan" ? catalog.plans[purchase.id][purchase.period]
-        : catalog.packs[purchase.id][activeTier(account) === "none" ? "standard" : "subscriber"];
+      const quote = purchase.kind === "custom" ? customTopUpQuote(purchase.amountCents, activeTier(account) !== "none") : null;
+      const price = purchase.kind === "plan" ? catalog.plans[purchase.id][purchase.period ?? "month"]
+        : purchase.kind === "pack" ? catalog.packs[purchase.id][activeTier(account) === "none" ? "standard" : "subscriber"]
+        : { priceId: "", amount: quote!.amount };
       if (purchase.kind === "plan" && (account as any).checkout_pending_until > new Date()) {
         const pending = (await client.query(`SELECT transaction_id FROM education_billing_checkouts
           WHERE user_id=$1 AND kind='plan' AND price_id=$2 AND status='pending' AND created_at>now()-interval '30 minutes'
@@ -95,14 +95,24 @@ educationBillingRouter.post("/checkout", async (req, res) => {
       }
       const customer = account.customer_id ?? (await paddle("/customers", { email: req.user!.email, name: req.user!.name || undefined })).id;
       const transaction = await paddle("/transactions", {
-        items: [{ price_id: price.priceId, quantity: 1 }], customer_id: customer,
+        items: [purchase.kind === "custom"
+          ? { price: { product: { name: "PDF Genius Education credits", tax_category: "saas",
+                description: "Custom Education-only credit top-up. Purchased credits expire after 12 months." },
+              description: `${quote!.credits} Education credits — custom top-up`,
+              billing_cycle: null, tax_mode: "external", unit_price: { amount: String(quote!.amount), currency_code: "USD" },
+              quantity: { minimum: 1, maximum: 1 } }, quantity: 1 }
+          : { price_id: price.priceId, quantity: 1 }], customer_id: customer,
         collection_mode: "automatic", currency_code: "USD",
         custom_data: { scope: "education", userId: req.user!.id, kind: purchase.kind },
         checkout: { url: `${checkoutBase(req)}/education/pricing` },
       });
       if (!transaction.id || !transaction.checkout?.url) throw new EducationError("Paddle could not create an Education checkout. Please contact support.", 503);
-      await client.query(`INSERT INTO education_billing_checkouts(transaction_id,user_id,kind,price_id,expected_amount)
-        VALUES($1,$2,$3,$4,$5)`, [transaction.id, req.user!.id, purchase.kind, price.priceId, price.amount]);
+      const priceId = purchase.kind === "custom" ? transaction.items?.[0]?.price?.id : price.priceId;
+      const productId = purchase.kind === "custom" ? transaction.items?.[0]?.price?.product_id : null;
+      if (!priceId || (purchase.kind === "custom" && !productId))
+        throw new EducationError("Paddle did not return the Education top-up price. Please retry.", 503);
+      await client.query(`INSERT INTO education_billing_checkouts(transaction_id,user_id,kind,price_id,expected_amount,expected_credits,expected_product_id)
+        VALUES($1,$2,$3,$4,$5,$6,$7)`, [transaction.id, req.user!.id, purchase.kind, priceId, price.amount, quote?.credits ?? null, productId]);
       await client.query(`UPDATE education_billing_accounts SET customer_id=$2,
         checkout_pending_until=CASE WHEN $3='plan' THEN now()+interval '30 minutes' ELSE checkout_pending_until END WHERE user_id=$1`,
         [req.user!.id, customer, purchase.kind]);

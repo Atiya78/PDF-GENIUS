@@ -125,12 +125,29 @@ components:
     educationBillingBearer: { type: http, scheme: bearer }
   schemas:
     EducationCheckoutInput:
+      oneOf:
+        - { $ref: "#/components/schemas/EducationPlanCheckoutInput" }
+        - { $ref: "#/components/schemas/EducationPackCheckoutInput" }
+        - { $ref: "#/components/schemas/EducationTopUpCheckoutInput" }
+    EducationPlanCheckoutInput:
       type: object
       required: [kind, id]
       properties:
-        kind: { type: string, enum: [plan, pack] }
-        id: { type: string, enum: [basic, pro, max, small, medium, large] }
+        kind: { type: string, enum: [plan] }
+        id: { type: string, enum: [basic, pro, max] }
         period: { type: string, enum: [month, year] }
+    EducationPackCheckoutInput:
+      type: object
+      required: [kind, id]
+      properties:
+        kind: { type: string, enum: [pack] }
+        id: { type: string, enum: [small, medium, large] }
+    EducationTopUpCheckoutInput:
+      type: object
+      required: [kind, amountCents]
+      properties:
+        kind: { type: string, enum: [custom] }
+        amountCents: { type: integer, minimum: 500, maximum: 50000 }
     EducationApiKeyInput:
       type: object
       required: [name]
@@ -138,11 +155,13 @@ components:
         name: { type: string, minLength: 1, maxLength: 80 }
     EducationBillingConfig:
       type: object
-      required: [enabled, clientToken, environment, plans, packs, policies]
+      required: [enabled, clientToken, environment, plans, packs, policies, customTopUp]
       properties:
         enabled: { type: boolean }
         clientToken: { type: [string, "null"] }
         environment: { type: string, enum: [live, sandbox] }
+        customTopUp:
+          $ref: "#/components/schemas/EducationCustomTopUpConfig"
         plans:
           type: array
           items:
@@ -178,6 +197,14 @@ components:
             monthlyCreditsRollover: { type: boolean }
             otherToolsCredits: { type: integer }
             freeGenerationsPerDay: { type: integer }
+    EducationCustomTopUpConfig:
+      type: object
+      required: [minCents, maxCents, creditsPerUsd, subscriberCreditsPerUsd]
+      properties:
+        minCents: { type: integer }
+        maxCents: { type: integer }
+        creditsPerUsd: { type: integer }
+        subscriberCreditsPerUsd: { type: integer }
     EducationBillingAccount:
       type: object
       required: [tier, status, periodEnd, billingPeriod, balance, includedCredits, purchasedCredits, nextGrantAt, subscriptionId, canManage, usage, lots, apiKeys]

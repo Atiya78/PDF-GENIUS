@@ -5,12 +5,8 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
-import type { EducationCheckoutInputId } from './educationCheckoutInputId';
-import type { EducationCheckoutInputKind } from './educationCheckoutInputKind';
-import type { EducationCheckoutInputPeriod } from './educationCheckoutInputPeriod';
+import type { EducationPackCheckoutInput } from './educationPackCheckoutInput';
+import type { EducationPlanCheckoutInput } from './educationPlanCheckoutInput';
+import type { EducationTopUpCheckoutInput } from './educationTopUpCheckoutInput';
 
-export interface EducationCheckoutInput {
-  kind: EducationCheckoutInputKind;
-  id: EducationCheckoutInputId;
-  period?: EducationCheckoutInputPeriod;
-}
+export type EducationCheckoutInput = EducationPlanCheckoutInput | EducationPackCheckoutInput | EducationTopUpCheckoutInput;

@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import multer from "multer";
 import { randomUUID } from "crypto";
 import { storage } from "./storage";
+import { usdToCreditCents } from "./lib/creditAmounts";
 import { 
   fileConversionRequestSchema,
   ToolType,
@@ -4209,21 +4210,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       const userId = (req as any).user.id as string;
-      const amountUsd = Number(req.body?.amountUsd);
-      if (!Number.isFinite(amountUsd) || amountUsd < MIN_CREDITS_USD) {
-        return res.status(400).json({
-          success: false,
-          error: `Enter an amount of at least $${MIN_CREDITS_USD}.`,
-        });
+      let amountCents: number;
+      try {
+        amountCents = usdToCreditCents(req.body?.amountUsd, MIN_CREDITS_USD * 100, MAX_CREDITS_USD * 100);
+      } catch (error) {
+        return res.status(400).json({ success: false, error: (error as Error).message });
       }
-      if (amountUsd > MAX_CREDITS_USD) {
-        return res.status(400).json({
-          success: false,
-          error: `The maximum per purchase is $${MAX_CREDITS_USD}.`,
-        });
-      }
-      // Round to whole cents; credits scale with the exact dollar amount.
-      const amountCents = Math.round(amountUsd * 100);
       const credits = Math.round((amountCents / 100) * CREDITS_PER_USD);
       const user = await storage.getUserById(userId);
       if (!user) {

@@ -2,7 +2,8 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { pool } from "@workspace/db";
 import { EducationError } from "../config";
 import { addMonths, catalog, priceInfo } from "./catalog";
-import { billingTransaction, lockAccount, refreshMonthlyGrants } from "./store";
+import { billingTransaction, ensureEducationBilling, lockAccount, refreshMonthlyGrants } from "./store";
+import { customPriceInfo } from "./custom-topups";
 
 export function billingEnabled() {
   return Boolean(process.env.PADDLE_API_KEY && (process.env.PADDLE_WEBHOOK_SECRET || process.env.PADDLE_NOTIFICATION_ID));
@@ -60,7 +61,14 @@ function transactionPrice(transaction: any) {
 export async function fulfillTransaction(transactionId: string) {
   const transaction = await paddle(`/transactions/${encodeURIComponent(transactionId)}?include=adjustments`);
   if (transaction.status !== "completed") return transaction.status === "canceled" ? "canceled" : "pending";
-  const info = transactionPrice(transaction);
+  let info = transactionPrice(transaction);
+  // A non-catalog price is legitimate only for our saved custom top-up order.
+  // Never accept a credit amount from provider/client metadata.
+  if (!info && !priceInfo(transaction.items?.[0]?.price?.id)) {
+    await ensureEducationBilling();
+    const owned = (await pool.query("SELECT * FROM education_billing_checkouts WHERE transaction_id=$1", [transactionId])).rows[0];
+    info = customPriceInfo(transaction, owned);
+  }
   if (!info) throw new EducationError("The Paddle transaction does not match the Education catalog. Contact support.", 409);
   const subtotal = Number(transaction.details?.totals?.subtotal);
   const total = Number(transaction.details?.totals?.total);
@@ -130,7 +138,9 @@ export async function handlePaddleEvent(event: any) {
     // This account may contain unrelated products in the future. Do not turn
     // those notifications into endless retries or grant Education access.
     const transaction = await paddle(`/transactions/${encodeURIComponent(event.data.id)}`);
-    if (transactionPrice(transaction)) await fulfillTransaction(event.data.id);
+    const owned = transactionPrice(transaction) ? null :
+      (await pool.query("SELECT kind FROM education_billing_checkouts WHERE transaction_id=$1", [event.data.id])).rows[0];
+    if (transactionPrice(transaction) || owned?.kind === "custom") await fulfillTransaction(event.data.id);
   } else if (event.event_type.startsWith("subscription.")) {
     // Read CURRENT Paddle state so delayed cancel/past_due events cannot revoke
     // a resumed subscription. Lifecycle events alone never grant a paid tier.
@@ -163,7 +173,9 @@ export async function handlePaddleEvent(event: any) {
         if (!Number.isFinite(refundAmount) || !Number.isFinite(paidAmount) || refundAmount <= 0 || paidAmount <= 0)
           throw new EducationError("Paddle refund totals are not ready. Please retry.", 503);
         const fraction = Math.min(1, refundAmount / paidAmount);
-        const info = transactionPrice(transaction);
+        const ownedOrder = (await client.query("SELECT * FROM education_billing_checkouts WHERE transaction_id=$1",
+          [adjustment.transaction_id])).rows[0];
+        const info = transactionPrice(transaction) ?? customPriceInfo(transaction, ownedOrder);
         if (info?.kind === "pack") {
           await client.query("UPDATE education_credit_lots SET remaining=GREATEST(0,remaining-$2) WHERE id=$1",
             [`purchase:${adjustment.transaction_id}`, Math.ceil(info.credits * fraction)]);

@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { EducationCheckoutInput, EducationCustomTopUpConfig } from "@workspace/api-client-react";
+
+export type { EducationCheckoutInput, EducationCustomTopUpConfig };
 
 export type EduTier = "none" | "basic" | "pro" | "max";
 export type EduPeriod = "month" | "year";
@@ -9,7 +12,7 @@ export interface EduPlan {
 }
 export interface EduPack { id: "small" | "medium" | "large"; credits: number; priceCents: number; subscriberPriceCents: number }
 export interface EduBillingConfig {
-  enabled: boolean; clientToken: string | null; environment: "live" | "sandbox"; plans: EduPlan[]; packs: EduPack[];
+  enabled: boolean; clientToken: string | null; environment: "live" | "sandbox"; customTopUp: EducationCustomTopUpConfig; plans: EduPlan[]; packs: EduPack[];
   policies: { purchasedExpiryMonths: number; monthlyCreditsRollover: boolean; otherToolsCredits: number; freeGenerationsPerDay: number };
 }
 export interface EduAccount {
@@ -37,7 +40,7 @@ async function call<T>(path: string, token: string | null, init: RequestInit = {
 
 export const getBillingConfig = () => call<EduBillingConfig>("/config", null);
 export const getBillingAccount = (t: string) => call<EduAccount>("/account", t);
-export const startCheckout = (t: string, body: { kind: "plan" | "pack"; id: string; period?: EduPeriod }) =>
+export const startCheckout = (t: string, body: EducationCheckoutInput) =>
   call<{ url: string; transactionId: string }>("/checkout", t, { method: "POST", body: JSON.stringify(body) });
 export const getCheckoutStatus = (t: string, id: string) => call<EduCheckoutStatus>(`/checkout/${encodeURIComponent(id)}`, t);
 export const openPortal = (t: string) => call<{ url: string }>("/portal", t, { method: "POST", body: "{}" });
@@ -45,6 +48,18 @@ export const createApiKey = (t: string, name: string) =>
   call<{ id: string; key: string }>("/api-keys", t, { method: "POST", body: JSON.stringify({ name }) });
 export const deleteApiKey = (t: string, id: string) =>
   call<{ success: true }>(`/api-keys/${encodeURIComponent(id)}`, t, { method: "DELETE" });
+
+/**
+ * Strictly parse a user-typed USD amount into integer cents without floating point.
+ * Accepts "12", "12.3", "12.34", ".5"; rejects more than 2 decimals, signs, exponents.
+ */
+export function parseUsdToCents(raw: string): number | null {
+  const m = /^(\d{0,7})(?:\.(\d{0,2}))?$/.exec(raw.trim());
+  if (!m || (!m[1] && !m[2])) return null;
+  return Number(m[1] || "0") * 100 + Number((m[2] || "").padEnd(2, "0"));
+}
+/** Whole credits for an integer-cents amount at a per-USD rate (rounded down). */
+export const creditsForCents = (cents: number, perUsd: number) => Math.floor((cents * perUsd) / 100);
 
 export const money = (cents: number) => `$${(cents / 100).toFixed(cents % 100 ? 2 : 0)}`;
 export const fmtDate = (s: string | null) => (s ? new Date(s).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" }) : "—");
@@ -136,6 +151,7 @@ export function openPaddleCheckout(P: PaddleGlobal, transactionId: string) {
       displayMode: "overlay",
       successUrl: `${window.location.origin}${base()}/education/pricing?education_checkout=${encodeURIComponent(transactionId)}`,
       allowDiscountRemoval: false,
+      showAddDiscounts: false,
       allowLogout: false,
     },
   });

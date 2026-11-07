@@ -57,7 +57,7 @@ export function getDodoClient(): DodoPayments {
 // UI; we pass it as the checkout line's `amount` (cents) and grant credits at a
 // fixed rate. The grant happens only on the `payment.succeeded` webhook.
 export const CREDITS_PER_USD = 100; // $1 = 100 credits (1 credit = 1¢)
-export const MIN_CREDITS_USD = 1; // smallest purchase ($1 floor matches product)
+export const MIN_CREDITS_USD = 5; // owner-approved minimum custom top-up
 export const MAX_CREDITS_USD = 500; // sanity cap per checkout
 
 /** The Dodo product id backing pay-as-you-go credit purchases (env-driven). */
@@ -211,6 +211,9 @@ export async function createCreditCheckout(opts: {
   returnUrl: string;
   cancelUrl?: string;
 }): Promise<{ url: string; sessionId: string }> {
+  if (!Number.isSafeInteger(opts.amountCents) || opts.amountCents < MIN_CREDITS_USD * 100 ||
+      opts.amountCents > MAX_CREDITS_USD * 100 || opts.credits !== opts.amountCents * CREDITS_PER_USD / 100)
+    throw new Error("Invalid general credit top-up amount.");
   const productId = getCreditsProductId();
   if (!productId) {
     throw new Error("No Dodo product is configured for credit purchases.");

@@ -31,6 +31,8 @@ export function ensureEducationBilling() {
       kind text NOT NULL, price_id text NOT NULL, expected_amount integer NOT NULL,
       status text NOT NULL DEFAULT 'pending', created_at timestamptz NOT NULL DEFAULT now()
     );
+    ALTER TABLE education_billing_checkouts ADD COLUMN IF NOT EXISTS expected_credits integer;
+    ALTER TABLE education_billing_checkouts ADD COLUMN IF NOT EXISTS expected_product_id text;
     CREATE TABLE IF NOT EXISTS education_billing_events (
       id text PRIMARY KEY, occurred_at timestamptz NOT NULL, created_at timestamptz NOT NULL DEFAULT now()
     );

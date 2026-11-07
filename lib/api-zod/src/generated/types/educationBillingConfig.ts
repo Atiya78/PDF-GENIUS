@@ -9,12 +9,14 @@ import type { EducationBillingConfigEnvironment } from './educationBillingConfig
 import type { EducationBillingConfigPacksItem } from './educationBillingConfigPacksItem';
 import type { EducationBillingConfigPlansItem } from './educationBillingConfigPlansItem';
 import type { EducationBillingConfigPolicies } from './educationBillingConfigPolicies';
+import type { EducationCustomTopUpConfig } from './educationCustomTopUpConfig';
 
 export interface EducationBillingConfig {
   enabled: boolean;
   /** @nullable */
   clientToken: string | null;
   environment: EducationBillingConfigEnvironment;
+  customTopUp: EducationCustomTopUpConfig;
   plans: EducationBillingConfigPlansItem[];
   packs: EducationBillingConfigPacksItem[];
   policies: EducationBillingConfigPolicies;

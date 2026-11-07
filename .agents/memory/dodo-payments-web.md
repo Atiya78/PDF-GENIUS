@@ -53,7 +53,7 @@ reports; without them stale or unsettled events corrupt plan state.
 
 ## Buy Credits (web pay-what-you-want, one-time)
 Web users can buy a custom $ of credits (was mobile-only before). Rate
-`CREDITS_PER_USD=100` (1 credit = 1¢), `MIN_CREDITS_USD=1`, `MAX_CREDITS_USD=500`
+`CREDITS_PER_USD=100` (1 credit = 1¢), `MIN_CREDITS_USD=5`, `MAX_CREDITS_USD=500`
 — all in `dodo.ts`.
 - Product: a single **pay_what_you_want one-time** Dodo product; id in env
   `DODO_PRODUCT_CREDITS`. Checkout passes the chosen `amount` (cents) on the cart

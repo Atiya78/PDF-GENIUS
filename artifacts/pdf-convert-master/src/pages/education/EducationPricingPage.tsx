@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
 import { Check, ChevronRight, Copy, KeyRound, Loader2, RefreshCw, Trash2, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { EducationCustomTopUp } from "@/components/education/EducationCustomTopUp";
 import { useSeo } from "@/lib/useSeo";
 import { cn } from "@/lib/utils";
 import {
-  type EduBillingConfig, type EduPeriod, createApiKey, deleteApiKey, fmtDate, getBillingConfig, getCheckoutStatus,
+  type EduBillingConfig, type EduPeriod, type EducationCheckoutInput, createApiKey, deleteApiKey, fmtDate, getBillingConfig, getCheckoutStatus,
   loadPaddle, money, openPaddleCheckout, openPortal, setPaddleEventHandler, startCheckout, useEducationAccount,
 } from "@/lib/education/billing";
 
@@ -108,9 +109,11 @@ export function EducationPricingPage(): JSX.Element {
     setBusy(id); setActionErr(null);
     try { await fn(); } catch (e) { setActionErr(e instanceof Error ? e.message : "Something went wrong"); } finally { setBusy(null); }
   };
-  const checkout = (kind: "plan" | "pack", id: string) => run(`${kind}-${id}`, async () => {
+  const checkout = (input: EducationCheckoutInput) => run(input.kind === "custom" ? "custom" : `${input.kind}-${input.id}`, async () => {
     if (!authed) return;
-    const r = await startCheckout(authed, kind === "plan" ? { kind, id, period } : { kind, id });
+    // Custom top-ups need a confirmed Education account so the shown rate matches the server's.
+    if (input.kind === "custom" && (!account || accErr)) throw new Error("Refresh your Education account before starting a top-up.");
+    const r = await startCheckout(authed, input);
     try {
       const P = await getPaddle();
       openPaddleCheckout(P, r.transactionId);
@@ -262,7 +265,7 @@ export function EducationPricingPage(): JSX.Element {
                         account?.canManage ? <button type="button" onClick={portal} disabled={!!busy} className={cn(btn, "mt-6 border border-gray-300 text-gray-900 hover:border-gray-900")}>Change plan in portal</button> :
                         <p className="mt-6 text-center text-sm text-gray-500">Plan changes are not available for this subscription.</p>
                       ) : (
-                        <button type="button" onClick={() => checkout("plan", p.id)} disabled={!config.enabled || !!busy} className={cn(btn, "mt-6 text-white", featured ? "bg-[#f7433d] hover:bg-[#e03832]" : "bg-gray-900 hover:bg-gray-800")} data-testid={`button-subscribe-${p.id}`}>
+                        <button type="button" onClick={() => checkout({ kind: "plan", id: p.id, period })} disabled={!config.enabled || !!busy} className={cn(btn, "mt-6 text-white", featured ? "bg-[#f7433d] hover:bg-[#e03832]" : "bg-gray-900 hover:bg-gray-800")} data-testid={`button-subscribe-${p.id}`}>
                           {busy === `plan-${p.id}` && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}Get {p.name}
                         </button>
                       )}
@@ -281,13 +284,15 @@ export function EducationPricingPage(): JSX.Element {
                       <p className="text-sm text-gray-600">{subscribed ? <><s className="text-gray-400">{money(k.priceCents)}</s> {money(k.subscriberPriceCents)}</> : <>{money(k.priceCents)} <span className="text-gray-400">/ {money(k.subscriberPriceCents)} for subscribers</span></>}</p>
                     </div>
                     {authed ? (
-                      <button type="button" onClick={() => checkout("pack", k.id)} disabled={!config.enabled || !!busy} className="inline-flex h-10 items-center gap-1.5 rounded-full bg-[#f7433d] px-4 text-sm font-semibold text-white hover:bg-[#e03832] disabled:opacity-50" data-testid={`button-pack-${k.id}`}>
+                      <button type="button" onClick={() => checkout({ kind: "pack", id: k.id })} disabled={!config.enabled || !!busy} className="inline-flex h-10 items-center gap-1.5 rounded-full bg-[#f7433d] px-4 text-sm font-semibold text-white hover:bg-[#e03832] disabled:opacity-50" data-testid={`button-pack-${k.id}`}>
                         {busy === `pack-${k.id}` && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}Buy
                       </button>
                     ) : <Link href="/signin" className="text-sm font-semibold text-[#d9322c] underline">Sign in</Link>}
                   </div>
                 ))}
               </div>
+              <EducationCustomTopUp config={config} authed={!!authed} authLoading={authLoading} account={account} accountLoading={accLoading}
+                accountError={accErr} busy={busy} onRetryAccount={() => void refresh()} onCheckout={(amountCents) => checkout({ kind: "custom", amountCents })} />
             </>
           )}
         </section>

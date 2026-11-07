@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Zap, CreditCard } from "lucide-react";
+import { Link } from "wouter";
+import { Zap, CreditCard, GraduationCap } from "lucide-react";
 import { ProcessingSpinner } from "@/components/processing-spinner";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -13,6 +14,7 @@ import {
   startCreditsCheckout,
   fetchMe,
 } from "@/lib/plans";
+import { creditsForCents, money, parseUsdToCents } from "@/lib/education/billing";
 import type { User } from "@workspace/db";
 
 /**
@@ -36,28 +38,32 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
   const creditsCfg = billingConfig?.credits;
   const creditsEnabled = Boolean(creditsCfg?.enabled);
   const perUsd = creditsCfg?.creditsPerUsd ?? 100;
-  const minUsd = creditsCfg?.minUsd ?? 1;
+  const minUsd = creditsCfg?.minUsd ?? 5;
   const maxUsd = creditsCfg?.maxUsd ?? 500;
-  const parsedAmount = parseFloat(creditAmount);
-  const amountValid =
-    Number.isFinite(parsedAmount) &&
-    parsedAmount >= minUsd &&
-    parsedAmount <= maxUsd;
-  const creditsToReceive = amountValid ? Math.round(parsedAmount * perUsd) : 0;
+  // Integer cents only: strict 2-decimal parse, never round an invalid entry up.
+  const minCents = Math.round(minUsd * 100);
+  const maxCents = Math.round(maxUsd * 100);
+  const cents = parseUsdToCents(creditAmount);
+  const amountValid = cents !== null && cents >= minCents && cents <= maxCents;
+  const creditsToReceive = amountValid ? creditsForCents(cents, perUsd) : 0;
+  const amountError =
+    creditAmount.trim() === "" ? null :
+    cents === null ? "Use dollars and up to 2 decimal places, e.g. 12.50." :
+    !amountValid ? `Choose between ${money(minCents)} and ${money(maxCents)}.` : null;
 
   // Redirect the browser into a Dodo checkout for a custom $ amount of credits.
   const handleBuyCredits = async () => {
     if (!amountValid) {
       toast({
         title: "Enter a valid amount",
-        description: `Choose between $${minUsd} and $${maxUsd}.`,
+        description: amountError ?? `Choose between ${money(minCents)} and ${money(maxCents)}.`,
         variant: "destructive",
       });
       return;
     }
     setCreditBusy(true);
     try {
-      const url = await startCreditsCheckout(parsedAmount);
+      const url = await startCreditsCheckout(cents / 100);
       window.location.href = url;
     } catch (err: any) {
       toast({
@@ -123,10 +129,10 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
           </div>
           <div className="flex-1">
             <h3 className="text-base font-semibold text-gray-900">
-              Credit Balance
+              General credits
             </h3>
             <p className="text-sm text-gray-600">
-              Top up any amount — your balance is shared across web and mobile.
+              PDF Genius tool credits, shared across web and mobile. Education Zone credits are a separate balance.
             </p>
           </div>
           <span
@@ -140,12 +146,12 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
         {creditsEnabled && (
           <div className="mt-6 pt-6 border-t border-gray-100">
             <h4 className="text-sm font-semibold text-gray-900 mb-3">
-              Buy credits
+              Buy general credits
             </h4>
             {/* Quick-pick dollar presets */}
             <div className="flex flex-wrap gap-2 mb-4">
               {[5, 10, 25, 50, 100].map((amt) => {
-                const active = parseFloat(creditAmount) === amt;
+                const active = cents === amt * 100;
                 return (
                   <button
                     key={amt}
@@ -175,7 +181,8 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
                   inputMode="decimal"
                   min={minUsd}
                   max={maxUsd}
-                  step="1"
+                  step="0.01"
+                  aria-invalid={!!amountError}
                   value={creditAmount}
                   onChange={(e) => setCreditAmount(e.target.value)}
                   disabled={creditBusy}
@@ -196,14 +203,27 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
                   <CreditCard className="w-4 h-4 mr-2" />
                 )}
                 {amountValid
-                  ? `Buy ${creditsToReceive.toLocaleString()} credits`
-                  : "Buy credits"}
+                  ? `Buy ${creditsToReceive.toLocaleString()} general credits`
+                  : "Buy general credits"}
               </Button>
             </div>
+            {amountError && (
+              <p role="alert" className="text-xs text-[#b42318] mt-2" data-testid="text-credit-amount-error">
+                {amountError}
+              </p>
+            )}
             <p className="text-xs text-gray-500 mt-3">
-              ${1} = {perUsd.toLocaleString()} credits • min ${minUsd}, max $
-              {maxUsd.toLocaleString()}. Secure checkout via Dodo Payments.
+              $1 = {perUsd.toLocaleString()} general credits, rounded down to whole credits. Min {money(minCents)}, max{" "}
+              {money(maxCents)}. Secure checkout via Dodo Payments.
             </p>
+            <Link
+              href="/education/pricing"
+              className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#d9322c] underline underline-offset-4"
+              data-testid="link-education-pricing"
+            >
+              <GraduationCap className="w-4 h-4" aria-hidden="true" />
+              Need Education Zone credits? See Education pricing
+            </Link>
           </div>
         )}
       </div>

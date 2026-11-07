@@ -28,6 +28,22 @@ Education credits are Education-only, separate from the general wallet. Educatio
 - Max: quizzes included up to 30/day; exams included up to 10/day; maximum 300 pages per upload; fastest/priority queue, commercial use, and API access.
 - Non-subscriber pack buyers follow Basic credit costs.
 
+## Custom website top-ups
+
+Both wallets support separate custom purchases of $5–$500 USD, with up to two
+decimal places. General credits use Dodo at 100 credits per $1. Education credits
+use Paddle at 40 credits per $1, or 50 per $1 for active Education subscribers;
+fractional credits round down. Existing fixed Education packs remain available,
+and custom purchased Education credits still expire after 12 months.
+
+**Why:** The owner explicitly approved these separate rates and transaction range.
+The subscriber rate preserves the effective 20% discount without charging less
+than the $5 custom-purchase minimum.
+
+**How to apply:** Keep custom checkout quotes, displayed rates, settlement and
+wallet attribution consistent. Do not apply this web custom-amount rule to native
+mobile IAP products, and never let a general Dodo plan grant the Education rate.
+
 ## Implementation defaults for unspecified rules
 
 Included credits roll over within the already-paid billing period, not beyond it. Annual payments grant credits monthly, including missed months when the user next visits. Other tools retain five free successful generations per day, then cost one Education credit. Included-tool daily caps stop further generation until midnight UTC, rather than silently switching to paid credits. These are implementation defaults, not additional owner-specified commercial terms.

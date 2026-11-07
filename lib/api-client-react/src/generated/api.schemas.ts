@@ -889,39 +889,74 @@ export interface HealthStatus {
   status: string;
 }
 
-export type EducationCheckoutInputKind = typeof EducationCheckoutInputKind[keyof typeof EducationCheckoutInputKind];
+export type EducationPlanCheckoutInputKind = typeof EducationPlanCheckoutInputKind[keyof typeof EducationPlanCheckoutInputKind];
 
 
-export const EducationCheckoutInputKind = {
+export const EducationPlanCheckoutInputKind = {
   plan: 'plan',
-  pack: 'pack',
 } as const;
 
-export type EducationCheckoutInputId = typeof EducationCheckoutInputId[keyof typeof EducationCheckoutInputId];
+export type EducationPlanCheckoutInputId = typeof EducationPlanCheckoutInputId[keyof typeof EducationPlanCheckoutInputId];
 
 
-export const EducationCheckoutInputId = {
+export const EducationPlanCheckoutInputId = {
   basic: 'basic',
   pro: 'pro',
   max: 'max',
+} as const;
+
+export type EducationPlanCheckoutInputPeriod = typeof EducationPlanCheckoutInputPeriod[keyof typeof EducationPlanCheckoutInputPeriod];
+
+
+export const EducationPlanCheckoutInputPeriod = {
+  month: 'month',
+  year: 'year',
+} as const;
+
+export interface EducationPlanCheckoutInput {
+  kind: EducationPlanCheckoutInputKind;
+  id: EducationPlanCheckoutInputId;
+  period?: EducationPlanCheckoutInputPeriod;
+}
+
+export type EducationPackCheckoutInputKind = typeof EducationPackCheckoutInputKind[keyof typeof EducationPackCheckoutInputKind];
+
+
+export const EducationPackCheckoutInputKind = {
+  pack: 'pack',
+} as const;
+
+export type EducationPackCheckoutInputId = typeof EducationPackCheckoutInputId[keyof typeof EducationPackCheckoutInputId];
+
+
+export const EducationPackCheckoutInputId = {
   small: 'small',
   medium: 'medium',
   large: 'large',
 } as const;
 
-export type EducationCheckoutInputPeriod = typeof EducationCheckoutInputPeriod[keyof typeof EducationCheckoutInputPeriod];
+export interface EducationPackCheckoutInput {
+  kind: EducationPackCheckoutInputKind;
+  id: EducationPackCheckoutInputId;
+}
+
+export type EducationTopUpCheckoutInputKind = typeof EducationTopUpCheckoutInputKind[keyof typeof EducationTopUpCheckoutInputKind];
 
 
-export const EducationCheckoutInputPeriod = {
-  month: 'month',
-  year: 'year',
+export const EducationTopUpCheckoutInputKind = {
+  custom: 'custom',
 } as const;
 
-export interface EducationCheckoutInput {
-  kind: EducationCheckoutInputKind;
-  id: EducationCheckoutInputId;
-  period?: EducationCheckoutInputPeriod;
+export interface EducationTopUpCheckoutInput {
+  kind: EducationTopUpCheckoutInputKind;
+  /**
+     * @minimum 500
+     * @maximum 50000
+     */
+  amountCents: number;
 }
+
+export type EducationCheckoutInput = EducationPlanCheckoutInput | EducationPackCheckoutInput | EducationTopUpCheckoutInput;
 
 export interface EducationApiKeyInput {
   /**
@@ -985,11 +1020,19 @@ export type EducationBillingConfigPolicies = {
   freeGenerationsPerDay: number;
 };
 
+export interface EducationCustomTopUpConfig {
+  minCents: number;
+  maxCents: number;
+  creditsPerUsd: number;
+  subscriberCreditsPerUsd: number;
+}
+
 export interface EducationBillingConfig {
   enabled: boolean;
   /** @nullable */
   clientToken: string | null;
   environment: EducationBillingConfigEnvironment;
+  customTopUp: EducationCustomTopUpConfig;
   plans: EducationBillingConfigPlansItem[];
   packs: EducationBillingConfigPacksItem[];
   policies: EducationBillingConfigPolicies;

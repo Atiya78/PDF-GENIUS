@@ -54,6 +54,20 @@ on the approved production domain when ready.
 
 ## Billing behavior
 
+- Custom website top-ups accept $5–$500 USD per transaction, in whole cents.
+  General credits remain on Dodo at 100 credits per $1. Education custom top-ups
+  use Paddle at 40 credits per $1, or 50 per $1 for active Education subscribers
+  (the effective 20% subscriber discount). Fractional Education credits round down.
+  These are separate, non-transferable wallets. Fixed Education packs are unchanged.
+  Applicable tax is additional; it never buys extra credits.
+- Custom Paddle purchases use transaction-specific, non-catalog products/prices.
+  The server saves the returned product/price IDs, exact amount and credit quote.
+  Fulfillment compares the actual completed transaction to that saved order,
+  ignores metadata credit counts, and is idempotent across polling and webhooks.
+  Custom top-ups do not accept additional discount codes. Refunds remove the
+  corresponding unused Education credits, just as for fixed packs.
+  No extra environment variables or manually created custom-price catalog entries
+  are required. Redeploy both the web app and API to enable this feature.
 - Basic: $9/month or $90/year, 500 credits/month.
 - Pro: $29/month or $290/year, 2,000 credits/month.
 - Max: $79/month or $790/year, 6,000 credits/month.
@@ -101,6 +115,8 @@ Dodo subscription columns are overwritten. Keep the existing Supabase
 configuration and database create-table permissions.
 
 `pnpm --filter @workspace/api-server exec tsx --test tests/education-billing.test.ts`
+
+`pnpm --filter @workspace/api-server exec tsx --test tests/credit-topups.test.ts`
 
 These deterministic tests mock payment responses and exercise prices, access
 limits, signature checks, monthly grants, reservations, idempotent fulfillment

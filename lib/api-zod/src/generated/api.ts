@@ -12,6 +12,12 @@ export const GetEducationBillingConfigResponse = zod.object({
   "enabled": zod.boolean(),
   "clientToken": zod.string().nullable(),
   "environment": zod.enum(['live', 'sandbox']),
+  "customTopUp": zod.object({
+  "minCents": zod.number().int(),
+  "maxCents": zod.number().int(),
+  "creditsPerUsd": zod.number().int(),
+  "subscriberCreditsPerUsd": zod.number().int()
+}),
   "plans": zod.array(zod.object({
   "id": zod.enum(['basic', 'pro', 'max']),
   "name": zod.string(),
@@ -69,11 +75,22 @@ export const GetEducationBillingAccountResponse = zod.object({
 })
 
 
-export const CreateEducationCheckoutBody = zod.object({
-  "kind": zod.enum(['plan', 'pack']),
-  "id": zod.enum(['basic', 'pro', 'max', 'small', 'medium', 'large']),
+export const createEducationCheckoutBodyThreeAmountCentsMin = 500;
+export const createEducationCheckoutBodyThreeAmountCentsMax = 50000;
+
+
+
+export const CreateEducationCheckoutBody = zod.union([zod.object({
+  "kind": zod.enum(['plan']),
+  "id": zod.enum(['basic', 'pro', 'max']),
   "period": zod.enum(['month', 'year']).optional()
-})
+}),zod.object({
+  "kind": zod.enum(['pack']),
+  "id": zod.enum(['small', 'medium', 'large'])
+}),zod.object({
+  "kind": zod.enum(['custom']),
+  "amountCents": zod.number().int().min(createEducationCheckoutBodyThreeAmountCentsMin).max(createEducationCheckoutBodyThreeAmountCentsMax)
+})])
 
 export const CreateEducationCheckoutResponse = zod.object({
   "url": zod.string(),
