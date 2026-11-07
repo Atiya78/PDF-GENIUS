@@ -377,3 +377,17 @@ header.site-header nav .site-nav-action:focus-visible { outline: 2px solid #e548
   }
   header.site-header button:hover { transform: none; }
 }
+
+/* Footer payment-methods marquee: two identical copies slide right→left and
+   loop seamlessly at -50%. Pauses on hover and for reduced-motion users. */
+.footer-pay-marquee {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+.footer-pay-track { animation: footer-pay-scroll 24s linear infinite; }
+.footer-pay-marquee:hover .footer-pay-track { animation-play-state: paused; }
+@keyframes footer-pay-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .footer-pay-track { animation: none; }
+  .footer-pay-marquee { -webkit-mask-image: none; mask-image: none; }
+}

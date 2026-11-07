@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, CloudIcon, LockIcon, PhoneIcon, Mail, Facebook, Instagram, Linkedin } from "lucide-react";
+import { ChevronDown, PhoneIcon, Mail, Facebook, Instagram, Linkedin } from "lucide-react";
 import logoFull from "@assets/FullLogo_Transparent_NoBuffer_1782108807761.png";
 import { Link } from "wouter";
 import { COMPANY, LEGAL_PAGES } from "@/content/legal/company";
@@ -51,10 +51,6 @@ const payments = [
   { file: "upi.svg", alt: "UPI" },
 ];
 
-const trustItems = [
-  { Icon: LockIcon, text: "SSL Secured" },
-  { Icon: CloudIcon, text: "Cloud Processing" },
-];
 
 const LinkList = ({ title, links, className = "", listClassName = "" }: { title: string; links: { text: string; path: string }[]; className?: string; listClassName?: string }) => (
   <nav aria-label={title} className={className}>
@@ -221,35 +217,34 @@ export const FooterSection = (): JSX.Element => {
           </div>
         </div>
 
-        {/* Trust + payments */}
-        <div className="mt-10 pt-5 border-t border-[#e2d9cc] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {trustItems.map(({ Icon, text }) => (
-              <li key={text} className="flex items-center gap-1.5 text-xs text-[#57534e]">
-                <Icon className="w-4 h-4 shrink-0 text-[#f7433d]" />
-                <span className="whitespace-nowrap">{text}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="mr-2 font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#8a837b]">Secure payments</span>
-            {payments.map((pm) => (
-              <img
-                key={pm.file}
-                src={`${import.meta.env.BASE_URL}payments/${pm.file}`}
-                alt={pm.alt}
-                title={pm.alt}
-                width={38}
-                height={24}
-                className="h-6 w-[38px]"
-                loading="lazy"
-              />
-            ))}
+        {/* Payment methods — slow right-to-left marquee */}
+        <div className="mt-10 flex flex-col items-center gap-3">
+          <span className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#8a837b]">Secure payments</span>
+          <div className="footer-pay-marquee w-full max-w-md overflow-hidden" aria-label="Accepted payment methods" role="list">
+            <div className="footer-pay-track flex w-max">
+              {[0, 1].map((copy) => (
+                <div key={copy} className="flex shrink-0 items-center gap-2 pr-2" aria-hidden={copy === 1 ? true : undefined}>
+                  {payments.map((pm) => (
+                    <img
+                      key={pm.file}
+                      role={copy === 0 ? "listitem" : undefined}
+                      src={`${import.meta.env.BASE_URL}payments/${pm.file}`}
+                      alt={copy === 0 ? pm.alt : ""}
+                      title={pm.alt}
+                      width={38}
+                      height={24}
+                      className="h-6 w-[38px] shrink-0"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Copyright + legal fine print */}
-        <div className="mt-6">
+        <div className="mt-5 pt-5 border-t border-[#e2d9cc]">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <p className="text-sm font-medium text-[#1c1917]" data-testid="text-copyright">
               © {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
