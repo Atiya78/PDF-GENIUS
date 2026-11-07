@@ -1,6 +1,7 @@
 import React from "react";
 import "@/styles/dashboard.css";
 import { CreditPurchaseCard } from "@/components/CreditPurchaseCard";
+import { WalletOverview } from "@/components/wallet/WalletOverview";
 import { useSeo } from "@/lib/useSeo";
 
 export const BuyCredits: React.FC = () => {
@@ -12,13 +13,14 @@ export const BuyCredits: React.FC = () => {
         <div className="mx-auto max-w-6xl px-4 pb-8 pt-10 sm:px-6 lg:px-10">
           <p className="edu-eyebrow">Wallet</p>
           <h1 className="dash-h1 mt-3">Buy credits</h1>
-          <p className="dash-lede mt-2">Top up your balance and pay only for what you need.</p>
+          <p className="dash-lede mt-2">Two separate wallets: one for PDF tools, one for the Education Zone. Credits and subscriptions in one never apply to the other.</p>
         </div>
       </div>
 
-      {/* Main Content — credits only, nothing else */}
-      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-10"><div className="max-w-3xl">
-        <CreditPurchaseCard />
+      <main className="mx-auto max-w-6xl space-y-10 px-4 py-10 sm:px-6 lg:px-10">
+        <WalletOverview />
+        <div className="max-w-3xl">
+          <CreditPurchaseCard showBalance={false} />
         </div>
       </main>
     </div>

@@ -36,6 +36,7 @@ import { syncRevenueCatCustomer } from "./revenuecat";
 import {
   createCheckoutForPlan,
   createCreditCheckout,
+  dodoErrorMessage,
   createPortalSession,
   verifyWebhook,
   handleWebhookEvent,
@@ -4216,7 +4217,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (error) {
         return res.status(400).json({ success: false, error: (error as Error).message });
       }
-      const credits = Math.round((amountCents / 100) * CREDITS_PER_USD);
+      // Integer maths only; must equal createCreditCheckout's own check exactly.
+      const credits = Math.floor((amountCents * CREDITS_PER_USD) / 100);
       const user = await storage.getUserById(userId);
       if (!user) {
         return res.status(404).json({ success: false, error: "User not found" });
@@ -4236,10 +4238,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       return res.json({ success: true, data: { url } });
     } catch (error) {
-      console.error("Error creating credits checkout:", error);
-      return res
-        .status(502)
-        .json({ success: false, error: "Could not start checkout." });
+      const detail = dodoErrorMessage(error);
+      console.error("Error creating credits checkout:", detail);
+      return res.status(502).json({
+        success: false,
+        error: `Payment provider rejected the checkout (${detail.slice(0, 200)}). Please try again or contact support.`,
+      });
     }
   });
 

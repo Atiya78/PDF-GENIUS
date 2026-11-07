@@ -89,3 +89,10 @@ live_mode and swap the product-id env vars + `DODO_PAYMENTS_ENVIRONMENT=live_mod
 - `getProductIdForPlan(planId, period)` picks the product; reverse lookup maps yearly product ids to the SAME tier ("pro"/"business") — webhook grants tier, period is metadata-only.
 - `/api/billing/checkout` accepts `{planId, period:"month"|"year"}`; plan catalog carries `yearlyPrice`; web PlansManager has a Monthly/Yearly toggle.
 - These env vars must also be set on Railway prod or yearly checkout 503s there.
+
+## Checkout failure diagnosis (Nov 2026)
+Prod credit checkout returned the generic "Could not start checkout." and dev has NO Dodo API key, so it could not be reproduced here. The 502 now includes Dodo's own error text (dodoErrorMessage) and logs it; a stored `dodoCustomerId` that Dodo rejects (e.g. test-mode id in live_mode) is retried once by email. Usual suspects: DODO_PRODUCT_CREDITS not a pay-what-you-want product, or created in the other mode.
+**How to apply:** ask the owner for the exact toast text / Railway log line before changing checkout logic further.
+
+## Two wallets UI
+/dashboard/buy-credits shows both wallets side by side (PDF tools = users.credits + Dodo plan; Education = Paddle wallet + Education tier). Owner wants them visibly separate with separate credit and subscription accounting.

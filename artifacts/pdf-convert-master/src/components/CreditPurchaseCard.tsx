@@ -23,8 +23,9 @@ import type { User } from "@workspace/db";
  * checkout-return handling (`?checkout=credits-success` / `cancelled`) so it can
  * be dropped on any page (e.g. the dedicated Buy Credits page).
  */
-export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
+export const CreditPurchaseCard: React.FC<{ className?: string; showBalance?: boolean }> = ({
   className = "",
+  showBalance = true,
 }) => {
   const { user, updateUser } = useAuth();
   const { toast } = useToast();
@@ -124,6 +125,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
   return (
     <Card className={`dash-scope ${className ?? ""}`}>
       <div className="p-5 sm:p-7">
+        {showBalance ? (
         <div className="flex flex-wrap items-start gap-4">
           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-[9px] border border-[#e7e0d5] bg-[#fdece9]">
             <Zap className="h-5 w-5 text-[#c8302a]" aria-hidden="true" />
@@ -131,10 +133,10 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
           <div className="min-w-0 flex-1 basis-60">
             <p className="edu-eyebrow !text-[#8a837b]">Balance</p>
             <h3 className="text-base font-semibold text-gray-900">
-              General credits
+              PDF tools credits
             </h3>
             <p className="text-sm text-gray-600">
-              PDF Genius tool credits, shared across web and mobile. Education Zone credits are a separate balance.
+              Spent on PDF, image and video tools and the API, on web and mobile. Not usable in the Education Zone.
             </p>
           </div>
           <span
@@ -144,12 +146,26 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
             {(user?.credits ?? 0).toLocaleString()}
           </span>
         </div>
+        ) : (
+          <div>
+            <p className="edu-eyebrow">Top up</p>
+            <h3 className="mt-1.5 font-['Poppins'] text-lg font-semibold text-[#1c1917]">Add PDF tools credits</h3>
+          </div>
+        )}
+
+        {billingConfig && !creditsEnabled && (
+          <p className="mt-5 border-t border-[#e7e0d5] pt-4 text-sm text-[#57534e]" data-testid="text-credits-unavailable">
+            Credit top-ups are not available right now. Your balance and plan are unaffected.
+          </p>
+        )}
 
         {creditsEnabled && (
-          <div className="mt-7 border-t border-[#1c1917] pt-6">
+          <div className={showBalance ? "mt-7 border-t border-[#1c1917] pt-6" : "mt-5 border-t border-[#1c1917] pt-5"}>
+            {showBalance && (
             <h4 className="text-sm font-semibold text-gray-900 mb-3">
-              Buy general credits
+              Top up PDF tools credits
             </h4>
+            )}
             {/* Quick-pick dollar presets */}
             <div className="flex flex-wrap gap-2 mb-4">
               {[5, 10, 25, 50, 100].map((amt) => {
@@ -172,7 +188,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
             {/* Custom dollar amount */}
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <div className="relative flex-1 max-w-[220px]">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">
+                <span aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 edu-mono text-[#8a837b]">
                   $
                 </span>
                 <Input
@@ -185,7 +201,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
                   value={creditAmount}
                   onChange={(e) => setCreditAmount(e.target.value)}
                   disabled={creditBusy}
-                  className="edu-input !h-11 pl-7"
+                  className="edu-input edu-mono !h-11 !pl-7"
                   aria-label="Custom amount in US dollars"
                   placeholder="Enter amount"
                   data-testid="input-credit-amount"
@@ -203,8 +219,8 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
                   <CreditCard className="w-4 h-4 mr-2" />
                 )}
                 {amountValid
-                  ? `Buy ${creditsToReceive.toLocaleString()} general credits`
-                  : "Buy general credits"}
+                  ? `Pay ${money(cents)} · get ${creditsToReceive.toLocaleString()} credits`
+                  : "Enter an amount"}
               </Button>
             </div>
             {amountError && (
@@ -213,7 +229,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
               </p>
             )}
             <p className="text-xs text-gray-500 mt-3">
-              $1 = {perUsd.toLocaleString()} general credits, rounded down to whole credits. Min {money(minCents)}, max{" "}
+              $1 = {perUsd.toLocaleString()} PDF tools credits, rounded down to whole credits. Min {money(minCents)}, max{" "}
               {money(maxCents)}. Secure checkout via Dodo Payments.
             </p>
             <Link
@@ -222,7 +238,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
               data-testid="link-education-pricing"
             >
               <GraduationCap className="w-4 h-4" aria-hidden="true" />
-              Need Education Zone credits? See Education pricing
+              Need Education Zone credits? They are bought separately
             </Link>
           </div>
         )}

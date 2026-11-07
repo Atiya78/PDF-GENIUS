@@ -224,11 +224,11 @@ export async function createCreditCheckout(opts: {
     ? { customer_id: opts.user.dodoCustomerId }
     : { email: opts.user.email, name: opts.user.name || opts.user.email };
 
-  const session = await client.checkoutSessions.create({
+  const create = (cust: Record<string, unknown>) => client.checkoutSessions.create({
     product_cart: [
       { product_id: productId, quantity: 1, amount: opts.amountCents },
     ],
-    customer: customer as any,
+    customer: cust as any,
     return_url: opts.returnUrl,
     ...(opts.cancelUrl ? { cancel_url: opts.cancelUrl } : {}),
     customization: {
@@ -247,10 +247,28 @@ export async function createCreditCheckout(opts: {
     },
   });
 
+  let session;
+  try {
+    session = await create(customer);
+  } catch (err) {
+    // A stored customer id can be stale (e.g. created in test mode before going
+    // live). Retry once by email so the purchase is not blocked by it.
+    if (!opts.user.dodoCustomerId) throw err;
+    console.warn("[dodo] credit checkout with stored customer_id failed; retrying by email:", dodoErrorMessage(err));
+    session = await create({ email: opts.user.email, name: opts.user.name || opts.user.email });
+  }
+
   if (!session.checkout_url) {
     throw new Error("Dodo Payments did not return a checkout URL.");
   }
   return { url: session.checkout_url, sessionId: session.session_id };
+}
+
+/** Best-effort readable message from a Dodo SDK/API error (no secrets in it). */
+export function dodoErrorMessage(err: unknown): string {
+  const e = err as { status?: number; error?: { message?: string; code?: string }; message?: string };
+  const detail = e?.error?.message || e?.message || String(err);
+  return e?.status ? `${e.status}: ${detail}` : detail;
 }
 
 /** Create a Dodo Customer Portal session so the user can manage/cancel billing. */
