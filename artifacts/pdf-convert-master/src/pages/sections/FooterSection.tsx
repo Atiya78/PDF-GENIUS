@@ -25,6 +25,12 @@ const helpLinks = [
   { text: "Data Safety", path: "/data-safety" },
 ];
 
+const bottomLinks = [
+  { text: "Privacy", path: "/privacy" },
+  { text: "Terms", path: "/terms" },
+  { text: "Refunds", path: "/refund-policy" },
+];
+
 const legalLinks = LEGAL_PAGES.map((p) => ({ text: p.label, path: p.path }));
 
 const socials = [
@@ -223,6 +229,7 @@ export const FooterSection = (): JSX.Element => {
             ))}
           </ul>
           <div className="flex flex-wrap items-center gap-1.5">
+            <span className="mr-1.5 font-mono text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#8a837b]">Secure payments</span>
             {payments.map((pm) => (
               <img
                 key={pm.file}
@@ -236,22 +243,34 @@ export const FooterSection = (): JSX.Element => {
           </div>
         </div>
 
-        {/* Company line */}
-        <div className="mt-5 pt-5 border-t border-[#e2d9cc] flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-8">
-          <div className="min-w-0 text-[#57534e]">
-            <p className="text-sm font-medium text-[#1c1917]" data-testid="text-copyright">© {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.</p>
-            <p className="mt-1 text-xs leading-5 text-[#6b645c] max-w-3xl">
-              PDF Genius is operated by {COMPANY.legalName}, registered in {COMPANY.jurisdiction}, company number {COMPANY.companyNumber}. Registered office: {COMPANY.address}.
+        {/* Copyright + legal fine print */}
+        <div className="mt-5 pt-5 border-t border-[#e2d9cc]">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <p className="text-sm font-medium text-[#1c1917]" data-testid="text-copyright">
+              © {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
             </p>
+            <ul className="flex flex-wrap items-center gap-y-1 text-xs text-[#57534e]">
+              {bottomLinks.map((l) => (
+                <li key={l.path} className="flex items-center after:mx-2.5 after:h-3 after:w-px after:bg-[#d9d0c3] after:content-['']">
+                  <Link href={l.path} className="hover:text-[#1c1917] underline decoration-transparent underline-offset-4 hover:decoration-[#f7433d]">{l.text}</Link>
+                </li>
+              ))}
+              <li>
+                <button
+                  type="button"
+                  onClick={openCookieSettings}
+                  className="hover:text-[#1c1917] underline decoration-transparent underline-offset-4 hover:decoration-[#f7433d]"
+                  data-testid="button-cookie-settings"
+                >
+                  Cookie settings
+                </button>
+              </li>
+            </ul>
           </div>
-          <button
-            type="button"
-            onClick={openCookieSettings}
-            className="self-start shrink-0 text-xs font-medium text-[#57534e] underline decoration-[#d9d0c3] underline-offset-4 hover:text-[#1c1917] hover:decoration-[#f7433d] min-h-8"
-            data-testid="button-cookie-settings"
-          >
-            Cookie settings
-          </button>
+          <p className="mt-3 text-[11.5px] leading-5 text-[#8a837b]">
+            PDF Genius is a trading name of {COMPANY.legalName}, a company registered in {COMPANY.jurisdiction} (No.&nbsp;{COMPANY.companyNumber}).
+            <span className="block sm:inline"> Registered office: {COMPANY.address}.</span>
+          </p>
         </div>
       </div>
     </footer>
