@@ -16,13 +16,13 @@ export function QuizWorkspace({ quiz, onChange, onExported, onCompleted }: { qui
   const reason = quiz.questions.length === 0 ? "There are no questions to export." : invalid ? `Fix ${invalid} question${invalid > 1 ? "s" : ""} in Edit before exporting.` : null;
   const base = slugify(quiz.title);
   const tab = (v: View, label: string) => (
-    <button type="button" role="tab" aria-selected={view === v} onClick={() => setView(v)} data-testid={`tab-quiz-${v}`} className={cn("rounded-full px-4 py-1.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d]", view === v ? "bg-[#f7433d] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")}>{label}</button>
+    <button type="button" role="tab" aria-selected={view === v} onClick={() => setView(v)} data-testid={`tab-quiz-${v}`} className={cn("edu-tab", view === v && "edu-tab-on")}>{label}</button>
   );
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6" data-testid="panel-quiz-result">
-      <h2 className="font-['Poppins'] text-2xl font-bold text-gray-900" data-testid="text-quiz-title">{quiz.title}</h2>
+    <div className="edu-sheet" data-testid="panel-quiz-result">
+      <h2 className="font-['Poppins'] text-2xl font-semibold tracking-[-0.015em] text-[#1c1917]" data-testid="text-quiz-title">{quiz.title}</h2>
       <p className="mt-1 text-sm text-gray-500">{quiz.questions.length} questions. AI can make mistakes, so check answers against your source.</p>
-      <div role="tablist" aria-label="Quiz view" className="mt-4 flex flex-wrap gap-2">{tab("take", "Take Quiz")}{tab("all", "View All")}{tab("edit", "Edit")}</div>
+      <div role="tablist" aria-label="Quiz view" className="edu-tabs mt-5">{tab("take", "Take Quiz")}{tab("all", "View All")}{tab("edit", "Edit")}</div>
       <div className="mt-5">
         {view === "take" && (quiz.questions.length ? <QuizPlayer questions={quiz.questions} onComplete={onCompleted} /> : <p className="text-gray-600">No questions left.</p>)}
         {view === "all" && (

@@ -66,7 +66,7 @@ export function ExamSettingsForm({ settings, onChange, disabled, errors }: { set
         </div>
         <p role="status" className={`mt-3 text-sm font-semibold ${ok ? "text-green-700" : "text-red-700"}`} data-testid="text-marks-balance">Sections add up to {sum} of {settings.totalMarks} marks{ok ? "" : ` (${sum > settings.totalMarks ? "over" : "short"} by ${Math.abs(sum - settings.totalMarks)})`}</p>
       </fieldset>
-      {errors.length > 0 && <ul className="rounded-lg bg-red-50 p-3 text-sm text-red-700" data-testid="list-exam-errors">{errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
+      {errors.length > 0 && <ul className="rounded-[10px] border border-[#f3c4c0] bg-[#fdf1ef] p-3 text-sm text-[#8f1f1a]" data-testid="list-exam-errors">{errors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
     </div>
   );
 }

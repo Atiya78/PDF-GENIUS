@@ -48,13 +48,13 @@ export function PdfPagePreview({ file, pageNumber, quote, onClose }: { file: Fil
     return () => { cancelled = true; task?.cancel(); };
   }, [file, pageNumber]);
   return (
-    <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 p-3" data-testid="pdf-preview">
+    <div className="mt-3 rounded-[12px] border border-[#e7e0d5] bg-[#faf7f2] p-4" data-testid="pdf-preview">
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="text-sm font-semibold text-gray-900">Page {pageNumber} of your PDF</p>
         <button type="button" onClick={onClose} className="rounded-full border bg-white px-3 py-1 text-xs font-semibold">Close preview</button>
       </div>
       {quote && <p className="mb-2 rounded-lg bg-white p-2 text-xs italic text-gray-700">Cited: "{quote}"</p>}
-      {!file ? <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">This saved answer does not include your PDF. Upload the original PDF and start a session to preview pages.</p> : <>
+      {!file ? <p className="rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]">This saved answer does not include your PDF. Upload the original PDF and start a session to preview pages.</p> : <>
         {state === "loading" && <div className="h-64 animate-pulse rounded-lg bg-gray-200" aria-label="Loading page" />}
         {state === "error" && <p role="alert" className="text-sm text-red-700">{msg}</p>}
         <canvas ref={canvas} className={state === "ready" ? "h-auto w-full max-w-3xl rounded-lg border bg-white" : "hidden"} aria-label={`PDF page ${pageNumber}`} />

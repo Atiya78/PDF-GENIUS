@@ -14,7 +14,7 @@ import { useTranslationStream } from "@/lib/education/translationStream";
 import { requestExport, slugify } from "@/lib/education/exportHelpers";
 import { useAuth } from "@/contexts/AuthContext";
 
-const btn = "rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50";
+const btn = "edu-btn-ghost";
 
 export function PdfTranslatorPage(): JSX.Element {
   const src = useSourceInput();
@@ -95,7 +95,7 @@ export function PdfTranslatorPage(): JSX.Element {
       </label>
       {hasDoc && <p className="text-xs text-gray-500">Settings are locked while a document is open so retries stay consistent. Choose New document to change them.</p>}
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" onClick={run} disabled={!can} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#f7433d] px-8 text-base font-semibold text-white shadow-sm hover:bg-[#e03832] disabled:cursor-not-allowed disabled:opacity-50" data-testid="button-translate">
+        <button type="button" onClick={run} disabled={!can} className="edu-btn-primary" data-testid="button-translate">
           {running ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <Languages className="h-5 w-5" aria-hidden="true" />}{reading ? "Reading PDF..." : status === "running" ? "Translating..." : hasDoc ? "Translate new document" : "Translate"}
         </button>
         {hasDoc && <button type="button" className={btn} disabled={running} onClick={() => { if (!result || window.confirm("Clear this translation?")) resetAll(); }} data-testid="button-new-document">New document</button>}
@@ -103,7 +103,7 @@ export function PdfTranslatorPage(): JSX.Element {
       <p className="text-xs text-gray-500">A whole document counts as one generation from your normal daily allowance, not one per page. Partial results are never charged.</p>
       {!src.canSubmit && !running && <p className="text-xs text-gray-500">Add a PDF or paste some text to continue.</p>}
       <div aria-live="assertive"><GenerationError error={error} retry={run} disabled={!can} /></div>
-      {warnings.length > 0 && <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+      {warnings.length > 0 && <ul className="rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
     </div>
   );
 
@@ -114,17 +114,17 @@ export function PdfTranslatorPage(): JSX.Element {
     <EducationToolLayout toolId="pdf-translator" seoTitle="Bangla English PDF Translator — Page by Page | PDF Genius" seoDescription="Translate PDFs between Bangla and English page by page with side-by-side original and translation, retry failed pages, and export PDF or DOCX."
       upload={<UploadBox src={src} disabled={running || hasDoc} pdfOnly={false} />} options={options}
       result={<>
-        {hasDoc && <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6" data-testid="panel-translation">
+        {hasDoc && <div className="edu-sheet" data-testid="panel-translation">
           <div role="status" aria-live="polite" className="mb-4">
             <div className="flex items-center justify-between text-sm font-semibold text-gray-900">
               <span>{status === "done" ? "Translation complete" : status === "running" ? "Translating page by page" : status === "partial" ? "Some pages need a retry" : "Translation paused"}</span>
               <span data-testid="text-translate-progress">{progress.completed} of {progress.total} pages</span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-100" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100}><div className="h-full origin-left bg-[#f7433d] transition-transform" style={{ transform: `scaleX(${pct / 100})` }} /></div>
-            {message && <p role="alert" className="mt-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{message}</p>}
+            {message && <p role="alert" className="mt-2 rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]">{message}</p>}
             {status === "error" && progress.completed < progress.total && <button type="button" onClick={() => void stream.resume()} className={`${btn} mt-2`} data-testid="button-resume-translation"><RotateCcw className="mr-1 inline h-4 w-4" aria-hidden="true" />Retry remaining pages</button>}
           </div>
-          {failedList.length > 0 && <ul className="mb-4 space-y-2" data-testid="list-failed-pages">{failedList.map(([n, m]) => <li key={n} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-red-50 p-3 text-sm text-red-700"><span>Page {n}: {m}</span>
+          {failedList.length > 0 && <ul className="mb-4 space-y-2" data-testid="list-failed-pages">{failedList.map(([n, m]) => <li key={n} className="flex flex-wrap items-center justify-between gap-2 rounded-[10px] border border-[#f3c4c0] bg-[#fdf1ef] p-3 text-sm text-[#8f1f1a]"><span>Page {n}: {m}</span>
             <button type="button" disabled={running} onClick={() => void stream.retryPage(n)} className="rounded-full border border-red-300 bg-white px-3 py-1.5 font-semibold disabled:opacity-50" data-testid={`button-retry-page-${n}`}>{retrying === n ? "Retrying..." : `Retry page ${n}`}</button></li>)}</ul>}
           {pageNumbers.length > 0 && <>
             <div className="mb-3 flex flex-wrap items-center gap-2">
@@ -134,7 +134,7 @@ export function PdfTranslatorPage(): JSX.Element {
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <section aria-label={`Original page ${current}`}><h3 className="mb-2 text-sm font-semibold text-gray-900">Original</h3>
-                <div className="max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm leading-relaxed text-gray-800" data-testid="text-original-page">{original === undefined ? "The original text is not kept for saved results. Upload the PDF again to compare." : original.trim() ? original : "This page is blank in the original PDF."}</div></section>
+                <div className="max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-[12px] border border-[#efe8dd] bg-[#faf7f2] p-4 text-sm leading-relaxed text-gray-800" data-testid="text-original-page">{original === undefined ? "The original text is not kept for saved results. Upload the PDF again to compare." : original.trim() ? original : "This page is blank in the original PDF."}</div></section>
               <section aria-label={`Translated page ${current}`}><h3 className="mb-2 text-sm font-semibold text-gray-900">Translation{tp ? ` (${tp.sourceLanguage} to ${tp.targetLanguage})` : ""}</h3>
                 <div className="max-h-[32rem] overflow-auto whitespace-pre-wrap rounded-xl border border-gray-200 bg-white p-4 text-sm leading-relaxed text-gray-900" data-testid="text-translated-page">
                   {tp ? (tp.text.trim() ? tp.text : "Blank page. There is no text to translate, so this page is kept empty in the translation and exports.") : failed[current] ? "This page failed. Use the retry button above." : status === "running" ? "Translating this page..." : "Not translated yet."}</div></section>
@@ -146,7 +146,7 @@ export function PdfTranslatorPage(): JSX.Element {
           </div>
           {status !== "done" && Object.keys(translated).length > 0 && <p className="mt-2 text-xs text-gray-500">Exports include only the pages translated so far.</p>}
           {exportBusy && <p role="status" className="mt-2 text-sm text-gray-600">Preparing export...</p>}
-          {exportError && <p role="alert" className="mt-2 rounded-lg bg-red-50 p-3 text-sm text-red-700">{exportError}</p>}
+          {exportError && <p role="alert" className="mt-2 rounded-[10px] border border-[#f3c4c0] bg-[#fdf1ef] p-3 text-sm text-[#8f1f1a]">{exportError}</p>}
         </div>}
         <EducationHistory kind="translation" revision={String(version)} onOpen={(saved) => { if (saved.translation) {
           if (result && !window.confirm("Opening a saved translation replaces the current one. Continue?")) return;

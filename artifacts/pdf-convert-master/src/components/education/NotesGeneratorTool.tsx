@@ -29,7 +29,7 @@ interface Config {
   tree?: boolean;
 }
 
-const btn = "rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50";
+const btn = "edu-btn-ghost";
 
 export function NotesGeneratorTool({ cfg }: { cfg: Config }): JSX.Element {
   const src = useSourceInput();
@@ -96,7 +96,7 @@ export function NotesGeneratorTool({ cfg }: { cfg: Config }): JSX.Element {
   const options = (
     <div className="space-y-5">
       <ChipGroup label="Language" testId="chip-language" disabled={running} value={language} onChange={setLanguage} options={LANGUAGE_OPTIONS} />
-      <button type="button" onClick={run} disabled={!can} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f7433d] px-8 text-base font-semibold text-white shadow-sm hover:bg-[#e03832] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" data-testid={`button-generate-${cfg.historyKind}`}>
+      <button type="button" onClick={run} disabled={!can} className="edu-btn-primary w-full sm:w-auto" data-testid={`button-generate-${cfg.historyKind}`}>
         {running ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <Sparkles className="h-5 w-5" aria-hidden="true" />}{running ? "Generating..." : cfg.action}
       </button>
       <p className="text-xs text-gray-500">Each successful generation uses your normal daily allowance.</p>
@@ -104,7 +104,7 @@ export function NotesGeneratorTool({ cfg }: { cfg: Config }): JSX.Element {
       {!src.canSubmit && !running && <p className="text-xs text-gray-500">Add a PDF or paste some text to continue.</p>}
       <GenerationProgress phase={phase} noun={cfg.noun} skipReading={src.mode === "paste"} />
       <div aria-live="assertive"><GenerationError error={error} retry={run} disabled={!can} /></div>
-      {warnings.length > 0 && <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+      {warnings.length > 0 && <ul className="rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
     </div>
   );
 
@@ -113,9 +113,9 @@ export function NotesGeneratorTool({ cfg }: { cfg: Config }): JSX.Element {
       upload={<UploadBox src={src} disabled={running} />} options={options}
       result={<>
         {notes && <div className="space-y-4">
-          {cfg.tree && <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6"><h2 className="mb-3 font-['Poppins'] text-lg font-semibold text-gray-900">Mind map</h2><MindMapTree notes={notes} />
+          {cfg.tree && <div className="edu-sheet"><h2 className="mb-3 font-['Poppins'] text-lg font-semibold text-gray-900">Mind map</h2><MindMapTree notes={notes} />
             <p className="mt-3 text-xs text-gray-500">The map is drawn from the outline below. After editing the outline, choose Update map.</p></div>}
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
+          <div className="edu-sheet">
             <div className="mb-4 flex flex-wrap gap-2">
               <button type="button" disabled={running || exportBusy} onClick={() => { if (window.confirm("Clear this result and any edits?")) reset(); }} className={btn}>Start over</button>
               {cfg.tree && <button type="button" disabled={exportBusy} onClick={applyEdits} className={btn} data-testid="button-update-map">Update map</button>}
@@ -125,7 +125,7 @@ export function NotesGeneratorTool({ cfg }: { cfg: Config }): JSX.Element {
               <button type="button" disabled={exportBusy} onClick={() => doExport("print")} className={btn} data-testid="button-print">Print</button>
             </div>
             {exportBusy && <p role="status" className="mb-3 text-sm text-gray-600">Preparing export...</p>}
-            {exportError && <p role="alert" className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{exportError}</p>}
+            {exportError && <p role="alert" className="mb-3 rounded-[10px] border border-[#f3c4c0] bg-[#fdf1ef] p-3 text-sm text-[#8f1f1a]">{exportError}</p>}
             <p className="mb-4 text-xs text-gray-500">Edits stay in this page and are not saved automatically. Export to keep them.</p>
             <NotesEditor key={version} ref={editor} notes={notes} disabled={running || exportBusy} />
           </div>

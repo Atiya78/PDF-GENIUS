@@ -46,7 +46,7 @@ export function QuizPlayer({ questions, onComplete }: { questions: EducationQues
     const total = pool.length;
     return (
       <div data-testid="panel-quiz-complete">
-        <div className="rounded-2xl bg-[#fff1f0] p-6 text-center">
+        <div className="rounded-[16px] border border-[#e7e0d5] bg-[#fffdf9] p-8 text-center">
           <p className="text-sm font-semibold uppercase tracking-wide text-[#d9322c]">Quiz complete</p>
           <p className="mt-2 font-['Poppins'] text-5xl font-bold text-gray-900" data-testid="text-score">{score}<span className="text-2xl text-gray-500"> / {total}</span></p>
           <p className="mt-1 text-gray-600">{Math.round((score / total) * 100)}% correct</p>
@@ -90,7 +90,7 @@ export function QuizPlayer({ questions, onComplete }: { questions: EducationQues
             const picked = ans?.given === o; const isRight = norm(o) === norm(correct);
             const cls = !ans ? selected === o ? "border-[#f7433d] bg-[#fff1f0]" : "border-gray-200 bg-white hover:border-[#f7433d]" : isRight ? "border-green-500 bg-green-50" : picked ? "border-red-400 bg-red-50" : "border-gray-200 bg-white opacity-70";
             return (
-              <button key={i} type="button" disabled={!!ans} aria-pressed={selected === o} onClick={() => setSelected(o)} data-testid={`button-option-${i}`} className={`flex items-center gap-3 rounded-xl border-2 px-4 py-3 text-left text-sm font-medium text-gray-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d] ${cls}`}>
+              <button key={i} type="button" disabled={!!ans} aria-pressed={selected === o} onClick={() => setSelected(o)} data-testid={`button-option-${i}`} className={`flex items-center gap-3 rounded-[12px] border px-4 py-3.5 text-left text-[15px] font-medium transition-[border-color,background-color,transform] active:scale-[0.995] text-gray-900 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d] ${cls}`}>
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold">{String.fromCharCode(65 + i)}</span>{o}
               </button>
             );

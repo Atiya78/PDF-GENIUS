@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Check } from "lucide-react";
+import { Reveal } from "@/components/education/Reveal";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { LottieIcon } from "@/components/ui/lottie-icon";
 import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 import studentAnimation from "@/assets/lottie/student.json";
@@ -28,56 +28,51 @@ const actions = [
 ];
 
 export function EducationZoneSection(): JSX.Element {
-  const ref = useRef<HTMLElement>(null);
-  const [shown, setShown] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || typeof IntersectionObserver === "undefined") { setShown(true); return; }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setShown(true); io.disconnect(); } }, { threshold: 0.15 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   return (
-    <section ref={ref} aria-labelledby="education-zone-heading" className="w-full px-4 py-12 sm:px-6 lg:px-8" data-testid="section-education-zone">
-      <div className={`mx-auto grid max-w-6xl items-center gap-10 rounded-3xl bg-[#fff1f0] p-6 transition-all duration-700 motion-reduce:transition-none sm:p-10 lg:grid-cols-[1.25fr_1fr] lg:gap-14 lg:p-14 ${shown ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"}`}>
-        <div>
-          <h2 id="education-zone-heading" className="font-['Poppins'] text-3xl font-bold leading-tight text-gray-900 sm:text-4xl">
-            Education Zone.<br />Study smarter with AI.
-          </h2>
-          <p className="mt-5 max-w-xl text-base text-gray-600 sm:text-lg">
-            Turn lecture notes or textbook PDFs into quizzes and flashcards in seconds, so revision starts sooner.
-          </p>
-          <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            {benefits.map((b) => (
-              <li key={b} className="flex items-center gap-2.5 text-sm font-semibold text-gray-900">
-                <Check className="h-4 w-4 shrink-0 text-[#f7433d]" aria-hidden="true" />
-                {b}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="relative mx-auto mt-8 w-full max-w-sm lg:mx-0 lg:ml-auto lg:mt-0">
-          <span className="pointer-events-none absolute -top-16 right-3 h-24 w-24 sm:-top-20 sm:h-28 sm:w-28" aria-hidden="true" data-testid="education-student-animation">
-            <LottieIcon animationData={studentAnimation} width="100%" height="100%" loop autoplay className="block" />
-          </span>
-          <div className="rounded-2xl bg-white p-6 shadow-[0_20px_40px_-12px_rgba(247,67,61,0.22)] ring-1 ring-gray-100 sm:p-8">
-            <h3 className="text-center font-['Poppins'] text-xl font-bold text-gray-900">Start studying</h3>
-            <p className="mt-2 text-center text-sm text-gray-500">Pick a study tool and upload your PDF. Free to try.</p>
-            <div className="mt-6 space-y-3">
-              {actions.map((a) => (
-                <Link key={a.id} href={a.href} className="flex h-12 items-center justify-center gap-2 rounded-lg border border-gray-200 bg-white text-sm font-semibold text-gray-900 transition-colors hover:border-[#f7433d]/40 hover:bg-[#fff1f0] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7433d]" data-testid={`link-education-${a.id}`}>
-                  <ToolLottieIcon toolId={a.toolId} size={28} /> {a.label}
-                </Link>
+    <section aria-labelledby="education-zone-heading" className="w-full px-4 py-14 sm:px-6 lg:px-8" data-testid="section-education-zone">
+      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[20px] border border-[#e7e0d5] bg-[#faf7f2]">
+        <div className="pointer-events-none absolute inset-y-0 left-8 hidden w-px bg-[#f7433d]/35 sm:block" aria-hidden="true" />
+        <div className="grid gap-10 p-6 sm:p-10 sm:pl-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-14 lg:p-14 lg:pl-20">
+          <Reveal>
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a]">Education Zone</p>
+            <h2 id="education-zone-heading" className="mt-3 font-['Poppins'] text-[2.2rem] font-semibold leading-[1.06] tracking-[-0.025em] text-[#1c1917] sm:text-[2.8rem]">
+              Your lecture PDF,<br />turned into revision.
+            </h2>
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-[#57534e] sm:text-[17px]">
+              Turn lecture notes or textbook PDFs into quizzes and flashcards in seconds, so revision starts sooner.
+            </p>
+            <ul className="mt-7 grid max-w-lg gap-x-6 border-t border-[#e7e0d5] sm:grid-cols-2">
+              {benefits.map((b) => (
+                <li key={b} className="flex items-center gap-2.5 border-b border-[#e7e0d5] py-2.5 text-sm font-medium text-[#1c1917]">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#f7433d]" aria-hidden="true" />
+                  {b}
+                </li>
               ))}
+            </ul>
+          </Reveal>
+          <Reveal delay={0.1} className="relative mx-auto w-full max-w-sm pt-10 lg:mx-0 lg:ml-auto lg:pt-0">
+            <span className="pointer-events-none absolute -top-6 right-2 z-10 h-24 w-24 sm:-top-14 sm:h-28 sm:w-28" aria-hidden="true" data-testid="education-student-animation">
+              <LottieIcon animationData={studentAnimation} width="100%" height="100%" loop autoplay className="block" />
+            </span>
+            <div className="rounded-[16px] border border-[#e7e0d5] bg-[#fffdf9] p-5 shadow-[0_30px_60px_-40px_rgba(28,25,23,.55)] sm:p-6">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a837b]">Start studying</p>
+              <p className="mt-1.5 text-sm text-[#57534e]">Pick a study tool and upload your PDF. Free to try.</p>
+              <ul className="mt-4 border-t border-[#e7e0d5]">
+                {actions.map((a) => (
+                  <li key={a.id}>
+                    <Link href={a.href} className="group flex h-12 items-center gap-3 border-b border-[#efe8dd] px-1 text-sm font-semibold text-[#1c1917] transition-colors hover:text-[#c8302a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7433d]" data-testid={`link-education-${a.id}`}>
+                      <ToolLottieIcon toolId={a.toolId} size={28} /> {a.label}
+                      <ArrowUpRight className="ml-auto h-4 w-4 text-[#c9bfb1] transition-all group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[#f7433d]" aria-hidden="true" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/education" className="group mt-5 flex h-12 items-center justify-center gap-2 rounded-[10px] bg-[#f7433d] text-sm font-semibold text-white shadow-[inset_0_-2px_0_rgba(0,0,0,.16)] transition-colors hover:bg-[#c8302a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c1917]" data-testid="link-explore-education">
+                Explore Education Zone <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
             </div>
-            <div className="my-4 flex items-center gap-3 text-xs text-gray-400" aria-hidden="true">
-              <span className="h-px flex-1 bg-gray-200" />or<span className="h-px flex-1 bg-gray-200" />
-            </div>
-            <Link href="/education" className="flex h-12 items-center justify-center gap-2 rounded-lg bg-[#f7433d] text-sm font-semibold text-white transition-colors hover:bg-[#e03832] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7433d]" data-testid="link-explore-education">
-              Explore Education Zone <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

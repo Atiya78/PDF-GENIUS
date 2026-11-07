@@ -20,7 +20,7 @@ export function FlashcardWorkspace({ deck, marks, order, saveFailed, onDeck, onM
   const base = slugify(deck.title);
   const empty = deck.cards.length === 0;
   const tab = (v: "study" | "grid", label: string) => (
-    <button type="button" role="tab" aria-selected={view === v} onClick={() => setView(v)} data-testid={`tab-cards-${v}`} className={cn("rounded-full px-4 py-1.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d]", view === v ? "bg-[#f7433d] text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200")}>{label}</button>
+    <button type="button" role="tab" aria-selected={view === v} onClick={() => setView(v)} data-testid={`tab-cards-${v}`} className={cn("edu-tab", view === v && "edu-tab-on")}>{label}</button>
   );
   const shuffle = () => {
     const ids = deck.cards.map((c) => c.id);
@@ -28,10 +28,10 @@ export function FlashcardWorkspace({ deck, marks, order, saveFailed, onDeck, onM
     onOrder(ids);
   };
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6" data-testid="panel-flashcards-result">
-      <h2 className="font-['Poppins'] text-2xl font-bold text-gray-900" data-testid="text-deck-title">{deck.title}</h2>
+    <div className="edu-sheet" data-testid="panel-flashcards-result">
+      <h2 className="font-['Poppins'] text-2xl font-semibold tracking-[-0.015em] text-[#1c1917]" data-testid="text-deck-title">{deck.title}</h2>
       <p className="mt-1 text-sm text-gray-500">{deck.cards.length} cards. AI can make mistakes, so check cards against your source.</p>
-      <div role="tablist" aria-label="Flashcard view" className="mt-4 flex gap-2">{tab("study", "Study")}{tab("grid", "All cards")}</div>
+      <div role="tablist" aria-label="Flashcard view" className="edu-tabs mt-5">{tab("study", "Study")}{tab("grid", "All cards")}</div>
       <div className="mt-5">
         {view === "study" ? (
           <FlashcardDeck cards={deck.cards} order={order} marks={marks} onShuffle={shuffle} onResetMarks={() => onMarks({})}

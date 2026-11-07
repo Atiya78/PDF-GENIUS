@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { LucideIcon } from "lucide-react";
-import { Loader2 } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { describeError } from "@/lib/education/errors";
 
 export interface ExportAction { id: string; label: string; icon: LucideIcon; run: () => Promise<void> | void }
@@ -22,15 +22,15 @@ export function ExportMenu({ actions, disabledReason, onExported }: { actions: E
       <div className="flex flex-wrap gap-2">
         {actions.map((a) => (
           <button key={a.id} type="button" onClick={() => go(a)} disabled={!!busy || !!disabledReason} data-testid={`button-export-${a.id}`}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-gray-300 bg-white px-4 text-sm font-semibold text-gray-800 transition-colors hover:border-[#f7433d] hover:text-[#d9322c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d] disabled:cursor-not-allowed disabled:opacity-50">
-            {busy === a.id ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <a.icon className="h-4 w-4" aria-hidden="true" />}{a.label}
+            className="edu-btn-ghost group">
+            {busy === a.id ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <a.icon className="h-4 w-4 text-[#8a837b] transition-colors group-hover:text-[#f7433d]" aria-hidden="true" />}{a.label}
           </button>
         ))}
       </div>
-      {disabledReason && <p className="mt-2 text-sm text-amber-700">{disabledReason}</p>}
+      {disabledReason && <p className="mt-2 text-sm text-[#9a5b0c]">{disabledReason}</p>}
       <div aria-live="polite" className="mt-2 min-h-5 text-sm">
-        {ok && <span className="text-green-700" data-testid="text-export-ok">{ok}</span>}
-        {error && <span role="alert" className="text-red-600" data-testid="text-export-error">{error}</span>}
+        {ok && <span className="inline-flex items-center gap-1 text-[#2f5d50]" data-testid="text-export-ok"><Check className="h-4 w-4" aria-hidden="true" />{ok}</span>}
+        {error && <span role="alert" className="text-[#8f1f1a]" data-testid="text-export-error">{error}</span>}
       </div>
     </div>
   );

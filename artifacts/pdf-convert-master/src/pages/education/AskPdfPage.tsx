@@ -120,13 +120,13 @@ export function AskPdfPage(): JSX.Element {
     <div className="space-y-3">
       <p className="text-sm text-gray-900"><span className="font-semibold">Session PDF:</span> {session.file.name} <span className="text-gray-500">({session.pages.length} pages with text)</span></p>
       <p className="text-xs text-gray-500">The PDF is kept in this tab's memory only. Resetting discards it and the chat.</p>
-      {warnings.length > 0 && <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
-      <button type="button" disabled={asking} onClick={() => { if (turns.length === 0 || window.confirm("Reset the session? The PDF and this chat will be cleared.")) reset(); }} className="rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50">Reset and start over</button>
+      {warnings.length > 0 && <ul className="rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+      <button type="button" disabled={asking} onClick={() => { if (turns.length === 0 || window.confirm("Reset the session? The PDF and this chat will be cleared.")) reset(); }} className="edu-btn-ghost">Reset and start over</button>
     </div>
   ) : (
     <div className="space-y-5">
       <ChipGroup label="Answer language" testId="chip-language" disabled={starting} value={language} onChange={setLanguage} options={LANGUAGE_OPTIONS} />
-      <button type="button" onClick={start} disabled={!canStart} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f7433d] px-8 text-base font-semibold text-white shadow-sm hover:bg-[#e03832] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" data-testid="button-start-chat">
+      <button type="button" onClick={start} disabled={!canStart} className="edu-btn-primary w-full sm:w-auto" data-testid="button-start-chat">
         {starting && <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />}{starting ? "Preparing..." : "Start chat session"}
       </button>
       {!src.file && !starting && <p className="text-xs text-gray-500">Upload a PDF to begin. Chat works with PDFs only.</p>}
@@ -140,17 +140,17 @@ export function AskPdfPage(): JSX.Element {
     <EducationToolLayout toolId="chat-with-pdf" seoTitle="Ask your PDF — Source-Grounded Answers with Page Citations | PDF Genius" seoDescription="Ask questions about your own lecture PDF and get answers with page citations and quotes. Preview the cited page and export the chat. Free daily allowance."
       upload={<UploadBox pdfOnly src={src} disabled={starting || !!session} />} options={options}
       result={<>
-        {(session || turns.length > 0) && <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6" data-testid="chat-panel">
+        {(session || turns.length > 0) && <div className="edu-sheet" data-testid="chat-panel">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-['Poppins'] text-lg font-bold text-gray-900">Conversation</h2>
-            <button type="button" disabled={exportBusy || turns.length === 0} onClick={exportChat} className="rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50">{exportBusy ? "Preparing..." : "Export chat PDF"}</button>
+            <button type="button" disabled={exportBusy || turns.length === 0} onClick={exportChat} className="edu-btn-ghost">{exportBusy ? "Preparing..." : "Export chat PDF"}</button>
           </div>
           {note && <p role="status" className="mb-3 text-sm text-gray-600">{note}</p>}
           {turns.length === 0 && <p className="rounded-lg bg-gray-50 p-4 text-sm text-gray-600">Ask anything the PDF should answer. Answers cite the pages they come from.</p>}
           <ol className="space-y-5">
             {turns.map((t) => <li key={t.id} className="space-y-2">
-              <p className="ml-auto max-w-[90%] rounded-2xl rounded-br-sm bg-[#f7433d] px-4 py-2 text-sm text-white sm:max-w-[75%]">{t.answer.question}</p>
-              <div className="max-w-full rounded-2xl rounded-bl-sm border border-gray-200 bg-gray-50 p-4 sm:max-w-[90%]">
+              <p className="ml-auto max-w-[90%] rounded-2xl rounded-br-sm bg-[#1c1917] px-4 py-2.5 text-sm text-white sm:max-w-[75%]">{t.answer.question}</p>
+              <div className="max-w-full rounded-2xl rounded-bl-sm border border-[#e7e0d5] bg-[#fffdf9] p-4 sm:max-w-[90%]">
                 {!t.answer.found && <p className="mb-2 inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800">Not found in the document</p>}
                 <p className="whitespace-pre-wrap break-words text-sm leading-relaxed text-gray-800">{t.answer.answer}</p>
                 {t.answer.retrieval && <p className="mt-2 text-xs text-gray-500">PDF search: {t.answer.retrieval === "embeddings" ? "semantic matching" : "word matching (BM25)"}</p>}

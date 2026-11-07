@@ -19,7 +19,7 @@ import { marksFor, validatePaper, validateSettings } from "@/lib/education/examV
 import { useAuth } from "@/contexts/AuthContext";
 import { CAP_MESSAGE, EXAM_QUESTION_REGEN_CREDITS, EXAM_SECTION_REGEN_CREDITS, countRangePages, examCredits, includedStatus, regenerateExamSection, useEducationAccount, useEducationConfig } from "@/lib/education/billing";
 
-const btn = "rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50";
+const btn = "edu-btn-ghost";
 type ExportKind = "exam-paper" | "exam-key";
 
 export function ExamPaperGeneratorPage(): JSX.Element {
@@ -152,7 +152,7 @@ export function ExamPaperGeneratorPage(): JSX.Element {
   const options = (
     <div className="space-y-5">
       <ExamSettingsForm settings={settings} onChange={setSettings} disabled={running} errors={settingsErrors} />
-      <button type="button" onClick={run} disabled={!can} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f7433d] px-8 text-base font-semibold text-white shadow-sm hover:bg-[#e03832] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" data-testid="button-generate-exam">
+      <button type="button" onClick={run} disabled={!can} className="edu-btn-primary w-full sm:w-auto" data-testid="button-generate-exam">
         {phase !== "idle" ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <FileQuestion className="h-5 w-5" aria-hidden="true" />}{phase !== "idle" ? "Generating..." : "Generate paper"}
       </button>
       <p className="text-xs text-gray-600" data-testid="text-exam-cost">{costLine}{account ? ` Balance: ${account.balance.toLocaleString()} credits.` : ""} {examInc.included ? "Regenerating a section or question also uses the included allowance." : "Regenerating a section or a single question costs 3 credits each."} <Link href="/education/pricing" className="font-semibold text-[#d9322c] underline">Pricing</Link></p>
@@ -160,7 +160,7 @@ export function ExamPaperGeneratorPage(): JSX.Element {
       {!src.canSubmit && !running && <p className="text-xs text-gray-500">Add a PDF or paste some text to continue.</p>}
       <GenerationProgress phase={phase} noun="exam paper" skipReading={src.mode === "paste"} />
       <div aria-live="assertive"><GenerationError error={error} retry={run} disabled={!can} /></div>
-      {warnings.length > 0 && <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+      {warnings.length > 0 && <ul className="rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
     </div>
   );
 
@@ -171,11 +171,11 @@ export function ExamPaperGeneratorPage(): JSX.Element {
     <EducationToolLayout toolId="exam-paper-generator" seoTitle="Exam Question Paper Generator — Bangladesh Board Style | PDF Genius" seoDescription="Generate an A4 exam paper and separate answer key with exact marks totals, creative questions with stimulus and four parts, per-question regenerate and PDF or DOCX export."
       upload={<UploadBox src={src} disabled={running} />} options={options}
       result={<>
-        {paper && <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6" data-testid="panel-exam-paper">
+        {paper && <div className="edu-sheet" data-testid="panel-exam-paper">
           <div className="mb-4 flex flex-wrap gap-2">
             <button type="button" disabled={running || exportBusy} onClick={() => { if (window.confirm("Clear this paper and any edits?")) reset(); }} className={btn}>Start over</button>
           </div>
-          <div className="mb-4 grid gap-3 rounded-xl bg-gray-50 p-3 sm:grid-cols-2">
+          <div className="mb-4 grid gap-3 rounded-[12px] border border-[#efe8dd] bg-[#faf7f2] p-3 sm:grid-cols-2">
             <div><p className="text-sm font-semibold text-gray-900">Question paper</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 <button type="button" disabled={exportBusy || running} onClick={() => doExport("exam-paper", "pdf")} className={btn} data-testid="button-export-paper-pdf">PDF</button>
@@ -188,9 +188,9 @@ export function ExamPaperGeneratorPage(): JSX.Element {
                 <button type="button" disabled={exportBusy || running} onClick={() => doExport("exam-key", "print")} className={btn} data-testid="button-print-key">Print</button></div></div>
           </div>
           {exportBusy && <p role="status" className="mb-3 text-sm text-gray-600">Preparing export...</p>}
-          {exportErrors.length > 0 && <ul role="alert" className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700" data-testid="list-export-errors">{exportErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
-          {paperErrors.length > 0 && exportErrors.length === 0 && <p className="mb-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-800" data-testid="text-paper-warning">{paperErrors.length} issue{paperErrors.length === 1 ? "" : "s"} must be fixed before export. Choose an export to see them.</p>}
-          {regenError && <p role="alert" className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700" data-testid="text-regenerate-error">{regenError}</p>}
+          {exportErrors.length > 0 && <ul role="alert" className="mb-3 rounded-[10px] border border-[#f3c4c0] bg-[#fdf1ef] p-3 text-sm text-[#8f1f1a]" data-testid="list-export-errors">{exportErrors.map((e, i) => <li key={i}>{e}</li>)}</ul>}
+          {paperErrors.length > 0 && exportErrors.length === 0 && <p className="mb-3 rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]" data-testid="text-paper-warning">{paperErrors.length} issue{paperErrors.length === 1 ? "" : "s"} must be fixed before export. Choose an export to see them.</p>}
+          {regenError && <p role="alert" className="mb-3 rounded-[10px] border border-[#f3c4c0] bg-[#fdf1ef] p-3 text-sm text-[#8f1f1a]" data-testid="text-regenerate-error">{regenError}</p>}
           {!pagesRef.current && <p className="mb-3 text-xs text-gray-500">This paper was reopened from history. To regenerate a question, add the source PDF or text above first.</p>}
           <p className="mb-4 text-xs text-gray-500">Edits stay in this page and are not saved automatically. Export to keep them.</p>
           <label className="mb-4 block text-sm font-semibold text-gray-900">Paper title

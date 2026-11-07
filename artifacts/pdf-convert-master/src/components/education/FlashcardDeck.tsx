@@ -66,7 +66,7 @@ export function FlashcardDeck({ cards, order, marks, onMark, onShuffle, onResetM
 
   if (finished) {
     return (
-      <div className="rounded-2xl bg-[#fff1f0] p-6 text-center" data-testid="panel-deck-complete">
+      <div className="rounded-[16px] border border-[#e7e0d5] bg-[#fffdf9] p-8 text-center" data-testid="panel-deck-complete">
         <p className="text-sm font-semibold uppercase tracking-wide text-[#d9322c]">{snapshot ? "Review round finished" : "Deck finished"}</p>
         <p className="mt-3 text-gray-900"><strong data-testid="text-know-count">{know}</strong> known, <strong data-testid="text-learning-count">{learning}</strong> still learning, {visible.length - know - learning} unmarked</p>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -102,12 +102,12 @@ export function FlashcardDeck({ cards, order, marks, onMark, onShuffle, onResetM
       >
         <button type="button" onClick={flip} aria-label={flipped ? "Showing answer. Flip to question" : "Showing question. Flip to answer"} aria-pressed={flipped} data-testid="button-flip-card"
           className="relative block h-64 w-full rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f7433d] sm:h-72"
-          style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "none", transition: "transform 0.5s" }}>
-          <span className="absolute inset-0 flex items-center justify-center rounded-2xl border border-gray-200 bg-white p-6 text-center text-xl font-semibold text-gray-900 shadow-md" style={faceBase}>
+          style={{ transformStyle: "preserve-3d", transform: flipped ? "rotateY(180deg)" : "none", transition: "transform 0.6s cubic-bezier(.2,.7,.2,1)" }}>
+          <span className="absolute inset-0 flex items-center justify-center edu-ruled rounded-[16px] border border-[#e7e0d5] bg-[#fffdf9] p-6 text-center text-xl font-semibold text-[#1c1917] shadow-[0_24px_48px_-30px_rgba(28,25,23,.55)]" style={faceBase}>
             <span className="absolute left-4 top-3 text-xs font-semibold uppercase tracking-wide text-[#d9322c]">Front</span><span className="max-h-full overflow-auto">{card.front}</span>
           </span>
-          <span className="absolute inset-0 flex items-center justify-center rounded-2xl bg-[#fff1f0] p-6 text-center text-lg text-gray-900 shadow-md ring-1 ring-[#f7433d]/20" style={{ ...faceBase, transform: "rotateY(180deg)" }}>
-            <span className="absolute left-4 top-3 text-xs font-semibold uppercase tracking-wide text-[#d9322c]">Back</span><span className="max-h-full overflow-auto">{card.back}</span>
+          <span className="absolute inset-0 flex items-center justify-center rounded-[16px] bg-[#1c1917] p-6 text-center text-lg text-[#faf7f2] shadow-[0_24px_48px_-30px_rgba(28,25,23,.7)]" style={{ ...faceBase, transform: "rotateY(180deg)" }}>
+            <span className="absolute left-4 top-3 text-xs font-semibold uppercase tracking-wide text-[#ff8a84]">Back</span><span className="max-h-full overflow-auto">{card.back}</span>
           </span>
         </button>
       </div>

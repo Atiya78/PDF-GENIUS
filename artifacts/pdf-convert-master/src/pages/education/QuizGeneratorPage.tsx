@@ -131,7 +131,7 @@ export function QuizGeneratorPage(): JSX.Element {
         <label htmlFor="topic" className="mb-1 block text-sm font-semibold text-gray-900">Topic focus <span className="font-normal text-gray-500">(optional)</span></label>
         <input id="topic" value={topic} maxLength={200} disabled={running} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. Cell respiration" className="h-10 w-full rounded-lg border border-gray-300 px-3 text-sm focus:border-[#f7433d] focus:outline-none focus:ring-2 focus:ring-[#f7433d]/20" data-testid="input-topic" />
       </div>
-      <button type="button" onClick={run} disabled={!can} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f7433d] px-8 text-base font-semibold text-white shadow-sm hover:bg-[#e03832] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" data-testid="button-generate-quiz">
+      <button type="button" onClick={run} disabled={!can} className="edu-btn-primary w-full sm:w-auto" data-testid="button-generate-quiz">
         {running ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <Sparkles className="h-5 w-5" aria-hidden="true" />}{running ? "Generating..." : "Generate Quiz"}
       </button>
       <p className="text-xs text-gray-600" data-testid="text-quiz-cost">{costLine}{account ? ` Balance: ${account.balance.toLocaleString()} credits.` : ""} <Link href="/education/pricing" className="font-semibold text-[#d9322c] underline">Pricing</Link></p>
@@ -140,7 +140,7 @@ export function QuizGeneratorPage(): JSX.Element {
       <div aria-live="assertive">
         <GenerationError error={error} retry={run} disabled={!can} />
       </div>
-      {warnings.length > 0 && <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800" data-testid="list-warnings">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+      {warnings.length > 0 && <ul className="rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]" data-testid="list-warnings">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
     </div>
   );
 
@@ -149,8 +149,8 @@ export function QuizGeneratorPage(): JSX.Element {
     <EducationToolLayout toolId="quiz-generator" seoTitle="PDF to Quiz Generator — Free AI Quiz Maker from PDF | PDF Genius" seoDescription="Turn a lecture PDF or pasted notes into a practice quiz with multiple choice, true/false and short-answer questions. Edit, take and export it. Free."
       upload={<UploadBox src={src} disabled={running} />} options={options}
       result={<>
-        {quiz && <><button type="button" disabled={running} onClick={() => { setQuiz(null); src.clear(); setError(null); setWarnings([]); request.current = null; sourceRef.current = null; regenId.current = null; setHasSource(false); }} className="mb-3 mr-2 rounded-full border bg-white px-4 py-2 text-sm font-semibold">Start over</button>
-          {hasSource && <button type="button" disabled={running || quizCapped} onClick={regenerate} className="mb-3 inline-flex items-center gap-1.5 rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50" data-testid="button-regenerate-quiz"><RefreshCw className="h-4 w-4" aria-hidden="true" />Regenerate quiz</button>}
+        {quiz && <><button type="button" disabled={running} onClick={() => { setQuiz(null); src.clear(); setError(null); setWarnings([]); request.current = null; sourceRef.current = null; regenId.current = null; setHasSource(false); }} className="edu-btn-ghost mb-3 mr-2">Start over</button>
+          {hasSource && <button type="button" disabled={running || quizCapped} onClick={regenerate} className="mb-3 inline-flex items-center gap-1.5 edu-btn-ghost" data-testid="button-regenerate-quiz"><RefreshCw className="h-4 w-4" aria-hidden="true" />Regenerate quiz</button>}
           <QuizWorkspace key={quiz.questions[0]?.id} quiz={quiz} onChange={setQuiz} onExported={() => track("export")} onCompleted={() => track("quiz_completed")} /></>}
         <EducationHistory kind="quiz" revision={quiz?.questions[0]?.id} onOpen={saved => { if (saved.quiz) { sourceRef.current = null; regenId.current = null; setHasSource(false); setQuiz(saved.quiz); src.clear(); setError(null); } }} />
       </>} />

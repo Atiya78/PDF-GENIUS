@@ -75,7 +75,7 @@ export const NotesEditor = forwardRef<NotesEditorHandle, { notes: EducationNotes
       <Body section={s} register={register} disabled={disabled} />
       {s.sourcePages.length > 0 && <p className="mt-2 flex flex-wrap items-center gap-1.5 text-xs text-gray-500">Source: {s.sourcePages.map((p) => <span key={p} className="rounded-full bg-[#fff1f0] px-2 py-0.5 font-semibold text-[#d9322c]">p.{p}</span>)}</p>}
     </article>)}
-    <button type="button" disabled={disabled || sections.length >= 80} onClick={() => setSections([...build().sections, { id: crypto.randomUUID(), heading: "", body: "", sourcePages: [] }])} className="inline-flex items-center gap-1 rounded-full border bg-white px-4 py-2 text-sm font-semibold disabled:opacity-50"><Plus className="h-4 w-4" />Add section</button>
+    <button type="button" disabled={disabled || sections.length >= 80} onClick={() => setSections([...build().sections, { id: crypto.randomUUID(), heading: "", body: "", sourcePages: [] }])} className="inline-flex items-center gap-1 edu-btn-ghost"><Plus className="h-4 w-4" />Add section</button>
     <div className="rounded-xl bg-[#fff7f6] p-4">
       <h3 className="font-['Poppins'] text-base font-bold text-gray-900">Key takeaways</h3>
       <ul className="mt-2 space-y-2">{takeaways.map((t, i) => <li key={i} className="flex gap-2">

@@ -25,14 +25,14 @@ export function MindMapTree({ notes }: { notes: EducationNotes }) {
   const all = useMemo(() => collectIds(tree), [tree]);
   const [open, setOpen] = useState<Set<string>>(() => new Set(["root"]));
   const toggle = (id: string) => setOpen((s) => { const n = new Set(s); if (n.has(id)) n.delete(id); else n.add(id); return n; });
-  const btn = "rounded-full border bg-white px-3 py-1.5 text-sm font-semibold";
+  const btn = "edu-btn-ghost !min-h-9";
   return (
     <div data-testid="tree-mind-map">
       <div className="mb-3 flex gap-2">
         <button type="button" className={btn} onClick={() => setOpen(new Set(all))} data-testid="button-expand-all">Expand all</button>
         <button type="button" className={btn} onClick={() => setOpen(new Set(["root"]))} data-testid="button-collapse-all">Collapse all</button>
       </div>
-      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-gray-50 p-3">
+      <div className="overflow-x-auto rounded-[12px] border border-[#e7e0d5] bg-[#faf7f2] p-4">
         <ul role="tree" aria-label="Mind map"><Branch node={tree} open={open} toggle={toggle} level={0} /></ul>
       </div>
     </div>

@@ -99,3 +99,4 @@
 - [Preview cold starts](preview-cold-start.md) — Vite's ready message can precede proxy readiness; cold startup timeouts are not evidence of broken application code.
 - [Quiz answer positions](education-quiz-randomization.md) — independently randomize MCQ choices, never rotate A/B/C/D; keep each generated quiz's order stable.
 - [Education payments](education-payment-provider.md) — Paddle and a separate Education wallet; preserve Dodo elsewhere. Owner pricing, premium-tool limits, and explicit defaults.
+- [Education design direction](education-design-direction.md) — exam-desk editorial look for /education; scroll reveals must stay prerender-safe (no opacity-0 initial).

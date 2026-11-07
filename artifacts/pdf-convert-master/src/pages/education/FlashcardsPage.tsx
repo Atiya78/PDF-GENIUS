@@ -81,11 +81,11 @@ export function FlashcardsPage(): JSX.Element {
 
   const options = (
     <div className="space-y-5">
-      {restored && deck && <p className="rounded-lg bg-[#fff1f0] p-3 text-sm text-gray-800" data-testid="text-restored">Restored your saved deck from this browser. Generating a new deck replaces it.</p>}
+      {restored && deck && <p className="rounded-[10px] border border-[#f6d2ce] bg-[#fdece9] p-3 text-sm text-[#1c1917]" data-testid="text-restored">Restored your saved deck from this browser. Generating a new deck replaces it.</p>}
       <CountInput label="Number of cards" min={10} max={100} disabled={running} value={count} onChange={setCount} />
       <ChipGroup label="Card style" testId="chip-style" disabled={running} value={style} onChange={setStyle} options={[{ value: "term-definition", label: "Basic (term → definition)" }, { value: "question-answer", label: "Q&A" }, { value: "cloze", label: "Cloze (fill-in)" }] as const} />
       <ChipGroup label="Language" testId="chip-language" disabled={running} value={language} onChange={setLanguage} options={LANGUAGE_OPTIONS} />
-      <button type="button" onClick={run} disabled={!can} className="inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#f7433d] px-8 text-base font-semibold text-white shadow-sm hover:bg-[#e03832] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" data-testid="button-generate-cards">
+      <button type="button" onClick={run} disabled={!can} className="edu-btn-primary w-full sm:w-auto" data-testid="button-generate-cards">
         {running ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <Sparkles className="h-5 w-5" aria-hidden="true" />}{running ? "Generating..." : "Generate Flashcards"}
       </button>
       {!src.canSubmit && !running && <p className="text-xs text-gray-500">Add a PDF or paste some text to continue.</p>}
@@ -93,7 +93,7 @@ export function FlashcardsPage(): JSX.Element {
       <div aria-live="assertive">
         <GenerationError error={error} retry={run} disabled={!can} />
       </div>
-      {warnings.length > 0 && <ul className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800" data-testid="list-warnings">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
+      {warnings.length > 0 && <ul className="rounded-[10px] border border-[#f0dcb4] bg-[#fdf6e7] p-3 text-sm text-[#7a4b0c]" data-testid="list-warnings">{warnings.map((w, i) => <li key={i}>{w}</li>)}</ul>}
     </div>
   );
 
@@ -101,7 +101,7 @@ export function FlashcardsPage(): JSX.Element {
     <EducationToolLayout toolId="flashcards" seoTitle="PDF to Flashcards — Free AI Flashcard Maker | PDF Genius" seoDescription="Make flip flashcards from a lecture PDF or pasted notes. Study with shuffle and progress, then export printable cards, CSV or Anki. Free."
       upload={<UploadBox src={src} disabled={running} />} options={options}
       result={<>
-        {deck && <><button type="button" disabled={running} onClick={() => { onClear(); src.clear(); setError(null); setWarnings([]); request.current = null; }} className="mb-3 rounded-full border bg-white px-4 py-2 text-sm font-semibold">Start over</button>
+        {deck && <><button type="button" disabled={running} onClick={() => { onClear(); src.clear(); setError(null); setWarnings([]); request.current = null; }} className="edu-btn-ghost mb-3">Start over</button>
           <FlashcardWorkspace key={deck.cards[0]?.id} deck={deck} marks={marks} order={order} saveFailed={saveFailed} onDeck={setDeck} onMarks={setMarks} onOrder={setOrder} onClear={onClear} onExported={() => track("export")} /></>}
         <EducationHistory kind="flashcards" revision={deck?.cards[0]?.id} onOpen={saved => { if (saved.deck) { setDeck(saved.deck); setMarks({}); setOrder([]); setRestored(false); src.clear(); setError(null); } }} />
       </>} />

@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ArrowRight, Coins } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEducationAccount } from "@/lib/education/billing";
 import { cn } from "@/lib/utils";
@@ -12,30 +12,29 @@ export function EducationBillingStatus({ className }: { className?: string }) {
 
   let body: React.ReactNode;
   if (authLoading || (isAuthenticated && loading && !account)) {
-    body = <span className="h-4 w-40 animate-pulse rounded bg-gray-200" aria-label="Loading Education credits" />;
+    body = <span className="block h-4 w-44 animate-pulse rounded bg-[#ece5da]" aria-label="Loading Education credits" />;
   } else if (!isAuthenticated) {
-    body = <span className="text-gray-600">Study tools with a free daily allowance, plus paid quizzes and exam papers. Sign in to see your Education credits.</span>;
+    body = <span className="text-[#57534e]">Free daily allowance on most tools; quizzes and exam papers use credits. Sign in to see your Education credits.</span>;
   } else if (error && !account) {
-    body = <span className="text-[#b42318]">Education credits unavailable: {error}</span>;
+    body = <span className="text-[#8f1f1a]">Education credits unavailable: {error}</span>;
   } else if (account) {
     body = (
-      <span className="text-gray-700">
-        <span className="font-semibold text-gray-900">Education {TIER[account.tier] ?? account.tier}</span>
-        <span className="mx-2 text-gray-300">|</span>
-        <span className="tabular-nums font-semibold text-gray-900">{account.balance.toLocaleString()}</span> credits
-        <span className="hidden sm:inline text-gray-500"> ({account.includedCredits.toLocaleString()} plan, {account.purchasedCredits.toLocaleString()} purchased)</span>
+      <span className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 text-[#57534e]">
+        <span className="edu-eyebrow">Education {TIER[account.tier] ?? account.tier}</span>
+        <span><span className="edu-mono text-base font-semibold text-[#1c1917]">{account.balance.toLocaleString()}</span> credits</span>
+        <span className="hidden text-xs text-[#8a837b] sm:inline">{account.includedCredits.toLocaleString()} plan, {account.purchasedCredits.toLocaleString()} purchased</span>
       </span>
     );
   }
 
   return (
-    <div className={cn("flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#f7433d]/15 bg-white px-4 py-3 text-sm shadow-sm", className)} data-testid="education-billing-status">
-      <div className="flex min-w-0 items-center gap-2.5">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#d9322c]"><Coins className="h-4 w-4" aria-hidden="true" /></span>
-        {body}
+    <div className={cn("flex flex-wrap items-center justify-between gap-x-5 gap-y-2 border-y border-[#e7e0d5] py-3 text-sm", className)} data-testid="education-billing-status">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <span className="edu-eyebrow shrink-0 !text-[#8a837b]">Credits</span>
+        <div className="min-w-0">{body}</div>
       </div>
-      <Link href="/education/pricing" className="inline-flex items-center gap-1 font-semibold text-[#d9322c] hover:text-[#b42318]" data-testid="link-education-pricing">
-        Education plans <ArrowRight className="h-4 w-4" aria-hidden="true" />
+      <Link href="/education/pricing" className="group inline-flex items-center gap-1 whitespace-nowrap font-semibold text-[#1c1917] underline decoration-[#f7433d]/50 decoration-2 underline-offset-4 hover:decoration-[#f7433d]" data-testid="link-education-pricing">
+        Education plans <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
       </Link>
     </div>
   );
