@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CheckoutLegalNote } from "@/components/legal/CheckoutLegalNote";
 import { Link } from "wouter";
 import { Zap, CreditCard, GraduationCap } from "lucide-react";
 import { ProcessingSpinner } from "@/components/processing-spinner";
@@ -232,6 +233,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string; showBalance?: bo
               $1 = {perUsd.toLocaleString()} PDF tools credits, rounded down to whole credits. Min {money(minCents)}, max{" "}
               {money(maxCents)}. Secure checkout via Dodo Payments.
             </p>
+            <CheckoutLegalNote provider="dodo" className="mt-2" />
             <Link
               href="/education/pricing"
               className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#d9322c] underline underline-offset-4"

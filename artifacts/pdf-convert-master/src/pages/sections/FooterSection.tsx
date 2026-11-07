@@ -2,6 +2,8 @@ import { useState } from "react";
 import { ChevronDown, CloudIcon, LockIcon, PhoneIcon, ShieldIcon, Mail, Facebook, Instagram, Linkedin } from "lucide-react";
 import logoFull from "@assets/FullLogo_Transparent_NoBuffer_1782108807761.png";
 import { Link } from "wouter";
+import { COMPANY, LEGAL_PAGES } from "@/content/legal/company";
+import { openCookieSettings } from "@/lib/consent";
 import "@/styles/marketing.css";
 import { toolLandingPages } from "@/config/toolLandingPages";
 import { SOCIAL_FACEBOOK_URL, SOCIAL_INSTAGRAM_URL, SOCIAL_LINKEDIN_URL } from "@/lib/socialLinks";
@@ -22,11 +24,7 @@ const helpLinks = [
   { text: "Data Safety", path: "/data-safety" },
 ];
 
-const legalLinks = [
-  { text: "Privacy Policy", path: "/privacy-policy" },
-  { text: "Terms of Service", path: "/terms-of-service" },
-  { text: "Refund Policy", path: "/refund-policy" },
-];
+const legalLinks = LEGAL_PAGES.map((p) => ({ text: p.label, path: p.path }));
 
 const socials = [
   { url: SOCIAL_FACEBOOK_URL, label: "Facebook", Icon: Facebook },
@@ -48,10 +46,10 @@ const trustItems = [
   { Icon: ShieldIcon, text: "Privacy Protected" },
 ];
 
-const LinkList = ({ title, links }: { title: string; links: { text: string; path: string }[] }) => (
-  <nav aria-label={title}>
+const LinkList = ({ title, links, className = "", listClassName = "" }: { title: string; links: { text: string; path: string }[]; className?: string; listClassName?: string }) => (
+  <nav aria-label={title} className={className}>
     <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a] mb-3">{title}</h3>
-    <ul className="space-y-2 text-sm">
+    <ul className={`space-y-2 text-sm ${listClassName}`}>
       {links.map((l) => (
         <li key={l.path} className="py-0.5">
           <Link href={l.path} className={linkClass}>{l.text}</Link>
@@ -168,19 +166,24 @@ export const FooterSection = (): JSX.Element => {
               </ul>
             </nav>
 
-             <div className="grid grid-cols-3 gap-x-4 gap-y-6 pt-6 border-t border-[#e2d9cc]">
+             <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-6 pt-6 border-t border-[#e2d9cc]">
               <LinkList title="Product" links={productLinks} />
               <LinkList title="Help" links={helpLinks} />
-              <LinkList title="Legal" links={legalLinks} />
+              <LinkList title="Legal" links={legalLinks} className="col-span-2" listClassName="columns-2 gap-x-4 [&>li]:break-inside-avoid" />
             </div>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="mt-10 pt-5 border-t border-[#e2d9cc] flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <p className="text-sm text-[#57534e] order-last lg:order-none">
-            © {new Date().getFullYear()} PDF Genius. All rights reserved.
-          </p>
+          <div className="text-sm text-[#57534e] order-last lg:order-none">
+            <p data-testid="text-copyright">© {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.</p>
+            <p className="mt-1 text-xs text-[#6b645c]">
+              PDF Genius is operated by {COMPANY.legalName}, {COMPANY.state}, {COMPANY.country}
+              {COMPANY.address ? <>, {COMPANY.address}</> : null}.{" "}
+              <button type="button" onClick={openCookieSettings} className="underline decoration-[#d9d0c3] underline-offset-2 hover:text-[#1c1917] hover:decoration-[#f7433d]" data-testid="button-cookie-settings">Cookie settings</button>
+            </p>
+          </div>
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {trustItems.map(({ Icon, text }) => (
               <li key={text} className="flex items-center gap-1.5 text-xs text-[#57534e]">

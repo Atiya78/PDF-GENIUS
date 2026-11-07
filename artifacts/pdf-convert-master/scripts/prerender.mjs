@@ -20,6 +20,8 @@ const appSource = await readFile(path.join(root, "src/App.tsx"), "utf8");
 const knownPaths = [...new Set([...publicPaths, ...[...appSource.matchAll(/<Route path="([^"]+)"/g)].map(m => m[1])])];
 const redirects = Object.fromEntries(tools.map(p => [`/upload/${p.id}`, p.path]));
 redirects["/upload/restore-document"] = "/restore-document";
+redirects["/terms-of-service"] = "/terms";
+redirects["/privacy-policy"] = "/privacy";
 const shell = await readFile(path.join(dist, existsSync(path.join(dist, "spa.html")) ? "spa.html" : "index.html"), "utf8");
 await writeFile(path.join(dist, "spa.html"), shell);
 

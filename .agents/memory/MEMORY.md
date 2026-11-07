@@ -101,3 +101,4 @@
 - [Education payments](education-payment-provider.md) — Paddle and a separate Education wallet; preserve Dodo elsewhere. Owner pricing, premium-tool limits, and explicit defaults.
 - [Education design direction](education-design-direction.md) — exam-desk editorial look for /education; scroll reveals must stay prerender-safe (no opacity-0 initial).
 - [Site-wide design direction](site-design-direction.md) — whole web app uses the Education paper/ink/coral desk look; no pills, uniform card grids, purple/blue, invented labels.
+- [Legal pages & consent](legal-pages.md) — legal text single-source + TODO comments; Ads only after consent; deletion blocked while subscribed; keep old legal URL redirects.

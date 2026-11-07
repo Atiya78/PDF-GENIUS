@@ -439,6 +439,8 @@ export class MemStorage implements IStorage {
       dodoCustomerId: null,
       dodoSubscriptionId: null,
       profilePictureUrl: null,
+      termsAcceptedAt: null,
+      termsVersion: null,
       createdAt: now
     };
     this.users.set(id, user);

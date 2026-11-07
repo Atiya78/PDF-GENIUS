@@ -110,6 +110,15 @@ export function AuthCard({ mode }: { mode: Mode }) {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [code, setCode] = useState("");
+  // Signup only: required Terms of Service + Privacy Policy acceptance.
+  const [agreed, setAgreed] = useState(false);
+  const termsGate = () => {
+    if (mode === "signup" && !agreed) {
+      setError("Please agree to the Terms of Service and Privacy Policy to create an account.");
+      return false;
+    }
+    return true;
+  };
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -165,11 +174,12 @@ export function AuthCard({ mode }: { mode: Mode }) {
     if (isSubmitting) return;
     setError(null);
     setInfo(null);
+    if (!termsGate()) return;
     if (redirectTimer.current) clearTimeout(redirectTimer.current);
     setIsSubmitting(true);
     try {
       const code = await requestGoogleAuthCode();
-      const res = await googleSignin(code);
+      const res = await googleSignin(code, mode === "signup" && agreed);
       if (res.success) {
         setResult(res.isNewUser ? "signup-success" : "signin-success");
         redirectTimer.current = setTimeout(() => setLocation("/dashboard"), REDIRECT_DELAY);
@@ -187,6 +197,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
   const continueWithEmail = () => {
     setError(null);
     setInfo(null);
+    if (!termsGate()) return;
     if (!email.trim()) {
       setError("Please enter your email address");
       return;
@@ -213,6 +224,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
     setEmail(parsedEmail.data);
 
     if (mode === "signup") {
+      if (!termsGate()) return;
       if (!name.trim() || !password || !confirmPassword) {
         setError("Please fill in all fields");
         return;
@@ -605,17 +617,37 @@ export function AuthCard({ mode }: { mode: Mode }) {
               )}
             </button>
 
-            <p className="mt-6 border-t border-[#efe8dd] pt-4 text-xs leading-[18px] text-[#57534e]">
-              By continuing I agree to the{" "}
-              <button type="button" onClick={() => setLocation("/terms-of-service")} className="font-semibold text-[#1c1917] underline decoration-[#d9d0c3] underline-offset-2 hover:decoration-[#f7433d]" data-testid="link-terms">
-                Terms
-              </button>{" "}
-              &{" "}
-              <button type="button" onClick={() => setLocation("/privacy-policy")} className="font-semibold text-[#1c1917] underline decoration-[#d9d0c3] underline-offset-2 hover:decoration-[#f7433d]" data-testid="link-privacy">
-                Privacy Policy
-              </button>
-              .
-            </p>
+            {mode === "signup" ? (
+              <label htmlFor="auth-agree" className="mt-6 flex cursor-pointer items-start gap-3 border-t border-[#efe8dd] pt-4 text-[13px] leading-5 text-[#57534e]">
+                <input
+                  id="auth-agree"
+                  type="checkbox"
+                  required
+                  checked={agreed}
+                  onChange={(e) => { setAgreed(e.target.checked); if (e.target.checked) setError(null); }}
+                  className="mt-0.5 h-[18px] w-[18px] shrink-0 cursor-pointer accent-[#f7433d]"
+                  data-testid="checkbox-agree-terms"
+                />
+                <span>
+                  I agree to the{" "}
+                  <a href="/terms" target="_blank" rel="noopener" className="font-semibold text-[#1c1917] underline decoration-[#d9d0c3] underline-offset-2 hover:decoration-[#f7433d]" data-testid="link-terms">Terms of Service</a>{" "}
+                  and{" "}
+                  <a href="/privacy" target="_blank" rel="noopener" className="font-semibold text-[#1c1917] underline decoration-[#d9d0c3] underline-offset-2 hover:decoration-[#f7433d]" data-testid="link-privacy">Privacy Policy</a>
+                </span>
+              </label>
+            ) : (
+              <p className="mt-6 border-t border-[#efe8dd] pt-4 text-xs leading-[18px] text-[#57534e]">
+                By continuing I agree to the{" "}
+                <button type="button" onClick={() => setLocation("/terms")} className="font-semibold text-[#1c1917] underline decoration-[#d9d0c3] underline-offset-2 hover:decoration-[#f7433d]" data-testid="link-terms">
+                  Terms
+                </button>{" "}
+                &{" "}
+                <button type="button" onClick={() => setLocation("/privacy")} className="font-semibold text-[#1c1917] underline decoration-[#d9d0c3] underline-offset-2 hover:decoration-[#f7433d]" data-testid="link-privacy">
+                  Privacy Policy
+                </button>
+                .
+              </p>
+            )}
           </>
         )}
       </div>

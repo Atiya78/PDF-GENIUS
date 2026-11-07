@@ -22,14 +22,15 @@ import {
 import { SearchableSection } from "@/components/DocumentSearch";
 import { useDocumentSearch } from "@/hooks/useDocumentSearch";
 import { useSeo } from "@/lib/useSeo";
+import { COMPANY } from "@/content/legal/company";
 
 // ── Real values pulled from the repo ────────────────────────────────────────
 // Support email: Contact page / footer / api-server email service.
-// Refund window + wording: pages/RefundPolicy.tsx (14-day right to cancel).
-// Phone / location: RefundPolicy.tsx + TermsOfService.tsx.
-const SUPPORT_EMAIL = "info@pdfgenius.app";
+// Refund window + wording: content/legal/refund-policy.md.
+// Business details: content/legal/company.ts.
+const SUPPORT_EMAIL = COMPANY.supportEmail;
 const SUPPORT_PHONE = "+447429919748";
-const SUPPORT_LOCATION = "London, United Kingdom";
+const SUPPORT_LOCATION = `${COMPANY.legalName}, ${COMPANY.state}, ${COMPANY.country}`;
 
 // Paddle buyer-facing URLs (factual, from the brief).
 const PADDLE_LOOKUP_URL = "https://paddle.net";
@@ -301,7 +302,7 @@ function sectionContent(m: MerchantKey): Record<string, React.ReactNode> {
             <strong>Phone:</strong> {SUPPORT_PHONE}
           </p>
           <p className="text-gray-700">
-            <strong>Location:</strong> {SUPPORT_LOCATION}
+            <strong>Operated by:</strong> {SUPPORT_LOCATION}
           </p>
           {isDodo ? (
             <p className="text-gray-700">

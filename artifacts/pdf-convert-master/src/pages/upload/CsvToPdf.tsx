@@ -419,7 +419,7 @@ export const CsvToPdfUpload: React.FC = () => {
 
           <p className="text-xs text-[#57534e]">
             Preview is generated locally in your browser. Converting uploads the CSV to our server to build the PDF. See our{" "}
-            <Link href="/privacy-policy" className="underline">privacy policy</Link>.
+            <Link href="/privacy" className="underline">privacy policy</Link>.
           </p>
         </div>
       )}

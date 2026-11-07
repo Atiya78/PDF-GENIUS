@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import "@/styles/marketing.css";
 import { useSeo } from "@/lib/useSeo";
+import { COMPANY } from "@/content/legal/company";
 import aboutIllustration from "@/assets/about-collaboration.png";
 import supportIllustration from "@/assets/about-support.png";
 import {
@@ -46,7 +47,7 @@ export const About = (): JSX.Element => {
   useSeo({
     title: "About PDF Genius",
     description:
-      "PDF Genius is a browser toolkit for converting, editing, merging, splitting and compressing PDFs and images. Free tools. No signup required.",
+      "PDF Genius is operated by FLEXO AI LLC. Learn about our PDF tools, the Education Zone, how we handle files, and how to reach us.",
     canonicalPath: "/about",
   });
 
@@ -57,7 +58,7 @@ export const About = (): JSX.Element => {
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:gap-12 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:py-24 xl:gap-14">
           <div className="min-w-0">
           <p className="edu-eyebrow">
-            About PDF Genius
+            PDF Genius by {COMPANY.legalName}
           </p>
           <h1 className="mkt-display mt-4 max-w-3xl text-[2.3rem] sm:text-5xl xl:text-[3.6rem] break-words">
             PDF and image tools for everyday work and study.
@@ -99,6 +100,36 @@ export const About = (): JSX.Element => {
         </div>
       </section>
 
+      <section className="mx-auto max-w-6xl px-4 sm:px-6 pt-14 sm:pt-20" aria-labelledby="who-heading" data-testid="about-company">
+        <div className="mkt-section">
+          <div>
+            <p className="edu-eyebrow">Who we are</p>
+            <h2 id="who-heading" className="mkt-h2 mt-2">The company behind PDF Genius</h2>
+          </div>
+          <div className="border-t border-[#1c1917] pt-5 text-[16px] leading-relaxed text-[#3f3a35]">
+            <p>
+              PDF Genius is built and operated by <strong className="text-[#1c1917]">{COMPANY.legalName}</strong>, a limited liability company registered in {COMPANY.state}, {COMPANY.country}
+              {COMPANY.address ? <>, at {COMPANY.address}</> : null}. We run the website at {COMPANY.domain} and the PDF Genius app on Google Play.
+            </p>
+            <p className="mt-4">
+              Our aim is simple: make common document and study tasks quick to finish, explain plainly what happens to your files, and keep the basic tools free.
+            </p>
+            <dl className="mt-6 grid gap-px overflow-hidden rounded-[10px] border border-[#e7e0d5] bg-[#e7e0d5] sm:grid-cols-2">
+              <div className="bg-[#fffdf9] p-5">
+                <dt className="font-['Poppins'] text-lg font-semibold text-[#1c1917]">PDF Tools</dt>
+                <dd className="mt-1 text-[15px] text-[#57534e]">Convert, edit, merge, split, compress and protect PDFs, plus image tools and a developer API. Paid plans and credits are sold through Dodo Payments.</dd>
+                <dd className="mt-3"><Link href="/tools" className="mkt-link text-sm">Browse tools <ArrowRight className="mkt-arrow h-4 w-4" aria-hidden="true" /></Link></dd>
+              </div>
+              <div className="bg-[#fffdf9] p-5">
+                <dt className="font-['Poppins'] text-lg font-semibold text-[#1c1917]">Education Zone</dt>
+                <dd className="mt-1 text-[15px] text-[#57534e]">AI study tools that turn your documents into quizzes, exam papers, flashcards, notes and cited answers. Plans and credits are sold through Paddle.</dd>
+                <dd className="mt-3"><Link href="/education" className="mkt-link text-sm">Open Education Zone <ArrowRight className="mkt-arrow h-4 w-4" aria-hidden="true" /></Link></dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20">
         <p className="edu-eyebrow">Capabilities</p>
         <h2 className="mkt-h2 mt-2">What you can do</h2>
@@ -125,7 +156,7 @@ export const About = (): JSX.Element => {
               Knowing where a file goes matters. Here is what applies today.
             </p>
             <Link
-              href="/privacy-policy"
+              href="/privacy"
               data-testid="link-about-privacy"
               className="mkt-link mt-5"
             >
@@ -149,7 +180,8 @@ export const About = (): JSX.Element => {
           <p className="edu-eyebrow">Support</p>
           <h2 className="mkt-h2 mt-2">Questions or feedback?</h2>
           <p className="mt-3 max-w-xl leading-relaxed text-[#57534e]">
-             Contact support with questions about a tool, your account or a file-processing issue.
+             Contact support with questions about a tool, your account or a file-processing issue. For privacy or legal matters, write to{" "}
+             <a href={`mailto:${COMPANY.privacyEmail}`} className="mkt-link">{COMPANY.privacyEmail}</a>.
           </p>
           <div className="mt-6 flex flex-col flex-wrap gap-3 sm:flex-row">
             <a

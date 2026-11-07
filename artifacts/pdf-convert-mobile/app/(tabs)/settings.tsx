@@ -4,10 +4,11 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, Pressable, Share, StyleSheet, Switch, Text, View } from "react-native";
+import { Alert, Linking, Pressable, Share, StyleSheet, Switch, Text, View } from "react-native";
 
 import Svg, { Path } from "react-native-svg";
 
+import { DeleteAccountModal } from "@/components/DeleteAccountModal";
 import { Button, ScreenScroll } from "@/components/ui";
 import colors from "@/constants/colors";
 import { ROUTES } from "@/constants/routes";
@@ -30,7 +31,8 @@ interface LinkRow {
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, token, signout } = useAuth();
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const go = (r: string) => router.push(r as never);
 
   const displayName = user?.name?.trim() || user?.email?.split("@")[0] || "Your account";
@@ -66,6 +68,7 @@ export default function SettingsScreen() {
     { label: "My Credits", icon: "zap", onPress: () => go(ROUTES.credits) },
     { label: "Terms & Conditions", icon: "file-text", onPress: () => go(ROUTES.terms) },
     { label: "Privacy Policy", icon: "shield", onPress: () => go(ROUTES.privacy) },
+    { label: "Account & data deletion", icon: "user-x", onPress: () => Linking.openURL("https://pdfgenius.app/delete-account") },
     { label: "About us", icon: "info", onPress: () => go(ROUTES.about) },
     { label: "Help & Contact", icon: "life-buoy", onPress: () => go(ROUTES.contact) },
     { label: "Share App", icon: "share-2", onPress: shareApp },
@@ -132,7 +135,18 @@ export default function SettingsScreen() {
               label="Profile Settings"
               onPress={() => go(ROUTES.profileSettings)}
             />
+            <SettingRow icon="trash-2" label="Delete account" onPress={() => setDeleteOpen(true)} divider />
           </View>
+          <DeleteAccountModal
+            visible={deleteOpen}
+            token={token}
+            onClose={() => setDeleteOpen(false)}
+            onDeleted={() => {
+              setDeleteOpen(false);
+              signout();
+              Alert.alert("Account deleted", "Your PDF Genius account and its data have been deleted.");
+            }}
+          />
         </>
       )}
 

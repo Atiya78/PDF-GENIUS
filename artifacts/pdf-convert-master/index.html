@@ -1,28 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18278560130"></script>
+    <!-- Google tag stub. gtag.js itself is loaded only after cookie consent
+         (src/lib/consent.ts); until then Consent Mode stays "denied". -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'AW-18278560130');
-    </script>
-    <!-- Event snippet for successful tool downloads (called by shared helpers) -->
-    <script>
-      function gtag_report_conversion(url) {
-        var callback = function () {
-          if (typeof(url) != 'undefined') {
-            window.location = url;
-          }
-        };
+      gtag('consent', 'default', {
+        ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'denied'
+      });
+      // Download conversion (called by shared helpers) — only sent with consent.
+      function gtag_report_conversion() {
+        if (!window.__adsConsent) return false;
         gtag('event', 'conversion', {
-            'send_to': 'AW-18278560130/32ZgCLu44MYcEILj8otE',
-            'value': 1.0,
-            'currency': 'USD',
-            'event_callback': callback
+          'send_to': 'AW-18278560130/32ZgCLu44MYcEILj8otE',
+          'value': 1.0,
+          'currency': 'USD'
         });
         return false;
       }

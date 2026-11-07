@@ -234,3 +234,26 @@ function passwordResetHtml(otpCode: string): string {
       "If you didn't request this, you can safely ignore this email — your password will remain unchanged.",
   });
 }
+
+const escapeHtml = (s: string) =>
+  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+
+/** Forwards a website contact-form message to the support inbox (reply-to = sender). */
+export async function sendContactMessage(opts: {
+  name: string; email: string; topic: string; message: string; userId?: string | null;
+}): Promise<void> {
+  const to = process.env.CONTACT_INBOX?.trim() || "support@pdfgenius.app";
+  const res = await sendResendEmail({
+    from: resolveFromAddress(process.env.RESEND_FROM),
+    to: [to],
+    reply_to: opts.email,
+    subject: `[Contact] ${opts.topic} — ${opts.name}`,
+    text: `From: ${opts.name} <${opts.email}>\nTopic: ${opts.topic}\nAccount: ${opts.userId ?? "not signed in"}\n\n${opts.message}`,
+    html: `<p><strong>From:</strong> ${escapeHtml(opts.name)} &lt;${escapeHtml(opts.email)}&gt;<br/><strong>Topic:</strong> ${escapeHtml(opts.topic)}<br/><strong>Account:</strong> ${escapeHtml(opts.userId ?? "not signed in")}</p><pre style="white-space:pre-wrap;font-family:inherit">${escapeHtml(opts.message)}</pre>`,
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    logger.error({ status: res.status, body }, "Resend contact send failed");
+    throw new Error(`Resend send failed (${res.status})`);
+  }
+}

@@ -1,5 +1,6 @@
 import { Component, lazy, Suspense, type ReactNode } from "react";
 import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
+import { CookieConsent } from "@/components/CookieConsent";
 import { toolLandingPages } from "@/config/toolLandingPages";
 import { ToolLandingPage } from "@/components/ToolLandingPage";
 import { RouteSeo } from "@/components/RouteSeo";
@@ -45,9 +46,17 @@ const ManagePlans = named(() => import("@/pages/ManagePlans"), "ManagePlans");
 const PaymentsBillingHelp = named(() => import("@/pages/PaymentsBillingHelp"), "PaymentsBillingHelp");
 const BuyCredits = named(() => import("@/pages/BuyCredits"), "BuyCredits");
 const LiveTools = named(() => import("@/pages/LiveTools"), "LiveTools");
-const TermsOfService = named(() => import("@/pages/TermsOfService"), "TermsOfService");
-const PrivacyPolicy = named(() => import("@/pages/PrivacyPolicy"), "PrivacyPolicy");
-const RefundPolicy = named(() => import("@/pages/RefundPolicy"), "RefundPolicy");
+const legal = () => import("@/pages/legal");
+const TermsPage = named(legal, "TermsPage");
+const PrivacyPage = named(legal, "PrivacyPage");
+const RefundPolicyPage = named(legal, "RefundPolicyPage");
+const CancellationPolicyPage = named(legal, "CancellationPolicyPage");
+const CookiePolicyPage = named(legal, "CookiePolicyPage");
+const AcceptableUsePage = named(legal, "AcceptableUsePage");
+const AiPolicyPage = named(legal, "AiPolicyPage");
+const DmcaPage = named(legal, "DmcaPage");
+const DisclaimerPage = named(legal, "DisclaimerPage");
+const DeleteAccountPage = named(legal, "DeleteAccountPage");
 const DataSafety = named(() => import("@/pages/DataSafety"), "DataSafety");
 const Support = named(() => import("@/pages/Support"), "Support");
 const SignUp = named(() => import("@/pages/SignUp"), "SignUp");
@@ -356,21 +365,67 @@ function Router() {
         </DynamicLayout>
       </Route>
 
-      <Route path="/terms-of-service">
+      {/* Old legal URLs (linked from the Play listing and older emails). */}
+      <Route path="/terms-of-service"><Redirect to="/terms" replace /></Route>
+      <Route path="/privacy-policy"><Redirect to="/privacy" replace /></Route>
+
+      <Route path="/terms">
         <DynamicLayout>
-          <TermsOfService />
+          <TermsPage />
         </DynamicLayout>
       </Route>
 
-      <Route path="/privacy-policy">
+      <Route path="/privacy">
         <DynamicLayout>
-          <PrivacyPolicy />
+          <PrivacyPage />
         </DynamicLayout>
       </Route>
 
       <Route path="/refund-policy">
         <DynamicLayout>
-          <RefundPolicy />
+          <RefundPolicyPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/cancellation-policy">
+        <DynamicLayout>
+          <CancellationPolicyPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/cookie-policy">
+        <DynamicLayout>
+          <CookiePolicyPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/acceptable-use">
+        <DynamicLayout>
+          <AcceptableUsePage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/ai-policy">
+        <DynamicLayout>
+          <AiPolicyPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/dmca">
+        <DynamicLayout>
+          <DmcaPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/disclaimer">
+        <DynamicLayout>
+          <DisclaimerPage />
+        </DynamicLayout>
+      </Route>
+
+      <Route path="/delete-account">
+        <DynamicLayout>
+          <DeleteAccountPage />
         </DynamicLayout>
       </Route>
 
@@ -657,6 +712,7 @@ function App() {
                 <Router />
               </Suspense>
             </LazyErrorBoundary>
+            <CookieConsent />
           </WouterRouter>
         </AuthProvider>
       </TooltipProvider>

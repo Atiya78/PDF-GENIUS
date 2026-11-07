@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { updateProfile, changePassword, uploadAvatar, deleteAvatar } from "@/lib/profile";
 import { Camera, User as UserIcon, Lock, Check } from "lucide-react";
 import { useSeo } from "@/lib/useSeo";
+import { DeleteAccountPanel } from "@/components/legal/DeleteAccountPanel";
 
 export const Profile: React.FC = () => {
   useSeo({ title: "My Profile", canonicalPath: "/dashboard/profile", noindex: true });
@@ -302,6 +303,8 @@ export const Profile: React.FC = () => {
           </form>
         </CardContent>
       </Card>
+
+      <DeleteAccountPanel compact />
     </div></div>
   );
 };

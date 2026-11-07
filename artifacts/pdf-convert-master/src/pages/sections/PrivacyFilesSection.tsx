@@ -20,7 +20,7 @@ export function PrivacyFilesSection() {
             <p className="edu-eyebrow">Fine print</p>
             <h2 id="privacy-heading" className="mkt-h2 mt-2">Privacy and your files</h2>
             <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-              <Link href="/privacy-policy" className="mkt-link">Privacy policy</Link>
+              <Link href="/privacy" className="mkt-link">Privacy policy</Link>
               <Link href="/data-safety" className="mkt-link">Data safety</Link>
             </div>
           </div>

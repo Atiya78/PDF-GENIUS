@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { CheckoutLegalNote } from "@/components/legal/CheckoutLegalNote";
 import { Link } from "wouter";
 import { Check, ChevronRight, Copy, Loader2, RefreshCw, Trash2, X } from "lucide-react";
 import { Reveal } from "@/components/education/Reveal";
@@ -305,6 +306,8 @@ export function EducationPricingPage(): JSX.Element {
                   );
                 })}
               </div>
+              <p className="mt-6 text-sm text-[#57534e]" data-testid="text-education-autorenew">Prices in US dollars, before any tax added at checkout. Plans renew automatically every {period === "month" ? "month" : "year"} until you cancel; cancel any time from Manage Education subscription.</p>
+              <CheckoutLegalNote provider="paddle" subscription className="mt-2 max-w-3xl" />
             </>
           )}
         </section>

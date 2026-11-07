@@ -1,3 +1,4 @@
+import { recordTermsAcceptance } from "./lib/accountLegal";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
@@ -353,6 +354,9 @@ export async function verifySignupOtp(req: Request, res: Response) {
     await storage.deleteSignupVerification(email);
 
     await ensureWelcomeNotification(newUser.id);
+    if (validation.data.acceptTerms === true) {
+      await recordTermsAcceptance(newUser.id).catch((err) => logger.error({ err }, "Could not record terms acceptance"));
+    }
 
     const token = generateToken(newUser);
     const { passwordHash: _, ...userWithoutPassword } = newUser;
@@ -851,6 +855,9 @@ export async function googleAuth(req: Request, res: Response) {
       });
     }
 
+    if (result.isNewUser && req.body?.acceptTerms === true) {
+      await recordTermsAcceptance(result.user.id).catch((err) => logger.error({ err }, "Could not record terms acceptance"));
+    }
     const token = generateToken(result.user);
     const { passwordHash: _omit, ...userWithoutPassword } = result.user;
 

@@ -19,6 +19,9 @@ export const users = pgTable("users", {
   dodoCustomerId: text("dodo_customer_id"),
   dodoSubscriptionId: text("dodo_subscription_id"),
   profilePictureUrl: text("profile_picture_url"),
+  // Terms of Service + Privacy Policy acceptance (set at signup; version = policy date).
+  termsAcceptedAt: timestamp("terms_accepted_at", { withTimezone: true }),
+  termsVersion: text("terms_version"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -169,6 +172,8 @@ export const verifySignupOtpSchema = z.object({
     .string()
     .trim()
     .regex(/^\d{6}$/, "Enter the 6-digit code from your email"),
+  // Sent by clients that show the Terms/Privacy checkbox; recorded on the account.
+  acceptTerms: z.boolean().optional(),
 });
 
 export type UpdateProfile = z.infer<typeof updateProfileSchema>;

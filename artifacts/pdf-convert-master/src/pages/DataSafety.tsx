@@ -217,7 +217,7 @@ export const DataSafety = (): JSX.Element => {
         {/* Footer note */}
         <div className="text-center text-sm text-[#6b645c]">
           For full details on how we handle your information, see our{" "}
-          <a href="/privacy-policy" className="text-[#f7433d] font-medium hover:underline">
+          <a href="/privacy" className="text-[#f7433d] font-medium hover:underline">
             Privacy Policy
           </a>
           . To request deletion of your account and data, visit our{" "}

@@ -23,10 +23,12 @@ import { AURA_SR_V2, removeBackgroundWithReplicate, runReplicateImage } from "./
 import { compressDocumentPdf, compressionLevel, officeDocumentPdf, searchableOcrPdf } from "./lib/documentTools";
 import ffmpegStatic from "ffmpeg-static";
 import ffprobeStatic from "ffprobe-static";
-import { register, signin, verifySignupOtp, getCurrentUser, authenticateUser, updateProfile, changePassword, forgotPassword, resetPassword, googleAuth, googleConfig, googleMobileStart, googleMobileCallback } from "./auth";
+import { register, signin, verifySignupOtp, getCurrentUser, authenticateUser, updateProfile, changePassword, forgotPassword, resetPassword, googleAuth, googleConfig, googleMobileStart, googleMobileCallback, verifyToken } from "./auth";
 import { notifyUser, ensureWelcomeNotification } from "./notify";
 import { registerAdminRoutes } from "./adminRoutes";
 import { saveAvatar, getAvatar, deleteAvatar } from "./lib/avatarStorage";
+import { AccountDeletionBlocked, deleteAccount } from "./lib/accountLegal";
+import { sendContactMessage } from "./lib/email";
 import { authenticateApiKey } from "./middlewares/apiKeyMiddleware";
 import { optionalConversionAuth, ConversionAuthRequest } from "./middlewares/requireConversionAuth";
 import { generateApiKey, hashApiKey } from "./utils/generateApiKey";
@@ -3837,6 +3839,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     },
   );
+
+  // Permanently delete the signed-in account (Google Play account-deletion requirement).
+  // Body must carry {confirm:"DELETE"} so a stray request can't wipe an account.
+  app.delete("/api/auth/account", authRateLimit(5), authenticateUser, async (req, res) => {
+    if (req.body?.confirm !== "DELETE") {
+      return res.status(400).json({ success: false, error: 'Type DELETE to confirm account deletion.' });
+    }
+    try {
+      await deleteAccount(req.user!.id);
+      return res.status(200).json({ success: true, message: "Your account and data have been deleted." });
+    } catch (error) {
+      if (error instanceof AccountDeletionBlocked) {
+        return res.status(409).json({ success: false, error: error.message });
+      }
+      req.log?.error?.({ err: error }, "Account deletion failed");
+      return res.status(500).json({ success: false, error: "We couldn't delete your account. Please try again or email privacy@pdfgenius.app." });
+    }
+  });
+
+  // Website contact form → support inbox via Resend. Public, rate-limited, honeypot.
+  app.post("/api/contact", authRateLimit(3), async (req, res) => {
+    const str = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
+    if (str(req.body?.website, 200)) return res.status(200).json({ success: true }); // bot honeypot
+    const name = str(req.body?.name, 120);
+    const email = str(req.body?.email, 200);
+    const topic = str(req.body?.topic, 80) || "General";
+    const message = str(req.body?.message, 5000);
+    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || message.length < 10) {
+      return res.status(400).json({ success: false, error: "Please enter your name, a valid email and a message of at least 10 characters." });
+    }
+    let userId: string | null = null;
+    try {
+      const auth = req.headers.authorization;
+      if (auth?.startsWith("Bearer ")) userId = (verifyToken(auth.slice(7)) as { userId?: string } | null)?.userId ?? null;
+    } catch { userId = null; }
+    try {
+      await sendContactMessage({ name, email, topic, message, userId });
+      return res.status(200).json({ success: true, message: "Message sent. We'll reply by email." });
+    } catch (error) {
+      req.log?.error?.({ err: error }, "Contact form send failed");
+      return res.status(502).json({ success: false, error: "We couldn't send your message right now. Please email support@pdfgenius.app directly." });
+    }
+  });
 
   // Remove the signed-in user's avatar: delete the stored image and clear the
   // profile_picture_url column so clients fall back to the initials placeholder.

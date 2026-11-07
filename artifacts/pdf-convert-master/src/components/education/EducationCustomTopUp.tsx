@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CheckoutLegalNote } from "@/components/legal/CheckoutLegalNote";
 import { Link } from "wouter";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -85,6 +86,7 @@ export function EducationCustomTopUp({ config, authed, authLoading, account, acc
               {isBusy ? "Opening checkout" : inRange ? `Buy ${credits.toLocaleString()} Education credits` : "Buy Education credits"}
             </button>
             <p className="mt-3 text-xs text-[#8a837b]">Secure checkout via Paddle. Credits are added only after our server confirms the payment.</p>
+            <CheckoutLegalNote provider="paddle" className="mt-2" />
           </form>
         )}
       </div>

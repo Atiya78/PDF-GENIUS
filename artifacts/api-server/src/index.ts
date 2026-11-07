@@ -3,6 +3,7 @@ import app from "./app";
 import { registerRoutes } from "./routes";
 import { serveWebApp } from "./static";
 import { startConversionCleanup } from "./lib/conversionRetention";
+import { ensureLegalColumns } from "./lib/accountLegal";
 
 if (!process.env.REPLICATE_API_TOKEN) {
   logger.warn("REPLICATE_API_TOKEN is missing. Configure it in Railway → Service → Variables for production AI image tools. An attached Replit connection is only available in Replit.");
@@ -22,7 +23,9 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-registerRoutes(app).then((httpServer) => {
+ensureLegalColumns()
+  .catch((err) => logger.error({ err }, "Could not ensure legal columns"))
+  .then(() => registerRoutes(app)).then((httpServer) => {
   // Co-host the built web frontend on the same origin (no-op if absent).
   serveWebApp(app);
 

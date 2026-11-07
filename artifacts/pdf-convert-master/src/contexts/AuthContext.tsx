@@ -12,7 +12,7 @@ interface AuthContextType {
   /** Step 2 of signup: verifies the emailed code, creates the account, logs in. */
   verifySignupOtp: (email: string, code: string) => Promise<{ success: boolean; error?: string }>;
   /** Google OAuth: exchanges the popup authorization code for a session, logs in. */
-  googleSignin: (code: string) => Promise<{ success: boolean; error?: string; isNewUser?: boolean }>;
+  googleSignin: (code: string, acceptTerms?: boolean) => Promise<{ success: boolean; error?: string; isNewUser?: boolean }>;
   signout: () => void;
   updateUser: (user: User, token?: string) => void;
   /** Re-fetch the signed-in user from the backend (e.g. after a plan change). */
@@ -146,7 +146,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await fetch("/api/auth/verify-signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input.data),
+        // Signup is only reachable after ticking the required Terms/Privacy box.
+        body: JSON.stringify({ ...input.data, acceptTerms: true }),
       });
 
       const data = await response.json();
@@ -174,12 +175,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // session token email/password login does. Find-or-create happens server-side.
   const googleSignin = async (
     code: string,
+    acceptTerms?: boolean,
   ): Promise<{ success: boolean; error?: string; isNewUser?: boolean }> => {
     try {
       const response = await fetch("/api/auth/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, ...(acceptTerms ? { acceptTerms: true } : {}) }),
       });
 
       const data = await response.json();

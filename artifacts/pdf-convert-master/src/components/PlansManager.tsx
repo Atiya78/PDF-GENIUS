@@ -1,4 +1,5 @@
 import "@/styles/dashboard.css";
+import { CheckoutLegalNote } from "@/components/legal/CheckoutLegalNote";
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -391,6 +392,12 @@ export const PlansManager: React.FC = () => {
                 </article>
               );
             })}
+        </div>
+        <div className="col-span-full mt-8 max-w-3xl">
+          <p className="text-sm text-[#57534e]" data-testid="text-pdf-autorenew">
+            Prices in US dollars, before any tax added at checkout. Paid plans renew automatically every {billingPeriod === "year" ? "year" : "month"} until you cancel; cancel any time from Manage Billing.
+          </p>
+          <CheckoutLegalNote provider="dodo" subscription className="mt-2" />
         </div>
       </section>
     </div>
