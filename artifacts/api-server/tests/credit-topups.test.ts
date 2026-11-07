@@ -12,7 +12,7 @@ const userId = "00000000-0000-4000-8000-000000000001";
 const rows = (data: any[] = []) => ({ rows: data, rowCount: data.length });
 const account = { user_id: userId, tier: "none", status: "none", customer_id: "ctm_unit", subscription_id: null,
   paid_until: null, period_end: null };
-function fixture(credits = 200) {
+function fixture(credits = 500) {
   const checkout = { transaction_id: "txn_custom_unit", user_id: userId, kind: "custom", price_id: "pri_custom_unit",
     expected_amount: 500, expected_credits: credits, expected_product_id: "pro_custom_unit", status: "pending" };
   const transaction = { id: checkout.transaction_id, status: "completed", currency_code: "USD", customer_id: "ctm_unit",
@@ -36,12 +36,13 @@ test("both wallets accept exact cents from $5 to $500 and reject malformed/sub-c
     assert.throws(() => usdToCreditCents(invalid));
   assert.equal(MIN_CREDITS_USD,5); assert.equal(MAX_CREDITS_USD,500); assert.equal(CREDITS_PER_USD,100);
 });
-test("Education quotes preserve separate regular/subscriber rates and round fractional credits down", () => {
-  assert.deepEqual(customTopUpQuote(500,false),{ amount:500,credits:200 });
-  assert.deepEqual(customTopUpQuote(500,true),{ amount:500,credits:250 });
-  assert.equal(customTopUpQuote(501,false).credits,200);
-  assert.equal(customTopUpQuote(501,true).credits,250);
-  assert.equal(customTopUpQuote(50000,true).credits,25000);
+test("Education quotes use the same 100 credits per $1 for everyone", () => {
+  assert.deepEqual(customTopUpQuote(500,false),{ amount:500,credits:500 });
+  assert.deepEqual(customTopUpQuote(500,true),{ amount:500,credits:500 });
+  assert.equal(customTopUpQuote(501,false).credits,501);
+  assert.equal(customTopUpQuote(501,true).credits,501);
+  assert.equal(customTopUpQuote(50000,false).credits,50000);
+  assert.equal(customTopUpQuote(50000,true).credits,50000);
   for (const bad of [499,50001,500.5,NaN,Infinity]) assert.throws(() => customTopUpQuote(bad,false));
 });
 test("general checkout rejects invalid or forged credit counts before contacting Dodo", async () => {
@@ -51,7 +52,7 @@ test("general checkout rejects invalid or forged credit counts before contacting
 });
 test("Paddle non-catalog top-ups require the exact owned order, product, amount, currency and quantity", () => {
   const {checkout,transaction}=fixture();
-  assert.equal(customPriceInfo(transaction,checkout)?.credits,200);
+  assert.equal(customPriceInfo(transaction,checkout)?.credits,500);
   assert.equal(customPriceInfo(transaction,undefined),undefined);
   const variants = [
     { ...checkout,transaction_id:"another" }, { ...checkout,expected_credits:999999 },
@@ -68,9 +69,9 @@ test("Paddle non-catalog top-ups require the exact owned order, product, amount,
     assert.equal(customPriceInfo(changed,checkout),undefined);
   }
 });
-test("paid custom top-up grants only the locked subscriber quote, once, with 12-month expiry and no Dodo writes", async t => {
+test("paid custom top-up grants only the locked quote, once, with 12-month expiry and no Dodo writes", async t => {
   testEnv(t);
-  const {checkout,transaction}=fixture(250); // Subscriber may have expired since checkout.
+  const {checkout,transaction}=fixture(500);
   let settled=false, minted=0;
   const query=async (sql:string,args:any[]=[]) => {
     assert.ok(!/\bUPDATE users\b/.test(sql));
@@ -92,7 +93,7 @@ test("paid custom top-up grants only the locked subscriber quote, once, with 12-
   await handlePaddleEvent({event_id:"evt_custom_unit",event_type:"transaction.completed",
     occurred_at:"2030-01-01T00:00:00Z",data:{id:transaction.id}});
   assert.equal(await fulfillTransaction(transaction.id),"completed");
-  assert.equal(minted,250); // Neither the $1 tax nor forged metadata buys credits.
+  assert.equal(minted,500); // Neither the $1 tax nor forged metadata buys credits.
 });
 test("pending, canceled and failed custom payments never grant credits", async t => {
   testEnv(t); let writes=0;
@@ -107,7 +108,7 @@ test("pending, canceled and failed custom payments never grant credits", async t
 });
 test("custom top-up refunds reduce only their Education lot and duplicate events do not revoke twice", async t => {
   testEnv(t);
-  const {checkout,transaction}=fixture(250); let refunded=false, removed=0;
+  const {checkout,transaction}=fixture(500); let refunded=false, removed=0;
   const adjustment={id:"adj_unit",action:"refund",status:"approved",transaction_id:transaction.id,totals:{total:"600"}};
   const query=async(sql:string,args:any[]=[])=>{
     assert.ok(!/\bUPDATE users\b/.test(sql));
@@ -124,9 +125,9 @@ test("custom top-up refunds reduce only their Education lot and duplicate events
   t.mock.method(globalThis,"fetch",async(url:any)=>new Response(JSON.stringify({data:String(url).includes("/adjustments/")?adjustment:transaction}),{status:200}));
   const event={event_id:"evt_unit",event_type:"adjustment.updated",occurred_at:"2030-01-02T00:00:00Z",data:{id:adjustment.id}};
   await handlePaddleEvent(event); await handlePaddleEvent(event);
-  assert.equal(removed,250);
+  assert.equal(removed,500);
 });
-test("Education checkout validates input, chooses subscriber rate on server, and persists the exact non-catalog order", async t => {
+test("Education checkout validates input, quotes on server, and persists the exact non-catalog order", async t => {
   testEnv(t);
   let saved:any[]=[], sent:any, creates=0;
   const paidAccount={...account,tier:"pro",status:"active",paid_until:new Date(Date.now()+86400000),period_end:new Date(Date.now()+86400000)};
@@ -163,5 +164,5 @@ test("Education checkout validates input, chooses subscriber rate on server, and
   assert.equal(sent.items[0].price.product.tax_category,"saas");
   assert.equal(sent.items[0].price.billing_cycle,null);
   assert.equal(sent.items[0].quantity,1);
-  assert.deepEqual(saved,["txn_custom_unit",userId,"custom","pri_custom_unit",501,250,"pro_custom_unit"]);
+  assert.deepEqual(saved,["txn_custom_unit",userId,"custom","pri_custom_unit",501,501,"pro_custom_unit"]);
 });

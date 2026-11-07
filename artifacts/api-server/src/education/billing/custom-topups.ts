@@ -1,7 +1,7 @@
 import { EducationError } from "../config";
 
 export const customTopUp = {
-  minCents: 500, maxCents: 50_000, creditsPerUsd: 40, subscriberCreditsPerUsd: 50,
+  minCents: 500, maxCents: 50_000, creditsPerUsd: 100, subscriberCreditsPerUsd: 100, // Owner: same 100/$ rate as the general wallet, no subscriber difference.
 };
 export function customTopUpQuote(amountCents: number, subscriber: boolean) {
   if (!Number.isSafeInteger(amountCents) || amountCents < customTopUp.minCents || amountCents > customTopUp.maxCents)

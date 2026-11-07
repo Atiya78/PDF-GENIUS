@@ -55,10 +55,10 @@ on the approved production domain when ready.
 ## Billing behavior
 
 - Custom website top-ups accept $5–$500 USD per transaction, in whole cents.
-  General credits remain on Dodo at 100 credits per $1. Education custom top-ups
-  use Paddle at 40 credits per $1, or 50 per $1 for active Education subscribers
-  (the effective 20% subscriber discount). Fractional Education credits round down.
-  These are separate, non-transferable wallets. Fixed Education packs are unchanged.
+  Both wallets use the same rate of 100 credits per $1: general credits through
+  Dodo and Education credits through Paddle. There is no subscriber rate difference
+  for custom top-ups. These are separate, non-transferable wallets; the customer
+  chooses which one to top up. Fixed Education packs are unchanged.
   Applicable tax is additional; it never buys extra credits.
 - Custom Paddle purchases use transaction-specific, non-catalog products/prices.
   The server saves the returned product/price IDs, exact amount and credit quote.

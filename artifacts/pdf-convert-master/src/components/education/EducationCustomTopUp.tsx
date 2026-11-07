@@ -18,23 +18,20 @@ interface Props {
 
 const PRESETS = [500, 1000, 2500, 5000];
 
-/** Education-only custom top-up. Rate depends on live Education tier; server is authoritative. */
+/** Education-only custom top-up at a flat rate; the server quote is authoritative. */
 export function EducationCustomTopUp({ config, authed, authLoading, account, accountLoading, accountError, busy, onRetryAccount, onCheckout }: Props) {
   const cfg = config.customTopUp;
   const [raw, setRaw] = useState("10");
   if (!cfg) return null; // Tolerate an older config during a rolling deployment.
   const cents = parseUsdToCents(raw);
   const inRange = cents !== null && cents >= cfg.minCents && cents <= cfg.maxCents;
-  const accountReady = authed && !!account;
-  const subscriber = !!account && account.tier !== "none";
-  const rate = subscriber ? cfg.subscriberCreditsPerUsd : cfg.creditsPerUsd;
-  const credits = inRange && accountReady ? creditsForCents(cents, rate) : 0;
+  const rate = cfg.creditsPerUsd;
+  const credits = inRange ? creditsForCents(cents, rate) : 0;
   const isBusy = busy === "custom";
   const validation = raw.trim() === "" ? "Enter an amount." :
     cents === null ? "Use dollars and up to 2 decimal places, e.g. 12.50." :
     !inRange ? `Choose between ${money(cfg.minCents)} and ${money(cfg.maxCents)}.` : null;
   const expiry = config.policies.purchasedExpiryMonths;
-  const subPct = cfg.creditsPerUsd > 0 ? Math.round((1 - cfg.creditsPerUsd / cfg.subscriberCreditsPerUsd) * 100) : 0;
 
   return (
     <section aria-labelledby="custom-h" className="mt-8 rounded-3xl bg-white p-5 ring-1 ring-gray-200 sm:p-7" data-testid="section-education-custom-topup">
@@ -44,12 +41,9 @@ export function EducationCustomTopUp({ config, authed, authLoading, account, acc
           <h3 id="custom-h" className="mt-3 font-['Poppins'] text-xl font-bold text-gray-900">Custom top-up</h3>
           <p className="mt-1 text-sm text-gray-600">Buy exactly what you need, from {money(cfg.minCents)} to {money(cfg.maxCents)} USD plus any applicable tax.</p>
           <ul className="mt-4 space-y-1.5 text-sm text-gray-700">
-            <li><span className="font-semibold tabular-nums text-gray-900">{cfg.creditsPerUsd}</span> credits per $1 without a plan</li>
-            <li><span className="font-semibold tabular-nums text-gray-900">{cfg.subscriberCreditsPerUsd}</span> credits per $1 for Education subscribers{subPct > 0 ? ` (about ${subPct}% less per credit)` : ""}</li>
-            <li>Fractional credits are rounded down to whole credits.</li>
+            <li><span className="font-semibold tabular-nums text-gray-900">{cfg.creditsPerUsd}</span> credits per $1, the same rate for everyone</li>
             <li>Credits expire {expiry} months after purchase.</li>
             <li>Added to your Education balance only. Education and general PDF Genius credits are separate and cannot be transferred.</li>
-            <li>Fixed packs above keep their better volume pricing.</li>
           </ul>
         </div>
 
@@ -58,11 +52,11 @@ export function EducationCustomTopUp({ config, authed, authLoading, account, acc
             <div className="space-y-3" aria-busy="true"><div className="h-11 animate-pulse rounded-full bg-white" /><div className="h-16 animate-pulse rounded-2xl bg-white" /><div className="h-11 animate-pulse rounded-full bg-white" /></div>
           ) : !authed ? (
             <div data-testid="status-custom-signin">
-              <p className="text-sm text-gray-700">Sign in to see your rate and buy a custom amount. Your rate depends on whether your account has an Education plan, so we only show a credit total once we know who you are.</p>
+              <p className="text-sm text-gray-700">Sign in to buy a custom amount of Education credits.</p>
               <Link href="/signin" className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-gray-900 px-5 text-sm font-semibold text-white hover:bg-gray-800" data-testid="link-custom-signin">Sign in to top up</Link>
             </div>
           ) : !account || accountError ? (
-            <p role="alert" className="text-sm text-[#b42318]" data-testid="status-custom-account-error">Could not load your Education account{accountError ? `: ${accountError}` : ""}. Purchases are paused until we can confirm your rate. <button type="button" onClick={onRetryAccount} className="font-semibold underline" data-testid="button-custom-retry">Retry</button></p>
+            <p role="alert" className="text-sm text-[#b42318]" data-testid="status-custom-account-error">Could not load your Education account{accountError ? `: ${accountError}` : ""}. Purchases are paused until we can load your account. <button type="button" onClick={onRetryAccount} className="font-semibold underline" data-testid="button-custom-retry">Retry</button></p>
           ) : (
             <form onSubmit={(e) => { e.preventDefault(); if (config.enabled && config.clientToken && !busy && inRange && cents !== null) onCheckout(cents); }} noValidate>
               <div className="flex flex-wrap gap-2" role="group" aria-label="Quick amounts">
@@ -81,7 +75,7 @@ export function EducationCustomTopUp({ config, authed, authLoading, account, acc
               <div className="mt-4 flex items-baseline justify-between gap-3 rounded-2xl bg-white p-4 ring-1 ring-gray-200">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">You receive</p>
-                  <p className="text-xs text-gray-500">{subscriber ? "Subscriber rate" : "Standard rate"}: {rate} credits per $1</p>
+                  <p className="text-xs text-gray-500">{rate} credits per $1</p>
                 </div>
                 <p className="font-['Poppins'] text-2xl font-bold tabular-nums text-gray-900" data-testid="text-custom-credits">{inRange ? credits.toLocaleString() : "--"} <span className="text-sm font-semibold text-gray-500">credits</span></p>
               </div>

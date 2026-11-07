@@ -31,14 +31,14 @@ Education credits are Education-only, separate from the general wallet. Educatio
 ## Custom website top-ups
 
 Both wallets support separate custom purchases of $5–$500 USD, with up to two
-decimal places. General credits use Dodo at 100 credits per $1. Education credits
-use Paddle at 40 credits per $1, or 50 per $1 for active Education subscribers;
-fractional credits round down. Existing fixed Education packs remain available,
-and custom purchased Education credits still expire after 12 months.
+decimal places, at the SAME rate of 100 credits per $1 (general via Dodo,
+Education via Paddle). No subscriber rate difference for custom top-ups.
+Existing fixed Education packs remain available, and custom purchased Education
+credits still expire after 12 months.
 
-**Why:** The owner explicitly approved these separate rates and transaction range.
-The subscriber rate preserves the effective 20% discount without charging less
-than the $5 custom-purchase minimum.
+**Why:** The owner said both wallets are "same 1$ for 100 credits", differing
+only in which wallet the customer tops up. This superseded an earlier 40/$ (50/$
+subscriber) Education rate.
 
 **How to apply:** Keep custom checkout quotes, displayed rates, settlement and
 wallet attribution consistent. Do not apply this web custom-amount rule to native
