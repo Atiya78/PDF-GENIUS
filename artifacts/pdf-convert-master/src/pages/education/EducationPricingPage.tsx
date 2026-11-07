@@ -37,7 +37,7 @@ const COSTS: { tool: string; href: string; rows: [string, string][] }[] = [
 export function EducationPricingPage(): JSX.Element {
   useSeo({
     title: "Education Plans and Credits | PDF Genius",
-    description: "Education-only plans for students: Basic, Pro and Max with monthly study credits, credit packs, daily quiz and exam allowances, and clear expiry rules.",
+    description: "Education-only plans for students: Basic, Pro and Max with monthly study credits, custom credit top-ups at 100 credits per $1, daily quiz and exam allowances, and clear expiry rules.",
     canonicalPath: "/education/pricing",
   });
   const { token, isAuthenticated, loading: authLoading } = useAuth();
@@ -181,7 +181,7 @@ export function EducationPricingPage(): JSX.Element {
           {authLoading || (authed && accLoading && !account) ? (
             <div className="mt-5 grid gap-3 sm:grid-cols-4">{[0, 1, 2, 3].map((i) => <div key={i} className="h-20 animate-pulse rounded-2xl bg-gray-100" />)}</div>
           ) : !authed ? (
-            <p className="mt-3 text-gray-600">Sign in to buy a plan or pack and see your credit balance. Without an account you can still use {pol ? pol.freeGenerationsPerDay : "the"} free Education generations per day.{" "}
+            <p className="mt-3 text-gray-600">Sign in to buy a plan or credits and see your credit balance. Without an account you can still use {pol ? pol.freeGenerationsPerDay : "the"} free Education generations per day.{" "}
               <Link href="/signin" className="font-semibold text-[#d9322c] underline">Sign in</Link></p>
           ) : accErr && !account ? (
             <div className="mt-3 text-sm text-[#b42318]">Could not load your Education account: {accErr} <button type="button" onClick={() => void refresh()} className="ml-2 font-semibold underline">Retry</button></div>
@@ -274,23 +274,6 @@ export function EducationPricingPage(): JSX.Element {
                 })}
               </div>
 
-              <h2 className="mt-14 font-['Poppins'] text-2xl font-bold text-gray-900">Credit packs</h2>
-              <p className="mt-1 text-gray-600">One-time purchase. Pack credits expire {config.policies.purchasedExpiryMonths} months after purchase. Subscribers pay the discounted price.</p>
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                {config.packs.map((k) => (
-                  <div key={k.id} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-5 ring-1 ring-gray-200" data-testid={`card-pack-${k.id}`}>
-                    <div>
-                      <p className="font-semibold tabular-nums text-gray-900">{k.credits.toLocaleString()} credits</p>
-                      <p className="text-sm text-gray-600">{subscribed ? <><s className="text-gray-400">{money(k.priceCents)}</s> {money(k.subscriberPriceCents)}</> : <>{money(k.priceCents)} <span className="text-gray-400">/ {money(k.subscriberPriceCents)} for subscribers</span></>}</p>
-                    </div>
-                    {authed ? (
-                      <button type="button" onClick={() => checkout({ kind: "pack", id: k.id })} disabled={!config.enabled || !!busy} className="inline-flex h-10 items-center gap-1.5 rounded-full bg-[#f7433d] px-4 text-sm font-semibold text-white hover:bg-[#e03832] disabled:opacity-50" data-testid={`button-pack-${k.id}`}>
-                        {busy === `pack-${k.id}` && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}Buy
-                      </button>
-                    ) : <Link href="/signin" className="text-sm font-semibold text-[#d9322c] underline">Sign in</Link>}
-                  </div>
-                ))}
-              </div>
               <EducationCustomTopUp config={config} authed={!!authed} authLoading={authLoading} account={account} accountLoading={accLoading}
                 accountError={accErr} busy={busy} onRetryAccount={() => void refresh()} onCheckout={(amountCents) => checkout({ kind: "custom", amountCents })} />
             </>
@@ -315,8 +298,8 @@ export function EducationPricingPage(): JSX.Element {
             <h2 className="font-['Poppins'] text-2xl font-bold text-gray-900">Policies</h2>
             <ul className="mt-4 space-y-3 rounded-2xl bg-white p-5 text-sm text-gray-700 ring-1 ring-gray-200">
               <li><span className="font-semibold text-gray-900">Monthly credits</span> {pol?.monthlyCreditsRollover === false ? "do not roll over." : "roll over month to month but expire at the end of your paid subscription period. Yearly plans receive their credits monthly, not all at once."} Exact expiry dates for your credits are listed in your account above.</li>
-              <li><span className="font-semibold text-gray-900">Rollover is limited:</span> unused plan credits carry over only within the billing period you have already paid for. Pack credits are separate and expire 12 months after purchase.</li>
-              <li><span className="font-semibold text-gray-900">Pack credits</span> expire {pol?.purchasedExpiryMonths ?? 12} months after purchase.</li>
+              <li><span className="font-semibold text-gray-900">Rollover is limited:</span> unused plan credits carry over only within the billing period you have already paid for. Purchased credits are tracked separately.</li>
+              <li><span className="font-semibold text-gray-900">Purchased credits</span> expire {pol?.purchasedExpiryMonths ?? 12} months after purchase.</li>
               <li><span className="font-semibold text-gray-900">Other study tools</span> (notes, summaries, flashcards, mind maps, Ask PDF, translation) stay free for {pol?.freeGenerationsPerDay ?? 5} generations per day, then use {pol?.otherToolsCredits ?? 1} Education credit each.</li>
               <li><span className="font-semibold text-gray-900">Queue speed</span> labels describe priority only; processing times are not guaranteed.</li>
               <li><span className="font-semibold text-gray-900">No unlimited usage.</span> Every plan has the credit and daily limits shown on this page.</li>

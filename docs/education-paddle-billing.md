@@ -58,7 +58,9 @@ on the approved production domain when ready.
   Both wallets use the same rate of 100 credits per $1: general credits through
   Dodo and Education credits through Paddle. There is no subscriber rate difference
   for custom top-ups. These are separate, non-transferable wallets; the customer
-  chooses which one to top up. Fixed Education packs are unchanged.
+  chooses which one to top up. Fixed Education packs ($5/200, $22/1,000,
+  $60/3,000) are retired: no longer shown or sold. Their catalog prices remain only
+  so earlier pack purchases still settle and refund correctly.
   Applicable tax is additional; it never buys extra credits.
 - Custom Paddle purchases use transaction-specific, non-catalog products/prices.
   The server saves the returned product/price IDs, exact amount and credit quote.

@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 import { CreateEducationCheckoutBody } from "@workspace/api-zod";
 import { pool } from "@workspace/db";
 import { EducationError } from "../config";
-import { catalog, plans, packs, policies } from "./catalog";
+import { catalog, plans, policies } from "./catalog";
 import { customTopUp, customTopUpQuote } from "./custom-topups";
 import { activeTier, billingTransaction, createEducationKey, ensureEducationBilling, getEducationAccount, lockAccount } from "./store";
 import { billingEnabled, fulfillTransaction, handlePaddleEvent, paddle, paddleWebhookSecret, verifyPaddleSignature } from "./paddle";
@@ -46,7 +46,7 @@ export const educationBillingRouter = express.Router();
 educationBillingRouter.get("/config", async (_req, res) => {
   const token = await clientToken();
   res.json({ enabled: billingEnabled() && Boolean(token), clientToken: token,
-    environment: process.env.PADDLE_ENVIRONMENT === "sandbox" ? "sandbox" : "live", plans, packs, policies, customTopUp });
+    environment: process.env.PADDLE_ENVIRONMENT === "sandbox" ? "sandbox" : "live", plans, packs: [], policies, customTopUp }); // Fixed packs retired: custom top-ups only.
 });
 educationBillingRouter.use((req, res, next) => {
   if (!req.user || !req.headers.authorization) { res.status(401).json({ error: "Please sign in to manage Education billing." }); return; }
@@ -73,7 +73,10 @@ educationBillingRouter.post("/checkout", async (req, res) => {
     throttle(req, `education-checkout:${req.user!.id}`, 15);
     if (!billingEnabled() || !(await clientToken())) throw new EducationError("Education payments are not ready yet. Please contact support.", 503);
     const input = CreateEducationCheckoutBody.safeParse(req.body);
-    if (!input.success) throw new EducationError("Choose an Education plan, credit pack, or a custom top-up from $5 to $500.");
+    if (!input.success) throw new EducationError("Choose an Education plan or a custom top-up from $5 to $500.");
+    // Fixed packs were retired by the owner (worse value than 100 credits/$1 custom top-ups).
+    // Their catalog entries stay so earlier pack purchases still settle and refund correctly.
+    if (input.data.kind === "pack") throw new EducationError("Fixed Education credit packs are no longer sold. Choose a custom top-up from $5 to $500 instead.");
     const result = await billingTransaction(async client => {
       const account = await lockAccount(client, req.user!.id);
       const purchase = input.data;

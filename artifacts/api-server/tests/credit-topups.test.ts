@@ -155,6 +155,8 @@ test("Education checkout validates input, quotes on server, and persists the exa
     const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind:"custom",amountCents})});
     assert.equal(r.status,400);
   }
+  const retired=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind:"pack",id:"small"})});
+  assert.equal(retired.status,400); // Fixed packs are retired; custom top-ups only.
   assert.equal(creates,0);
   const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({kind:"custom",amountCents:501,credits:999999,subscriber:false})});

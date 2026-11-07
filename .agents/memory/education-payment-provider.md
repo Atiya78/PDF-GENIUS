@@ -19,8 +19,8 @@ Education credits are Education-only, separate from the general wallet. Educatio
 
 - Monthly: Basic $9 / 500 credits per month; Pro $29 / 2,000; Max $79 / 6,000.
 - Yearly: Basic $90; Pro $290; Max $790. Credits are still monthly, not all at once annually.
-- One-time packs: Small $5 / 200 credits; Medium $22 / 1,000; Large $60 / 3,000.
-- Active subscribers receive 20% off credit packs. Purchased credits expire 12 months after purchase.
+- One-time packs (RETIRED, see below): Small $5 / 200; Medium $22 / 1,000; Large $60 / 3,000; 20% subscriber discount.
+- Purchased credits expire 12 months after purchase.
 - Basic and non-subscribers pay 5 credits per quiz up to 20 questions and 20 source pages; +1 per extra 10 questions; +1 per extra 20 pages. Quiz regeneration costs 2 credits.
 - Exam papers include the marking key and cost 15 credits up to 50 source pages; +3 per extra 50 pages. Regenerating a single section costs 3 credits. DOCX/PDF exports are free.
 - Basic: maximum 20 quiz questions and 50 pages per upload.
@@ -33,8 +33,9 @@ Education credits are Education-only, separate from the general wallet. Educatio
 Both wallets support separate custom purchases of $5–$500 USD, with up to two
 decimal places, at the SAME rate of 100 credits per $1 (general via Dodo,
 Education via Paddle). No subscriber rate difference for custom top-ups.
-Existing fixed Education packs remain available, and custom purchased Education
-credits still expire after 12 months.
+Fixed Education packs were RETIRED at the owner's request (worse value than
+100/$); keep their catalog entries only for settling/refunding past purchases.
+Purchased Education credits still expire after 12 months.
 
 **Why:** The owner said both wallets are "same 1$ for 100 credits", differing
 only in which wallet the customer tops up. This superseded an earlier 40/$ (50/$
