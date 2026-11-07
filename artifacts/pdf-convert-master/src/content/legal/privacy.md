@@ -89,7 +89,7 @@ We may also disclose data if required by law, to protect rights and safety, or a
 
 ## 9. International transfers
 
-We are based in the United States and our providers may process data in the United States and other countries. Where data from the EEA, UK or Switzerland is transferred to countries without an adequacy decision, we rely on safeguards such as the European Commission's Standard Contractual Clauses and the UK International Data Transfer Addendum, as offered in our providers' data processing terms.
+We are based in the United Kingdom, and our providers may process data in the United States and other countries outside the UK and EEA. Where data is transferred to a country without UK or EU adequacy, we rely on safeguards such as the UK International Data Transfer Agreement or Addendum and the European Commission's Standard Contractual Clauses, as offered in our providers' data processing terms.
 
 ## 10. Security
 
@@ -147,4 +147,4 @@ We will update this policy when our practices change. The "Last updated" date sh
 
 ## 16. Contact
 
-**{{legalName}}** ({{state}}, {{country}}) — Privacy: [{{privacyEmail}}](mailto:{{privacyEmail}}) · Support: [{{supportEmail}}](mailto:{{supportEmail}})
+**{{legalName}}** (company number {{companyNumber}}, {{address}}) — Privacy: [{{privacyEmail}}](mailto:{{privacyEmail}}) · Support: [{{supportEmail}}](mailto:{{supportEmail}})

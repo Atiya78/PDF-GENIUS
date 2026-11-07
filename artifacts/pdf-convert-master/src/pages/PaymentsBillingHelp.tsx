@@ -29,8 +29,9 @@ import { COMPANY } from "@/content/legal/company";
 // Refund window + wording: content/legal/refund-policy.md.
 // Business details: content/legal/company.ts.
 const SUPPORT_EMAIL = COMPANY.supportEmail;
+// Phone kept from the original site (UK number, matches the London registered office).
 const SUPPORT_PHONE = "+447429919748";
-const SUPPORT_LOCATION = `${COMPANY.legalName}, ${COMPANY.state}, ${COMPANY.country}`;
+const SUPPORT_LOCATION = `${COMPANY.legalName} (company no. ${COMPANY.companyNumber}), ${COMPANY.address}`;
 
 // Paddle buyer-facing URLs (factual, from the brief).
 const PADDLE_LOOKUP_URL = "https://paddle.net";

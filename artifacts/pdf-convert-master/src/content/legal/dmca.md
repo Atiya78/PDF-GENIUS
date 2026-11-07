@@ -17,7 +17,7 @@ Send your notice to our designated agent by email at [{{privacyEmail}}](mailto:{
 4. your name, address, telephone number and email address;
 5. a statement that you have a good-faith belief that the use is not authorised by the copyright owner, its agent or the law;
 6. a statement, under penalty of perjury, that the information in the notice is accurate and that you are the owner or authorised to act on the owner's behalf.
-<!-- TODO: confirm — whether FLEXO AI LLC has registered a DMCA designated agent with the US Copyright Office (needed for safe-harbour protection) and the agent's postal address. -->
+<!-- TODO: confirm — whether FLEXO AI LTD has registered a DMCA designated agent with the US Copyright Office (needed for safe-harbour protection) and the agent's postal address. -->
 
 ## 3. What we do
 

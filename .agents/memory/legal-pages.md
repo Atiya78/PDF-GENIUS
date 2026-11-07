@@ -8,4 +8,4 @@ description: How legal/company pages, cookie consent, terms acceptance and accou
 - Terms acceptance is optional server-side (old mobile builds don't send it); web signup requires the checkbox.
 - Account deletion is BLOCKED while a paid Dodo or Paddle subscription is active (no auto-cancel; Dodo cancel API untested).
 - Old /terms-of-service and /privacy-policy redirect to /terms and /privacy (Play listing links) — keep both the App route and prerender redirect.
-- Owner-confirmed: FLEXO AI LLC (Wyoming); Dodo = PDF Tools MoR, Paddle = Education MoR; 14-day refund window; effective date Feb 7, 2026.
+- Operator is FLEXO AI LTD (UK, England & Wales, co. no. 17403383, London E6 2JA registered office; owner supplied Companies House certificate Nov 7 2026 — supersedes the earlier "Wyoming LLC" answer). Governing law England & Wales. Never publish the Companies House auth code or HMRC codes from the uploaded letters. Dodo = PDF Tools MoR, Paddle = Education MoR; 14-day refund window; effective date Feb 7, 2026.

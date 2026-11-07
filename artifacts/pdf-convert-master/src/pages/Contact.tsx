@@ -253,8 +253,9 @@ export const Contact = (): JSX.Element => {
                   ["Support", COMPANY.supportEmail],
                   ["Privacy & legal", COMPANY.privacyEmail],
                   ["Response", `We aim to reply ${COMPANY.supportResponse}.`],
-                  ["Company", `${COMPANY.legalName}, ${COMPANY.state}, ${COMPANY.country}`],
-                  ...(COMPANY.address ? [["Address", COMPANY.address]] : []),
+                  ["Company", `${COMPANY.legalName}, company number ${COMPANY.companyNumber} (${COMPANY.jurisdiction})`],
+                  ["Address", COMPANY.address],
+                  ["Phone", "+44 7429 919748"],
                 ].map(([k, v]) => (
                   <div key={k} className="flex gap-6 border-b border-[#e7e0d5] py-3">
                     <dt className="edu-mono w-28 shrink-0 text-xs uppercase tracking-wider text-[#8a837b]">{k}</dt>

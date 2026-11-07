@@ -11,7 +11,7 @@ This policy is part of our [Terms of Service](/terms). It keeps PDF Genius safe,
 
 Do not upload, process, generate or share content that:
 
-- is illegal where you are or in the United States;
+- is illegal where you are or in the United Kingdom;
 - sexually exploits or endangers children (we report such content to the relevant authorities);
 - promotes terrorism, violent extremism or credible threats of violence;
 - harasses, defames or threatens others, or reveals someone's private information without consent;

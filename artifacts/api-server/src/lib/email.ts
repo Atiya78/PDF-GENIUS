@@ -197,7 +197,7 @@ function otpEmailHtml(opts: OtpEmailOptions): string {
                 <div style="font-size:13px;color:#9ca3af;margin-top:6px;">
                   Need help? <a href="mailto:support@pdfgenius.app" style="color:#f7433d;text-decoration:none;">support@pdfgenius.app</a>
                 </div>
-                <div style="font-size:12px;color:#c4c4c4;margin-top:10px;">© 2026 PDF Genius. All rights reserved.</div>
+                <div style="font-size:12px;color:#c4c4c4;margin-top:10px;">© 2026 FLEXO AI LTD. All rights reserved.<br>182-184 High Street North, London, E6 2JA, United Kingdom</div>
               </td>
             </tr>
           </table>

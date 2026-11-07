@@ -179,8 +179,7 @@ export const FooterSection = (): JSX.Element => {
           <div className="text-sm text-[#57534e] order-last lg:order-none">
             <p data-testid="text-copyright">© {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.</p>
             <p className="mt-1 text-xs text-[#6b645c]">
-              PDF Genius is operated by {COMPANY.legalName}, {COMPANY.state}, {COMPANY.country}
-              {COMPANY.address ? <>, {COMPANY.address}</> : null}.{" "}
+              PDF Genius is operated by {COMPANY.legalName}, registered in {COMPANY.jurisdiction}, company number {COMPANY.companyNumber}. Registered office: {COMPANY.address}.{" "}
               <button type="button" onClick={openCookieSettings} className="underline decoration-[#d9d0c3] underline-offset-2 hover:text-[#1c1917] hover:decoration-[#f7433d]" data-testid="button-cookie-settings">Cookie settings</button>
             </p>
           </div>

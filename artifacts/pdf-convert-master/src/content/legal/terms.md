@@ -1,6 +1,6 @@
 ---
 title: Terms of Service
-description: The agreement between you and FLEXO AI LLC for using PDF Genius on the web and on Android, including accounts, credits, subscriptions, AI features and payments.
+description: The agreement between you and FLEXO AI LTD for using PDF Genius on the web and on Android, including accounts, credits, subscriptions, AI features and payments.
 ---
 
 ## 1. Who we are and this agreement
@@ -108,7 +108,7 @@ API access is available on eligible PDF Tools plans. API keys are personal to yo
 
 ## 13. Intellectual property
 
-The Service, including its software, design, text, logos and the "PDF Genius" name, belongs to FLEXO AI LLC or its licensors and is protected by law. We give you a limited, revocable, non-transferable right to use the Service under these Terms. You may not copy, modify, reverse engineer or create derivative works of the Service except where the law expressly allows. Feedback you send us may be used without obligation to you.
+The Service, including its software, design, text, logos and the "PDF Genius" name, belongs to FLEXO AI LTD or its licensors and is protected by law. We give you a limited, revocable, non-transferable right to use the Service under these Terms. You may not copy, modify, reverse engineer or create derivative works of the Service except where the law expressly allows. Feedback you send us may be used without obligation to you.
 
 ## 14. Third-party services
 
@@ -124,21 +124,21 @@ The Service is provided **"as is" and "as available"**. We work to keep it relia
 
 ## 17. Limitation of liability
 
-To the fullest extent permitted by law, FLEXO AI LLC and its members, employees and suppliers are not liable for any indirect, incidental, special, consequential or punitive damages, or for loss of data, profits, revenue, goodwill or grades, arising from or related to the Service. Our total liability for all claims relating to the Service is limited to the greater of (a) the amount you paid for the Service in the 12 months before the event giving rise to the claim, or (b) US $100.
+To the fullest extent permitted by law, FLEXO AI LTD and its directors, employees and suppliers are not liable for any indirect, incidental, special, consequential or punitive damages, or for loss of data, profits, revenue, goodwill or grades, arising from or related to the Service. Our total liability for all claims relating to the Service is limited to the greater of (a) the amount you paid for the Service in the 12 months before the event giving rise to the claim, or (b) US $100.
 <!-- TODO: confirm — liability cap (greater of 12 months' fees or US$100). -->
 
 Nothing in these Terms excludes liability that cannot be excluded by law, such as liability for fraud or for death or personal injury caused by negligence, or your mandatory rights as a consumer.
 
 ## 18. Indemnity
 
-If you use the Service in breach of these Terms or the law, or upload content that infringes someone else's rights, you agree to defend and indemnify FLEXO AI LLC against resulting third-party claims, losses and reasonable legal costs. This does not apply to the extent a claim is caused by our own breach.
+If you use the Service in breach of these Terms or the law, or upload content that infringes someone else's rights, you agree to defend and indemnify FLEXO AI LTD against resulting third-party claims, losses and reasonable legal costs. This does not apply to the extent a claim is caused by our own breach.
 
 ## 19. Disputes and governing law
 
-These Terms are governed by the laws of the **State of {{state}}, USA**, without regard to conflict-of-law rules. Before filing a claim, please contact us at [{{supportEmail}}](mailto:{{supportEmail}}) and give us 30 days to try to resolve it informally. Any dispute that is not resolved will be heard by the state or federal courts located in {{state}}, and you and we consent to their jurisdiction.
+These Terms are governed by the laws of **England and Wales**. Before filing a claim, please contact us at [{{supportEmail}}](mailto:{{supportEmail}}) and give us 30 days to try to resolve it informally. Any dispute that is not resolved will be heard by the courts of England and Wales, and you and we submit to their jurisdiction. If you live in Scotland or Northern Ireland, you may also bring proceedings in your local courts.
 
 If you are a consumer living in the EU, EEA, UK or another country whose law gives you the right to bring proceedings in your home courts or to rely on mandatory local consumer protections, nothing in this section removes that right.
-<!-- TODO: confirm — no arbitration clause; Wyoming state/federal courts as venue. -->
+<!-- TODO: confirm — no arbitration clause; courts of England and Wales as venue. -->
 
 ## 20. Changes to these Terms
 
@@ -150,5 +150,5 @@ These Terms, together with the policies linked above, are the entire agreement b
 
 ## 22. Contact
 
-**{{legalName}}** ({{state}}, {{country}})
+**{{legalName}}** — {{companyLine}}
 Support: [{{supportEmail}}](mailto:{{supportEmail}}) · Legal and privacy: [{{privacyEmail}}](mailto:{{privacyEmail}}) · Contact form: [/contact](/contact)

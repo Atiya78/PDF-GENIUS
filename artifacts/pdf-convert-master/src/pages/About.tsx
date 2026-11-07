@@ -47,7 +47,7 @@ export const About = (): JSX.Element => {
   useSeo({
     title: "About PDF Genius",
     description:
-      "PDF Genius is operated by FLEXO AI LLC. Learn about our PDF tools, the Education Zone, how we handle files, and how to reach us.",
+      "PDF Genius is operated by FLEXO AI LTD. Learn about our PDF tools, the Education Zone, how we handle files, and how to reach us.",
     canonicalPath: "/about",
   });
 
@@ -108,8 +108,7 @@ export const About = (): JSX.Element => {
           </div>
           <div className="border-t border-[#1c1917] pt-5 text-[16px] leading-relaxed text-[#3f3a35]">
             <p>
-              PDF Genius is built and operated by <strong className="text-[#1c1917]">{COMPANY.legalName}</strong>, a limited liability company registered in {COMPANY.state}, {COMPANY.country}
-              {COMPANY.address ? <>, at {COMPANY.address}</> : null}. We run the website at {COMPANY.domain} and the PDF Genius app on Google Play.
+              PDF Genius is built and operated by <strong className="text-[#1c1917]">{COMPANY.legalName}</strong>, a private limited company registered in {COMPANY.jurisdiction} (company number {COMPANY.companyNumber}), with its registered office at {COMPANY.address}. We run the website at {COMPANY.domain} and the PDF Genius app on Google Play.
             </p>
             <p className="mt-4">
               Our aim is simple: make common document and study tasks quick to finish, explain plainly what happens to your files, and keep the basic tools free.

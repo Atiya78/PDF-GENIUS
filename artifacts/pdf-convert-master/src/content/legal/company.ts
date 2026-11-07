@@ -1,15 +1,14 @@
 /**
  * Single source of truth for business details used across every legal page,
  * the footer and the contact page. Edit here; page text lives in ./*.md.
- *
- * TODO: confirm — registered business address was not provided. While `address`
- * is empty it is simply not shown anywhere on the site.
+ * Source: Companies House certificate of incorporation (17 August 2026).
  */
 export const COMPANY = {
-  legalName: "FLEXO AI LLC",
-  state: "Wyoming",
-  country: "USA",
-  address: "",
+  legalName: "FLEXO AI LTD",
+  companyNumber: "17403383",
+  jurisdiction: "England and Wales",
+  country: "United Kingdom",
+  address: "182-184 High Street North, London, E6 2JA, United Kingdom",
   product: "PDF Genius",
   website: "https://pdfgenius.app",
   domain: "pdfgenius.app",
@@ -29,8 +28,9 @@ export const COMPANY = {
 /** Values substituted for {{key}} tokens in the markdown files. */
 export const LEGAL_TOKENS: Record<string, string> = {
   ...Object.fromEntries(Object.entries(COMPANY).map(([k, v]) => [k, String(v)])),
-  entity: `${COMPANY.legalName}, a ${COMPANY.state} limited liability company`,
-  addressSentence: COMPANY.address ? ` Our registered address is ${COMPANY.address}.` : "",
+  entity: `${COMPANY.legalName}, a private limited company registered in ${COMPANY.jurisdiction} (company number ${COMPANY.companyNumber})`,
+  addressSentence: ` Our registered office is ${COMPANY.address}.`,
+  companyLine: `${COMPANY.legalName} · Registered in ${COMPANY.jurisdiction}, company number ${COMPANY.companyNumber} · Registered office: ${COMPANY.address}`,
   year: String(new Date().getFullYear()),
 };
 
