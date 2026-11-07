@@ -73,7 +73,7 @@
 @media (max-width: 380px) { .auth-otp-slot { width: 2.4rem !important; } }
 
 .auth-root .auth-sheet :focus-visible, .auth-root a:focus-visible, .auth-root button:focus-visible { outline: 2px solid var(--desk-coral, #f7433d); outline-offset: 2px; }
-.auth-field input:focus-visible { outline: none; }
+.auth-root .auth-field input:focus, .auth-root .auth-field input:focus-visible { outline: none; box-shadow: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .auth-sheet { animation: none; }

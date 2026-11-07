@@ -32,7 +32,6 @@ export function EducationZoneSection(): JSX.Element {
   return (
     <section aria-labelledby="education-zone-heading" className="w-full px-4 py-14 sm:px-6 lg:px-8" data-testid="section-education-zone">
       <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[20px] border border-[#e7e0d5] bg-[#faf7f2]">
-        <div className="pointer-events-none absolute inset-y-0 left-8 hidden w-px bg-[#f7433d]/35 sm:block" aria-hidden="true" />
         <div className="grid gap-10 p-6 sm:p-10 sm:pl-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-14 lg:p-14 lg:pl-20">
           <Reveal>
             <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a]">Education Zone</p>

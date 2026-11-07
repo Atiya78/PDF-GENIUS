@@ -26,7 +26,6 @@ export const HeroSection = (): JSX.Element => {
 
   return (
     <section className="relative w-full overflow-hidden border-b border-[#e7e0d5]">
-      <div className="pointer-events-none absolute inset-y-0 left-[max(1rem,calc(50%-38rem))] hidden w-px bg-[#f7433d]/40 lg:block" aria-hidden="true" />
       <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-14 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14 lg:pb-20 lg:pl-12 lg:pt-16">
         <div className="min-w-0">
           <p className="edu-eyebrow">{activeTool ? `${activeTool.category} / ${activeTool.title}` : "PDF Genius / Document desk"}</p>

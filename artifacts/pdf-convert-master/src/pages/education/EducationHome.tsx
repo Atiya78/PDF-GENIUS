@@ -40,7 +40,6 @@ export function EducationHome(): JSX.Element {
       <EduFonts />
       {/* Hero: statement on the left, the working sheet on the right */}
       <section className="relative overflow-hidden border-b border-[#e7e0d5]">
-        <div className="pointer-events-none absolute inset-y-0 left-[max(1rem,calc(50%-36rem))] hidden w-px bg-[#f7433d]/40 lg:block" aria-hidden="true" />
         <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-14 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-14 lg:pb-20 lg:pl-12 lg:pt-16">
           <motion.div initial={{ y: reduce ? 0 : 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.2, 0.7, 0.2, 1] }}>
             <h1 data-testid="text-education-title">

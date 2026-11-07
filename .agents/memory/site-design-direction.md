@@ -8,3 +8,5 @@ The entire pdf-convert-master site now uses the "document desk" direction first 
 **Why:** Owner (Nov 2026) asked to apply the Education redesign to the entire site incl. auth and dashboard so it looks professional and not AI-generated.
 
 **How to apply:** New UI extends this vocabulary. Avoid pill badges, uniform centered icon-card grids, purple/blue accents, invented labels ("Recommended", "Most popular"), nested cards. Reveal must keep its position re-check fallback (IO alone left content hidden when lazy content above shrank). Tool bodies inside SEO landing pages must not keep full-viewport min-heights (tl-landing-body override).
+
+- No decorative vertical "paper margin" red rules in heroes/sections, and no inner focus outline on inputs inside an already-ringed field wrapper (user called them unnecessary red lines, Nov 2026).
