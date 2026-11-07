@@ -6,15 +6,16 @@ import { COMPANY, LEGAL_PAGES } from "@/content/legal/company";
 import { openCookieSettings } from "@/lib/consent";
 import "@/styles/marketing.css";
 import { toolLandingPages } from "@/config/toolLandingPages";
+import { educationTools } from "@/lib/education/educationTools";
 import { SOCIAL_FACEBOOK_URL, SOCIAL_INSTAGRAM_URL, SOCIAL_LINKEDIN_URL } from "@/lib/socialLinks";
 
 const linkClass =
   "text-[#57534e] underline decoration-transparent decoration-1 underline-offset-4 transition-colors hover:text-[#1c1917] hover:decoration-[#f7433d] focus-visible:text-[#1c1917]";
 
 const productLinks = [
-  { text: "All PDF Tools", path: "/tools" },
-  { text: "Education Zone", path: "/education" },
   { text: "Pricing", path: "/pricing" },
+  { text: "Education Pricing", path: "/education/pricing" },
+  { text: "API Docs", path: "/docs" },
   { text: "About Us", path: "/about" },
 ];
 
@@ -49,7 +50,7 @@ const trustItems = [
 const LinkList = ({ title, links, className = "", listClassName = "" }: { title: string; links: { text: string; path: string }[]; className?: string; listClassName?: string }) => (
   <nav aria-label={title} className={className}>
     <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a] mb-3">{title}</h3>
-    <ul className={`space-y-2 text-sm ${listClassName}`}>
+    <ul className={`text-sm ${listClassName || "space-y-2"}`}>
       {links.map((l) => (
         <li key={l.path} className="py-0.5">
           <Link href={l.path} className={linkClass}>{l.text}</Link>
@@ -60,7 +61,7 @@ const LinkList = ({ title, links, className = "", listClassName = "" }: { title:
 );
 
 const FooterAppLinks = () => (
-  <div className="mt-6 border-t border-[#e2d9cc] pt-5">
+  <div className="min-w-0 border-t border-[#e2d9cc] pt-5 sm:border-t-0 sm:pt-0 lg:border-t lg:pt-5">
     <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a] mb-3">Get the App</h3>
     <div className="flex items-center gap-3">
       <img
@@ -90,108 +91,138 @@ const FooterAppLinks = () => (
   </div>
 );
 
+const ToolList = ({
+  id,
+  title,
+  links,
+  allHref,
+  allLabel,
+}: {
+  id: string;
+  title: string;
+  links: { text: string; path: string }[];
+  allHref: string;
+  allLabel: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  return (
+    <nav aria-label={title} className="min-w-0">
+      <div className="hidden md:flex items-baseline justify-between gap-4 mb-3">
+        <h3 className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a]">{title}</h3>
+        <Link href={allHref} className="text-xs font-medium text-[#57534e] underline decoration-[#d9d0c3] underline-offset-4 hover:text-[#1c1917] hover:decoration-[#f7433d]">
+          {allLabel}
+        </Link>
+      </div>
+      <button
+        type="button"
+        className="md:hidden flex min-h-11 w-full items-center justify-between gap-3 text-left font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f7433d] rounded"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={id}
+      >
+        {title}
+        <span className="inline-flex items-center gap-2 text-[#6b645c] normal-case tracking-normal font-normal">
+          {links.length} tools
+          <ChevronDown className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`} aria-hidden="true" />
+        </span>
+      </button>
+      <ul id={id} className={`${open ? "grid" : "hidden"} md:grid grid-cols-2 md:grid-cols-3 gap-x-6 text-sm`}>
+        {links.map((l) => (
+          <li key={l.path} className="py-1 min-w-0">
+            <Link href={l.path} className={linkClass}>{l.text}</Link>
+          </li>
+        ))}
+        <li className="py-1 md:hidden col-span-2">
+          <Link href={allHref} className="font-medium text-[#1c1917] underline decoration-[#f7433d] underline-offset-4">{allLabel}</Link>
+        </li>
+      </ul>
+    </nav>
+  );
+};
+
+const pdfToolLinks = toolLandingPages
+  .filter((page) => page.name.includes("PDF"))
+  .map((page) => ({ text: page.name, path: page.path }));
+const educationToolLinks = educationTools.map((t) => ({ text: t.name, path: t.href }));
+
 export const FooterSection = (): JSX.Element => {
-  const [toolsExpanded, setToolsExpanded] = useState(false);
-  const pdfTools = toolLandingPages.filter((page) => page.name.includes("PDF"));
   const activeSocials = socials.filter((s) => s.url);
 
   return (
     <footer id="site-footer" className="w-full border-t border-[#e7e0d5] bg-[#f4efe7]">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
-          {/* Brand + contact */}
-          <div className="md:col-span-4 min-w-0">
-            <Link href="/" aria-label="PDF Genius home" className="inline-block">
-              <img src={logoFull} alt="PDF Genius" width={1280} height={1157} className="h-14 w-auto" />
-            </Link>
-            <p className="mt-3 text-sm text-[#57534e] leading-relaxed max-w-xs">
-              Practical tools for converting and managing documents, on the web and on your phone.
-            </p>
-            <ul className="mt-5 space-y-2 text-sm">
-              <li>
-                <a href="mailto:support@pdfgenius.app" className="inline-flex items-center gap-2 font-medium text-[#1c1917] hover:text-[#c8302a] break-all">
-                  <Mail className="w-4 h-4 shrink-0 text-[#f7433d]" />
-                  support@pdfgenius.app
-                </a>
-              </li>
-              <li>
-                <a href="tel:+447429919748" className="inline-flex items-center gap-2 text-[#1c1917] hover:text-[#f7433d]">
-                  <PhoneIcon className="w-4 h-4 shrink-0 text-[#f7433d]" />
-                  +447429919748
-                </a>
-              </li>
-            </ul>
-            {activeSocials.length > 0 && (
-              <div className="mt-5 flex gap-2">
-                {activeSocials.map(({ url, label, Icon }) => (
-                  <a
-                    key={label}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className="w-11 h-11 rounded-full bg-[#fffdf9] ring-1 ring-[#e2d9cc] text-[#57534e] flex items-center justify-center hover:bg-[#1c1917] hover:text-[#fffdf9] transition-colors"
-                  >
-                    <Icon className="w-4 h-4" />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
+          {/* Brand + contact + app */}
+          <div className="lg:col-span-4 min-w-0 grid gap-8 sm:grid-cols-2 lg:grid-cols-1 lg:content-start">
+            <div className="min-w-0">
+              <Link href="/" aria-label="PDF Genius home" className="inline-block">
+                <img src={logoFull} alt="PDF Genius" width={1280} height={1157} className="h-14 w-auto" />
+              </Link>
+              <p className="mt-3 text-sm text-[#57534e] leading-relaxed max-w-xs">
+                Practical tools for converting and managing documents, and AI study tools for students, on the web and on your phone.
+              </p>
+              <ul className="mt-5 space-y-2 text-sm">
+                <li>
+                  <a href={`mailto:${COMPANY.supportEmail}`} className="inline-flex items-center gap-2 font-medium text-[#1c1917] hover:text-[#c8302a] break-all">
+                    <Mail className="w-4 h-4 shrink-0 text-[#f7433d]" />
+                    {COMPANY.supportEmail}
                   </a>
-                ))}
-              </div>
-            )}
+                </li>
+                <li>
+                  <a href="tel:+447429919748" className="inline-flex items-center gap-2 text-[#1c1917] hover:text-[#f7433d]">
+                    <PhoneIcon className="w-4 h-4 shrink-0 text-[#f7433d]" />
+                    +44 7429 919748
+                  </a>
+                </li>
+              </ul>
+              {activeSocials.length > 0 && (
+                <div className="mt-5 flex gap-2">
+                  {activeSocials.map(({ url, label, Icon }) => (
+                    <a
+                      key={label}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="w-11 h-11 rounded-full bg-[#fffdf9] ring-1 ring-[#e2d9cc] text-[#57534e] flex items-center justify-center hover:bg-[#1c1917] hover:text-[#fffdf9] transition-colors"
+                    >
+                      <Icon className="w-4 h-4" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
             <FooterAppLinks />
           </div>
 
           {/* Tools + links */}
-          <div className="md:col-span-8 min-w-0 space-y-8">
-            <nav aria-label="PDF tools">
-               <h3 className="hidden md:block font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a] mb-3">PDF Tools</h3>
-               <button
-                 type="button"
-                 className="md:hidden flex min-h-11 w-full items-center justify-between gap-3 text-left font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c8302a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#f7433d] rounded"
-                 onClick={() => setToolsExpanded(expanded => !expanded)}
-                 aria-expanded={toolsExpanded}
-                 aria-controls="footer-pdf-tools"
-               >
-                 PDF Tools
-                 <span className="inline-flex items-center gap-2 text-[#6b645c] normal-case tracking-normal font-normal">
-                   {pdfTools.length} tools
-                   <ChevronDown className={`h-4 w-4 transition-transform ${toolsExpanded ? "rotate-180" : ""}`} aria-hidden="true" />
-                 </span>
-               </button>
-               <ul id="footer-pdf-tools" className={`${toolsExpanded ? "block" : "hidden"} md:block columns-2 md:columns-3 gap-x-5 text-sm`}>
-                {pdfTools.map((page) => (
-                  <li key={page.path} className="break-inside-avoid py-1">
-                    <Link href={page.path} className={linkClass}>{page.name}</Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
+          <div className="lg:col-span-8 min-w-0 space-y-8">
+            <div className="grid gap-y-2 md:gap-y-8">
+              <ToolList id="footer-pdf-tools" title="PDF Tools" links={pdfToolLinks} allHref="/tools" allLabel="All PDF tools" />
+              <div className="md:border-t md:border-[#e2d9cc] md:pt-6">
+                <ToolList id="footer-education-tools" title="Education Zone" links={educationToolLinks} allHref="/education" allLabel="All study tools" />
+              </div>
+            </div>
 
-             <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-6 pt-6 border-t border-[#e2d9cc]">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-6 pt-6 border-t border-[#e2d9cc]">
               <LinkList title="Product" links={productLinks} />
               <LinkList title="Help" links={helpLinks} />
-              <LinkList title="Legal" links={legalLinks} className="col-span-2" listClassName="columns-2 gap-x-4 [&>li]:break-inside-avoid" />
+              <LinkList title="Legal" links={legalLinks} className="col-span-2" listClassName="grid grid-cols-2 gap-x-6 gap-y-2" />
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-10 pt-5 border-t border-[#e2d9cc] flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="text-sm text-[#57534e] order-last lg:order-none">
-            <p data-testid="text-copyright">© {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.</p>
-            <p className="mt-1 text-xs text-[#6b645c]">
-              PDF Genius is operated by {COMPANY.legalName}, registered in {COMPANY.jurisdiction}, company number {COMPANY.companyNumber}. Registered office: {COMPANY.address}.{" "}
-              <button type="button" onClick={openCookieSettings} className="underline decoration-[#d9d0c3] underline-offset-2 hover:text-[#1c1917] hover:decoration-[#f7433d]" data-testid="button-cookie-settings">Cookie settings</button>
-            </p>
-          </div>
+        {/* Trust + payments */}
+        <div className="mt-10 pt-5 border-t border-[#e2d9cc] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <ul className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {trustItems.map(({ Icon, text }) => (
               <li key={text} className="flex items-center gap-1.5 text-xs text-[#57534e]">
-                <Icon className="w-4 h-4 text-[#f7433d]" />
+                <Icon className="w-4 h-4 shrink-0 text-[#f7433d]" />
                 <span className="whitespace-nowrap">{text}</span>
               </li>
             ))}
           </ul>
-          <div className="flex items-center gap-1.5">
+          <div className="flex flex-wrap items-center gap-1.5">
             {payments.map((pm) => (
               <img
                 key={pm.file}
@@ -203,6 +234,24 @@ export const FooterSection = (): JSX.Element => {
               />
             ))}
           </div>
+        </div>
+
+        {/* Company line */}
+        <div className="mt-5 pt-5 border-t border-[#e2d9cc] flex flex-col gap-2 md:flex-row md:items-start md:justify-between md:gap-8">
+          <div className="min-w-0 text-[#57534e]">
+            <p className="text-sm font-medium text-[#1c1917]" data-testid="text-copyright">© {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.</p>
+            <p className="mt-1 text-xs leading-5 text-[#6b645c] max-w-3xl">
+              PDF Genius is operated by {COMPANY.legalName}, registered in {COMPANY.jurisdiction}, company number {COMPANY.companyNumber}. Registered office: {COMPANY.address}.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={openCookieSettings}
+            className="self-start shrink-0 text-xs font-medium text-[#57534e] underline decoration-[#d9d0c3] underline-offset-4 hover:text-[#1c1917] hover:decoration-[#f7433d] min-h-8"
+            data-testid="button-cookie-settings"
+          >
+            Cookie settings
+          </button>
         </div>
       </div>
     </footer>
