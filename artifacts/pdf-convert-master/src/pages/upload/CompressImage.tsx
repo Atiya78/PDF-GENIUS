@@ -6,7 +6,7 @@ import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 export const CompressImageUpload: React.FC = () => {
   const [level, setLevel] = useState<CompressLevel>("medium");
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#faf7f2] dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="compress-image"
         toolTitle="Image Compressor"
@@ -15,7 +15,7 @@ export const CompressImageUpload: React.FC = () => {
         maxFileSize="25MB"
         outputFormat="Compressed Images"
         toolIcon={<ToolLottieIcon toolId="compress-images" size={48} />}
-        iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+        iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
         extraOptions={{ compressionLevel: level }}
         showSizeComparison
         useServerName

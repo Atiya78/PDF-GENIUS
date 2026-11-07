@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";
 import { resetPassword, requestPasswordReset } from "@/lib/profile";
-import { Mail, Lock, Eye, EyeOff, ArrowLeft, ShieldCheck } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, KeyRound } from "lucide-react";
 import AuthResultIcon from "@/components/AuthResultIcon";
 import { useSeo } from "@/lib/useSeo";
+import { AuthShell, AuthMessage } from "@/components/AuthCard";
+import { RESET_STEPS } from "@/pages/ForgotPassword";
 
 export const ResetPassword: React.FC = () => {
   useSeo({ title: "Reset Password", canonicalPath: "/reset-password", noindex: true });
@@ -66,144 +65,85 @@ export const ResetPassword: React.FC = () => {
     }
   };
 
+  const shell = {
+    eyebrow: "Password reset",
+    heading: <>Get back into<br />your account.</>,
+    lede: "Use the code from your email to set a new password, then sign in as usual.",
+    steps: RESET_STEPS,
+    current: done ? 2 : 1,
+  };
+
   if (done) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center text-center space-y-4">
-            <AuthResultIcon kind="password-reset" size={180} loop={false} />
-            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "Poppins, sans-serif" }}>
-              Password updated
-            </h1>
-            <p className="text-sm text-gray-600">
-              Your password has been changed. You can now sign in with your new password.
-            </p>
-            <Button
-              onClick={() => setLocation("/signin")}
-              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg"
-              data-testid="button-go-signin"
-            >
-              Go to sign in
-            </Button>
-          </div>
+      <AuthShell {...shell}>
+        <div className="auth-sheet flex flex-col items-start" data-testid="view-reset-done">
+          <AuthResultIcon kind="password-reset" size={130} loop={false} />
+          <p className="edu-eyebrow mt-1">Step 3 of 3</p>
+          <h1 className="mt-2 font-['Poppins'] text-[1.65rem] font-semibold tracking-[-0.02em] text-[#1c1917]">Password updated</h1>
+          <p className="mt-2 text-[15px] leading-relaxed text-[#57534e]">Your password has been changed. You can now sign in with your new password.</p>
+          <button type="button" onClick={() => setLocation("/signin")} className="edu-btn-primary mt-6 w-full" data-testid="button-go-signin">
+            Go to sign in
+          </button>
         </div>
-      </div>
+      </AuthShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
-          <div className="text-center space-y-4">
-            <div className="flex justify-center">
-              <div className="w-14 h-14 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
-                <ShieldCheck className="w-6 h-6 text-white" />
-              </div>
+    <AuthShell {...shell}>
+      <div className="auth-sheet">
+        <p className="edu-eyebrow">Step 2 of 3</p>
+        <h1 className="mt-2 font-['Poppins'] text-[1.65rem] font-semibold leading-tight tracking-[-0.02em] text-[#1c1917]">Reset password</h1>
+        <p className="mt-2 text-[15px] leading-relaxed text-[#57534e]">Enter the code we emailed you and choose a new password.</p>
+
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
+          <div>
+            <label htmlFor="email" className="edu-label mb-1.5">Email address</label>
+            <div className="auth-field">
+              <Mail className="auth-ico" aria-hidden="true" />
+              <input id="email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} data-testid="input-reset-email" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "Poppins, sans-serif" }}>
-              Reset password
-            </h1>
-            <p className="text-sm text-gray-600">
-              Enter the code we emailed you and choose a new password.
-            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Email Address
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="code" className="text-sm font-medium text-gray-700">
-                Reset Code
-              </Label>
-              <Input
-                id="code"
-                inputMode="numeric"
-                placeholder="Enter the 6-digit code"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                className="h-12 tracking-[0.4em] text-center border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="newPassword" className="text-sm font-medium text-gray-700">
-                New Password
-              </Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  id="newPassword"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="At least 6 characters"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  className="pl-10 pr-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
-              </div>
-            </div>
-
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-600">{error}</p>
-              </div>
-            )}
-            {notice && (
-              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                <p className="text-sm text-green-700">{notice}</p>
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg disabled:opacity-50"
-            >
-              {isSubmitting ? "Resetting..." : "Reset password"}
-            </Button>
-
-            <div className="flex items-center justify-between pt-4 border-t border-gray-100 text-sm">
-              <button
-                type="button"
-                onClick={() => setLocation("/signin")}
-                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Sign In
-              </button>
-              <button
-                type="button"
-                onClick={handleResend}
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
+          <div>
+            <div className="mb-1.5 flex items-end justify-between">
+              <label htmlFor="code" className="edu-label">Reset code</label>
+              <button type="button" onClick={handleResend} className="auth-link !min-h-0 text-[13px] text-[#57534e]" data-testid="button-resend-reset">
                 Resend code
               </button>
             </div>
-          </form>
+            <div className="auth-field">
+              <KeyRound className="auth-ico" aria-hidden="true" />
+              <input id="code" inputMode="numeric" autoComplete="one-time-code" placeholder="6-digit code" value={code} onChange={(e) => setCode(e.target.value)} className="edu-mono !tracking-[0.3em]" data-testid="input-reset-code" />
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="newPassword" className="edu-label mb-1.5">New password</label>
+            <div className="auth-field">
+              <Lock className="auth-ico" aria-hidden="true" />
+              <input id="newPassword" type={showPassword ? "text" : "password"} autoComplete="new-password" placeholder="At least 6 characters" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} data-testid="input-new-password" />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} className="auth-icon-btn -mr-2 !h-10 !w-10" aria-label={showPassword ? "Hide password" : "Show password"}>
+                {showPassword ? <EyeOff className="h-[18px] w-[18px]" /> : <Eye className="h-[18px] w-[18px]" />}
+              </button>
+            </div>
+          </div>
+
+          {error && <AuthMessage kind="error" testId="text-error">{error}</AuthMessage>}
+          {notice && <AuthMessage kind="info" testId="text-info">{notice}</AuthMessage>}
+
+          <button type="submit" disabled={isSubmitting} className="edu-btn-primary w-full" data-testid="button-reset-password">
+            {isSubmitting ? "Resetting..." : "Reset password"}
+          </button>
+        </form>
+
+        <div className="mt-6 border-t border-[#efe8dd] pt-3">
+          <button type="button" onClick={() => setLocation("/signin")} className="auth-link text-sm" data-testid="link-back-signin">
+            <ArrowLeft className="auth-nudge auth-nudge-l h-4 w-4" aria-hidden="true" />
+            Back to Sign In
+          </button>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 };

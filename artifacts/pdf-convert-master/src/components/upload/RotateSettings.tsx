@@ -177,16 +177,16 @@ export const RotateSettings: React.FC<{
         label="Rotate direction" value={angle} disabled={disabled} testIdPrefix="select-rotate-angle" onChange={onAngle}
         options={[{ value: 90, label: "90 clockwise" }, { value: 270, label: "90 counter-clockwise" }, { value: 180, label: "180" }]}
       />
-      <p className="text-xs text-gray-600">The rotation is added to each page's existing rotation. Unselected pages stay as they are.</p>
+      <p className="text-xs text-[#57534e]">The rotation is added to each page's existing rotation. Unselected pages stay as they are.</p>
 
       {scope === "selected" && info.status === "ready" && (
         <div className="space-y-2">
-          <label htmlFor="input-rotate-pages" className="block text-sm font-medium text-gray-900">Pages (type or click thumbnails)</label>
+          <label htmlFor="input-rotate-pages" className="block text-sm font-medium text-[#1c1917]">Pages (type or click thumbnails)</label>
           <TextInput
             id="input-rotate-pages" value={text} disabled={disabled} placeholder="1-3,5" autoComplete="off"
             onChange={(e) => setFromText(e.target.value)} aria-invalid={!!text && !parsed.ok} data-testid="input-rotate-pages"
           />
-          <p className={`text-xs ${text && !parsed.ok ? "text-red-600" : "text-gray-500"}`} role={text && !parsed.ok ? "alert" : undefined}>
+          <p className={`text-xs ${text && !parsed.ok ? "text-red-600" : "text-[#57534e]"}`} role={text && !parsed.ok ? "alert" : undefined}>
             {text && !parsed.ok ? parsed.error : `${selected.length} of ${allCount} selected.`}
           </p>
           <div className="flex gap-3 text-xs">
@@ -212,7 +212,7 @@ export const RotateSettings: React.FC<{
                     aria-pressed={scope === "all" ? true : on}
                     aria-label={`Page ${p}${on ? `, will rotate ${angle} degrees` : ", not rotated"}`}
                     data-testid={`rotate-thumb-${p}`} data-selected={on ? "true" : "false"}
-                    className={`w-full rounded-lg border-2 bg-white p-1.5 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f7433d]/40 ${on ? "border-[#f7433d]" : "border-gray-200"} ${scope === "all" ? "cursor-default" : "hover:border-[#f7433d]/60"}`}
+                    className={`w-full rounded-lg border-2 bg-white p-1.5 text-center transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f7433d]/40 ${on ? "border-[#f7433d]" : "border-[#e7e0d5]"} ${scope === "all" ? "cursor-default" : "hover:border-[#f7433d]/60"}`}
                   >
                     <span className="relative block aspect-square w-full overflow-hidden">
                       {t ? (
@@ -220,12 +220,12 @@ export const RotateSettings: React.FC<{
                           <img src={t.url} alt="" className="h-full w-full object-contain shadow-sm" draggable={false} />
                         </span>
                       ) : (
-                        <span className="absolute inset-0 flex items-center justify-center text-gray-400">
+                        <span className="absolute inset-0 flex items-center justify-center text-[#8a837b]">
                           {!failed ? <Loader2 className="h-4 w-4 animate-spin" /> : <span className="text-[10px]">No preview</span>}
                         </span>
                       )}
                     </span>
-                    <span className="mt-1 block text-xs font-medium text-gray-700">Page {p}</span>
+                    <span className="mt-1 block text-xs font-medium text-[#57534e]">Page {p}</span>
                   </button>
                 </LazyItem>
               );

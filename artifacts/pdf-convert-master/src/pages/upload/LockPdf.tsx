@@ -4,7 +4,7 @@ import { Lock } from "lucide-react";
 
 export const LockPdfUpload: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#faf7f2] dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="lock-pdf"
         toolTitle="Lock PDF"

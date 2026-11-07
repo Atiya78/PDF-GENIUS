@@ -292,9 +292,9 @@ export const ImagesToPdfWorkflow: React.FC<ImagesToPdfWorkflowProps> = ({
 
       {/* Workflow Card — only after images are selected / converting / done */}
       {stage !== "upload" && (
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+      <div className="bg-[#fffdf9] rounded-[14px] border border-[#e7e0d5] shadow-[0_24px_48px_-36px_rgba(28,25,23,0.45)] overflow-hidden">
         {/* Progress Indicator */}
-        <div className="px-6 py-4 bg-gray-50 border-b">
+        <div className="px-6 py-4 bg-[#faf7f2] border-b">
           <div className="flex items-center justify-between mb-2">
             <div
               className={`flex items-center space-x-2 ${
@@ -312,7 +312,7 @@ export const ImagesToPdfWorkflow: React.FC<ImagesToPdfWorkflowProps> = ({
               <span className="text-sm font-medium capitalize">{stageLabel}</span>
             </div>
             {files.length > 0 && stage !== "completed" && stage !== "error" && (
-              <div className="text-sm text-gray-500" data-testid="text-images-count">
+              <div className="text-sm text-[#57534e]" data-testid="text-images-count">
                 {files.length} image{files.length !== 1 ? "s" : ""} selected
               </div>
             )}
@@ -327,10 +327,10 @@ export const ImagesToPdfWorkflow: React.FC<ImagesToPdfWorkflowProps> = ({
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">
+                  <h3 className="text-xl font-semibold text-[#1c1917]">
                     {files.length} Image{files.length !== 1 ? "s" : ""} Selected
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-[#57534e]">
                     Use the arrows to set the page order (top = first page).
                   </p>
                 </div>
@@ -356,7 +356,7 @@ export const ImagesToPdfWorkflow: React.FC<ImagesToPdfWorkflowProps> = ({
               </div>
 
               {/* Add More Images Area */}
-              <div className="border-2 border-dashed border-gray-200 rounded-lg p-4">
+              <div className="border-2 border-dashed border-[#e7e0d5] rounded-lg p-4">
                 <EnhancedUploadArea
                   acceptedFormats={acceptedFormats}
                   maxFileSize={maxFileSize}
@@ -397,8 +397,8 @@ export const ImagesToPdfWorkflow: React.FC<ImagesToPdfWorkflowProps> = ({
                 <ConverterStatusIcon status="processing" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Creating PDF…</h3>
-                <p className="text-gray-600">
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">Creating PDF…</h3>
+                <p className="text-[#57534e]">
                   Combining {files.length} image{files.length !== 1 ? "s" : ""} into one PDF
                 </p>
               </div>
@@ -412,8 +412,8 @@ export const ImagesToPdfWorkflow: React.FC<ImagesToPdfWorkflowProps> = ({
                 <ConverterStatusIcon status="success" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">PDF Ready!</h3>
-                <p className="text-gray-600">Your images were combined into a single PDF.</p>
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">PDF Ready!</h3>
+                <p className="text-[#57534e]">Your images were combined into a single PDF.</p>
               </div>
               <div className="flex justify-center space-x-4 pt-2">
                 <Button
@@ -439,7 +439,7 @@ export const ImagesToPdfWorkflow: React.FC<ImagesToPdfWorkflowProps> = ({
                 <ConverterStatusIcon status="error" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Conversion Failed</h3>
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">Conversion Failed</h3>
                 <p className="text-red-600" data-testid="text-images-error">
                   {errorMessage}
                 </p>

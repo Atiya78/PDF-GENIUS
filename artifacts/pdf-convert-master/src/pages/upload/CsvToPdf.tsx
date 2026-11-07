@@ -31,11 +31,11 @@ const DELIMS: { value: Delimiter; label: string }[] = [
 const DELIM_NAMES: Record<string, string> = { ",": "comma", ";": "semicolon", "\t": "tab", "|": "pipe" };
 
 const fieldCls =
-  "w-full min-h-11 rounded-lg border border-gray-300 bg-white px-3 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#f7433d] disabled:opacity-60 disabled:cursor-not-allowed";
+  "w-full min-h-11 rounded-lg border border-[#e7e0d5] bg-white px-3 text-base text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#f7433d] disabled:opacity-60 disabled:cursor-not-allowed";
 const btnPrimary =
   "inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#f7433d] px-6 text-base font-semibold text-white hover:bg-[#e03832] focus:outline-none focus:ring-2 focus:ring-[#f7433d] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
 const btnSecondary =
-  "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-5 text-base font-medium text-gray-800 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#f7433d] disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#e7e0d5] bg-white px-5 text-base font-medium text-[#1c1917] hover:bg-[#faf7f2] focus:outline-none focus:ring-2 focus:ring-[#f7433d] disabled:opacity-50 disabled:cursor-not-allowed";
 
 const formatSize = (b: number) => (b < 1024 * 1024 ? `${(b / 1024).toFixed(1)} KB` : `${(b / 1048576).toFixed(2)} MB`);
 
@@ -261,18 +261,18 @@ export const CsvToPdfUpload: React.FC = () => {
               {readError}
             </p>
           )}
-          <p className="mt-4 text-center text-xs text-gray-500">
+          <p className="mt-4 text-center text-xs text-[#57534e]">
             The preview is built in your browser. When you convert, the file is uploaded to our server to create the PDF.
           </p>
         </>
       )}
 
       {showWorking && file && (
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-xl sm:p-6 space-y-6">
+        <div className="rounded-[14px] border border-[#e7e0d5] bg-[#fffdf9] p-4 shadow-[0_24px_48px_-36px_rgba(28,25,23,0.45)] sm:p-6 space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="truncate font-semibold text-gray-900" data-testid="text-csv-filename">{file.name}</p>
-              <p className="text-sm text-gray-600">{formatSize(file.size)}</p>
+              <p className="truncate font-semibold text-[#1c1917]" data-testid="text-csv-filename">{file.name}</p>
+              <p className="text-sm text-[#57534e]">{formatSize(file.size)}</p>
             </div>
             <button type="button" className={btnSecondary} onClick={resetAll} disabled={locked || downloading} data-testid="button-csv-change-file">
               Choose another file
@@ -280,7 +280,7 @@ export const CsvToPdfUpload: React.FC = () => {
           </div>
 
           {reading && (
-            <div className="flex items-center gap-2 text-sm text-gray-700" role="status">
+            <div className="flex items-center gap-2 text-sm text-[#57534e]" role="status">
               <ProcessingSpinner size={18} /> Reading file in your browser
             </div>
           )}
@@ -294,31 +294,31 @@ export const CsvToPdfUpload: React.FC = () => {
 
           {(table || parseError) && phase !== "completed" && (
             <fieldset disabled={locked} className="grid grid-cols-1 gap-4 sm:grid-cols-2" data-testid="csv-settings">
-              <legend className="mb-2 text-sm font-semibold text-gray-900">Settings</legend>
-              <label className="block text-sm font-medium text-gray-800">
+              <legend className="mb-2 text-sm font-semibold text-[#1c1917]">Settings</legend>
+              <label className="block text-sm font-medium text-[#1c1917]">
                 Separator
                 <select className={`${fieldCls} mt-1`} value={delimiter} onChange={(e) => setDelimiter(e.target.value as Delimiter)} data-testid="select-csv-delimiter">
                   {DELIMS.map((d) => <option key={d.label} value={d.value}>{d.label}</option>)}
                 </select>
                 {table && delimiter === "auto" && (
-                  <span className="mt-1 block text-xs font-normal text-gray-600">Detected: {DELIM_NAMES[table.delimiter] ?? "comma"}</span>
+                  <span className="mt-1 block text-xs font-normal text-[#57534e]">Detected: {DELIM_NAMES[table.delimiter] ?? "comma"}</span>
                 )}
               </label>
-              <label className="block text-sm font-medium text-gray-800">
+              <label className="block text-sm font-medium text-[#1c1917]">
                 Paper size
                 <select className={`${fieldCls} mt-1`} value={paperSize} onChange={(e) => setPaperSize(e.target.value as "A4" | "Letter")} data-testid="select-csv-paper">
                   <option value="A4">A4</option>
                   <option value="Letter">Letter</option>
                 </select>
               </label>
-              <label className="block text-sm font-medium text-gray-800">
+              <label className="block text-sm font-medium text-[#1c1917]">
                 Orientation
                 <select className={`${fieldCls} mt-1`} value={orientation} onChange={(e) => setOrientation(e.target.value as "landscape" | "portrait")} data-testid="select-csv-orientation">
                   <option value="landscape">Landscape</option>
                   <option value="portrait">Portrait</option>
                 </select>
               </label>
-              <label className="block text-sm font-medium text-gray-800">
+              <label className="block text-sm font-medium text-[#1c1917]">
                 Font size
                 <select className={`${fieldCls} mt-1`} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value) as 8 | 10 | 12)} data-testid="select-csv-fontsize">
                   <option value={8}>8 pt</option>
@@ -326,7 +326,7 @@ export const CsvToPdfUpload: React.FC = () => {
                   <option value={12}>12 pt</option>
                 </select>
               </label>
-              <label className="flex min-h-11 items-center gap-3 text-sm font-medium text-gray-800 sm:col-span-2">
+              <label className="flex min-h-11 items-center gap-3 text-sm font-medium text-[#1c1917] sm:col-span-2">
                 <input type="checkbox" className="h-5 w-5 accent-[#f7433d]" checked={firstRowHeader} onChange={(e) => setFirstRowHeader(e.target.checked)} data-testid="checkbox-csv-header" />
                 First row is a header
               </label>
@@ -335,28 +335,28 @@ export const CsvToPdfUpload: React.FC = () => {
 
           {table && (
             <section aria-labelledby="csv-preview-title" data-testid="csv-preview">
-              <h2 id="csv-preview-title" className="text-base font-semibold text-gray-900">Preview</h2>
-              <p className="mb-2 text-sm text-gray-600" data-testid="text-csv-preview-count">
+              <h2 id="csv-preview-title" className="text-base font-semibold text-[#1c1917]">Preview</h2>
+              <p className="mb-2 text-sm text-[#57534e]" data-testid="text-csv-preview-count">
                 Showing the first {previewRows.length} of {table.rows.length} row{table.rows.length === 1 ? "" : "s"}, {table.columnCount} column{table.columnCount === 1 ? "" : "s"}. The whole file is converted.
               </p>
-              <div className="overflow-x-auto rounded-lg border border-gray-200" tabIndex={0} role="region" aria-label="CSV preview table, scrollable">
+              <div className="overflow-x-auto rounded-lg border border-[#e7e0d5]" tabIndex={0} role="region" aria-label="CSV preview table, scrollable">
                 <table className="min-w-full text-left text-sm">
                   <caption className="sr-only">Preview of {file.name}</caption>
                   {headRow && (
-                    <thead className="bg-gray-100">
-                      <tr>{headRow.map((c, i) => <th key={i} scope="col" className="whitespace-nowrap px-3 py-2 font-semibold text-gray-900">{c}</th>)}</tr>
+                    <thead className="bg-[#f3eee6]">
+                      <tr>{headRow.map((c, i) => <th key={i} scope="col" className="whitespace-nowrap px-3 py-2 font-semibold text-[#1c1917]">{c}</th>)}</tr>
                     </thead>
                   )}
                   <tbody>
                     {bodyRows.map((r, ri) => (
-                      <tr key={ri} className="border-t border-gray-100">
-                        {r.map((c, ci) => <td key={ci} title={c} className="max-w-[16rem] truncate whitespace-nowrap px-3 py-2 text-gray-800">{c}</td>)}
+                      <tr key={ri} className="border-t border-[#e7e0d5]">
+                        {r.map((c, ci) => <td key={ci} title={c} className="max-w-[16rem] truncate whitespace-nowrap px-3 py-2 text-[#1c1917]">{c}</td>)}
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <p className="mt-3 text-sm text-gray-600" data-testid="text-csv-sections">
+              <p className="mt-3 text-sm text-[#57534e]" data-testid="text-csv-sections">
                 {sections > 1
                   ? `This table has ${table.columnCount} columns, so it will be split into ${sections} printable column sections of up to ${limit} columns (${orientation}). The first original column repeats in each later section for context.`
                   : `All ${table.columnCount} columns fit on one printable section. Wider tables are grouped into sections of up to 8 columns in landscape or 5 in portrait, repeating the first column.`}
@@ -365,11 +365,11 @@ export const CsvToPdfUpload: React.FC = () => {
           )}
 
           {busy && (
-            <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4" role="status" aria-live="polite" data-testid="status-csv-converting">
+            <div className="flex items-center gap-4 rounded-lg bg-[#faf7f2] p-4" role="status" aria-live="polite" data-testid="status-csv-converting">
               <ConverterStatusIcon status="processing" size={56} />
               <div>
-                <p className="font-semibold text-gray-900">Converting on our server</p>
-                <p className="text-sm text-gray-600">Uploading your CSV and generating the PDF. Please keep this page open.</p>
+                <p className="font-semibold text-[#1c1917]">Converting on our server</p>
+                <p className="text-sm text-[#57534e]">Uploading your CSV and generating the PDF. Please keep this page open.</p>
               </div>
             </div>
           )}
@@ -389,7 +389,7 @@ export const CsvToPdfUpload: React.FC = () => {
                 <p className="font-semibold text-green-900">Your PDF is ready.</p>
               </div>
               {guestDownloaded && (
-                <p className="mt-2 text-sm text-gray-700">
+                <p className="mt-2 text-sm text-[#57534e]">
                   This guest result has been downloaded once.{" "}
                   <Link href="/signin" className="font-semibold underline">Sign in</Link> before your next conversion to keep results available for re-download.
                 </p>
@@ -417,7 +417,7 @@ export const CsvToPdfUpload: React.FC = () => {
             )}
           </div>
 
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-[#57534e]">
             Preview is generated locally in your browser. Converting uploads the CSV to our server to build the PDF. See our{" "}
             <Link href="/privacy-policy" className="underline">privacy policy</Link>.
           </p>

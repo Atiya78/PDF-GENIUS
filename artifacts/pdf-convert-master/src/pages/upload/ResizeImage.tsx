@@ -113,8 +113,8 @@ export const ResizeImageUpload = () => {
     <ImageToolShell
       title="Image Resizer"
       description="Resize images to exact dimensions or scale by percentage. Lock the aspect ratio to avoid distortion, then download or save to the server."
-      icon={<Maximize2 className="w-8 h-8 text-blue-500" />}
-      iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+      icon={<Maximize2 className="w-8 h-8 text-[#c8302a]" />}
+      iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
       hideHeader={!file}
     >
       {!file ? (
@@ -127,7 +127,7 @@ export const ResizeImageUpload = () => {
       ) : (
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-3">
-            <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 flex items-center justify-center min-h-[260px]">
+            <div className="rounded-xl border border-[#e7e0d5] dark:border-gray-700 bg-[#faf7f2] dark:bg-gray-900 p-4 flex items-center justify-center min-h-[260px]">
               {imgUrl && (
                 <img
                   src={imgUrl}
@@ -138,12 +138,12 @@ export const ResizeImageUpload = () => {
               )}
             </div>
             {natural && (
-              <div className="text-sm text-gray-600 dark:text-gray-300 flex flex-wrap gap-x-4 gap-y-1">
+              <div className="text-sm text-[#57534e] dark:text-gray-300 flex flex-wrap gap-x-4 gap-y-1">
                 <span data-testid="text-original-size">
                   Original: {natural.w} × {natural.h}px
                 </span>
                 <span
-                  className="font-semibold text-blue-600 dark:text-blue-400"
+                  className="font-semibold text-[#c8302a] dark:text-[#c8302a]"
                   data-testid="text-new-size"
                 >
                   New: {width} × {height}px
@@ -209,14 +209,14 @@ export const ResizeImageUpload = () => {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-3 border-t border-[#e7e0d5] dark:border-gray-700">
               <OutputActions getBlob={getBlob} filename={outName} disabled={!width || !height} />
             </div>
 
             <Button
               variant="ghost"
               onClick={reset}
-              className="text-gray-500"
+              className="text-[#57534e]"
               data-testid="button-reset"
             >
               <RefreshCw className="w-4 h-4 mr-2" />

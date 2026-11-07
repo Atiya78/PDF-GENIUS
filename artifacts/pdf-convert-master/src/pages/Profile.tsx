@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import "@/styles/dashboard.css";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -114,12 +115,11 @@ export const Profile: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "Poppins, sans-serif" }}>
-          Profile Settings
-        </h1>
-        <p className="text-sm text-gray-600 mt-1">Manage your account details and password.</p>
+    <div className="dash-root min-h-[100dvh]"><div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
+      <div className="dash-head pb-6">
+        <p className="edu-eyebrow">Account</p>
+        <h1 className="dash-h1 mt-3">Profile settings</h1>
+        <p className="dash-lede mt-2">Manage your account details and password.</p>
       </div>
 
       {/* Avatar + profile details */}
@@ -302,6 +302,6 @@ export const Profile: React.FC = () => {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </div></div>
   );
 };

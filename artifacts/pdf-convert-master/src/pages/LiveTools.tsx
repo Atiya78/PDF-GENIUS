@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "@/styles/dashboard.css";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -172,7 +173,7 @@ export const LiveTools: React.FC = () => {
   });
 
   return (
-    <div className="bg-gray-50 min-h-full">
+    <div className="dash-root min-h-full">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">

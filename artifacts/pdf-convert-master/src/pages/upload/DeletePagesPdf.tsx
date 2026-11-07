@@ -115,8 +115,8 @@ export function DeletePagesPdfUpload() {
         />
       ) : (
         <div>
-          <div className="flex flex-wrap items-center gap-3 mb-6 sticky top-0 z-10 bg-gray-50/90 backdrop-blur py-3">
-            <span className="text-sm text-gray-600" data-testid="text-page-summary">
+          <div className="flex flex-wrap items-center gap-3 mb-6 sticky top-0 z-10 bg-[#faf7f2]/90 backdrop-blur py-3">
+            <span className="text-sm text-[#57534e]" data-testid="text-page-summary">
               {pages.length} pages · {toDelete.size} marked for deletion ·{" "}
               {keepCount} will remain
             </span>
@@ -142,7 +142,7 @@ export function DeletePagesPdfUpload() {
               size="sm"
               onClick={apply}
               disabled={toDelete.size === 0 || saving || keepCount < 1}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-[#f7433d] hover:bg-[#c8302a]"
               data-testid="button-apply-delete"
             >
               {saving ? (
@@ -154,7 +154,7 @@ export function DeletePagesPdfUpload() {
             </Button>
           </div>
 
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-[#57534e] mb-4">
             Click a page to mark it for deletion. Click again to keep it.
           </p>
 
@@ -168,7 +168,7 @@ export function DeletePagesPdfUpload() {
                   className={`group relative rounded-lg border-2 overflow-hidden transition-all ${
                     marked
                       ? "border-red-500 ring-2 ring-red-200"
-                      : "border-gray-200 hover:border-blue-400"
+                      : "border-[#e7e0d5] hover:border-[#f7433d]"
                   }`}
                   data-testid={`thumb-page-${p.pageIndex}`}
                 >

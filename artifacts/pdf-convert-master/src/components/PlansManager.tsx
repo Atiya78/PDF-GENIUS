@@ -1,12 +1,11 @@
+import "@/styles/dashboard.css";
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Code2, Archive, FileImage, CreditCard } from "lucide-react";
 import { ProcessingSpinner } from "@/components/processing-spinner";
-import { LottieIcon } from "@/components/ui/lottie-icon";
-import recommendedAnim from "@/assets/lottie/recommended.json";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLocation } from "wouter";
 import { useToast } from "@/hooks/use-toast";
@@ -181,7 +180,7 @@ export const PlansManager: React.FC = () => {
       : [];
 
   return (
-    <>
+    <div className="dash-scope">
       {isAuthenticated && currentPlan && (
         <>
           {/* Current Plan */}
@@ -197,7 +196,7 @@ export const PlansManager: React.FC = () => {
                       Active
                     </Badge>
                   </div>
-                  <h3 className="text-3xl font-bold text-gray-900 mb-1">
+                  <h3 className="mb-1 font-['Poppins'] text-3xl font-semibold tracking-[-0.02em] text-gray-900">
                     {currentPlan.name} Plan
                   </h3>
                   <p className="text-gray-600">
@@ -274,49 +273,34 @@ export const PlansManager: React.FC = () => {
       )}
 
       {/* Available Plans */}
-      <Card className="mb-8">
-        <CardHeader className="p-3 sm:p-6">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <CardTitle>Available Plans</CardTitle>
-            {/* Monthly / Yearly toggle */}
-            <div
-              className="inline-flex max-w-full items-stretch rounded-2xl sm:rounded-full bg-gray-100 p-1"
-              role="tablist"
-              aria-label="Billing period"
-            >
-              {(
-                [
-                  { value: "month", label: "Monthly" },
-                  { value: "year", label: "Yearly" },
-                ] as const
-              ).map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  role="tab"
-                  aria-selected={billingPeriod === opt.value}
-                  onClick={() => setBillingPeriod(opt.value)}
-                  className={`px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                    billingPeriod === opt.value
-                      ? "bg-white text-gray-900 shadow-sm"
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                  data-testid={`toggle-billing-${opt.value}`}
-                >
-                  {opt.label}
-                  {opt.value === "year" && (
-                    <span className="block sm:inline sm:ml-1.5 text-xs font-semibold text-[#f7433d]">
-                      2 months free
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
+      <section className="mb-8 mt-4 grid gap-8 lg:grid-cols-[14rem_minmax(0,1fr)]" aria-labelledby="plans-heading">
+        <div>
+          <p className="edu-eyebrow">Plans</p>
+          <h2 id="plans-heading" className="mt-2 font-['Poppins'] text-[1.6rem] font-semibold tracking-[-0.02em] text-[#1c1917]">Choose a plan</h2>
+          <div role="tablist" aria-label="Billing period" className="edu-tabs mt-5 !gap-6">
+            {(
+              [
+                { value: "month", label: "Monthly" },
+                { value: "year", label: "Yearly" },
+              ] as const
+            ).map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                role="tab"
+                aria-selected={billingPeriod === opt.value}
+                onClick={() => setBillingPeriod(opt.value)}
+                className={`edu-tab min-h-[44px] ${billingPeriod === opt.value ? "edu-tab-on" : ""}`}
+                data-testid={`toggle-billing-${opt.value}`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
-        </CardHeader>
-        <div className="p-3 sm:p-6 pt-0 sm:pt-0">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6">
-            {plans.map((plan) => {
+          <p className="mt-3 text-sm text-[#57534e]"><span className="font-semibold text-[#c8302a]">Yearly: 2 months free.</span></p>
+        </div>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-0 md:py-3">
+            {plans.map((plan, idx) => {
               const isCurrent = isAuthenticated && plan.id === currentPlanId;
               const isFree = plan.id === "free";
               const isPending =
@@ -353,83 +337,62 @@ export const PlansManager: React.FC = () => {
                 handleUpgrade(plan.id);
               };
 
+              const featured = !!plan.popular;
+              const next = plans[idx + 1];
+              const yearly = billingPeriod === "year" && !isFree;
               return (
-                <div
+                <article
                   key={plan.id}
-                  className={`min-w-0 border rounded-lg p-4 sm:p-6 relative flex flex-col h-full ${
-                    isCurrent
-                      ? "border-2 border-[#f7433d] bg-[#f7433d]/5"
-                      : "border-gray-200"
-                  }`}
+                  className={`relative flex min-w-0 flex-col border bg-[#fffdf9] p-6 rounded-[14px] md:rounded-none ${
+                    featured ? "z-10 border-[#1c1917] shadow-[6px_6px_0_0_#f7433d] md:-my-3 md:rounded-[4px] md:py-9" : "border-[#e7e0d5]"
+                  } ${idx === 0 ? "md:rounded-l-[14px]" : ""} ${idx === plans.length - 1 ? "md:rounded-r-[14px]" : ""} ${
+                    !featured && idx > 0 ? "md:border-l-0" : ""
+                  } ${!featured && next?.popular ? "md:border-r-0" : ""}`}
+                  data-testid={`card-plan-${plan.id}`}
                 >
-                  {plan.popular && !isCurrent && (
-                    <div
-                      className="absolute -top-8 left-1/2 -translate-x-1/2 pointer-events-none"
-                      aria-label="Recommended plan"
-                    >
-                      <LottieIcon animationData={recommendedAnim} width={110} height={73} />
-                    </div>
-                  )}
-                  {isCurrent && (
-                    <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#f7433d] text-white border-[#f7433d] hover:bg-[#f7433d]">
-                      Your Plan
-                    </Badge>
-                  )}
-                  <div className="text-center mb-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      {plan.name}
-                    </h3>
-                    <div className="flex items-end justify-center mb-2">
-                      <span className="text-4xl font-bold text-gray-900">
-                        $
-                        {billingPeriod === "year" && !isFree
-                          ? plan.yearlyPrice
-                          : plan.price}
-                      </span>
-                      <span className="text-gray-600 ml-1">
-                        {billingPeriod === "year" && !isFree
-                          ? "/year"
-                          : "/month"}
-                      </span>
-                    </div>
-                    {billingPeriod === "year" && !isFree && (
-                      <p className="text-xs text-gray-500 mb-1">
-                        ${(plan.yearlyPrice / 12).toFixed(2)}/month, billed
-                        yearly
-                      </p>
-                    )}
-                    <p className="text-sm text-gray-600">{plan.description}</p>
+                  <div className="flex items-baseline justify-between gap-3">
+                    <h3 className="font-['Poppins'] text-lg font-semibold text-[#1c1917]">{plan.name}</h3>
+                    {isCurrent && <span className="edu-eyebrow !text-[#2f5d50]" data-testid={`text-current-${plan.id}`}>Your plan</span>}
                   </div>
-                  <ul className="space-y-3 mb-8 flex-grow">
+                  <p className="mt-3 flex items-baseline gap-1">
+                    <span className="edu-mono text-[2.4rem] font-semibold leading-none tracking-[-0.03em] text-[#1c1917]">
+                      ${yearly ? plan.yearlyPrice : plan.price}
+                    </span>
+                    <span className="text-sm text-[#57534e]">{yearly ? "/year" : "/month"}</span>
+                  </p>
+                  <p className="edu-mono mt-1.5 min-h-[1rem] text-xs text-[#8a837b]">
+                    {yearly ? `$${(plan.yearlyPrice / 12).toFixed(2)}/month, billed yearly` : ""}
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-[#57534e]">{plan.description}</p>
+                  <ul className="mt-5 flex-1 border-t border-[#1c1917] text-sm">
                     {plan.features.map((feature) => (
-                      <li key={feature} className="flex items-center">
-                        <Check className="w-5 h-5 text-[#f7433d] mr-3 shrink-0" />
-                        <span className="min-w-0 text-sm text-gray-700 break-words">{feature}</span>
+                      <li key={feature} className="flex items-start gap-2.5 border-b border-[#efe8dd] py-2.5">
+                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#2f5d50]" aria-hidden="true" />
+                        <span className="min-w-0 break-words text-[#1c1917]">{feature}</span>
                       </li>
                     ))}
                   </ul>
-                  <Button
-                    className={`w-full mt-auto h-auto min-h-10 whitespace-normal px-3 py-2 text-sm ${
+                  <button
+                    type="button"
+                    className={`mt-6 inline-flex min-h-[44px] w-full items-center justify-center gap-2 rounded-[10px] px-4 py-2 text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c1917] disabled:cursor-not-allowed ${
                       isCurrent
-                        ? ""
-                        : "bg-[#f7433d] hover:bg-[#d93832] text-white"
+                        ? "border border-[#e7e0d5] text-[#8a837b]"
+                        : featured
+                          ? "bg-[#f7433d] text-white hover:bg-[#c8302a] disabled:opacity-60"
+                          : "border border-[#1c1917] text-[#1c1917] hover:bg-[#1c1917] hover:text-[#faf7f2] disabled:opacity-60"
                     }`}
-                    variant={isCurrent ? "outline" : "default"}
                     disabled={isCurrent || isPending}
                     onClick={onClick}
                     data-testid={`button-plan-${plan.id}`}
                   >
-                    {isPending && (
-                      <ProcessingSpinner size={16} tone="light" className="mr-2" />
-                    )}
+                    {isPending && <ProcessingSpinner size={16} tone={featured ? "light" : undefined} />}
                     {label}
-                  </Button>
-                </div>
+                  </button>
+                </article>
               );
             })}
-          </div>
         </div>
-      </Card>
-    </>
+      </section>
+    </div>
   );
 };

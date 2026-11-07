@@ -3,7 +3,10 @@ name: Web auth dark-sheet design (parity with mobile)
 description: How pdf-convert-master web /signin /signup mirror the mobile AuthSheet
 ---
 
-# Web auth dark-sheet design
+# Web auth design
+
+**SUPERSEDED (Nov 2026):** owner asked for auth to match the site-wide paper direction; the dark sheet is replaced by a paper split layout (AuthShell in AuthCard, shared by forgot/reset). Still standalone (no nav), same flow/steps/OTP/Google/Apple behaviour below. Web no longer visually mirrors mobile.
+
 
 The web `/signin` and `/signup` pages intentionally use a DARK sheet design
 (`#171c28` bg, `#1f2533` fields, `#2c3344` borders, coral `#f7433d` primary),

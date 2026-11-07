@@ -26,8 +26,8 @@ const toolConfigs: Record<string, ToolConfig> = {
     name: "Word to PDF",
     title: "Word to PDF",
     description: "Convert Word documents to PDF format",
-    icon: <FileText className="w-9 h-9 text-blue-500" />,
-    iconBg: "bg-blue-50 border-blue-200",
+    icon: <FileText className="w-9 h-9 text-[#c8302a]" />,
+    iconBg: "bg-[#fdece9] border-[#f5b5b0]",
     acceptedFormats: [".doc", ".docx"],
     maxFileSize: 50
   },
@@ -36,8 +36,8 @@ const toolConfigs: Record<string, ToolConfig> = {
     name: "PDF to Word",
     title: "PDF to Word",
     description: "Convert PDF documents to editable Word files",
-    icon: <FileText className="w-9 h-9 text-blue-500" />,
-    iconBg: "bg-blue-50 border-blue-200",
+    icon: <FileText className="w-9 h-9 text-[#c8302a]" />,
+    iconBg: "bg-[#fdece9] border-[#f5b5b0]",
     acceptedFormats: [".pdf"],
     maxFileSize: 50
   },
@@ -46,8 +46,8 @@ const toolConfigs: Record<string, ToolConfig> = {
     name: "PDF to Excel",
     title: "PDF to Excel",
     description: "Extract tables and data to Excel spreadsheets",
-    icon: <FileSpreadsheet className="w-9 h-9 text-blue-500" />,
-    iconBg: "bg-blue-50 border-blue-200",
+    icon: <FileSpreadsheet className="w-9 h-9 text-[#c8302a]" />,
+    iconBg: "bg-[#fdece9] border-[#f5b5b0]",
     acceptedFormats: [".pdf"],
     maxFileSize: 50
   },
@@ -56,8 +56,8 @@ const toolConfigs: Record<string, ToolConfig> = {
     name: "PDF to PowerPoint",
     title: "PDF to PowerPoint",
     description: "Convert PDF presentations to PPT format",
-    icon: <Presentation className="w-9 h-9 text-blue-500" />,
-    iconBg: "bg-blue-50 border-blue-200",
+    icon: <Presentation className="w-9 h-9 text-[#c8302a]" />,
+    iconBg: "bg-[#fdece9] border-[#f5b5b0]",
     acceptedFormats: [".pdf"],
     maxFileSize: 50
   },
@@ -66,8 +66,8 @@ const toolConfigs: Record<string, ToolConfig> = {
     name: "Merge PDFs",
     title: "Merge PDFs",
     description: "Combine multiple PDF files into one document",
-    icon: <FilePlus className="w-9 h-9 text-blue-500" />,
-    iconBg: "bg-blue-50 border-blue-200",
+    icon: <FilePlus className="w-9 h-9 text-[#c8302a]" />,
+    iconBg: "bg-[#fdece9] border-[#f5b5b0]",
     acceptedFormats: [".pdf"],
     maxFileSize: 100
   },
@@ -76,8 +76,8 @@ const toolConfigs: Record<string, ToolConfig> = {
     name: "Split PDF",
     title: "Split PDF",
     description: "Split large PDF files into smaller documents",
-    icon: <Scissors className="w-9 h-9 text-gray-600" />,
-    iconBg: "bg-gray-50 border-gray-200",
+    icon: <Scissors className="w-9 h-9 text-[#57534e]" />,
+    iconBg: "bg-[#faf7f2] border-[#e7e0d5]",
     acceptedFormats: [".pdf"],
     maxFileSize: 100
   },
@@ -86,8 +86,8 @@ const toolConfigs: Record<string, ToolConfig> = {
     name: "Compress PDF",
     title: "Compress PDF",
     description: "Reduce PDF file size while maintaining quality",
-    icon: <Archive className="w-9 h-9 text-blue-500" />,
-    iconBg: "bg-blue-50 border-blue-200",
+    icon: <Archive className="w-9 h-9 text-[#c8302a]" />,
+    iconBg: "bg-[#fdece9] border-[#f5b5b0]",
     acceptedFormats: [".pdf"],
     maxFileSize: 200
   }
@@ -146,7 +146,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-white py-24 px-4">
+    <div className="tl-root min-h-[100dvh] py-16 sm:py-20 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-16">
@@ -158,12 +158,12 @@ export const UploadPage: React.FC<UploadPageProps> = ({
           </div>
 
           {/* Title */}
-          <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+          <h1 className="text-5xl font-semibold text-[#1c1917] mb-6 leading-tight">
             {toolConfig.title}
           </h1>
 
           {/* Description */}
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-[#57534e] max-w-3xl mx-auto leading-relaxed">
             {toolConfig.description}
           </p>
         </div>
@@ -174,8 +174,8 @@ export const UploadPage: React.FC<UploadPageProps> = ({
             className={`
               relative border-2 border-dashed rounded-3xl bg-white shadow-xl p-16 text-center transition-all duration-200
               ${isDragOver 
-                ? 'border-blue-400 bg-blue-50' 
-                : 'border-gray-300 hover:border-gray-400'
+                ? 'border-[#f7433d] bg-[#fdece9]' 
+                : 'border-[#e7e0d5] hover:border-gray-400'
               }
             `}
             onDragOver={handleDragOver}
@@ -189,16 +189,16 @@ export const UploadPage: React.FC<UploadPageProps> = ({
             </div>
 
             {/* Upload Text */}
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+            <h3 className="text-2xl font-semibold text-[#1c1917] mb-4">
               Drop your {getFileTypeText()} file here
             </h3>
-            <p className="text-lg text-gray-600 mb-8">
+            <p className="text-lg text-[#57534e] mb-8">
               or click to browse files
             </p>
 
             {/* Select Files Button */}
             <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 text-lg font-semibold shadow-lg"
+              className="bg-[#f7433d] hover:bg-[#c8302a] text-white px-10 py-4 text-lg font-semibold shadow-lg"
               onClick={(e) => {
                 e.stopPropagation();
                 handleSelectFiles();
@@ -218,7 +218,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({
             />
 
             {/* File Info */}
-            <p className="text-sm text-gray-500 mt-4">
+            <p className="text-sm text-[#57534e] mt-4">
               Supported formats: {getFileTypeText()} • Max file size: {toolConfig.maxFileSize}MB
             </p>
           </div>
@@ -235,7 +235,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({
                 ))}
               </ul>
               <Button 
-                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+                className="mt-4 bg-[#f7433d] hover:bg-[#c8302a] text-white"
                 onClick={() => {
                   // Handle conversion start
                   console.log('Starting conversion for:', uploadedFiles);
@@ -250,46 +250,46 @@ export const UploadPage: React.FC<UploadPageProps> = ({
         {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
           {/* Secure Processing */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
+          <div className="bg-[#fffdf9] rounded-[14px] border border-[#e7e0d5] p-8 text-center">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-                <Shield className="w-6 h-6 text-blue-600" />
+              <div className="w-16 h-16 rounded-full bg-[#fdece9] flex items-center justify-center">
+                <Shield className="w-6 h-6 text-[#c8302a]" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-[#1c1917] mb-2">
               Secure Processing
             </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-[#57534e] leading-relaxed">
               Your files are processed securely in your browser
             </p>
           </div>
 
           {/* Fast Conversion */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
+          <div className="bg-[#fffdf9] rounded-[14px] border border-[#e7e0d5] p-8 text-center">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-                <Zap className="w-6 h-6 text-blue-600" />
+              <div className="w-16 h-16 rounded-full bg-[#fdece9] flex items-center justify-center">
+                <Zap className="w-6 h-6 text-[#c8302a]" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-[#1c1917] mb-2">
               Fast Conversion
             </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-[#57534e] leading-relaxed">
               Lightning-fast processing with high-quality results
             </p>
           </div>
 
           {/* Easy Download */}
-          <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
+          <div className="bg-[#fffdf9] rounded-[14px] border border-[#e7e0d5] p-8 text-center">
             <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
-                <Download className="w-6 h-6 text-blue-600" />
+              <div className="w-16 h-16 rounded-full bg-[#fdece9] flex items-center justify-center">
+                <Download className="w-6 h-6 text-[#c8302a]" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-[#1c1917] mb-2">
               Easy Download
             </h3>
-            <p className="text-sm text-gray-600 leading-relaxed">
+            <p className="text-sm text-[#57534e] leading-relaxed">
               Download your converted files instantly after processing
             </p>
           </div>
@@ -300,7 +300,7 @@ export const UploadPage: React.FC<UploadPageProps> = ({
           <Button
             variant="outline"
             onClick={() => setLocation('/dashboard/live-tools')}
-            className="text-gray-600 hover:text-gray-900"
+            className="text-[#57534e] hover:text-[#1c1917]"
           >
             ← Back to Tools
           </Button>

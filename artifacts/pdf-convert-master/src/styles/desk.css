@@ -1,0 +1,23 @@
+/* Site-wide "document desk" foundation. Shares its palette with the Education Zone
+   (components/education/education.css), whose .edu-* utilities are also loaded globally.
+   Area-specific styles belong in their own CSS files, not here. */
+:root {
+  --desk-paper: #faf7f2;   /* page background */
+  --desk-sheet: #fffdf9;   /* raised surfaces */
+  --desk-ink: #1c1917;     /* primary text */
+  --desk-ink-2: #57534e;   /* secondary text */
+  --desk-ink-3: #8a837b;   /* tertiary / meta */
+  --desk-line: #e7e0d5;    /* hairlines */
+  --desk-line-2: #efe8dd;  /* inner rules */
+  --desk-coral: #f7433d;   /* brand (required) */
+  --desk-coral-deep: #c8302a;
+  --desk-coral-wash: #fdece9;
+  --desk-sage: #2f5d50;
+  --desk-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.desk-root {
+  background: var(--desk-paper);
+  color: var(--desk-ink);
+}
+.desk-root ::selection { background: #fbd3cf; color: var(--desk-ink); }

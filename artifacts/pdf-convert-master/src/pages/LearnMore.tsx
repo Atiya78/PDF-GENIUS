@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "@/styles/marketing.css";
 import { VerifiedSiteStats } from "@/components/VerifiedSiteStats";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -1350,9 +1351,9 @@ export const LearnMore: React.FC = () => {
 
   if (selectedArticle) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="mkt-root min-h-[100dvh]">
         {/* Header */}
-        <header className="bg-white shadow-sm border-b">
+        <header className="bg-[#fffdf9] shadow-sm border-b">
           <div className="max-w-4xl mx-auto px-6 py-6">
             <Button 
               variant="outline" 
@@ -1363,14 +1364,14 @@ export const LearnMore: React.FC = () => {
             </Button>
             <div className="flex items-center gap-4 mb-4">
               <Badge variant="secondary">{selectedArticle.category}</Badge>
-              <span className="text-sm text-gray-500 flex items-center gap-1">
+              <span className="text-sm text-[#6b645c] flex items-center gap-1">
                 <Clock className="w-4 h-4" />
                 {selectedArticle.readTime} read
               </span>
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">{selectedArticle.title}</h1>
-            <p className="text-xl text-gray-600 mb-6">{selectedArticle.excerpt}</p>
-            <div className="flex items-center gap-4 text-sm text-gray-500">
+            <h1 className="mkt-display text-[2.2rem] sm:text-[2.9rem] mb-4">{selectedArticle.title}</h1>
+            <p className="text-xl text-[#57534e] mb-6">{selectedArticle.excerpt}</p>
+            <div className="flex items-center gap-4 text-sm text-[#6b645c]">
               <span className="flex items-center gap-1">
                 <User className="w-4 h-4" />
                 {selectedArticle.author}
@@ -1408,12 +1409,12 @@ export const LearnMore: React.FC = () => {
                 )
                 .slice(0, 2)
                 .map((article, index) => (
-                  <Card key={index} className="cursor-pointer hover:shadow-lg transition-shadow">
+                  <Card key={index} className="cursor-pointer hover:shadow-sm transition-shadow">
                     <CardHeader>
                       <CardTitle className="text-lg">{article.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-gray-600 mb-4">{article.excerpt}</p>
+                      <p className="text-[#57534e] mb-4">{article.excerpt}</p>
                       <Button 
                         variant="outline" 
                         onClick={() => setSelectedArticle(article)}
@@ -1432,29 +1433,21 @@ export const LearnMore: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="mkt-root min-h-[100dvh]">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-900 to-blue-800 text-white py-16">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <Badge className="bg-blue-700 text-blue-100 mb-4">
-              <BookOpen className="w-4 h-4 mr-2" />
-              Educational Hub
-            </Badge>
-            <h1 className="text-5xl font-bold mb-6">Learn More About PDF Tools</h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Master PDF conversion, security, and optimization with our comprehensive guides. 
-              Expert insights and practical tips to help you work smarter with documents.
-            </p>
-          </div>
-
-          {/* Company Stats */}
-          <VerifiedSiteStats group="learn" />
+      <section className="border-b border-[#e7e0d5]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-12 pt-10 lg:pt-16">
+          <p className="edu-eyebrow inline-flex items-center gap-2"><BookOpen className="w-3.5 h-3.5" aria-hidden="true" />Guides</p>
+          <h1 className="mkt-display mt-4 max-w-3xl text-[2.4rem] sm:text-[3.2rem]">Learn more about PDF tools</h1>
+          <p className="mkt-lede mt-5 max-w-2xl">
+            Practical guides to PDF conversion, security and optimization, so you can work faster with documents.
+          </p>
+          <div className="mt-8"><VerifiedSiteStats group="learn" /></div>
         </div>
       </section>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-6 py-12">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
         {/* Search and Filter */}
         <div className="mb-12">
           <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -1490,11 +1483,11 @@ export const LearnMore: React.FC = () => {
             <h2 className="text-3xl font-bold mb-8">Featured Articles</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {featuredArticles.map((article) => (
-                <Card key={article.id} className="cursor-pointer hover:shadow-xl transition-all duration-300 border-l-4 border-l-blue-500">
+                <Card key={article.id} className="cursor-pointer hover:shadow-sm transition-all duration-300 border-[#e7e0d5] bg-[#fffdf9] shadow-none hover:-translate-y-0.5 hover:border-[#d9cfc1]">
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
                       <Badge variant="secondary">{article.category}</Badge>
-                      <span className="text-sm text-gray-500 flex items-center gap-1">
+                      <span className="text-sm text-[#6b645c] flex items-center gap-1">
                         <Clock className="w-4 h-4" />
                         {article.readTime}
                       </span>
@@ -1502,9 +1495,9 @@ export const LearnMore: React.FC = () => {
                     <CardTitle className="text-xl mb-2">{article.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-gray-600 mb-4">{article.excerpt}</p>
+                    <p className="text-[#57534e] mb-4">{article.excerpt}</p>
                     <div className="flex items-center justify-between">
-                      <div className="text-sm text-gray-500 flex items-center gap-1">
+                      <div className="text-sm text-[#6b645c] flex items-center gap-1">
                         <User className="w-4 h-4" />
                         {article.author}
                       </div>
@@ -1530,11 +1523,11 @@ export const LearnMore: React.FC = () => {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredArticles.map((article) => (
-              <Card key={article.id} className="cursor-pointer hover:shadow-lg transition-shadow h-full">
+              <Card key={article.id} className="cursor-pointer hover:shadow-sm transition-shadow h-full">
                 <CardHeader>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="outline">{article.category}</Badge>
-                    <span className="text-sm text-gray-500 flex items-center gap-1">
+                    <span className="text-sm text-[#6b645c] flex items-center gap-1">
                       <Clock className="w-4 h-4" />
                       {article.readTime}
                     </span>
@@ -1542,9 +1535,9 @@ export const LearnMore: React.FC = () => {
                   <CardTitle className="text-lg leading-tight">{article.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
-                  <p className="text-gray-600 mb-4 flex-1">{article.excerpt}</p>
+                  <p className="text-[#57534e] mb-4 flex-1">{article.excerpt}</p>
                   <div className="flex items-center justify-between">
-                    <div className="text-sm text-gray-500">{article.date}</div>
+                    <div className="text-sm text-[#6b645c]">{article.date}</div>
                     <Button 
                       size="sm"
                       onClick={() => setSelectedArticle(article)}
@@ -1560,17 +1553,17 @@ export const LearnMore: React.FC = () => {
           {filteredArticles.length === 0 && (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No articles found</h3>
-              <p className="text-gray-500">Try adjusting your search terms or category filter.</p>
+              <h3 className="text-xl font-semibold text-[#57534e] mb-2">No articles found</h3>
+              <p className="text-[#6b645c]">Try adjusting your search terms or category filter.</p>
             </div>
           )}
         </section>
 
         {/* Company Info */}
-        <section className="mt-16 pt-12 border-t bg-white rounded-lg p-8">
+        <section className="mt-16 pt-12 border-t bg-[#fffdf9] rounded-lg p-8">
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold mb-4">About PDF Genius</h3>
-            <p className="text-gray-600 max-w-3xl mx-auto">
+            <p className="text-[#57534e] max-w-3xl">
               Developed in London, UK, PDF Genius provides professional-grade 
               PDF and image tools for converting, editing and organizing documents. Our aim is to make document management
               simple, secure, and accessible for everyone.
@@ -1579,19 +1572,19 @@ export const LearnMore: React.FC = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div className="flex flex-col items-center">
-              <Shield className="w-12 h-12 text-blue-600 mb-3" />
+              <Shield className="w-12 h-12 text-[#c8302a] mb-3" />
               <h4 className="font-semibold mb-2">Enterprise Security</h4>
-              <p className="text-sm text-gray-600">Bank-level encryption and compliance standards</p>
+              <p className="text-sm text-[#57534e]">Bank-level encryption and compliance standards</p>
             </div>
             <div className="flex flex-col items-center">
-              <Zap className="w-12 h-12 text-blue-600 mb-3" />
+              <Zap className="w-12 h-12 text-[#c8302a] mb-3" />
               <h4 className="font-semibold mb-2">Lightning Fast</h4>
-              <p className="text-sm text-gray-600">Optimized processing for quick results</p>
+              <p className="text-sm text-[#57534e]">Optimized processing for quick results</p>
             </div>
             <div className="flex flex-col items-center">
-              <Settings className="w-12 h-12 text-blue-600 mb-3" />
+              <Settings className="w-12 h-12 text-[#c8302a] mb-3" />
               <h4 className="font-semibold mb-2">20+ Tools</h4>
-              <p className="text-sm text-gray-600">Complete PDF solution suite</p>
+              <p className="text-sm text-[#57534e]">Complete PDF solution suite</p>
             </div>
           </div>
         </section>

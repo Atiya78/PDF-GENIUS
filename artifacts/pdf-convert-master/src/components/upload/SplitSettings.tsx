@@ -46,22 +46,22 @@ export const SplitSettings: React.FC<{
           { value: "extract", label: "Extract pages" },
         ]}
       />
-      <p className="text-xs text-gray-600" data-testid="text-split-output">{HELP[mode]}</p>
+      <p className="text-xs text-[#57534e]" data-testid="text-split-output">{HELP[mode]}</p>
       {mode === "every_n" && (
         <div className="space-y-2">
-          <label htmlFor="input-pages-per-split" className="block text-sm font-medium text-gray-900">Pages per file</label>
+          <label htmlFor="input-pages-per-split" className="block text-sm font-medium text-[#1c1917]">Pages per file</label>
           <TextInput
             id="input-pages-per-split" type="number" min={1} step={1} value={Number.isFinite(pagesPerSplit) ? pagesPerSplit : ""} disabled={disabled}
             onChange={(e) => onPagesPerSplit(Math.floor(Number(e.target.value)))} data-testid="input-pages-per-split"
           />
-          <p className={`text-xs ${nOk ? "text-gray-500" : "text-red-600"}`}>
+          <p className={`text-xs ${nOk ? "text-[#57534e]" : "text-red-600"}`}>
             {nOk ? (count ? `${Math.ceil(count / pagesPerSplit)} file(s) will be created.` : "Enter a whole number.") : `Enter a whole number from 1${count ? ` to ${count}` : ""}.`}
           </p>
         </div>
       )}
       {needsRanges && (
         <div className="space-y-2">
-          <label htmlFor="input-ranges" className="block text-sm font-medium text-gray-900">
+          <label htmlFor="input-ranges" className="block text-sm font-medium text-[#1c1917]">
             {mode === "ranges" ? "Page ranges" : "Pages to extract"}
           </label>
           <TextInput
@@ -69,7 +69,7 @@ export const SplitSettings: React.FC<{
             placeholder="1-3,5,8-10" onChange={(e) => onRanges(e.target.value)}
             aria-invalid={!!ranges && !parsed.ok} aria-describedby="ranges-msg" data-testid="input-ranges"
           />
-          <p id="ranges-msg" role={ranges && !parsed.ok ? "alert" : undefined} className={`text-xs ${ranges && !parsed.ok ? "text-red-600" : "text-gray-500"}`} data-testid="text-ranges-feedback">
+          <p id="ranges-msg" role={ranges && !parsed.ok ? "alert" : undefined} className={`text-xs ${ranges && !parsed.ok ? "text-red-600" : "text-[#57534e]"}`} data-testid="text-ranges-feedback">
             {!ranges ? "Use page numbers and ranges separated by commas." : parsed.ok
               ? mode === "ranges" ? `${parsed.tokens.length} PDF${parsed.tokens.length === 1 ? "" : "s"} will be created.` : `${parsed.pages.length} page${parsed.pages.length === 1 ? "" : "s"} selected.`
               : parsed.error}

@@ -21,7 +21,7 @@ export const DynamicLayout = ({ children, isDashboardPage = false }: DynamicLayo
   // For dashboard pages, always use DashboardLayout structure
   if (isDashboardPage) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="desk-root min-h-[100dvh] flex flex-col">
         <DashboardHeader />
         <main className="flex-1">
           {children}
@@ -33,7 +33,7 @@ export const DynamicLayout = ({ children, isDashboardPage = false }: DynamicLayo
 
   // For regular pages, switch header based on authentication
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="desk-root min-h-[100dvh] flex flex-col">
       {isAuthenticated ? (
         // Logged-in users see DashboardHeader on all pages
         <DashboardHeader />

@@ -10,7 +10,7 @@ import {
 } from "@/lib/downloadFormats";
 import DownloadFormatModal from "@/components/DownloadFormatModal";
 import { GuestRecentDownloads } from "@/components/GuestRecentDownloads";
-import { Card } from "@/components/ui/card";
+import "@/styles/marketing.css";
 import { Button } from "@/components/ui/button";
 import { AuthErrorAction } from "@/components/AuthErrorAction";
 import { ConverterStatusIcon } from "@/components/converter-status-icon";
@@ -25,7 +25,7 @@ import {
 type Stage = "idle" | "converting" | "done" | "error";
 
 const cardShell =
-  "flex flex-col w-full md:w-[584px] min-h-[405px] items-center justify-center p-[50px] bg-white rounded-3xl border-2 border-dashed border-blue-300 shadow-sm";
+  "mkt-sheet flex flex-col w-full min-h-[360px] items-center justify-center p-8 sm:p-10";
 
 export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element => {
   const [stage, setStage] = useState<Stage>("idle");
@@ -225,7 +225,7 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
 
   if (stage === "idle") {
     return (
-      <div className="flex flex-col items-center w-full md:w-[584px]">
+      <div className="flex flex-col items-center w-full">
         <UploadDropzone
           acceptedFormats={tool.acceptedFormats}
           maxFileSize={tool.maxFileSize}
@@ -240,7 +240,7 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
             setError(msg);
             setStage("error");
           }}
-          className="w-full md:w-[584px] min-h-[405px] justify-center rounded-3xl border-blue-300 p-[50px] shadow-sm"
+          className="w-full min-h-[340px] justify-center rounded-[14px] border-[#d9cfc1] bg-[#fffdf9] p-8 sm:p-10"
           testId={`hero-converter-${tool.id}`}
         />
         <GuestRecentDownloads toolType={getServerToolType(tool)} />
@@ -249,13 +249,13 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
   }
 
   return (
-    <Card className={cardShell} data-testid={`hero-converter-${tool.id}`}>
+    <div className={cardShell} data-testid={`hero-converter-${tool.id}`}>
       {stage === "converting" && (
         <div className="flex flex-col items-center justify-center w-full text-center">
           <ConverterStatusIcon status="processing" size={96} className="mb-3" />
-          <h2 className="font-bold text-gray-900 text-xl mb-2">Converting…</h2>
+          <h2 className="font-['Poppins'] font-semibold text-[#1c1917] text-xl mb-2">Converting…</h2>
           <p
-            className="text-gray-600 text-sm truncate max-w-full"
+            className="text-[#57534e] text-sm truncate max-w-full"
             data-testid={`text-hero-converting-${tool.id}`}
           >
             {fileName}
@@ -266,16 +266,16 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
       {stage === "done" && (
         <div className="flex flex-col items-center justify-center w-full text-center">
           <ConverterStatusIcon status="success" size={96} className="mb-2" />
-          <h2 className="font-bold text-gray-900 text-xl mb-2">
+          <h2 className="font-['Poppins'] font-semibold text-[#1c1917] text-xl mb-2">
             Conversion complete
           </h2>
-          <p className="text-gray-600 text-sm mb-6 truncate max-w-full">
+          <p className="text-[#57534e] text-sm mb-6 truncate max-w-full">
             {fileName}
           </p>
           <button
             type="button"
             onClick={openChooser}
-            className="inline-flex items-center justify-center h-[57px] px-12 rounded-full bg-[#f7433d] hover:bg-[#e23a34] text-white font-semibold mb-4 shadow-[0px_10px_15px_-3px_#0000001a,0px_4px_6px_-4px_#0000001a] transition-colors"
+            className="edu-btn-primary mb-4"
             data-testid={`button-hero-download-${tool.id}`}
           >
             <Download className="mr-2 h-5 w-5" />
@@ -284,7 +284,7 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
+            className="inline-flex min-h-[44px] items-center text-sm font-semibold text-[#57534e] underline decoration-[#d9d0c3] underline-offset-4 hover:text-[#1c1917] hover:decoration-[#f7433d]"
             data-testid={`button-hero-reset-${tool.id}`}
           >
             <RefreshCw className="mr-1 h-4 w-4" />
@@ -296,11 +296,11 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
       {stage === "error" && (
         <div className="flex flex-col items-center justify-center w-full text-center">
           <ConverterStatusIcon status="error" size={96} className="mb-2" />
-          <h2 className="font-bold text-gray-900 text-xl mb-2">
+          <h2 className="font-['Poppins'] font-semibold text-[#1c1917] text-xl mb-2">
             Something went wrong
           </h2>
           <p
-            className="text-red-600 text-sm mb-4 max-w-full"
+            className="text-[#c8302a] text-sm mb-4 max-w-full"
             data-testid={`text-hero-error-${tool.id}`}
           >
             {error}
@@ -316,7 +316,8 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
           )}
           <Button
             onClick={reset}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8"
+            className="edu-btn-ghost h-11"
+            variant="outline"
             data-testid={`button-hero-retry-${tool.id}`}
           >
             Try again
@@ -341,6 +342,6 @@ export const HeroToolConverter = ({ tool }: { tool: ToolConfig }): JSX.Element =
             : undefined
         }
       />
-    </Card>
+    </div>
   );
 };

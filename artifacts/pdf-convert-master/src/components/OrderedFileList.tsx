@@ -40,14 +40,14 @@ export const OrderedFileList: React.FC<OrderedFileListProps> = ({
       {files.map((f, i) => (
         <li
           key={`${f.name}-${f.size}-${i}`}
-          className={`flex items-center gap-2 rounded-xl border border-gray-200 bg-white ${
+          className={`flex items-center gap-2 rounded-xl border border-[#e7e0d5] bg-white ${
             compact ? "p-2" : "p-3 gap-3"
           }`}
           data-testid={`row-mergefile-${i}`}
         >
           {/* Position badge (1st, 2nd, 3rd …) */}
           <span
-            className={`flex items-center justify-center rounded-full bg-blue-600 text-white font-semibold shrink-0 ${
+            className={`flex items-center justify-center rounded-full bg-[#f7433d] text-white font-semibold shrink-0 ${
               compact ? "w-5 h-5 text-[10px]" : "w-7 h-7 text-xs"
             }`}
             data-testid={`badge-position-${i}`}
@@ -56,21 +56,21 @@ export const OrderedFileList: React.FC<OrderedFileListProps> = ({
           </span>
 
           <div
-            className={`flex items-center justify-center rounded-md bg-blue-50 shrink-0 ${
+            className={`flex items-center justify-center rounded-md bg-[#fdece9] shrink-0 ${
               compact ? "w-7 h-7" : "w-9 h-9"
             }`}
           >
-            <FileText className={compact ? "w-4 h-4 text-blue-600" : "w-5 h-5 text-blue-600"} />
+            <FileText className={compact ? "w-4 h-4 text-[#c8302a]" : "w-5 h-5 text-[#c8302a]"} />
           </div>
 
           <div className="min-w-0 flex-1">
             <p
-              className={`font-medium text-gray-900 truncate ${compact ? "text-xs" : "text-sm"}`}
+              className={`font-medium text-[#1c1917] truncate ${compact ? "text-xs" : "text-sm"}`}
               data-testid={`text-mergefile-${i}`}
             >
               {f.name}
             </p>
-            <p className={compact ? "text-[10px] text-gray-500" : "text-xs text-gray-500"}>
+            <p className={compact ? "text-[10px] text-[#57534e]" : "text-xs text-[#57534e]"}>
               {formatBytes(f.size)}
             </p>
           </div>
@@ -80,7 +80,7 @@ export const OrderedFileList: React.FC<OrderedFileListProps> = ({
               type="button"
               onClick={() => onMoveUp(i)}
               disabled={disabled || i === 0}
-              className="p-1 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+              className="p-1 rounded-md text-[#8a837b] hover:text-[#c8302a] hover:bg-[#fdece9] transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
               aria-label={`Move ${f.name} up`}
               data-testid={`button-move-up-${i}`}
             >
@@ -90,7 +90,7 @@ export const OrderedFileList: React.FC<OrderedFileListProps> = ({
               type="button"
               onClick={() => onMoveDown(i)}
               disabled={disabled || i === files.length - 1}
-              className="p-1 rounded-md text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+              className="p-1 rounded-md text-[#8a837b] hover:text-[#c8302a] hover:bg-[#fdece9] transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
               aria-label={`Move ${f.name} down`}
               data-testid={`button-move-down-${i}`}
             >
@@ -100,7 +100,7 @@ export const OrderedFileList: React.FC<OrderedFileListProps> = ({
               type="button"
               onClick={() => onRemove(i)}
               disabled={disabled}
-              className="p-1 rounded-md text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
+              className="p-1 rounded-md text-[#8a837b] hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-30 disabled:hover:bg-transparent disabled:cursor-not-allowed"
               aria-label={`Remove ${f.name}`}
               data-testid={`button-remove-mergefile-${i}`}
             >

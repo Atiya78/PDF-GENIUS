@@ -1,6 +1,6 @@
 import React from "react";
 import { ShieldCheck } from "lucide-react";
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import "@/styles/tools.css";
 import { useSeo } from "@/lib/useSeo";
 import { ToolLandingContext } from "@/contexts/ToolLandingContext";
 
@@ -38,10 +38,8 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
   title,
   description,
   icon,
-  iconBoxClassName = "border-blue-100 bg-blue-50",
-  trustText,
+    trustText,
   maxWidth = "max-w-5xl",
-  particleCount = 14,
   showHeader = true,
   children,
 }) => {
@@ -63,38 +61,32 @@ export const ToolPageShell: React.FC<ToolPageShellProps> = ({
   useSeo({ title, description, jsonLd });
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white">
-      <AnimatedBackground particleCount={particleCount} className="opacity-60" />
-      <div className={`relative z-10 w-full ${maxWidth} mx-auto px-4 sm:px-6 py-10`}>
+    <div className="tl-root relative min-h-[100dvh]">
+      <div className={`relative w-full ${maxWidth} mx-auto px-4 sm:px-6 py-8 sm:py-10`}>
         {embedded ? null : showHeader ? (
-          <div className="text-center mb-8">
-            <div className="flex justify-center mb-4">
-              <div
-                className={`w-16 h-16 flex items-center justify-center rounded-2xl border-2 shadow-sm ${iconBoxClassName}`}
+          <div className="mb-8 flex items-start gap-4 border-b border-[#e7e0d5] pb-6">
+            <div className="tl-icon !h-14 !w-14 shrink-0">{icon}</div>
+            <div className="min-w-0">
+              <h1
+                className="font-['Poppins'] text-[1.75rem] font-semibold leading-tight tracking-[-0.02em] text-[#1c1917] sm:text-[2rem]"
+                data-testid="text-tool-title"
               >
-                {icon}
-              </div>
+                {title}
+              </h1>
+              <p className="mt-1.5 max-w-2xl text-[15px] leading-relaxed text-[#57534e]">{description}</p>
+              {trustText && (
+                <p className="mt-2 inline-flex items-center gap-1.5 text-xs text-[#57534e]">
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#2f5d50]" aria-hidden="true" />
+                  {trustText}
+                </p>
+              )}
             </div>
-            <h1
-              className="text-3xl font-bold text-gray-900 mb-2"
-              data-testid="text-tool-title"
-            >
-              {title}
-            </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">{description}</p>
-            {trustText && (
-              <p className="inline-flex items-center gap-1.5 text-xs text-gray-400 mt-3">
-                <ShieldCheck className="w-3.5 h-3.5 text-green-600" />
-                {trustText}
-              </p>
-            )}
           </div>
         ) : (
-          // Upload (empty) state: show only the tool name as a headline above
-          // the bare dropzone, so every upload page is clearly labelled.
-          <div className="text-center mb-8">
+          // Upload (empty) state: only the tool name above the bare dropzone.
+          <div className="mb-6">
             <h1
-              className="text-3xl font-bold text-gray-900"
+              className="font-['Poppins'] text-[1.9rem] font-semibold leading-tight tracking-[-0.02em] text-[#1c1917] sm:text-[2.3rem]"
               data-testid="text-tool-title"
             >
               {title}

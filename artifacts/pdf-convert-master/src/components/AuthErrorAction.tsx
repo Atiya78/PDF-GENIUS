@@ -19,10 +19,10 @@ export const AuthErrorAction = ({
 }: AuthErrorActionProps) => (
   <Link
     href={to}
-    className={`inline-flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 underline underline-offset-2 ${className}`}
+    className={`inline-flex items-center gap-1.5 text-sm font-semibold text-[#c8302a] hover:text-[#1c1917] underline decoration-[#f7433d]/40 underline-offset-4 hover:decoration-[#f7433d] rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c1917] ${className}`}
     data-testid={testId}
   >
-    <LogIn className="w-4 h-4" />
+    <LogIn className="w-4 h-4" aria-hidden="true" />
     {label}
   </Link>
 );

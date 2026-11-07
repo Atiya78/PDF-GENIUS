@@ -30,7 +30,7 @@ export const ImageToolShell: React.FC<ImageToolShellProps> = ({
       {hideHeader ? (
         children
       ) : (
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-5 md:p-8">
+        <div className="bg-[#fffdf9] rounded-[14px] border border-[#e7e0d5] shadow-[0_24px_48px_-36px_rgba(28,25,23,0.45)] p-5 md:p-8">
           {children}
         </div>
       )}

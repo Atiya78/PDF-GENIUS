@@ -240,7 +240,7 @@ export function SignPdfUpload() {
     <button
       onClick={() => setTab(id)}
       className={`flex-1 py-2 text-sm font-medium flex items-center justify-center gap-1.5 ${
-        tab === id ? "bg-blue-600 text-white" : "bg-white text-gray-600"
+        tab === id ? "bg-[#f7433d] text-white" : "bg-white text-[#57534e]"
       }`}
       data-testid={`tab-${id}`}
     >
@@ -267,7 +267,7 @@ export function SignPdfUpload() {
       ) : (
         <div className="grid lg:grid-cols-[360px_1fr] gap-8">
           <div className="space-y-4">
-            <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+            <div className="flex rounded-lg border border-[#e7e0d5] overflow-hidden">
               {tabBtn("draw", "Draw", Pen)}
               {tabBtn("type", "Type", Type)}
               {tabBtn("upload", "Upload", Upload)}
@@ -279,7 +279,7 @@ export function SignPdfUpload() {
                   ref={padRef}
                   width={600}
                   height={200}
-                  className="w-full bg-white border-2 border-dashed border-gray-300 rounded-lg touch-none cursor-crosshair"
+                  className="w-full bg-white border-2 border-dashed border-[#e7e0d5] rounded-lg touch-none cursor-crosshair"
                   onPointerDown={startDraw}
                   onPointerMove={moveDraw}
                   onPointerUp={endDraw}
@@ -290,7 +290,7 @@ export function SignPdfUpload() {
                   <Button variant="outline" size="sm" onClick={clearPad} data-testid="button-clear-pad">
                     <Eraser className="w-4 h-4 mr-1" /> Clear
                   </Button>
-                  <Button size="sm" onClick={useDrawn} className="bg-blue-600 hover:bg-blue-700" data-testid="button-use-drawn">
+                  <Button size="sm" onClick={useDrawn} className="bg-[#f7433d] hover:bg-[#c8302a]" data-testid="button-use-drawn">
                     Use signature
                   </Button>
                 </div>
@@ -300,19 +300,19 @@ export function SignPdfUpload() {
             {tab === "type" && (
               <div>
                 <input
-                  className="w-full px-3 py-2 rounded-lg border border-gray-300"
+                  className="w-full px-3 py-2 rounded-lg border border-[#e7e0d5]"
                   placeholder="Type your name"
                   value={typed}
                   onChange={(e) => setTyped(e.target.value)}
                   data-testid="input-typed-signature"
                 />
                 <div
-                  className="mt-2 h-24 flex items-center justify-center bg-white border border-gray-200 rounded-lg text-3xl text-slate-800"
+                  className="mt-2 h-24 flex items-center justify-center bg-white border border-[#e7e0d5] rounded-lg text-3xl text-slate-800"
                   style={{ fontFamily: "'Brush Script MT', 'Segoe Script', cursive", fontStyle: "italic" }}
                 >
                   {typed || "Preview"}
                 </div>
-                <Button size="sm" onClick={useTyped} className="mt-2 bg-blue-600 hover:bg-blue-700" data-testid="button-use-typed">
+                <Button size="sm" onClick={useTyped} className="mt-2 bg-[#f7433d] hover:bg-[#c8302a]" data-testid="button-use-typed">
                   Use signature
                 </Button>
               </div>
@@ -335,7 +335,7 @@ export function SignPdfUpload() {
                   className="hidden"
                   onChange={onUpload}
                 />
-                <p className="text-xs text-gray-400 mt-2">
+                <p className="text-xs text-[#8a837b] mt-2">
                   A transparent PNG signature looks best.
                 </p>
               </div>
@@ -349,10 +349,10 @@ export function SignPdfUpload() {
             )}
 
             {pages.length > 1 && (
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-[#57534e]">
                 Page
                 <select
-                  className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 bg-white"
+                  className="mt-1 w-full px-3 py-2 rounded-lg border border-[#e7e0d5] bg-white"
                   value={pageIndex}
                   onChange={(e) => setPageIndex(Number(e.target.value))}
                   data-testid="select-page"
@@ -373,7 +373,7 @@ export function SignPdfUpload() {
               <Button
                 onClick={apply}
                 disabled={saving || !signature}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-[#f7433d] hover:bg-[#c8302a]"
                 data-testid="button-apply-signature"
               >
                 {saving ? (
@@ -401,7 +401,7 @@ export function SignPdfUpload() {
                   <div className="relative shadow-lg">
                     <img src={page.dataUrl} alt="Page preview" className="w-full block" draggable={false} />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/5">
-                      <span className="bg-white/90 text-gray-600 text-sm px-3 py-1.5 rounded-lg shadow">
+                      <span className="bg-white/90 text-[#57534e] text-sm px-3 py-1.5 rounded-lg shadow">
                         Create a signature to place it here
                       </span>
                     </div>

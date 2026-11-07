@@ -1,14 +1,10 @@
-import { ArrowRight, CheckCircle, ShieldIcon, SparklesIcon, UploadIcon, ZapIcon } from "lucide-react";
-import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { motion, type Variants } from "framer-motion";
-import { AnimatedSelectButton } from "@/components/ui/animated-select-button";
-import { ConverterStatusIcon } from "@/components/converter-status-icon";
-import { useLocation, useSearch } from "wouter";
+import { ArrowRight } from "lucide-react";
+import { Link, useSearch } from "wouter";
 import { toolConfigs, isHeroTool } from "@/lib/toolConfig";
 import { HeroToolConverter } from "@/components/HeroToolConverter";
+import { ToolLottieIcon } from "@/components/tool-lottie-icon";
+import { cn } from "@/lib/utils";
+import "@/styles/marketing.css";
 
 const heroBenefits = [
   "Work directly in your browser",
@@ -17,217 +13,115 @@ const heroBenefits = [
   "Free tools. No signup required.",
 ];
 
+const DEFAULT_TOOL = "pdf-to-word";
+const QUICK_SWITCH = ["pdf-to-word", "word-to-pdf", "pdf-to-excel", "images-to-pdf", "pdf-to-images"];
+const NOTES = ["Encrypted in transit (HTTPS)", "PDF and image tools", "No signup required"];
+
 export const HeroSection = (): JSX.Element => {
-  const [location, setLocation] = useLocation();
   const search = useSearch();
   const toolId = new URLSearchParams(search).get("tool");
   const activeTool = isHeroTool(toolId) ? toolConfigs[toolId as string] : null;
-
-  // File format options
-  const fileFormats = [
-    { format: "PDF", className: "w-[38.58px]" },
-    { format: "DOC", className: "w-[40.44px]" },
-    { format: "XLS", className: "w-[37.61px]" },
-    { format: "JPG", className: "w-[38.88px]" },
-  ];
-
-  // Trust indicators
-  const trustIndicators = [
-    {
-      icon: <ShieldIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "Encrypted in transit (HTTPS).",
-      className: "whitespace-nowrap",
-    },
-    {
-      icon: <ZapIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "PDF and image tools",
-      className: "whitespace-nowrap",
-    },
-    {
-      icon: <SparklesIcon className="h-4 w-4 mr-1.5 text-gray-500" />,
-      text: "No signup required",
-      className: "whitespace-nowrap",
-    },
-  ];
+  const deskTool = activeTool ?? (isHeroTool(DEFAULT_TOOL) ? toolConfigs[DEFAULT_TOOL] : null);
+  const quick = QUICK_SWITCH.filter((id) => isHeroTool(id) && toolConfigs[id]);
 
   return (
-    <section className="flex flex-col w-full items-start relative bg-white overflow-hidden">
-      <div className="flex flex-col w-full items-start relative">
+    <section className="relative w-full overflow-hidden border-b border-[#e7e0d5]">
+      <div className="pointer-events-none absolute inset-y-0 left-[max(1rem,calc(50%-38rem))] hidden w-px bg-[#f7433d]/40 lg:block" aria-hidden="true" />
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 pb-14 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] lg:gap-14 lg:pb-20 lg:pl-12 lg:pt-16">
+        <div className="min-w-0">
+          <p className="edu-eyebrow">{activeTool ? `${activeTool.category} / ${activeTool.title}` : "PDF Genius / Document desk"}</p>
+          <h1
+            className="mkt-display mt-4 text-[2.4rem] sm:text-[3.2rem] lg:text-[3.7rem]"
+            data-testid="text-hero-title"
+          >
+            {activeTool ? (
+              `Convert ${activeTool.title}`
+            ) : (
+              <>
+                Every PDF chore,{" "}
+                <span className="relative whitespace-nowrap">
+                  done here
+                  <svg className="absolute -bottom-1.5 left-0 w-full" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 7 C 50 2, 120 2, 198 6" stroke="#f7433d" strokeWidth="3" fill="none" strokeLinecap="round" /></svg>
+                </span>
+                .
+              </>
+            )}
+          </h1>
+          <p className="mkt-lede mt-6 max-w-lg" data-testid="text-hero-description">
+            {activeTool
+              ? activeTool.description
+              : "Merge, split, compress, convert, rotate, unlock and watermark PDFs in a few clicks. Free tools, no signup required."}
+          </p>
 
-        <div className="flex w-full items-center relative z-10">
-          <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 pt-[26px] pb-8 lg:pb-12 w-full relative">
-              <div className="flex flex-wrap w-full items-center gap-12 relative">
-                {/* Left column - Text content */}
-                <div className="flex flex-col w-full md:w-[584px] items-start relative">
-                  <div className="flex flex-col w-full items-start relative">
-                    <div className="flex flex-col w-full items-start relative">
-                      <Badge className="flex h-[38px] items-center px-[17px] py-[9px] bg-blue-50 text-blue-700 rounded-full border border-solid border-blue-200">
-                        <img
-                          className="mr-2"
-                          alt="Margin wrap"
-                          src="/figmaAssets/margin-wrap.svg"
-                        />
-                        <span className="font-medium text-sm">
-                          Free tools. No signup required.
-                        </span>
-                      </Badge>
+          {activeTool ? (
+            <ul className="mt-7 max-w-lg border-t border-[#e7e0d5]">
+              {heroBenefits.map((benefit, i) => (
+                <li key={benefit} className="flex items-baseline gap-4 border-b border-[#efe8dd] py-2.5 text-[15px] text-[#1c1917]">
+                  <span className="edu-mono w-5 shrink-0 text-xs text-[#c8302a]">{String(i + 1).padStart(2, "0")}</span>
+                  {benefit}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+              <Link href="/tools" className="edu-btn-primary group" data-testid="button-hero-start">
+                Browse all tools
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+              <Link href="/learn-more" className="mkt-link text-[15px]" data-testid="link-hero-learn-more">
+                How it works <ArrowRight className="mkt-arrow h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          )}
 
-                      <div className="pt-4">
-                        <h1
-                          className="font-bold text-gray-900 text-3xl sm:text-4xl lg:text-5xl leading-tight max-w-[584px]"
-                          data-testid="text-hero-title"
-                        >
-                          {activeTool
-                            ? `Convert ${activeTool.title}`
-                            : "Free PDF tools. No signup required."}
-                        </h1>
-                      </div>
-
-                      <div className="pt-4">
-                        <p
-                          className="font-normal text-gray-600 text-lg leading-7 max-w-[640px] mx-auto text-center"
-                          data-testid="text-hero-description"
-                        >
-                          {activeTool
-                            ? activeTool.description
-                            : `Every tool you need to use PDFs, at your fingertips. All are 100% FREE and easy to use! Merge, split, compress, convert, rotate, unlock and watermark PDFs with just a few clicks.`}
-                        </p>
-                      </div>
-                    </div>
-
-                    {activeTool ? (
-                      <div className="pt-8">
-                        <ul className="flex flex-col gap-3">
-                          {heroBenefits.map((benefit) => (
-                            <li
-                              key={benefit}
-                              className="flex items-center text-gray-700 text-base"
-                            >
-                              <CheckCircle className="mr-3 h-5 w-5 shrink-0 text-blue-600" />
-                              {benefit}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ) : (
-                      <div className="pt-8 w-full">
-                        <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                          <AnimatedSelectButton
-                            className="h-[61px] px-8 py-4 rounded-full justify-center w-full sm:w-auto shadow-[0px_10px_15px_-3px_#0000001a,0px_4px_6px_-4px_#0000001a]"
-                            onClick={() => {
-                              console.log('Start Converting Now button clicked');
-                              setLocation('/tools');
-                            }}
-                          >
-                            <ZapIcon className="mr-2 h-5 w-5" />
-                            <span className="font-semibold text-base">
-                              Start Converting Now
-                            </span>
-                          </AnimatedSelectButton>
-
-                          <Button
-                            variant="outline"
-                            className="h-[61px] px-[34px] py-[18px] justify-center w-full sm:w-auto bg-white text-gray-700 rounded-lg border-2 border-solid border-gray-300 hover:bg-gray-50"
-                            onClick={() => {
-                              console.log('Learn More button clicked from hero');
-                              setLocation('/learn-more');
-                            }}
-                          >
-                            <ArrowRight className="mr-2 w-5 h-5 text-gray-700" />
-                            <span className="font-semibold text-base">
-                              Learn More
-                            </span>
-                          </Button>
-                        </div>
-                      </div>
-                    )}
-
-                    <div className="pt-8 w-full">
-                      <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
-                        {trustIndicators.map((indicator, index) => {
-                          // Different animation timing for each element
-                          const animationDelay = index * 0.8; // 0s, 0.8s, 1.6s delays
-                          const floatingVariants: Variants = {
-                            animate: {
-                              y: [-4, 4, -4],
-                              transition: {
-                                duration: 3 + index * 0.5, // Different durations: 3s, 3.5s, 4s
-                                repeat: Infinity,
-                                ease: "easeInOut",
-                                delay: animationDelay,
-                              }
-                            }
-                          };
-
-                          return (
-                            <motion.div
-                              key={`indicator-${index}`}
-                              className={`flex h-5 items-center ${indicator.className}`}
-                              variants={floatingVariants}
-                              animate="animate"
-                              initial={{ y: 0 }}
-                            >
-                              {indicator.icon}
-                              <span className="font-normal text-gray-600 text-sm leading-5">
-                                {indicator.text}
-                              </span>
-                            </motion.div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Right column - File upload card */}
-                {activeTool ? (
-                  <HeroToolConverter key={activeTool.id} tool={activeTool} />
-                ) : (
-                <Card className="flex flex-col w-full md:w-[584px] h-[405px] items-start p-[50px] bg-card rounded-3xl border-2 border-dashed border-blue-300 shadow-sm">
-                  <div className="flex flex-col items-center justify-center w-full p-0">
-                    <ConverterStatusIcon status="upload" size={80} className="mb-3" />
-
-                    <h2 className="font-bold text-gray-900 text-xl text-center mb-3">
-                      Drop your PDF here
-                    </h2>
-
-                    <p className="font-normal text-gray-600 text-base text-center mb-8">
-                      or click to browse files
-                    </p>
-
-                    <AnimatedSelectButton
-                      onClick={() => setLocation('/?tool=pdf-to-word')}
-                      className="h-[57px] px-12 py-4 mb-8 rounded-full shadow-[0px_10px_15px_-3px_#0000001a,0px_4px_6px_-4px_#0000001a]"
-                    >
-                      <UploadIcon className="mr-2 h-5 w-5" />
-                      <span className="text-base">
-                        Select PDF File
-                      </span>
-                    </AnimatedSelectButton>
-
-                    <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
-                      {fileFormats.map((format, index) => (
-                        <div
-                          key={`format-${index}`}
-                          className={`flex h-4 items-center ${format.className}`}
-                        >
-                          <img
-                            className="mr-1"
-                            alt={`${format.format} icon`}
-                            src={`/figmaAssets/margin-wrap-${index === 0 ? "26" : index === 1 ? "4" : index === 2 ? "9" : "6"}.svg`}
-                          />
-                          <span className="font-normal text-gray-500 text-xs text-center">
-                            {format.format}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-                )}
-              </div>
-          </div>
+          <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-2 text-[13px] text-[#57534e]" aria-label="At a glance">
+            {NOTES.map((n) => (
+              <li key={n} className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#2f5d50]" aria-hidden="true" />
+                {n}
+              </li>
+            ))}
+          </ul>
         </div>
+
+        {deskTool && (
+          <div className="min-w-0">
+            <div className="mkt-sheet p-3 sm:p-5">
+              <div className="mb-3 flex items-center justify-between gap-3 px-1">
+                <p className="edu-eyebrow !text-[#8a837b]">{activeTool ? "Your file" : "Start here"}</p>
+                <p className="edu-mono truncate text-xs text-[#8a837b]">{deskTool.acceptedFormats.join(" ")}</p>
+              </div>
+              <HeroToolConverter key={deskTool.id} tool={deskTool} />
+            </div>
+            {quick.length > 1 && (
+              <nav aria-label="Switch converter" className="mt-4">
+                <p className="edu-eyebrow !text-[#8a837b]">Or convert</p>
+                <ul className="mt-2 flex flex-wrap gap-2">
+                  {quick.map((id) => {
+                    const t = toolConfigs[id];
+                    const on = deskTool.id === id;
+                    return (
+                      <li key={id}>
+                        <Link
+                          href={`/?tool=${id}`}
+                          aria-current={on ? "page" : undefined}
+                          className={cn(
+                            "inline-flex min-h-[44px] items-center gap-2 rounded-[9px] border px-2.5 pr-3.5 text-[13px] font-semibold transition-colors",
+                            on ? "border-[#1c1917] bg-[#fffdf9] text-[#1c1917]" : "border-[#e7e0d5] text-[#57534e] hover:border-[#c9bfb1] hover:text-[#1c1917]",
+                          )}
+                          data-testid={`link-hero-switch-${id}`}
+                        >
+                          <ToolLottieIcon toolId={id} config={t} size={22} />
+                          {t.title}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

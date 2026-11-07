@@ -10,7 +10,7 @@ export const PdfToImagesUpload: React.FC = () => {
   const [quality, setQuality] = useState(90);
   const [dpi, setDpi] = useState(150);
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#faf7f2] dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="pdf-to-images"
         toolTitle="PDF to Images Converter"
@@ -20,7 +20,7 @@ export const PdfToImagesUpload: React.FC = () => {
         outputFormat={`ZIP of ${fmt.toUpperCase()} images`}
         outputLabel={`ZIP (${fmt.toUpperCase()} images)`}
         toolIcon={<ToolLottieIcon toolId="pdf-to-images" size={48} />}
-        iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+        iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
         extraOptions={{ outputFormat: fmt, quality, dpi }}
         downloadName={(f) => `${stem(f)}-images.zip`}
         renderSettings={({ disabled }) => (

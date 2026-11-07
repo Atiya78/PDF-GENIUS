@@ -388,11 +388,11 @@ export function OcrPdfUpload() {
         />
       ) : (
         <div className="space-y-6">
-          <div className="flex flex-wrap items-end gap-4 bg-white border border-gray-200 rounded-xl p-4">
-            <label className="block text-sm font-medium text-gray-700">
+          <div className="flex flex-wrap items-end gap-4 bg-white border border-[#e7e0d5] rounded-xl p-4">
+            <label className="block text-sm font-medium text-[#57534e]">
               Document language
               <select
-                className="mt-1 block w-48 px-3 py-2 rounded-lg border border-gray-300 bg-white"
+                className="mt-1 block w-48 px-3 py-2 rounded-lg border border-[#e7e0d5] bg-white"
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
                 disabled={running}
@@ -405,7 +405,7 @@ export function OcrPdfUpload() {
                 ))}
               </select>
             </label>
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-[#57534e]">
               {numPages} page(s) detected
             </div>
             <div className="flex-1" />
@@ -419,7 +419,7 @@ export function OcrPdfUpload() {
             ) : (
               <Button
                 onClick={runOcr}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-[#f7433d] hover:bg-[#c8302a]"
                 data-testid="button-run-ocr"
               >
                 <ScanText className="w-4 h-4 mr-1" /> Run OCR
@@ -428,7 +428,7 @@ export function OcrPdfUpload() {
           </div>
 
           {running && (
-            <div className="flex items-center gap-3 text-blue-700 bg-blue-50 border border-blue-100 rounded-lg p-4">
+            <div className="flex items-center gap-3 text-[#c8302a] bg-[#fdece9] border border-[#fdece9] rounded-lg p-4">
               <ProcessingSpinner size={24} />
               <span data-testid="text-progress">{progress || "Working…"}</span>
             </div>
@@ -445,7 +445,7 @@ export function OcrPdfUpload() {
               <div className="flex flex-wrap gap-3">
                 <Button
                   onClick={downloadSearchablePdf}
-                  className="bg-blue-600 hover:bg-blue-700"
+                  className="bg-[#f7433d] hover:bg-[#c8302a]"
                   data-testid="button-download-searchable"
                 >
                   <Download className="w-4 h-4 mr-1" /> Download searchable PDF
@@ -458,13 +458,13 @@ export function OcrPdfUpload() {
                 </Button>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-medium text-[#57534e] mb-1">
                   Recognised text
                 </label>
                 <textarea
                   readOnly
                   value={combinedText || "(No text was recognised.)"}
-                  className="w-full h-72 px-3 py-2 rounded-lg border border-gray-300 font-mono text-sm"
+                  className="w-full h-72 px-3 py-2 rounded-lg border border-[#e7e0d5] font-mono text-sm"
                   data-testid="textarea-ocr-text"
                 />
               </div>

@@ -68,15 +68,15 @@ export default function DownloadFormatModal({
             <PartyPopper className="w-6 h-6 text-[#f7433d]" />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="text-xl font-bold text-gray-900" style={{ fontFamily: "Poppins, sans-serif" }}>
+            <h2 className="text-xl font-semibold text-[#1c1917]" style={{ fontFamily: "Poppins, sans-serif" }}>
               {title}
             </h2>
-            <p className="text-[13px] text-gray-500 truncate">{subtitle}</p>
+            <p className="text-[13px] text-[#57534e] truncate">{subtitle}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 shrink-0"
+            className="text-[#8a837b] hover:text-[#57534e] shrink-0"
             aria-label="Close"
             data-testid="button-download-close"
           >
@@ -84,7 +84,7 @@ export default function DownloadFormatModal({
           </button>
         </div>
 
-        <p className="text-sm font-semibold text-gray-900 mt-1">{sectionLabel}</p>
+        <p className="text-sm font-semibold text-[#1c1917] mt-1">{sectionLabel}</p>
         <div className="flex flex-wrap gap-2.5">
           {formats.map((f) => {
             const active = selectedId === f.id;
@@ -97,7 +97,7 @@ export default function DownloadFormatModal({
                 className={`flex-1 min-w-[47%] flex items-center gap-2.5 px-3 py-2.5 rounded-xl border-[1.5px] transition-colors ${
                   active
                     ? "border-[#f7433d] bg-[#fdecea]"
-                    : "border-gray-200 bg-white hover:border-gray-300"
+                    : "border-[#e7e0d5] bg-white hover:border-[#e7e0d5]"
                 }`}
                 data-testid={`format-${f.id}`}
               >
@@ -112,7 +112,7 @@ export default function DownloadFormatModal({
                 >
                   <Icon className="w-[15px] h-[15px] text-white" />
                 </span>
-                <span className="flex-1 text-left text-sm font-semibold text-gray-900 truncate">
+                <span className="flex-1 text-left text-sm font-semibold text-[#1c1917] truncate">
                   {f.label}
                 </span>
               </button>
@@ -122,7 +122,7 @@ export default function DownloadFormatModal({
 
         {showFileName && (
           <div className="mt-1">
-            <label className="block text-xs font-medium text-gray-500 mb-1">File name</label>
+            <label className="block text-xs font-medium text-[#57534e] mb-1">File name</label>
             <input
               value={fileName}
               onChange={(e) => onChangeFileName?.(e.target.value)}
@@ -130,11 +130,11 @@ export default function DownloadFormatModal({
               autoCorrect="off"
               spellCheck={false}
               placeholder="output"
-              className="w-full h-[46px] px-3.5 rounded-[14px] border border-gray-200 text-[15px] text-gray-900 outline-none focus:border-[#f7433d]"
+              className="w-full h-[46px] px-3.5 rounded-[14px] border border-[#e7e0d5] text-[15px] text-[#1c1917] outline-none focus:border-[#f7433d]"
               data-testid="input-download-filename"
             />
             {previewName && (
-              <p className="text-xs text-gray-500 mt-1.5 truncate">{previewName}</p>
+              <p className="text-xs text-[#57534e] mt-1.5 truncate">{previewName}</p>
             )}
           </div>
         )}
@@ -143,7 +143,7 @@ export default function DownloadFormatModal({
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 h-[50px] rounded-[14px] border border-gray-200 text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+            className="flex-1 h-[50px] rounded-[14px] border border-[#e7e0d5] text-[#57534e] font-semibold hover:bg-[#faf7f2] transition-colors"
             data-testid="button-download-cancel"
           >
             Cancel

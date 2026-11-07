@@ -42,8 +42,8 @@ export const NavigationSection = (): JSX.Element => {
   return (
     <header
       className={cn(
-        "site-header sticky top-0 z-50 h-[72px] w-full border-b border-[#E5E7EB] bg-white/80 backdrop-blur-[12px] transition-shadow duration-200",
-        scrolled && "shadow-[0_4px_16px_-8px_rgba(17,24,39,0.12)]",
+        "site-header sticky top-0 z-50 h-[72px] w-full border-b border-[#e7e0d5] bg-[#faf7f2]/95 transition-shadow duration-200",
+        scrolled && "shadow-[0_4px_16px_-8px_rgba(28,25,23,0.18)]",
       )}
     >
       <div className="mx-auto flex h-full w-full max-w-[1280px] items-center justify-between gap-3 px-4 sm:px-6">
@@ -84,7 +84,7 @@ export const NavigationSection = (): JSX.Element => {
                 <NavigationMenuContent>
                   <div className="w-48 p-2">
                     <NavigationMenuLink asChild>
-                      <Link href="/about" aria-current={location === "/about" ? "page" : undefined} className="site-nav-row block rounded-lg px-3 py-2.5 text-sm font-medium text-gray-700" data-testid="nav-about">
+                      <Link href="/about" aria-current={location === "/about" ? "page" : undefined} className="site-nav-row block rounded-lg px-3 py-2.5 text-sm font-medium text-[#1c1917]" data-testid="nav-about">
                         About
                       </Link>
                     </NavigationMenuLink>
@@ -102,7 +102,7 @@ export const NavigationSection = (): JSX.Element => {
             <button
               type="button"
               className={cn(
-                "inline-flex h-10 items-center gap-2 rounded-lg px-4 text-[15px] font-medium text-[#4B5563] transition-colors duration-150 hover:bg-[#F3F4F6] hover:text-[#111827]",
+                "inline-flex h-10 items-center gap-2 rounded-lg px-4 text-[15px] font-medium text-[#57534e] transition-colors duration-150 hover:bg-[#f1ece4] hover:text-[#1c1917]",
                 ring,
               )}
               onClick={() => setLocation("/signin")}
@@ -136,7 +136,7 @@ export const NavigationSection = (): JSX.Element => {
                   <button
                     type="button"
                     className={cn(
-                      "inline-flex h-12 w-full items-center justify-center gap-2 rounded-[10px] border border-[#E5E7EB] bg-white text-base font-medium text-[#111827] transition-colors hover:bg-[#F3F4F6]",
+                      "inline-flex h-12 w-full items-center justify-center gap-2 rounded-[10px] border border-[#e7e0d5] bg-[#fffdf9] text-base font-medium text-[#1c1917] transition-colors hover:bg-[#f1ece4]",
                       ring,
                     )}
                     onClick={() => { setLocation("/signin"); close(); }}

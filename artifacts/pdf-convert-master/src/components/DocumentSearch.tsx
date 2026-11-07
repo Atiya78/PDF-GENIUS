@@ -213,7 +213,7 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
         const match = cleanText.slice(start, end + 1);
         const after = cleanText.slice(end + 1);
 
-        return `${before}<mark class="bg-blue-100 text-blue-900 px-1 py-0.5 rounded font-medium">${match}</mark>${after}`;
+        return `${before}<mark class="bg-[#fdece9] text-[#c8302a] px-1 py-0.5 rounded font-medium">${match}</mark>${after}`;
       }
 
       return cleanText;
@@ -239,7 +239,7 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
     <div ref={searchRef} className={`search-container relative w-full max-w-2xl mx-auto ${className}`}>
       {/* Search Input */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8a837b] w-5 h-5" />
         <Input
           ref={inputRef}
           type="text"
@@ -248,7 +248,7 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
           onChange={(e) => handleSearchChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => setShowSuggestions(true)}
-          className="pl-12 pr-12 py-4 text-lg bg-white border-2 border-gray-200 shadow-lg rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 relative z-10"
+          className="pl-12 pr-12 py-4 text-lg bg-white border border-[#e7e0d5] rounded-[10px] focus:ring-2 focus:ring-[#f7433d] focus:border-[#f7433d] transition-all duration-200 relative z-10"
           aria-label={`Search ${pageType} content`}
           aria-expanded={showSuggestions}
           aria-haspopup="listbox"
@@ -260,7 +260,7 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
             onClick={clearSearch}
             variant="ghost"
             size="sm"
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-gray-100"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 hover:bg-[#f3eee6]"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -269,7 +269,7 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
 
       {/* Search Results Counter */}
       {query && (
-        <div className="mt-2 text-sm text-gray-600">
+        <div className="mt-2 text-sm text-[#57534e]">
           {results.length > 0 ? (
             <span>{results.length} result{results.length !== 1 ? 's' : ''} found</span>
           ) : (
@@ -287,17 +287,17 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
             <div className="p-0 bg-white rounded-lg">
             {/* Search History */}
             {!query && searchHistory.length > 0 && (
-              <div className="p-4 border-b border-gray-100">
+              <div className="p-4 border-b border-[#e7e0d5]">
                 <div className="flex items-center gap-2 mb-3">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-600">Recent searches</span>
+                  <Clock className="w-4 h-4 text-[#8a837b]" />
+                  <span className="text-sm font-medium text-[#57534e]">Recent searches</span>
                 </div>
                 <div className="space-y-2">
                   {searchHistory.map((item, index) => (
                     <button
                       key={index}
                       onClick={() => handleSuggestionClick(item)}
-                      className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                      className="block w-full text-left px-3 py-2 text-sm text-[#57534e] hover:bg-[#faf7f2] rounded-lg transition-colors"
                     >
                       {item}
                     </button>
@@ -310,8 +310,8 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
             {!query && (
               <div className="p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <TrendingUp className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm font-medium text-gray-600">Popular searches</span>
+                  <TrendingUp className="w-4 h-4 text-[#8a837b]" />
+                  <span className="text-sm font-medium text-[#57534e]">Popular searches</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {popularSearches[pageType].map((item, index) => (
@@ -335,21 +335,21 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
                   <button
                     key={result.section.id}
                     onClick={() => handleResultClick(result.section.id)}
-                    className={`w-full text-left p-4 transition-colors border-0 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-inset ${
+                    className={`w-full text-left p-4 transition-colors border-0 bg-white focus:outline-none focus:ring-2 focus:ring-[#f7433d] focus:ring-inset ${
                       selectedIndex === index
-                        ? 'bg-blue-50 border-l-4 border-blue-500'
-                        : 'hover:bg-gray-50'
+                        ? 'bg-[#fdece9] border-l-4 border-[#f7433d]'
+                        : 'hover:bg-[#faf7f2]'
                     }`}
                     aria-label={`Go to section: ${result.section.title}`}
                     tabIndex={showSuggestions ? 0 : -1}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 mb-2 text-base">
+                        <h4 className="font-semibold text-[#1c1917] mb-2 text-base">
                           {result.section.title}
                         </h4>
                         <p
-                          className="text-sm text-gray-700 line-clamp-2 leading-relaxed"
+                          className="text-sm text-[#57534e] line-clamp-2 leading-relaxed"
                           dangerouslySetInnerHTML={{
                             __html: highlightText(
                               result.section.content.slice(0, 150) + "...",
@@ -358,12 +358,12 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
                           }}
                         />
                         {result.section.category && (
-                          <Badge variant="outline" className="mt-2 text-xs bg-blue-50 text-blue-700 border-blue-200">
+                          <Badge variant="outline" className="mt-2 text-xs bg-[#fdece9] text-[#c8302a] border-[#f5b5b0]">
                             {result.section.category}
                           </Badge>
                         )}
                       </div>
-                      <div className="text-xs font-medium text-blue-600 flex-shrink-0 bg-blue-50 px-2 py-1 rounded">
+                      <div className="text-xs font-medium text-[#c8302a] flex-shrink-0 bg-[#fdece9] px-2 py-1 rounded">
                         {Math.round((1 - result.score) * 100)}% match
                       </div>
                     </div>
@@ -371,10 +371,10 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
                 ))}
                 
                 {results.length > 5 && (
-                  <div className="p-4 text-center border-t border-gray-100">
+                  <div className="p-4 text-center border-t border-[#e7e0d5]">
                     <button
                       onClick={() => setIsExpanded(!isExpanded)}
-                      className="flex items-center gap-2 mx-auto text-sm text-blue-600 hover:text-blue-700 transition-colors"
+                      className="flex items-center gap-2 mx-auto text-sm text-[#c8302a] hover:text-[#c8302a] transition-colors"
                     >
                       {isExpanded ? (
                         <>
@@ -397,17 +397,17 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
                     onClick={() => handleResultClick(result.section.id)}
                     className={`w-full text-left p-4 transition-colors border-0 bg-white ${
                       selectedIndex === index + 5
-                        ? 'bg-blue-50 border-l-4 border-blue-500'
-                        : 'hover:bg-gray-50'
+                        ? 'bg-[#fdece9] border-l-4 border-[#f7433d]'
+                        : 'hover:bg-[#faf7f2]'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 mb-2 text-base">
+                        <h4 className="font-semibold text-[#1c1917] mb-2 text-base">
                           {result.section.title}
                         </h4>
                         <p
-                          className="text-sm text-gray-700 line-clamp-2 leading-relaxed"
+                          className="text-sm text-[#57534e] line-clamp-2 leading-relaxed"
                           dangerouslySetInnerHTML={{
                             __html: highlightText(
                               result.section.content.slice(0, 150) + "...",
@@ -416,7 +416,7 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
                           }}
                         />
                       </div>
-                      <div className="text-xs font-medium text-blue-600 flex-shrink-0 bg-blue-50 px-2 py-1 rounded">
+                      <div className="text-xs font-medium text-[#c8302a] flex-shrink-0 bg-[#fdece9] px-2 py-1 rounded">
                         {Math.round((1 - result.score) * 100)}% match
                       </div>
                     </div>
@@ -432,19 +432,19 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
                   <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No results found</h3>
-                  <p className="text-gray-600 mb-6">We couldn't find anything matching "{query}"</p>
+                  <h3 className="text-lg font-semibold text-[#1c1917] mb-2">No results found</h3>
+                  <p className="text-[#57534e] mb-6">We couldn't find anything matching "{query}"</p>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <p className="text-sm font-medium text-gray-700 mb-3">Try these popular searches:</p>
+                    <p className="text-sm font-medium text-[#57534e] mb-3">Try these popular searches:</p>
                     <div className="flex flex-wrap justify-center gap-2">
                       {popularSearches[pageType].map((item, index) => (
                         <Badge
                           key={index}
                           variant="outline"
-                          className="cursor-pointer hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300 transition-colors bg-white"
+                          className="cursor-pointer hover:bg-[#fdece9] hover:text-[#c8302a] hover:border-[#f5b5b0] transition-colors bg-white"
                           onClick={() => handleSuggestionClick(item)}
                         >
                           {item}
@@ -453,8 +453,8 @@ export const DocumentSearch: React.FC<DocumentSearchProps> = ({
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-gray-100">
-                    <p className="text-xs text-gray-500">
+                  <div className="pt-4 border-t border-[#e7e0d5]">
+                    <p className="text-xs text-[#57534e]">
                       Tips: Try using different keywords, check spelling, or use more general terms
                     </p>
                   </div>

@@ -4,7 +4,7 @@ import { Scissors } from "lucide-react";
 
 export const RemoveBackgroundUpload: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#faf7f2] dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="remove-background"
         toolTitle="AI Background Remover"
@@ -12,8 +12,8 @@ export const RemoveBackgroundUpload: React.FC = () => {
         acceptedFormats={[".jpg", ".jpeg", ".png", ".webp"]}
         maxFileSize="15MB"
         outputFormat="PNG with Transparency"
-        toolIcon={<Scissors className="w-8 h-8 text-blue-500" />}
-        iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+        toolIcon={<Scissors className="w-8 h-8 text-[#c8302a]" />}
+        iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
       />
     </div>
   );

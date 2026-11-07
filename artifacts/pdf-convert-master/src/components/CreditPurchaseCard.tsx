@@ -1,3 +1,4 @@
+import "@/styles/dashboard.css";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -121,13 +122,14 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
   }, []);
 
   return (
-    <Card className={className}>
-      <div className="p-6">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-[#f7433d]/10 flex items-center justify-center shrink-0">
-            <Zap className="w-6 h-6 text-[#f7433d]" />
+    <Card className={`dash-scope ${className ?? ""}`}>
+      <div className="p-5 sm:p-7">
+        <div className="flex flex-wrap items-start gap-4">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-[9px] border border-[#e7e0d5] bg-[#fdece9]">
+            <Zap className="h-5 w-5 text-[#c8302a]" aria-hidden="true" />
           </div>
-          <div className="flex-1">
+          <div className="min-w-0 flex-1 basis-60">
+            <p className="edu-eyebrow !text-[#8a837b]">Balance</p>
             <h3 className="text-base font-semibold text-gray-900">
               General credits
             </h3>
@@ -136,7 +138,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
             </p>
           </div>
           <span
-            className="text-3xl font-bold text-[#f7433d]"
+            className="edu-mono text-[2.1rem] font-semibold leading-none tracking-[-0.02em] text-[#1c1917]"
             data-testid="text-credit-balance"
           >
             {(user?.credits ?? 0).toLocaleString()}
@@ -144,7 +146,7 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
         </div>
 
         {creditsEnabled && (
-          <div className="mt-6 pt-6 border-t border-gray-100">
+          <div className="mt-7 border-t border-[#1c1917] pt-6">
             <h4 className="text-sm font-semibold text-gray-900 mb-3">
               Buy general credits
             </h4>
@@ -159,11 +161,8 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
                     onClick={() => setCreditAmount(String(amt))}
                     disabled={creditBusy}
                     data-testid={`button-credit-preset-${amt}`}
-                    className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                      active
-                        ? "border-[#f7433d] bg-[#f7433d]/5 text-[#f7433d]"
-                        : "border-gray-200 text-gray-700 hover:border-gray-300"
-                    }`}
+                    aria-pressed={active}
+                    className={`edu-choice edu-mono min-w-[4.5rem] justify-center !px-4 ${active ? "edu-choice-on !border-[#f7433d] !text-[#c8302a]" : ""}`}
                   >
                     ${amt}
                   </button>
@@ -186,13 +185,14 @@ export const CreditPurchaseCard: React.FC<{ className?: string }> = ({
                   value={creditAmount}
                   onChange={(e) => setCreditAmount(e.target.value)}
                   disabled={creditBusy}
-                  className="pl-7"
+                  className="edu-input !h-11 pl-7"
+                  aria-label="Custom amount in US dollars"
                   placeholder="Enter amount"
                   data-testid="input-credit-amount"
                 />
               </div>
               <Button
-                className="bg-[#f7433d] hover:bg-[#d93832] text-white"
+                className="edu-btn-primary !h-11 !px-5 hover:!bg-[#c8302a]"
                 onClick={handleBuyCredits}
                 disabled={creditBusy || !amountValid}
                 data-testid="button-buy-credits"

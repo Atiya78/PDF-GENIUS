@@ -16,11 +16,29 @@ export function Reveal({ children, delay = 0, className }: { children: ReactNode
     if (!el || reduce || typeof IntersectionObserver === "undefined") return;
     if (el.getBoundingClientRect().top < window.innerHeight) return; // Already on screen: never hide it.
     setState("hidden");
+    let done = false;
+    const timers: number[] = [];
+    const show = () => {
+      if (done) return;
+      done = true; setState("shown"); io.disconnect();
+      window.removeEventListener("scroll", check); window.removeEventListener("resize", check);
+      timers.forEach((t) => window.clearTimeout(t));
+    };
+    // Layout above can shrink after mount (lazy content resolving), so also re-check the
+    // position directly; IntersectionObserver alone can miss that case and leave content hidden.
+    const check = () => { if (el.getBoundingClientRect().top < window.innerHeight - 40) show(); };
     const io = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) { setState("shown"); io.disconnect(); }
+      if (entries.some((e) => e.isIntersecting)) show();
     }, { rootMargin: "0px 0px -60px 0px" });
     io.observe(el);
-    return () => io.disconnect();
+    window.addEventListener("scroll", check, { passive: true });
+    window.addEventListener("resize", check);
+    [150, 600, 1500].forEach((ms) => timers.push(window.setTimeout(check, ms)));
+    return () => {
+      done = true; io.disconnect();
+      window.removeEventListener("scroll", check); window.removeEventListener("resize", check);
+      timers.forEach((t) => window.clearTimeout(t));
+    };
   }, [reduce]);
 
   return (

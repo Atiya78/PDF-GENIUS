@@ -12,7 +12,7 @@ export const RotatePdfUpload: React.FC = () => {
   const [selected, setSelected] = useState<number[]>([]);
   const [ok, setOk] = useState(false);
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#faf7f2] dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="rotate-pdf"
         toolTitle="PDF Rotator"
@@ -23,7 +23,7 @@ export const RotatePdfUpload: React.FC = () => {
         outputFormat="Rotated PDF"
         outputLabel="rotated PDF"
         toolIcon={<ToolLottieIcon toolId="rotate-pdf" size={48} />}
-        iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+        iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
         canConvert={ok}
         extraOptions={{ angle, pages: scope === "all" ? "all" : pagesToRangeString(selected) }}
         downloadName={(f) => `${stem(f)}-rotated.pdf`}

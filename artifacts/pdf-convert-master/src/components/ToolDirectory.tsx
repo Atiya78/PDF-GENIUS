@@ -1,23 +1,34 @@
 import { Link } from "wouter";
+import { ArrowRight } from "lucide-react";
 import { toolLandingPages } from "@/config/toolLandingPages";
+import "@/styles/tools.css";
 
 export function ToolDirectory() {
   return (
-    <section aria-labelledby="tool-directory" className="bg-white px-4 sm:px-6 py-12">
-      <div className="mx-auto max-w-6xl">
-        <h2 id="tool-directory" className="text-2xl font-bold text-gray-900">All tools</h2>
-        <ul className="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {toolLandingPages.map((t) => (
-            <li key={t.path}>
-              <Link href={t.path} className="block rounded-xl border border-gray-200 px-4 py-3 font-medium text-gray-900 hover:border-primary hover:text-primary" data-testid={`link-tool-${t.id}`}>
-                {t.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-5 text-sm text-gray-600">
-          <Link href="/restore-document" className="hover:text-primary hover:underline">Document Restore (coming soon)</Link>
-        </p>
+    <section aria-labelledby="tool-directory" className="tl-root px-4 py-16 sm:px-6">
+      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[18rem_minmax(0,1fr)]">
+        <div>
+          <p className="edu-eyebrow">Directory</p>
+          <h2 id="tool-directory" className="mt-2 font-['Poppins'] text-[1.9rem] font-semibold tracking-[-0.02em] text-[#1c1917]">All tools</h2>
+          <p className="mt-3 text-sm leading-relaxed text-[#57534e]">
+            <span className="edu-mono text-[#1c1917]">{toolLandingPages.length}</span> pages, A to Z by task.
+          </p>
+        </div>
+        <div>
+          <ul className="grid border-b border-[#e7e0d5] sm:grid-cols-2 sm:gap-x-8 lg:grid-cols-3">
+            {toolLandingPages.map((t) => (
+              <li key={t.path}>
+                <Link href={t.path} className="tl-dir-link" data-testid={`link-tool-${t.id}`}>
+                  <span>{t.name}</span>
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-5 text-sm text-[#57534e]">
+            <Link href="/restore-document" className="underline decoration-[#d9d0c3] decoration-2 underline-offset-4 hover:text-[#1c1917] hover:decoration-[#f7433d]">Document Restore (coming soon)</Link>
+          </p>
+        </div>
       </div>
     </section>
   );

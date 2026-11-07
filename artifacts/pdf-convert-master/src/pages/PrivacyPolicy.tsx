@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import "@/styles/marketing.css";
 import { Calendar, Clock, Shield, Database, FileText, Lock, Cookie, Cloud, Timer, UserCheck, Globe, AlertTriangle, Mail, Edit, X, Eye, UserX, HardDrive, Trash2, FileCheck } from "lucide-react";
 import { DocumentSearch, SearchableSection } from "@/components/DocumentSearch";
 import { useDocumentSearch } from "@/hooks/useDocumentSearch";
@@ -187,23 +188,24 @@ export const PrivacyPolicy = (): JSX.Element => {
   }, [activeSection, tableOfContentsItems]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="mkt-root min-h-[100dvh]">
 
 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6">
+        <div className="mb-12 border-b border-[#e7e0d5] pb-10">
+          <p className="edu-eyebrow">Legal</p>
+          <h1 className="mkt-display mt-3 mb-6 text-[2.2rem] sm:text-[2.9rem]">
             Privacy Policy
           </h1>
 
           {/* Subtitle */}
-          <div className="max-w-4xl mx-auto mb-12">
-            <p className="text-lg text-gray-600 leading-relaxed mb-1">
+          <div className="max-w-2xl mb-8">
+            <p className="text-lg text-[#57534e] leading-relaxed mb-1">
               Your privacy is important to us. This Privacy Policy explains how PDF Genius
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-[#57534e] leading-relaxed">
               (operated by the PDF Genius team) collects, uses, and protects your personal information.
             </p>
           </div>
@@ -211,15 +213,15 @@ export const PrivacyPolicy = (): JSX.Element => {
 
 
           {/* Date Information Card */}
-          <div className="max-w-3xl mx-auto">
-            <div className="bg-white/70 backdrop-blur-sm border border-gray-200 rounded-lg p-6 shadow-sm">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <div className="max-w-3xl">
+            <div className="border-y border-[#e7e0d5] py-3">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-8 edu-mono">
                 {/* Last Updated */}
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-6 h-6">
-                    <Calendar className="w-4 h-4 text-blue-600" />
+                    <Calendar className="w-4 h-4 text-[#c8302a]" />
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[#57534e]">
                     Last Updated: June 25, 2026
                   </span>
                 </div>
@@ -227,9 +229,9 @@ export const PrivacyPolicy = (): JSX.Element => {
                 {/* Effective Date */}
                 <div className="flex items-center gap-3">
                   <div className="flex items-center justify-center w-6 h-6">
-                    <Clock className="w-4 h-4 text-blue-600" />
+                    <Clock className="w-4 h-4 text-[#c8302a]" />
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[#57534e]">
                     Effective Date: June 25, 2026
                   </span>
                 </div>
@@ -244,8 +246,8 @@ export const PrivacyPolicy = (): JSX.Element => {
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Left Sidebar - Table of Contents */}
           <aside className="hidden lg:block w-72 sticky top-20 self-start">
-            <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="border-t border-[#1c1917] pt-4">
+              <h3 className="edu-eyebrow !text-[#8a837b] mb-3">
                 Table of Contents
               </h3>
 
@@ -256,13 +258,13 @@ export const PrivacyPolicy = (): JSX.Element => {
                     onClick={() => scrollToSection(item.id)}
                     className={`w-full flex items-center gap-3 px-3 py-3 text-left text-sm rounded-lg transition-all ${
                       activeSection === item.id || highlightedSection === item.id
-                        ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-600 shadow-sm'
-                        : 'text-gray-600 hover:bg-gray-50'
-                    } ${highlightedSection === item.id ? 'ring-2 ring-blue-300 ring-opacity-50' : ''}`}
+                        ? 'bg-[#fdece9] text-[#1c1917] shadow-[inset_2px_0_0_#f7433d]'
+                        : 'text-[#57534e] hover:bg-[#f1ece4]'
+                    } ${highlightedSection === item.id ? 'ring-1 ring-[#f7433d]/40' : ''}`}
                   >
                     <div className="flex items-center justify-center w-5 h-5 flex-shrink-0">
                       <item.icon className={`w-[18.75px] h-[18px] ${
-                        activeSection === item.id || highlightedSection === item.id ? 'text-blue-600' : 'text-gray-500'
+                        activeSection === item.id || highlightedSection === item.id ? 'text-[#c8302a]' : 'text-[#6b645c]'
                       }`} />
                     </div>
                     <span className="font-medium">{item.text}</span>
@@ -274,18 +276,18 @@ export const PrivacyPolicy = (): JSX.Element => {
 
           {/* Main Content Area */}
           <main className="flex-1">
-            <div className="bg-white rounded-lg shadow-sm p-8">
-              <div className="prose prose-gray max-w-none space-y-12">
+            <div className="bg-[#fffdf9] rounded-lg shadow-sm p-8">
+              <div className="prose prose-stone mkt-prose max-w-none space-y-12">
 
                 {/* 1. Information We Collect */}
                 <section id="information-we-collect" className={`scroll-mt-24 transition-all duration-300 ${
-                  highlightedSection === "information-we-collect" ? "bg-blue-50 p-6 rounded-lg ring-4 ring-blue-500 ring-opacity-50" : ""
+                  highlightedSection === "information-we-collect" ? "bg-[#fdece9] p-6 rounded-lg ring-4 ring-[#f7433d] ring-opacity-50" : ""
                 }`}>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Database className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Database className="w-5 h-5 text-[#c8302a]" />
                     1. Information We Collect
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-4">
+                  <div className="text-[#3a3530] leading-relaxed space-y-4">
                     <p><strong>Personal Information:</strong> We collect minimal personal information, including email addresses and an optional display name for account creation, user preferences, and customer support communications.</p>
                     <p><strong>File Information:</strong> Some tools process locally; others upload files for processing. {FILE_RETENTION_COPY}</p>
                     <p><strong>Camera and Photos:</strong> File handling depends on the tool you choose. Some tools process locally; others upload files for processing.</p>
@@ -300,11 +302,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 2. How We Use Your Information */}
                 <section id="how-we-use-your-information" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Eye className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Eye className="w-5 h-5 text-[#c8302a]" />
                     2. How We Use Your Information
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Service Provision:</strong> To provide PDF conversion and document processing services, including file format conversion, merging, splitting, and optimization.</p>
                     <p><strong>Account Management:</strong> To create and manage user accounts, authenticate users, and provide personalized service experiences.</p>
                     <p><strong>Communication:</strong> To send important service notifications, security alerts, and respond to customer support inquiries.</p>
@@ -316,11 +318,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 3. File Processing and Storage */}
                 <section id="file-processing-and-storage" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <FileText className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <FileText className="w-5 h-5 text-[#c8302a]" />
                     3. File Processing and Storage
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>File Processing:</strong> Some tools process locally; others upload files to the server.</p>
                     <p><strong>Storage and Cleanup:</strong> {FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY}</p>
                     <p><strong>Processing Purpose:</strong> Files are accessed only for the specific conversion or processing task requested and are not used for any other purpose.</p>
@@ -331,13 +333,13 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 4. Data Security Measures */}
                 <section id="data-security-measures" className={`scroll-mt-24 transition-all duration-300 ${
-                  highlightedSection === "data-security-measures" ? "bg-blue-50 p-6 rounded-lg ring-4 ring-blue-500 ring-opacity-50" : ""
+                  highlightedSection === "data-security-measures" ? "bg-[#fdece9] p-6 rounded-lg ring-4 ring-[#f7433d] ring-opacity-50" : ""
                 }`}>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Shield className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Shield className="w-5 h-5 text-[#c8302a]" />
                     4. Data Security Measures
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Encryption in Transit:</strong> All data transmission between your device and our servers is encrypted using SSL/TLS protocols (HTTPS).</p>
                     <p><strong>File Cleanup:</strong> {FILE_RETENTION_COPY}</p>
                   </div>
@@ -345,13 +347,13 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 5. Cookies and Tracking */}
                 <section id="cookies-and-tracking" className={`scroll-mt-24 transition-all duration-300 ${
-                  highlightedSection === "cookies-and-tracking" ? "bg-blue-50 p-6 rounded-lg ring-4 ring-blue-500 ring-opacity-50" : ""
+                  highlightedSection === "cookies-and-tracking" ? "bg-[#fdece9] p-6 rounded-lg ring-4 ring-[#f7433d] ring-opacity-50" : ""
                 }`}>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Cookie className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Cookie className="w-5 h-5 text-[#c8302a]" />
                     5. Cookies and Tracking
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Essential Cookies:</strong> We use necessary cookies for core site functionality, including user authentication, session management, and security features.</p>
                     <p><strong>Functional Cookies:</strong> Cookies that remember your preferences, settings, and improve your user experience on our platform.</p>
                     <p><strong>Analytics Cookies:</strong> We use our own first-party cookies to understand, in aggregate, how users interact with our service. We do not use third-party advertising or cross-app tracking cookies.</p>
@@ -362,11 +364,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 6. Third-Party Services */}
                 <section id="third-party-services" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Cloud className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Cloud className="w-5 h-5 text-[#c8302a]" />
                     6. Third-Party Services
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Payment Processing (Web):</strong> Subscriptions and credit packs purchased on our website are sold and billed by our authorised reseller and Merchant of Record, Paddle.com Market Limited ("Paddle") or Dodo Payments. As the seller of record, the Merchant of Record collects and processes your billing details (such as name, billing address, and payment card information) and handles taxes, invoicing, and refunds under its own privacy policy. We never receive or store your full payment card details; we only receive confirmation of your purchase and subscription status so we can activate your plan or credits.</p>
                     <p><strong>Payment Processing (Mobile):</strong> In-app subscriptions and credit packs are sold and billed through the official app stores (Google Play Billing and Apple App Store), which process all payment details under their own privacy policies. We use RevenueCat as our purchase-management provider to verify purchases and activate your plan or credits; it acts as our data processor and receives only the purchase and device identifiers needed for that purpose.</p>
                     <p><strong>Usage Statistics:</strong> The service records its own conversion and usage records (for example tool, status and file size) to show your history and enforce plan limits. The web app does not add third-party advertising or cross-app tracking SDKs of its own.</p>
@@ -379,13 +381,13 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 7. Data Retention */}
                 <section id="data-retention" className={`scroll-mt-24 transition-all duration-300 ${
-                  highlightedSection === "data-retention" ? "bg-blue-50 p-6 rounded-lg ring-4 ring-blue-500 ring-opacity-50" : ""
+                  highlightedSection === "data-retention" ? "bg-[#fdece9] p-6 rounded-lg ring-4 ring-[#f7433d] ring-opacity-50" : ""
                 }`}>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Timer className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Timer className="w-5 h-5 text-[#c8302a]" />
                     7. Data Retention
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>File Retention:</strong> {FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY}</p>
                     <p><strong>Account Information:</strong> Account data is retained while your account is active and for a reasonable period after account closure to comply with legal obligations.</p>
                     <p><strong>Usage Analytics:</strong> Anonymous usage statistics may be retained for service improvement purposes, with personal identifiers removed.</p>
@@ -397,11 +399,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 8. Your Privacy Rights */}
                 <section id="your-privacy-rights" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <UserCheck className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <UserCheck className="w-5 h-5 text-[#c8302a]" />
                     8. Your Privacy Rights
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Access Rights:</strong> You can request access to the personal information we hold about you and receive details about how it's processed.</p>
                     <p><strong>Correction Rights:</strong> You may request correction of inaccurate or incomplete personal information in your account settings or by contacting us.</p>
                     <p><strong>Deletion Rights:</strong> You can request deletion of your personal information, subject to legal retention requirements and legitimate business needs.</p>
@@ -413,13 +415,13 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 9. GDPR Compliance */}
                 <section id="gdpr-compliance" className={`scroll-mt-24 transition-all duration-300 ${
-                  highlightedSection === "gdpr-compliance" ? "bg-blue-50 p-6 rounded-lg ring-4 ring-blue-500 ring-opacity-50" : ""
+                  highlightedSection === "gdpr-compliance" ? "bg-[#fdece9] p-6 rounded-lg ring-4 ring-[#f7433d] ring-opacity-50" : ""
                 }`}>
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <FileCheck className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <FileCheck className="w-5 h-5 text-[#c8302a]" />
                     9. GDPR Compliance
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Legal Basis:</strong> We process personal data based on legitimate interests for service provision, contractual necessity for account management, and consent for marketing communications.</p>
                     <p><strong>Data Minimization:</strong> We collect only the minimum personal data necessary to provide our services effectively.</p>
                     <p><strong>Purpose Limitation:</strong> Personal data is used only for the specific purposes for which it was collected or compatible purposes.</p>
@@ -431,11 +433,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 10. Children's Privacy */}
                 <section id="childrens-privacy" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <UserX className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <UserX className="w-5 h-5 text-[#c8302a]" />
                     10. Children's Privacy
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Age Requirements:</strong> Our services are not intended for children under 16 years of age. We do not knowingly collect personal information from children under 16.</p>
                     <p><strong>Parental Consent:</strong> If we discover we have collected information from a child under 16 without parental consent, we will delete such information immediately.</p>
                     <p><strong>Educational Use:</strong> Educational institutions may use our services for students over 16 with appropriate permissions and supervision.</p>
@@ -446,11 +448,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 11. International Transfers */}
                 <section id="international-transfers" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Globe className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Globe className="w-5 h-5 text-[#c8302a]" />
                     11. International Transfers
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Data Location:</strong> Your data may be processed and stored in countries outside the UK/EU where our service providers operate.</p>
                     <p><strong>Transfer Safeguards:</strong> All international transfers are protected by appropriate safeguards, including adequacy decisions, standard contractual clauses, or other approved mechanisms.</p>
                     <p><strong>Security Standards:</strong> International service providers must meet equivalent data protection and security standards as required in the UK/EU.</p>
@@ -461,11 +463,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 12. Data Breach Notification */}
                 <section id="data-breach-notification" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <AlertTriangle className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <AlertTriangle className="w-5 h-5 text-[#c8302a]" />
                     12. Data Breach Notification
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Detection Systems:</strong> We maintain monitoring systems to detect potential security incidents and data breaches promptly.</p>
                     <p><strong>Response Procedures:</strong> We have established incident response procedures to contain, assess, and resolve security breaches effectively.</p>
                     <p><strong>Regulatory Notification:</strong> We will notify relevant authorities within 72 hours of becoming aware of a breach that poses risks to individual rights and freedoms.</p>
@@ -477,13 +479,13 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 13. Contact for Privacy Concerns */}
                 <section id="contact-for-privacy-concerns" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Mail className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-[#c8302a]" />
                     13. Contact for Privacy Concerns
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p>If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us:</p>
-                    <div className="bg-gray-50 p-4 rounded-lg">
+                    <div className="bg-[#faf7f2] p-4 rounded-lg">
                       <p><strong>Company:</strong> PDF Genius</p>
                       <p><strong>Service:</strong> PDF Genius</p>
                       <p><strong>Phone:</strong> +447429919748</p>
@@ -497,11 +499,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 14. Changes to Privacy Policy */}
                 <section id="changes-to-privacy-policy" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Edit className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Edit className="w-5 h-5 text-[#c8302a]" />
                     14. Changes to Privacy Policy
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Policy Updates:</strong> We may update this Privacy Policy to reflect changes in our practices, legal requirements, or service features.</p>
                     <p><strong>Notification Methods:</strong> Significant changes will be communicated through email notifications to registered users and prominent notices on our website.</p>
                     <p><strong>Advance Notice:</strong> Material changes will be announced at least 30 days before taking effect to allow you to review and understand the changes.</p>
@@ -513,11 +515,11 @@ export const PrivacyPolicy = (): JSX.Element => {
 
                 {/* 15. Effective Date */}
                 <section id="effective-date" className="scroll-mt-24">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
-                    <Calendar className="w-6 h-6 text-blue-600" />
+                  <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-4 flex items-center gap-3">
+                    <Calendar className="w-5 h-5 text-[#c8302a]" />
                     15. Effective Date
                   </h2>
-                  <div className="text-gray-700 leading-relaxed space-y-3">
+                  <div className="text-[#3a3530] leading-relaxed space-y-3">
                     <p><strong>Current Version:</strong> This Privacy Policy is effective as of June 25, 2026, and applies to all information collected on or after this date.</p>
                     <p><strong>Previous Versions:</strong> This policy supersedes all previous versions of our privacy statements and policies.</p>
                     <p><strong>Retroactive Application:</strong> Changes to this policy apply only to information collected after the effective date, unless otherwise specified.</p>
@@ -527,7 +529,7 @@ export const PrivacyPolicy = (): JSX.Element => {
                 </section>
 
                 {/* Document Information */}
-                <div className="border-t pt-6 mt-8 text-sm text-gray-500">
+                <div className="border-t pt-6 mt-8 text-sm text-[#6b645c]">
                   <p className="mb-2"><strong>Document Version:</strong> 1.0</p>
                   <p className="mb-2"><strong>Last Updated:</strong> June 25, 2026</p>
                   <p><strong>Effective Date:</strong> June 25, 2026</p>

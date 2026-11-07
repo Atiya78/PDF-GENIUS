@@ -159,8 +159,8 @@ export const UpscaleImageUpload = () => {
     <ImageToolShell
       title="AI Image Upscaler"
       description="Upscale with Aura SR v2 and download WebP. Choose native 4× output or a 2× version resized from the AI result, then compare before and after."
-      icon={<TrendingUp className="w-8 h-8 text-blue-500" />}
-      iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+      icon={<TrendingUp className="w-8 h-8 text-[#c8302a]" />}
+      iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
       hideHeader={!file}
     >
       {!file ? (
@@ -175,14 +175,14 @@ export const UpscaleImageUpload = () => {
           <div className="grid md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-gray-700 dark:text-gray-200">Before</span>
+                <span className="text-sm font-semibold text-[#57534e] dark:text-gray-200">Before</span>
                 {beforeDims && (
-                  <span className="text-xs text-gray-500" data-testid="text-before-dims">
+                  <span className="text-xs text-[#57534e]" data-testid="text-before-dims">
                     {beforeDims.w}×{beforeDims.h} • {formatBytes(file.size)}
                   </span>
                 )}
               </div>
-              <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-3 flex items-center justify-center min-h-[220px]">
+              <div className="rounded-xl border border-[#e7e0d5] dark:border-gray-700 bg-[#faf7f2] dark:bg-gray-900 p-3 flex items-center justify-center min-h-[220px]">
                 {beforeUrl && (
                   <img
                     src={beforeUrl}
@@ -196,21 +196,21 @@ export const UpscaleImageUpload = () => {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                <span className="text-sm font-semibold text-[#c8302a] dark:text-[#c8302a]">
                    After (AI {resultScale ?? scale}×)
                 </span>
                 {afterDims && (
-                  <span className="text-xs text-gray-500" data-testid="text-after-dims">
+                  <span className="text-xs text-[#57534e]" data-testid="text-after-dims">
                     {afterDims.w}×{afterDims.h}
                   </span>
                 )}
               </div>
-              <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-3 flex items-center justify-center min-h-[220px]">
+              <div className="rounded-xl border border-[#e7e0d5] dark:border-gray-700 bg-[#faf7f2] dark:bg-gray-900 p-3 flex items-center justify-center min-h-[220px]">
                 {stage === "processing" && (
                   <div className="text-center">
                     <ConverterStatusIcon status="processing" size={72} className="mb-3" />
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Enhancing with AI…</p>
-                    <p className="text-xs text-gray-400 mt-1">This can take 20–60 seconds</p>
+                    <p className="text-sm text-[#57534e] dark:text-gray-300">Enhancing with AI…</p>
+                    <p className="text-xs text-[#8a837b] mt-1">This can take 20–60 seconds</p>
                   </div>
                 )}
                 {stage === "error" && (
@@ -230,13 +230,13 @@ export const UpscaleImageUpload = () => {
                   />
                 )}
                 {stage === "idle" && (
-                  <p className="text-sm text-gray-400">Enhanced image will appear here</p>
+                  <p className="text-sm text-[#8a837b]">Enhanced image will appear here</p>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-end gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex flex-wrap items-end gap-4 pt-4 border-t border-[#e7e0d5] dark:border-gray-700">
             <div>
               <Label className="mb-2 block">Upscale factor</Label>
               <div className="flex gap-2">
@@ -260,7 +260,7 @@ export const UpscaleImageUpload = () => {
                 <Button
                   onClick={upscale}
                   disabled={stage === "processing"}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-[#f7433d] hover:bg-[#c8302a] text-white"
                   data-testid="button-upscale"
                 >
                   {stage === "processing" ? (
@@ -274,7 +274,7 @@ export const UpscaleImageUpload = () => {
               {afterUrl && (
                 <Button
                   onClick={download}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-[#f7433d] hover:bg-[#c8302a] text-white"
                   data-testid="button-download"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -292,7 +292,7 @@ export const UpscaleImageUpload = () => {
               </Button>
             </div>
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400" data-testid="text-upscale-output-info">
+          <p className="text-sm text-[#57534e] dark:text-[#8a837b]" data-testid="text-upscale-output-info">
             Aura SR v2 generates a native 4× image. The 2× option resizes that AI result.
             {" "}Downloads are WebP. Changing the selection keeps your completed result until you run another upscale.
           </p>

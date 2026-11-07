@@ -102,14 +102,14 @@ export const ToolSearch = ({
 
   const results = (
     <CommandPrimitive.List className="max-h-[320px] overflow-y-auto overflow-x-hidden p-1">
-      <CommandPrimitive.Empty className="py-6 text-center text-sm text-gray-500">
+      <CommandPrimitive.Empty className="py-6 text-center text-sm text-[#6b645c]">
         No tools found.
       </CommandPrimitive.Empty>
       {groups.map(({ category, tools }) => (
         <CommandPrimitive.Group
           key={category}
           heading={category}
-          className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-400"
+          className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-[#8a837b]"
         >
           {tools.map((tool) => {
             const isPaused = pausedTools.has(getServerToolType(tool));
@@ -119,21 +119,21 @@ export const ToolSearch = ({
                 value={`${tool.title} ${tool.description} ${tool.id}`}
                 onSelect={() => handleSelect(tool)}
                 className={cn(
-                  "flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 text-sm outline-none data-[selected=true]:bg-gray-100",
+                  "flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 text-sm outline-none data-[selected=true]:bg-[#f4eee5]",
                   isPaused && "opacity-70",
                 )}
                 data-testid={`search-tool-${tool.id}`}
               >
                 <span
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.iconBgColor}`}
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#faf7f2] ring-1 ring-inset ring-[#efe8dd]`}
                 >
                   <ToolLottieIcon toolId={tool.id} config={tool} size={28} />
                 </span>
                 <div className="flex min-w-0 flex-col">
-                  <span className="text-sm font-medium text-gray-800">
+                  <span className="text-sm font-medium text-[#1c1917]">
                     {tool.title}
                   </span>
-                  <span className="truncate text-xs text-gray-500">
+                  <span className="truncate text-xs text-[#6b645c]">
                     {tool.description}
                   </span>
                 </div>
@@ -150,22 +150,22 @@ export const ToolSearch = ({
       ))}
       <CommandPrimitive.Group
         heading="Education Zone"
-        className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-gray-400"
+        className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-[#8a837b]"
       >
         {educationTools.map((t) => (
           <CommandPrimitive.Item
             key={t.id}
             value={`${t.name} ${t.description} education ${t.id}`}
             onSelect={() => { setOpen(false); setQuery(""); setLocation(t.href); }}
-            className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 text-sm outline-none data-[selected=true]:bg-gray-100"
+            className="flex cursor-pointer items-center gap-3 rounded-md px-2 py-2.5 text-sm outline-none data-[selected=true]:bg-[#f4eee5]"
             data-testid={`search-tool-education-${t.id}`}
           >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fdece9]">
               <ToolLottieIcon toolId={t.id} size={28} />
             </span>
             <div className="flex min-w-0 flex-col">
-              <span className="text-sm font-medium text-gray-800">{t.name}</span>
-              <span className="truncate text-xs text-gray-500">{t.description}</span>
+              <span className="text-sm font-medium text-[#1c1917]">{t.name}</span>
+              <span className="truncate text-xs text-[#6b645c]">{t.description}</span>
             </div>
           </CommandPrimitive.Item>
         ))}
@@ -195,12 +195,12 @@ export const ToolSearch = ({
               inputRef.current?.focus();
             }}
             className={cn(
-              "flex h-[42px] cursor-text items-center gap-2 rounded-lg border bg-white/80 px-3 transition-colors",
-              open ? "border-gray-400" : "border-gray-300",
+              "flex h-[42px] cursor-text items-center gap-2 rounded-lg border bg-[#fffdf9] px-3 transition-colors",
+              open ? "border-[#1c1917]" : "border-[#e7e0d5]",
               className,
             )}
           >
-            <Search className="h-4 w-4 shrink-0 text-gray-500" />
+            <Search className="h-4 w-4 shrink-0 text-[#6b645c]" />
             <CommandPrimitive.Input
               ref={inputRef}
               value={query}
@@ -209,11 +209,11 @@ export const ToolSearch = ({
               placeholder="Search tools…"
               aria-label="Search tools"
               aria-expanded={open}
-              className="min-w-0 w-full bg-transparent text-base xl:text-sm text-gray-700 outline-none placeholder:text-gray-400"
+              className="min-w-0 w-full bg-transparent text-base xl:text-sm text-[#1c1917] outline-none placeholder:text-[#8a837b]"
               data-testid="input-tool-search"
             />
             {!open && (
-              <kbd className="hidden 2xl:inline rounded border border-gray-200 bg-gray-50 px-1.5 font-mono text-[10px] text-gray-400">
+              <kbd className="hidden 2xl:inline rounded border border-[#e7e0d5] bg-[#faf7f2] px-1.5 font-mono text-[10px] text-[#8a837b]">
                 ⌘K
               </kbd>
             )}
@@ -225,8 +225,8 @@ export const ToolSearch = ({
             aria-expanded={open}
             onClick={() => setOpen((prev) => !prev)}
             className={cn(
-              "inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#4B5563] transition-colors duration-150 hover:bg-[#F3F4F6] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5483B] focus-visible:ring-offset-2",
-              open && "bg-[#F3F4F6] text-[#111827]",
+              "inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#57534e] transition-colors duration-150 hover:bg-[#f1ece4] hover:text-[#1c1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5483B] focus-visible:ring-offset-2",
+              open && "bg-[#f1ece4] text-[#1c1917]",
               className,
             )}
             data-testid="button-tool-search"
@@ -238,7 +238,7 @@ export const ToolSearch = ({
         {open && (
           <div
             className={cn(
-              "z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl",
+              "z-50 mt-2 overflow-hidden rounded-[12px] border border-[#e7e0d5] bg-[#fffdf9] shadow-[0_24px_48px_-28px_rgba(28,25,23,.45)]",
               variant === "responsive"
                 ? "fixed left-4 right-4 top-[65px] md:absolute md:left-auto md:right-0 md:top-full md:w-[min(380px,90vw)]"
                 : !isIcon
@@ -247,8 +247,8 @@ export const ToolSearch = ({
             )}
           >
             {isIcon && (
-              <div className="flex items-center gap-2 border-b border-gray-100 px-3 py-2.5">
-                <Search className="h-4 w-4 shrink-0 text-gray-500" />
+              <div className="flex items-center gap-2 border-b border-[#efe8dd] px-3 py-2.5">
+                <Search className="h-4 w-4 shrink-0 text-[#6b645c]" />
                 <CommandPrimitive.Input
                   ref={inputRef}
                   value={query}
@@ -256,14 +256,14 @@ export const ToolSearch = ({
                   placeholder="Search tools…"
                   aria-label="Search tools"
                   aria-expanded={open}
-                  className="min-w-0 w-full bg-transparent text-base md:text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                  className="min-w-0 w-full bg-transparent text-base md:text-sm text-[#1c1917] outline-none placeholder:text-[#8a837b]"
                   data-testid="input-tool-search"
                 />
                 <button
                   type="button"
                   aria-label="Close search"
                   onClick={() => setOpen(false)}
-                  className="text-gray-400 transition-colors hover:text-gray-600"
+                  className="text-[#8a837b] transition-colors hover:text-[#1c1917]"
                 >
                   <X className="h-4 w-4" />
                 </button>

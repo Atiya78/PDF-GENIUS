@@ -1,4 +1,5 @@
 import React from "react";
+import "@/styles/marketing.css";
 import { FILE_RETENTION_COPY, IMAGE_UPLOAD_RETENTION_COPY } from "@/config/siteCopy";
 import {
   Shield,
@@ -113,20 +114,20 @@ const practices = [
 
 export const DataSafety = (): JSX.Element => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="mkt-root min-h-[100dvh]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#f7433d]/10 mb-5">
             <Shield className="w-7 h-7 text-[#f7433d]" />
           </div>
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Data Safety</h1>
-          <p className="max-w-2xl mx-auto text-lg text-gray-600 leading-relaxed">
+          <h1 className="mkt-display text-[2.2rem] sm:text-[2.9rem] mb-4">Data Safety</h1>
+          <p className="max-w-2xl mx-auto text-lg text-[#57534e] leading-relaxed">
             A plain-language summary of the data PDF Genius collects, how it is used, and
             the protections in place. This mirrors the Data safety section shown on our
             Google Play store listing.
           </p>
-          <p className="text-sm text-gray-500 mt-4">Last updated: June 25, 2026</p>
+          <p className="text-sm text-[#6b645c] mt-4">Last updated: June 25, 2026</p>
         </div>
 
         {/* Practices */}
@@ -134,22 +135,22 @@ export const DataSafety = (): JSX.Element => {
           {practices.map((p) => (
             <div
               key={p.title}
-              className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm"
+              className="bg-[#fffdf9] border border-[#e7e0d5] rounded-xl p-6 shadow-sm"
             >
               <p.icon className="w-6 h-6 text-[#f7433d] mb-3" />
-              <h3 className="font-semibold text-gray-900 mb-1">{p.title}</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">{p.desc}</p>
+              <h3 className="font-semibold text-[#1c1917] mb-1">{p.title}</h3>
+              <p className="text-sm text-[#57534e] leading-relaxed">{p.desc}</p>
             </div>
           ))}
         </div>
 
         {/* Data collected */}
-        <section className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 sm:p-8 mb-8">
+        <section className="border-t border-[#1c1917] p-6 sm:p-8 mb-8">
           <div className="flex items-center gap-3 mb-2">
             <Database className="w-6 h-6 text-[#f7433d]" />
-            <h2 className="text-2xl font-bold text-gray-900">Data this app collects</h2>
+            <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917]">Data this app collects</h2>
           </div>
-          <p className="text-gray-600 mb-6">
+          <p className="text-[#57534e] mb-6">
             Some tools process files locally; others upload files for processing.
             {" "}{FILE_RETENTION_COPY} {IMAGE_UPLOAD_RETENTION_COPY}
           </p>
@@ -158,15 +159,15 @@ export const DataSafety = (): JSX.Element => {
             {collectedData.map((row) => (
               <div
                 key={`${row.category}-${row.type}`}
-                className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 border-b border-gray-100 pb-4 last:border-0 last:pb-0"
+                className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 border-b border-[#e7e0d5] pb-4 last:border-0 last:pb-0"
               >
                 <div className="flex items-center gap-3 sm:w-64 shrink-0">
-                  <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-gray-100 shrink-0">
-                    <row.icon className="w-5 h-5 text-gray-600" />
+                  <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-[#f1ece4] shrink-0">
+                    <row.icon className="w-5 h-5 text-[#57534e]" />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 leading-tight">{row.type}</p>
-                    <p className="text-xs text-gray-500">{row.category}</p>
+                    <p className="font-semibold text-[#1c1917] leading-tight">{row.type}</p>
+                    <p className="text-xs text-[#6b645c]">{row.category}</p>
                   </div>
                 </div>
 
@@ -174,7 +175,7 @@ export const DataSafety = (): JSX.Element => {
                   {row.purposes.map((purpose) => (
                     <span
                       key={purpose}
-                      className="inline-flex items-center text-xs font-medium text-gray-700 bg-gray-100 rounded-full px-3 py-1"
+                      className="inline-flex items-center text-xs font-medium text-[#3a3530] bg-[#f1ece4] rounded-full px-3 py-1"
                     >
                       {purpose}
                     </span>
@@ -196,16 +197,16 @@ export const DataSafety = (): JSX.Element => {
         </section>
 
         {/* Not collected */}
-        <section className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 sm:p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+        <section className="border-t border-[#1c1917] p-6 sm:p-8 mb-8">
+          <h2 className="font-['Poppins'] text-[1.45rem] font-semibold tracking-[-0.015em] text-[#1c1917] mb-2">
             Data this app does <span className="text-[#f7433d]">not</span> collect
           </h2>
-          <p className="text-gray-600 mb-6">
+          <p className="text-[#57534e] mb-6">
             We do not collect any of the following data types.
           </p>
           <ul className="grid gap-3 sm:grid-cols-2">
             {notCollected.map((item) => (
-              <li key={item} className="flex items-start gap-2 text-gray-700">
+              <li key={item} className="flex items-start gap-2 text-[#3a3530]">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                 <span className="text-sm leading-relaxed">{item}</span>
               </li>
@@ -214,7 +215,7 @@ export const DataSafety = (): JSX.Element => {
         </section>
 
         {/* Footer note */}
-        <div className="text-center text-sm text-gray-500">
+        <div className="text-center text-sm text-[#6b645c]">
           For full details on how we handle your information, see our{" "}
           <a href="/privacy-policy" className="text-[#f7433d] font-medium hover:underline">
             Privacy Policy

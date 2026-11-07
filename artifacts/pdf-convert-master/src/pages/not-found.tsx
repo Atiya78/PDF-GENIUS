@@ -1,7 +1,8 @@
 import { Link } from "wouter";
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import { ToolSearch } from "@/components/ToolSearch";
 import { useSeo } from "@/lib/useSeo";
+import "@/styles/marketing.css";
 
 const popularTools = [
   { name: "Merge PDF", path: "/upload/merge-pdfs" },
@@ -22,27 +23,32 @@ export default function NotFound() {
   });
 
   return (
-    <section className="bg-gray-50 px-4 py-16 sm:py-24">
-      <div className="mx-auto max-w-2xl text-center">
-        <p className="mb-3 text-sm font-semibold text-primary">404</p>
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Page not found</h1>
-        <p className="mt-4 text-gray-600">
-          This page doesn't exist. Search for a tool or choose one below.
-        </p>
-        <div className="mx-auto my-8 max-w-sm text-left">
-          <ToolSearch className="w-full" />
+    <section className="mkt-root px-4 py-16 sm:px-6 sm:py-24">
+      <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div>
+          <p className="edu-eyebrow">Error 404</p>
+          <h1 className="mkt-display mt-4 text-[2.4rem] sm:text-[3rem]">This page is not on the desk.</h1>
+          <p className="mkt-lede mt-5 max-w-md">This page doesn't exist. Search for a tool or choose one from the list.</p>
+          <div className="mt-8 max-w-sm">
+            <ToolSearch className="w-full" />
+          </div>
+          <Link href="/" className="mkt-link mt-8 text-[15px]" data-testid="link-404-home">
+            Back to home <ArrowRight className="mkt-arrow h-4 w-4" aria-hidden="true" />
+          </Link>
         </div>
-        <h2 className="mb-4 text-lg font-semibold text-gray-900">Popular PDF tools</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {popularTools.map((tool) => (
-            <Link key={tool.path} href={tool.path} className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-gray-900 hover:border-primary hover:text-primary focus-visible:outline-primary">
-              {tool.name}
-            </Link>
-          ))}
-        </div>
-        <Button asChild className="mt-8">
-          <Link href="/">Back to home</Link>
-        </Button>
+        <nav aria-labelledby="popular-heading">
+          <h2 id="popular-heading" className="edu-eyebrow !text-[#8a837b]">Popular PDF tools</h2>
+          <ul className="mt-3 border-t border-[#1c1917]">
+            {popularTools.map((tool) => (
+              <li key={tool.path}>
+                <Link href={tool.path} className="mkt-row font-medium">
+                  {tool.name}
+                  <ArrowRight className="mkt-arrow ml-auto h-4 w-4" aria-hidden="true" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </section>
   );

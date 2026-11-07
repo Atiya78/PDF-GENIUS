@@ -1,19 +1,16 @@
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Code2,
-  Zap,
-  Shield,
-  Globe,
-  ArrowRight,
-  BookOpen,
-  Copy,
-  Check
-} from "lucide-react";
-import { useLocation } from "wouter";
-import { AnimatedBackground } from "@/components/ui/animated-background";
+import { useState } from "react";
+import { ArrowRight, Check, Copy } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { Reveal } from "@/components/education/Reveal";
+import "@/styles/marketing.css";
+
+const SPEC = [
+  { k: "Tools", v: "20+ PDF and image conversion endpoints" },
+  { k: "Free tier", v: "1,000 calls per month" },
+  { k: "Card", v: "Not required to start" },
+  { k: "Auth", v: "API key over HTTPS" },
+  { k: "Response", v: "Synchronous; the file comes back in the response" },
+];
 
 export const APIDocumentationSection = (): JSX.Element => {
   const [, setLocation] = useLocation();
@@ -36,146 +33,53 @@ export const APIDocumentationSection = (): JSX.Element => {
     }
   };
 
-  const apiFeatures = [
-    {
-      icon: <Zap className="w-6 h-6" />,
-      title: "Fast Conversions",
-      description: "Synchronous processing returns your file in the response"
-    },
-    {
-      icon: <Shield className="w-6 h-6" />,
-      title: "Secure by Design",
-      description: "API-key auth over HTTPS"
-    },
-    {
-      icon: <Globe className="w-6 h-6" />,
-      title: "20+ Tools, One API",
-      description: "PDF & image conversion endpoints"
-    }
-  ];
-
   return (
-    <section className="relative bg-white py-12 sm:py-14 lg:py-16 overflow-hidden">
-      {/* Animated background */}
-      <AnimatedBackground particleCount={22} />
-
-      <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <Badge className="mb-4 px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200">
-            <Code2 className="w-4 h-4 mr-2" />
-            Developer API
-          </Badge>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            Powerful PDF API for Developers
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Integrate PDF and image conversion directly into your applications
-            with a simple REST API.
-          </p>
-        </div>
-
-        {/* API Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-          {apiFeatures.map((feature, index) => (
-            <Card key={index} className="bg-white border border-gray-200 shadow-sm">
-              <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 mx-auto mb-4 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                  {feature.icon}
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                <p className="text-gray-600 text-sm">{feature.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Code Example */}
-        <div className="mb-16">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">Simple Integration</h3>
-            <p className="text-gray-600">Get started with just a few lines of code</p>
-          </div>
-
-          <Card className="bg-gray-50 border border-gray-200 shadow-sm max-w-3xl mx-auto">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex justify-end mb-3">
-              <button
-                type="button"
-                onClick={copyCurl}
-                aria-label="Copy curl example to clipboard"
-                data-testid="button-copy-curl"
-                className={`flex items-center gap-1.5 text-xs rounded-md border px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
-                  copied
-                    ? "bg-green-50 border-green-200 text-green-700"
-                    : "bg-white border-gray-200 text-gray-500 hover:text-gray-700"
-                }`}
-              >
-                {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-                <span aria-live="polite">{copied ? "Copied!" : "Copy"}</span>
-              </button>
-              </div>
-              <pre className="text-sm text-gray-700 overflow-x-auto">
-                <code>{curlExample}</code>
-              </pre>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Stats Section */}
-        <div className="mb-16 pt-16 border-t border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">20+</div>
-              <div className="text-gray-600">Conversion Tools</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">1,000</div>
-              <div className="text-gray-600">Free Calls / Month</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">REST</div>
-              <div className="text-gray-600">Simple HTTP API</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">No Card</div>
-              <div className="text-gray-600">Required to Start</div>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center">
-          <div className="max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              Ready to integrate PDF processing into your app?
-            </h3>
-            <p className="text-gray-600 mb-8">
-              Get started with our free tier - 1,000 API calls per month, no credit card required.
+    <section className="mx-auto w-full max-w-6xl px-4 pt-24 sm:px-6" aria-labelledby="api-heading">
+      <Reveal>
+        <div className="mkt-section">
+          <div>
+            <p className="edu-eyebrow">Developer API</p>
+            <h2 id="api-heading" className="mkt-h2 mt-2">The same tools, over REST</h2>
+            <p className="mt-3 max-w-xs text-[15px] leading-relaxed text-[#57534e]">
+              Integrate PDF and image conversion into your own application.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="px-8 py-4"
-                onClick={() => setLocation('/dashboard/api-setup')}
-              >
-                <Code2 className="w-5 h-5 mr-2" />
-                Get API Key
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="px-8 py-4"
-                onClick={() => setLocation('/docs')}
-              >
-                <BookOpen className="w-5 h-5 mr-2" />
-                View Documentation
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
+            <div className="mt-6 flex flex-wrap items-center gap-4">
+              <button type="button" className="edu-btn-primary" onClick={() => setLocation("/dashboard/api-setup")} data-testid="button-api-get-key">
+                Get API key
+              </button>
+              <Link href="/docs" className="mkt-link text-sm" data-testid="link-api-docs">
+                Documentation <ArrowRight className="mkt-arrow h-4 w-4" aria-hidden="true" />
+              </Link>
             </div>
           </div>
+          <div className="grid min-w-0 gap-8 border-t border-[#1c1917] pt-6 xl:grid-cols-[minmax(0,1fr)_17rem]">
+            <div className="mkt-code min-w-0 overflow-hidden">
+              <div className="flex items-center justify-between border-b border-white/10 px-4 py-2">
+                <span className="text-[11px] uppercase tracking-[0.14em] text-[#b5aa9b]">Shell</span>
+                <button
+                  type="button"
+                  onClick={copyCurl}
+                  aria-label="Copy curl example to clipboard"
+                  data-testid="button-copy-curl"
+                  className="inline-flex min-h-[36px] items-center gap-1.5 rounded-md px-2.5 text-xs text-[#e7e0d5] transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#f7433d]"
+                >
+                  {copied ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <Copy className="h-3.5 w-3.5" aria-hidden="true" />}
+                  <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
+                </button>
+              </div>
+              <pre className="overflow-x-auto p-4 sm:p-5"><code>{curlExample}</code></pre>
+            </div>
+            <dl className="text-sm">
+              {SPEC.map((s) => (
+                <div key={s.k} className="flex gap-4 border-b border-[#efe8dd] py-2.5 first:pt-0">
+                  <dt className="edu-mono w-20 shrink-0 text-xs uppercase tracking-wider text-[#8a837b]">{s.k}</dt>
+                  <dd className="text-[#1c1917]">{s.v}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 };

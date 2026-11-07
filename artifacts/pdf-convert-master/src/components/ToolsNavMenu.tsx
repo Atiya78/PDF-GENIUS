@@ -54,7 +54,7 @@ const IMAGE_TOOLS = [
 ];
 
 const triggerClass =
-  "site-nav-action font-medium text-gray-600 text-sm xl:text-base leading-6 bg-transparent px-0 h-auto whitespace-nowrap";
+  "site-nav-action font-medium text-[#57534e] text-sm xl:text-base leading-6 bg-transparent px-0 h-auto whitespace-nowrap";
 
 
 const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
@@ -71,11 +71,11 @@ const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
         data-testid={`nav-tool-${tool.id}`}
       >
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.iconBgColor}`}
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#faf7f2] ring-1 ring-inset ring-[#efe8dd]`}
         >
           <ToolLottieIcon toolId={tool.id} config={tool} size={28} />
         </span>
-        <span className="whitespace-nowrap text-sm font-medium text-gray-700">
+        <span className="whitespace-nowrap text-sm font-medium text-[#1c1917]">
           {tool.title}
         </span>
         {isPaused && (
@@ -87,7 +87,7 @@ const ToolLink = ({ id }: { id: string }): JSX.Element | null => {
 };
 
 const ColumnHeading = ({ children }: { children: React.ReactNode }): JSX.Element => (
-  <p className="px-3 pb-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+  <p className="px-3 pb-2 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a837b]">
     {children}
   </p>
 );
@@ -125,15 +125,15 @@ export const ToolsNavDropdowns = (): JSX.Element => {
               ))}
             </div>
           </div>
-          <div className="border-t border-gray-100 px-4 pt-3 pb-1">
+          <div className="border-t border-[#efe8dd] px-4 pt-3 pb-1">
             <ColumnHeading>Edit</ColumnHeading>
             <ToolLink id="edit-pdf" />
           </div>
-          <div className="border-t border-gray-100 px-4 py-3">
+          <div className="border-t border-[#efe8dd] px-4 py-3">
             <NavigationMenuLink asChild>
               <Link
                 href="/tools"
-                className="site-nav-row inline-block rounded-md px-2 py-1 text-sm font-semibold text-blue-600"
+                className="site-nav-row inline-block rounded-md px-2 py-1 text-sm font-semibold text-[#c8302a]"
                 data-testid="nav-view-all-tools"
               >
                 View all tools
@@ -188,13 +188,13 @@ export const ToolsNavDropdowns = (): JSX.Element => {
             {educationTools.map((t) => (
               <NavigationMenuLink key={t.id} asChild>
                 <Link href={t.href} className="site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left" data-testid={`nav-education-${t.id}`}>
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><ToolLottieIcon toolId={t.id} size={28} /></span>
-                  <span className="text-sm font-medium text-gray-700">{t.name}</span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fdece9]"><ToolLottieIcon toolId={t.id} size={28} /></span>
+                  <span className="text-sm font-medium text-[#1c1917]">{t.name}</span>
                 </Link>
               </NavigationMenuLink>
             ))}
           </div>
-          <div className="border-t border-gray-100 px-4 py-3">
+          <div className="border-t border-[#efe8dd] px-4 py-3">
             <NavigationMenuLink asChild>
               <Link href="/education" className="site-nav-row inline-block rounded-md px-2 py-1 text-sm font-semibold text-[#f7433d]" data-testid="nav-education-hub">Open Education Zone</Link>
             </NavigationMenuLink>
@@ -226,11 +226,11 @@ const MobileToolButton = ({
       data-testid={`mobile-nav-tool-${tool.id}`}
     >
       <span
-        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.iconBgColor}`}
+        className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#faf7f2] ring-1 ring-inset ring-[#efe8dd]`}
       >
         <ToolLottieIcon toolId={tool.id} config={tool} size={28} />
       </span>
-      <span className="text-sm font-medium text-gray-700">{tool.title}</span>
+      <span className="text-sm font-medium text-[#1c1917]">{tool.title}</span>
       {isPaused && (
         <PausedBadge className="ml-auto shrink-0" testId={`mobile-nav-tool-paused-${tool.id}`} />
       )}
@@ -268,7 +268,7 @@ export const MobileNav = ({
           type="button"
           aria-label="Open menu"
           aria-expanded={open}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#4B5563] transition-colors duration-150 hover:bg-[#F3F4F6] hover:text-[#111827] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5483B] focus-visible:ring-offset-2"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#57534e] transition-colors duration-150 hover:bg-[#f1ece4] hover:text-[#1c1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E5483B] focus-visible:ring-offset-2"
           data-testid="button-mobile-menu"
         >
           <Menu className="h-5 w-5" strokeWidth={1.5} aria-hidden="true" />
@@ -278,8 +278,8 @@ export const MobileNav = ({
         side="right"
         className={`flex w-[min(340px,100vw)] max-w-full flex-col p-0 ${modern ? "site-header-drawer" : ""}`}
       >
-        <SheetHeader className="border-b border-gray-100 px-5 py-4 text-left">
-          <SheetTitle className="text-lg font-bold text-gray-900">
+        <SheetHeader className="border-b border-[#efe8dd] px-5 py-4 text-left">
+          <SheetTitle className="font-['Poppins'] text-lg font-semibold text-[#1c1917]">
             Menu
           </SheetTitle>
           <SheetDescription className="sr-only">
@@ -291,7 +291,7 @@ export const MobileNav = ({
           <Link
             href={homeItem.href}
             onClick={(event) => closeOnNavigation(event, close)}
-            className="site-nav-row flex min-h-12 w-full items-center rounded-lg px-3 text-left text-base font-medium text-gray-700 border-b border-gray-100"
+            className="site-nav-row flex min-h-12 w-full items-center rounded-lg px-3 text-left text-base font-medium text-[#1c1917] border-b border-[#efe8dd]"
             data-testid="mobile-nav-home"
           >
             {homeItem.name}
@@ -299,30 +299,30 @@ export const MobileNav = ({
 
           <Accordion type="multiple" className="w-full">
             <AccordionItem value="pdf" className="border-none">
-              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-[#1c1917] hover:no-underline">
                 PDF Converter
               </AccordionTrigger>
               <AccordionContent className="pb-1">
-                <p className="px-3 pb-1 pt-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <p className="px-3 pb-1 pt-1 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a837b]">
                   Convert from PDF
                 </p>
                 {PDF_FROM.map((id) => (
                   <MobileToolButton key={id} id={id} onNavigate={close} />
                 ))}
-                <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <p className="px-3 pb-1 pt-3 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a837b]">
                   Convert to PDF
                 </p>
                 {PDF_TO.map((id) => (
                   <MobileToolButton key={id} id={id} onNavigate={close} />
                 ))}
-                <p className="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <p className="px-3 pb-1 pt-3 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8a837b]">
                   Edit
                 </p>
                 <MobileToolButton id="edit-pdf" onNavigate={close} />
                 <Link
                   href="/tools"
                   onClick={(event) => closeOnNavigation(event, close)}
-                  className="site-nav-row block mt-1 rounded-lg px-3 py-2 text-left text-sm font-semibold text-blue-600"
+                  className="site-nav-row block mt-1 rounded-lg px-3 py-2 text-left text-sm font-semibold text-[#c8302a]"
                   data-testid="mobile-nav-view-all-tools"
                 >
                   View all tools →
@@ -331,7 +331,7 @@ export const MobileNav = ({
             </AccordionItem>
 
             <AccordionItem value="pdf-editor" className="border-none">
-              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-[#1c1917] hover:no-underline">
                 PDF Editor
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -342,7 +342,7 @@ export const MobileNav = ({
             </AccordionItem>
 
             <AccordionItem value="image" className="border-none">
-              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-[#1c1917] hover:no-underline">
                 Image Tools
               </AccordionTrigger>
               <AccordionContent className="pb-1">
@@ -355,15 +355,15 @@ export const MobileNav = ({
 
           <Accordion type="single" collapsible>
             <AccordionItem value="education" className="border-none">
-              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-gray-700 hover:no-underline" data-testid="mobile-nav-education-zone">
+              <AccordionTrigger className="site-nav-row min-h-12 rounded-lg px-3 py-0 text-base font-medium text-[#1c1917] hover:no-underline" data-testid="mobile-nav-education-zone">
                 Education Zone
               </AccordionTrigger>
               <AccordionContent className="pb-1">
-                <Link href="/education" onClick={(event) => closeOnNavigation(event, close)} className="site-nav-row flex w-full items-center rounded-lg px-3 py-2 text-sm font-semibold text-gray-700" data-testid="mobile-nav-education-hub">All Education tools</Link>
+                <Link href="/education" onClick={(event) => closeOnNavigation(event, close)} className="site-nav-row flex w-full items-center rounded-lg px-3 py-2 text-sm font-semibold text-[#1c1917]" data-testid="mobile-nav-education-hub">All Education tools</Link>
                 {educationTools.map((t) => (
                   <Link key={t.id} href={t.href} onClick={(event) => closeOnNavigation(event, close)} className="site-nav-row flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left" data-testid={`mobile-nav-education-${t.id}`}>
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fff1f0] text-[#f7433d]"><ToolLottieIcon toolId={t.id} size={28} /></span>
-                    <span className="text-sm font-medium text-gray-700">{t.name}</span>
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#fdece9]"><ToolLottieIcon toolId={t.id} size={28} /></span>
+                    <span className="text-sm font-medium text-[#1c1917]">{t.name}</span>
                   </Link>
                 ))}
               </AccordionContent>
@@ -375,7 +375,7 @@ export const MobileNav = ({
               key={item.name}
               href={item.href}
               onClick={(event) => closeOnNavigation(event, close)}
-              className="site-nav-row flex min-h-12 w-full items-center rounded-lg px-3 text-left text-base font-medium text-gray-700 border-b border-gray-100"
+              className="site-nav-row flex min-h-12 w-full items-center rounded-lg px-3 text-left text-base font-medium text-[#1c1917] border-b border-[#efe8dd]"
               data-testid={`mobile-nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
             >
               {item.name}
@@ -384,7 +384,7 @@ export const MobileNav = ({
         </nav>
 
         {footer ? (
-          <div className="border-t border-gray-100 px-5 py-4">{footer(close)}</div>
+          <div className="border-t border-[#efe8dd] px-5 py-4">{footer(close)}</div>
         ) : null}
       </SheetContent>
     </Sheet>

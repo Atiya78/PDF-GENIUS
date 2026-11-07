@@ -9,7 +9,7 @@ export const ConvertImageFormatUpload: React.FC = () => {
   const [fmt, setFmt] = useState<ImgFmt>("png");
   const [quality, setQuality] = useState(90);
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#faf7f2] dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="convert-image-format"
         toolTitle="Image Format Converter"
@@ -18,7 +18,7 @@ export const ConvertImageFormatUpload: React.FC = () => {
         maxFileSize="25MB"
         outputFormat={fmt.toUpperCase()}
         toolIcon={<ToolLottieIcon toolId="convert-image-format" size={48} />}
-        iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+        iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
         extraOptions={{ outputFormat: fmt, quality }}
         downloadName={(f) => `${stem(f)}.${fmt === "tiff" ? "tiff" : fmt}`}
         renderSettings={({ files, disabled }) => (

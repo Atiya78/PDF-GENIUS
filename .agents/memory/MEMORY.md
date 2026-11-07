@@ -35,7 +35,7 @@
 - [Resend email readiness](password-reset-resend.md) — reset's generic success does not prove delivery; verify the configured email transport and approved sender domain.
 - [Tool upload-page header](tool-upload-header.md) — ToolPageShell.showHeader; every tool's upload empty-state is headerless (header only on working state); all 3 categories share UploadDropzone.
 - [vite.config deploy build](vite-config-deploy-build.md) — config must NOT throw on missing PORT/BASE_PATH; deploy build step runs without [services.env]; default port/base, validate only for dev/serve/preview.
-- [Web auth dark-sheet design](web-auth-dark-sheet.md) — web /signin /signup mirror mobile AuthSheet (shared AuthCard, dark #171c28, coral, progressive step, Lottie welcome/error); render standalone (no DynamicLayout); signup auto-logs in.
+- [Web auth design](web-auth-dark-sheet.md) — standalone /signin /signup (no nav), progressive email step + OTP; now paper split layout (dark sheet superseded Nov 2026).
 - [Conversion output persistence](conversion-output-persistence.md) — outputs persisted to object storage (key `conversions/<jobId>`); /api/download is memory-first then object-storage fallback, keep durable copy; native re-download must check HTTP status.
 - [Tool reliability scope](tool-reliability-scope.md) — Restore stays unchanged/disabled; preserve billing/auth/Education/branding/order and browser-local processing.
 - [Connector runtime access](connector-runtime-access.md) — attached metadata alone does not prove the app can call a provider; verify real proxy access before claiming activation.
@@ -100,3 +100,4 @@
 - [Quiz answer positions](education-quiz-randomization.md) — independently randomize MCQ choices, never rotate A/B/C/D; keep each generated quiz's order stable.
 - [Education payments](education-payment-provider.md) — Paddle and a separate Education wallet; preserve Dodo elsewhere. Owner pricing, premium-tool limits, and explicit defaults.
 - [Education design direction](education-design-direction.md) — exam-desk editorial look for /education; scroll reveals must stay prerender-safe (no opacity-0 initial).
+- [Site-wide design direction](site-design-direction.md) — whole web app uses the Education paper/ink/coral desk look; no pills, uniform card grids, purple/blue, invented labels.

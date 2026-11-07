@@ -290,9 +290,9 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
 
       {/* Workflow Card — only after files are selected / merging / done */}
       {stage !== "upload" && (
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+      <div className="bg-[#fffdf9] rounded-[14px] border border-[#e7e0d5] shadow-[0_24px_48px_-36px_rgba(28,25,23,0.45)] overflow-hidden">
         {/* Progress Indicator */}
-        <div className="px-6 py-4 bg-gray-50 border-b">
+        <div className="px-6 py-4 bg-[#faf7f2] border-b">
           <div className="flex items-center justify-between mb-2">
             <div
               className={`flex items-center space-x-2 ${
@@ -300,7 +300,7 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
                   ? "text-green-600"
                   : stage === "error"
                     ? "text-red-600"
-                    : "text-blue-600"
+                    : "text-[#c8302a]"
               }`}
             >
               {stage === "files-selected" && <FileCheck className="w-4 h-4" />}
@@ -310,7 +310,7 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
               <span className="text-sm font-medium capitalize">{stageLabel}</span>
             </div>
             {files.length > 0 && stage !== "completed" && stage !== "error" && (
-              <div className="text-sm text-gray-500" data-testid="text-merge-count">
+              <div className="text-sm text-[#57534e]" data-testid="text-merge-count">
                 {files.length} file{files.length !== 1 ? "s" : ""} selected
               </div>
             )}
@@ -325,10 +325,10 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
             <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">
+                  <h3 className="text-xl font-semibold text-[#1c1917]">
                     {files.length} File{files.length !== 1 ? "s" : ""} Selected
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-[#57534e]">
                     Use the arrows to set the merge order (top = first page).
                   </p>
                 </div>
@@ -354,7 +354,7 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
               </div>
 
               {/* Add More Files Area */}
-              <div className="border-2 border-dashed border-gray-200 rounded-lg p-4">
+              <div className="border-2 border-dashed border-[#e7e0d5] rounded-lg p-4">
                 <EnhancedUploadArea
                   acceptedFormats={acceptedFormats}
                   maxFileSize={maxFileSize}
@@ -380,7 +380,7 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
                 <Button
                   onClick={startMerge}
                   disabled={files.length < 2}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="bg-[#f7433d] hover:bg-[#c8302a] text-white px-8 py-3 disabled:opacity-50 disabled:cursor-not-allowed"
                   data-testid="button-start-merge"
                 >
                   <RefreshCw className="w-4 h-4 mr-2" />
@@ -401,8 +401,8 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
                 <ConverterStatusIcon status="processing" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Merging PDFs…</h3>
-                <p className="text-gray-600">
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">Merging PDFs…</h3>
+                <p className="text-[#57534e]">
                   Combining {files.length} file{files.length !== 1 ? "s" : ""} into one document
                 </p>
               </div>
@@ -416,13 +416,13 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
                 <ConverterStatusIcon status="success" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Merge Complete!</h3>
-                <p className="text-gray-600">Your PDFs were combined into a single document.</p>
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">Merge Complete!</h3>
+                <p className="text-[#57534e]">Your PDFs were combined into a single document.</p>
               </div>
               <div className="flex justify-center space-x-4 pt-2">
                 <Button
                   onClick={handleDownload}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                  className="bg-[#f7433d] hover:bg-[#c8302a] text-white px-8 py-3"
                   data-testid="button-download-merged"
                 >
                   <Download className="w-4 h-4 mr-2" />
@@ -443,14 +443,14 @@ export const PdfMergeWorkflow: React.FC<PdfMergeWorkflowProps> = ({
                 <ConverterStatusIcon status="error" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">Merge Failed</h3>
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">Merge Failed</h3>
                 <p className="text-red-600" data-testid="text-merge-error">
                   {errorMessage}
                 </p>
               </div>
               <Button
                 onClick={reset}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                className="bg-[#f7433d] hover:bg-[#c8302a] text-white px-8 py-3"
                 data-testid="button-merge-retry"
               >
                 Try Again

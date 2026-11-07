@@ -172,12 +172,12 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
         if (!interactionDisabled) processFiles(e.dataTransfer.files);
       }}
       className={cn(
-        "flex flex-col items-center justify-center text-center rounded-2xl border-2 border-dashed px-6 py-12 sm:py-16 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2",
+        "tl-drop group relative flex flex-col items-center justify-center text-center rounded-[14px] border px-6 py-12 sm:py-14 transition-colors duration-200 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c1917]",
         interactionDisabled
-          ? "cursor-not-allowed opacity-60 border-gray-200 bg-gray-50"
+          ? "cursor-not-allowed opacity-60 border-[#e7e0d5] bg-[#faf7f2]"
           : isDragOver
-            ? "cursor-pointer border-blue-500 bg-blue-50 scale-[1.01]"
-            : "cursor-pointer border-blue-200 bg-white hover:border-blue-400 hover:bg-blue-50/50",
+            ? "tl-drop-over cursor-pointer border-[#f7433d] bg-[#fdece9]"
+            : "cursor-pointer border-[#e7e0d5] bg-[#fffdf9] hover:border-[#c9bfb1]",
         className,
       )}
       data-testid={testId || "dropzone-upload"}
@@ -203,7 +203,7 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
         className="mb-4"
       />
 
-      <h3 className="text-xl font-bold text-gray-900 mb-1">
+      <h3 className="font-['Poppins'] text-xl font-semibold tracking-[-0.01em] text-[#1c1917] mb-1">
         {loading
           ? loadingText
           : isDragOver
@@ -212,13 +212,13 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
               ? `Maximum files reached (${maxFiles}/${maxFiles})`
               : resolvedTitle}
       </h3>
-      <p className="text-sm text-gray-500">{resolvedSubtitle}</p>
+      <p className="text-sm text-[#57534e]">{resolvedSubtitle}</p>
 
       {!loading && (
         <span
           className={cn(
-            "mt-5 inline-flex items-center justify-center rounded-full px-7 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors pointer-events-none",
-            interactionDisabled ? "bg-blue-300" : "bg-blue-600",
+            "mt-6 inline-flex min-h-[44px] items-center justify-center rounded-[10px] px-7 text-[15px] font-semibold text-white shadow-[inset_0_-2px_0_rgba(0,0,0,0.16)] transition-colors pointer-events-none",
+            interactionDisabled ? "bg-[#f7433d]/40" : "bg-[#f7433d] group-hover:bg-[#c8302a]",
           )}
         >
           {resolvedActionLabel}
@@ -226,7 +226,7 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
       )}
 
       {multiple && !loading && (
-        <p className="mt-3 text-xs font-medium text-blue-600">
+        <p className="mt-3 text-xs font-medium text-[#c8302a]">
           {isFull
             ? `Maximum ${maxFiles} files`
             : `You can add ${remainingSlots} more file${remainingSlots !== 1 ? "s" : ""}` +
@@ -234,18 +234,15 @@ export const UploadDropzone: React.FC<UploadDropzoneProps> = ({
         </p>
       )}
 
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-        {acceptedFormats.map((format) => (
-          <span
-            key={format}
-            className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
-          >
+      <div className="edu-mono mt-6 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 border-t border-[#efe8dd] pt-4 text-[11.5px] text-[#8a837b]">
+        {acceptedFormats.map((format, i) => (
+          <span key={format}>
             {format.replace(".", "").toUpperCase()}
+            {i < acceptedFormats.length - 1 && <span className="ml-2 text-[#d9d0c3]" aria-hidden="true">/</span>}
           </span>
         ))}
+        <span className="ml-1 text-[#57534e]">Maximum file size: {maxSizeLabel}</span>
       </div>
-
-      <p className="mt-3 text-xs text-gray-400">Maximum file size: {maxSizeLabel}</p>
     </div>
   );
 };

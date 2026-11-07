@@ -63,7 +63,7 @@ export const OutputActions: React.FC<OutputActionsProps> = ({ getBlob, filename,
         <Button
           onClick={handleDownload}
           disabled={disabled || isDownloading}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
+          className="bg-[#f7433d] hover:bg-[#c8302a] text-white"
           data-testid="button-download"
         >
           {isDownloading ? (

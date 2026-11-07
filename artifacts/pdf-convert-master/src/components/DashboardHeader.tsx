@@ -19,6 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ToolsNavDropdowns, MobileNav } from "@/components/ToolsNavMenu";
 import { ToolSearch } from "@/components/ToolSearch";
 import { NotificationsBell } from "@/components/NotificationsBell";
+import "@/styles/dashboard.css";
 import {
   User,
   Settings,
@@ -47,14 +48,14 @@ export const DashboardHeader = (): JSX.Element => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/60 backdrop-blur-xl backdrop-saturate-150 px-4 sm:px-6 py-4">
-      <div className="flex items-center justify-between">
+    <header className="dash-header sticky top-0 z-50 flex h-16 items-center px-4 sm:px-6">
+      <div className="flex w-full items-center justify-between">
         {/* Left - Logo */}
         <div className="flex items-center">
           <Link
             href="/dashboard"
             aria-label="PDF Genius dashboard"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            className="flex items-center rounded-md transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#1c1917]"
           >
             <img src={logoIcon} alt="PDF Genius" width={1280} height={1239} className="h-9 w-auto" />
           </Link>
@@ -92,16 +93,12 @@ export const DashboardHeader = (): JSX.Element => {
         {/* Right - Plan Status, Notifications and Profile */}
         <div className="flex items-center space-x-2 sm:space-x-4">
           {/* Plan Status */}
-          <div className="hidden xl:flex items-center px-3 py-2 rounded-lg border border-[#f7433d]/30 bg-[#f7433d]/10">
-            <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
-            <span className="text-sm font-medium text-[#f7433d] capitalize">{user?.plan || 'Free Plan'}</span>
-          </div>
-
-          {/* Manage Plan Button */}
-          <Button variant="outline" className="hidden xl:inline-flex text-sm" onClick={handleManagePlan}>
-            <Settings className="w-4 h-4 mr-2" />
-            Manage Plan
-          </Button>
+          <button type="button" className="dash-plan-pill hidden xl:inline-flex focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1c1917]" onClick={handleManagePlan} data-testid="button-header-manage-plan" aria-label={`Current plan: ${user?.plan || "Free"}. Manage plan`}>
+            <span className="dot" aria-hidden="true" />
+            <span className="capitalize">{user?.plan || "Free"}</span>
+            <span className="text-[#c9bfb1]" aria-hidden="true">/</span>
+            <span className="font-medium text-[#57534e]">Manage</span>
+          </button>
 
           {/* Tool Search */}
           <ToolSearch variant="icon" />
@@ -115,7 +112,7 @@ export const DashboardHeader = (): JSX.Element => {
               <Button
                 variant="outline"
                 size="icon"
-                className="rounded-full overflow-hidden p-0"
+                className="rounded-full overflow-hidden p-0 border-[#e7e0d5] bg-[#fffdf9] hover:border-[#1c1917]"
                 aria-label="Account menu"
               >
                 {user?.profilePictureUrl ? (

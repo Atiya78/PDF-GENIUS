@@ -1,4 +1,5 @@
 import { Link } from "wouter";
+import "@/styles/marketing.css";
 import { useSeo } from "@/lib/useSeo";
 import aboutIllustration from "@/assets/about-collaboration.png";
 import supportIllustration from "@/assets/about-support.png";
@@ -21,7 +22,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-const CORAL = "#f7433d";
 
 const capabilities = [
   { icon: FileText, title: "Convert", text: "Move documents between PDF and other formats." },
@@ -50,21 +50,19 @@ export const About = (): JSX.Element => {
     canonicalPath: "/about",
   });
 
-  const btn =
-    "inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2";
 
   return (
-    <div className="bg-[#fffaf8] text-stone-900 overflow-x-hidden">
-      <section className="border-b border-stone-200" data-testid="about-hero">
+    <div className="mkt-root overflow-x-hidden">
+      <section className="border-b border-[#e7e0d5]" data-testid="about-hero">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 sm:gap-12 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:gap-10 lg:py-24 xl:gap-14">
           <div className="min-w-0">
-          <p className="text-xs sm:text-sm font-semibold uppercase tracking-widest" style={{ color: CORAL }}>
+          <p className="edu-eyebrow">
             About PDF Genius
           </p>
-          <h1 className="mt-4 max-w-3xl text-3xl sm:text-5xl xl:text-6xl font-bold leading-[1.1] break-words">
+          <h1 className="mkt-display mt-4 max-w-3xl text-[2.3rem] sm:text-5xl xl:text-[3.6rem] break-words">
             PDF and image tools for everyday work and study.
           </h1>
-          <p className="mt-6 max-w-2xl text-base sm:text-lg text-stone-700 leading-relaxed">
+          <p className="mt-6 max-w-2xl mkt-lede">
             PDF Genius gives you straightforward browser workflows for the document jobs that come up
             with work files and study material. {FREE_TOOLS_COPY}
           </p>
@@ -72,15 +70,14 @@ export const About = (): JSX.Element => {
             <Link
               href="/tools"
               data-testid="link-about-tools"
-              className={`${btn} text-white hover:opacity-90`}
-              style={{ backgroundColor: CORAL }}
+              className="edu-btn-primary group"
             >
-              Browse tools <ArrowRight className="w-4 h-4" />
+              Browse tools <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
             <Link
               href="/docs"
               data-testid="link-about-docs"
-              className={`${btn} border border-stone-300 bg-white hover:bg-stone-50`}
+              className="edu-btn-ghost h-12 px-5"
             >
               <Code2 className="w-4 h-4" /> Developer docs
             </Link>
@@ -103,43 +100,43 @@ export const About = (): JSX.Element => {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20">
-        <h2 className="text-2xl sm:text-3xl font-bold">What you can do</h2>
-        <div className="mt-8 grid gap-px bg-stone-200 border border-stone-200 rounded-lg overflow-hidden sm:grid-cols-2 lg:grid-cols-3">
+        <p className="edu-eyebrow">Capabilities</p>
+        <h2 className="mkt-h2 mt-2">What you can do</h2>
+        <div className="mt-8 grid border-t border-[#1c1917] sm:grid-cols-2 sm:gap-x-10 lg:grid-cols-3">
           {capabilities.map((c) => (
-            <div key={c.title} className="bg-white p-5 sm:p-6" data-testid={`item-capability-${c.title}`}>
-              <c.icon className="w-6 h-6" style={{ color: CORAL }} />
-              <h3 className="mt-4 text-lg font-semibold">{c.title}</h3>
-              <p className="mt-1 text-stone-600 leading-relaxed">{c.text}</p>
+            <div key={c.title} className="group border-b border-[#e7e0d5] py-6" data-testid={`item-capability-${c.title}`}>
+              <c.icon className="w-5 h-5 text-[#c8302a] transition-transform duration-300 group-hover:-translate-y-0.5" aria-hidden="true" />
+              <h3 className="mt-3 font-['Poppins'] text-lg font-semibold">{c.title}</h3>
+              <p className="mt-1 text-[#57534e] leading-relaxed">{c.text}</p>
             </div>
           ))}
         </div>
-        <p className="mt-6 max-w-2xl text-stone-600">
+        <p className="mt-6 max-w-2xl text-[#57534e]">
            Web tools are available without signup. A developer API key requires an account.
         </p>
       </section>
 
-      <section className="bg-white border-y border-stone-200">
+      <section className="border-y border-[#e7e0d5] bg-[#fffdf9]">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20 grid gap-10 lg:grid-cols-[1fr_1.4fr]">
           <div>
-            <ShieldCheck className="w-8 h-8" style={{ color: CORAL }} />
-            <h2 className="mt-4 text-2xl sm:text-3xl font-bold">How your files are handled</h2>
-            <p className="mt-3 text-stone-600 leading-relaxed">
+            <p className="edu-eyebrow inline-flex items-center gap-2"><ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />Handling</p>
+            <h2 className="mkt-h2 mt-2">How your files are handled</h2>
+            <p className="mt-3 text-[#57534e] leading-relaxed">
               Knowing where a file goes matters. Here is what applies today.
             </p>
             <Link
               href="/privacy-policy"
               data-testid="link-about-privacy"
-              className="mt-5 inline-flex items-center gap-2 font-semibold hover:underline"
-              style={{ color: CORAL }}
+              className="mkt-link mt-5"
             >
-              Read the privacy policy <ArrowRight className="w-4 h-4" />
+              Read the privacy policy <ArrowRight className="mkt-arrow w-4 h-4" aria-hidden="true" />
             </Link>
           </div>
-          <dl className="divide-y divide-stone-200 border-t border-b border-stone-200">
+          <dl className="divide-y divide-[#e7e0d5] border-t border-b border-[#1c1917]">
             {handling.map((h) => (
               <div key={h.title} className="py-4 sm:grid sm:grid-cols-[10rem_1fr] sm:gap-6">
                 <dt className="font-semibold">{h.title}</dt>
-                <dd className="mt-1 sm:mt-0 text-stone-600 leading-relaxed">{h.text}</dd>
+                <dd className="mt-1 sm:mt-0 text-[#57534e] leading-relaxed">{h.text}</dd>
               </div>
             ))}
           </dl>
@@ -147,24 +144,25 @@ export const About = (): JSX.Element => {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20" data-testid="about-support">
-        <div className="grid items-center gap-8 rounded-xl p-6 text-white sm:p-10 lg:grid-cols-[1.15fr_1fr] xl:gap-12" style={{ backgroundColor: CORAL }}>
+        <div className="grid items-center gap-8 border-y border-[#e7e0d5] py-10 lg:grid-cols-[1.15fr_1fr] xl:gap-12">
           <div className="min-w-0">
-          <h2 className="text-2xl sm:text-3xl font-bold">Questions or feedback?</h2>
-          <p className="mt-3 max-w-xl leading-relaxed">
+          <p className="edu-eyebrow">Support</p>
+          <h2 className="mkt-h2 mt-2">Questions or feedback?</h2>
+          <p className="mt-3 max-w-xl leading-relaxed text-[#57534e]">
              Contact support with questions about a tool, your account or a file-processing issue.
           </p>
           <div className="mt-6 flex flex-col flex-wrap gap-3 sm:flex-row">
             <a
               href="mailto:support@pdfgenius.app"
               data-testid="link-about-email"
-              className={`${btn} bg-white text-stone-900 hover:bg-stone-100 break-all`}
+              className="edu-btn-primary break-all"
             >
               <Mail className="w-4 h-4 shrink-0" /> support@pdfgenius.app
             </a>
             <Link
               href="/contact"
               data-testid="link-about-contact"
-              className={`${btn} border border-white/70 hover:bg-white/10`}
+              className="edu-btn-ghost h-12 px-5"
             >
               Open contact page
             </Link>

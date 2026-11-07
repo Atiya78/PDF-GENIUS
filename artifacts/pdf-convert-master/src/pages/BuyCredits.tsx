@@ -1,4 +1,5 @@
 import React from "react";
+import "@/styles/dashboard.css";
 import { CreditPurchaseCard } from "@/components/CreditPurchaseCard";
 import { useSeo } from "@/lib/useSeo";
 
@@ -6,24 +7,19 @@ export const BuyCredits: React.FC = () => {
   useSeo({ title: "Buy Credits", canonicalPath: "/dashboard/buy-credits", noindex: true });
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Page Title Section */}
-      <div className="bg-white border-b border-gray-200 px-6 py-8">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Buy Credits
-            </h1>
-            <p className="text-lg text-gray-600">
-              Top up your balance — pay only for what you need
-            </p>
-          </div>
+    <div className="dash-root min-h-[100dvh]">
+      <div className="dash-head">
+        <div className="mx-auto max-w-6xl px-4 pb-8 pt-10 sm:px-6 lg:px-10">
+          <p className="edu-eyebrow">Wallet</p>
+          <h1 className="dash-h1 mt-3">Buy credits</h1>
+          <p className="dash-lede mt-2">Top up your balance and pay only for what you need.</p>
         </div>
       </div>
 
       {/* Main Content — credits only, nothing else */}
-      <main className="max-w-3xl mx-auto px-6 py-8">
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-10"><div className="max-w-3xl">
         <CreditPurchaseCard />
+        </div>
       </main>
     </div>
   );

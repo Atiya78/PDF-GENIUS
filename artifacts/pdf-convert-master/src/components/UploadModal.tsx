@@ -112,7 +112,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
         <div className="space-y-6">
           {/* Description */}
-          <p className="text-gray-600">
+          <p className="text-[#57534e]">
             {toolConfig.description}
           </p>
 
@@ -121,8 +121,8 @@ export const UploadModal: React.FC<UploadModalProps> = ({
             className={`
               relative border-2 border-dashed rounded-xl p-8 text-center transition-all duration-200 cursor-pointer
               ${isDragOver 
-                ? 'border-blue-400 bg-blue-50' 
-                : 'border-gray-300 hover:border-gray-400 bg-gray-50'
+                ? 'border-[#f7433d] bg-[#fdece9]' 
+                : 'border-[#e7e0d5] hover:border-gray-400 bg-[#faf7f2]'
               }
             `}
             onDragOver={handleDragOver}
@@ -136,16 +136,16 @@ export const UploadModal: React.FC<UploadModalProps> = ({
             </div>
 
             {/* Upload Text */}
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-[#1c1917] mb-2">
               Drop your {getFileTypeText()} file here
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-[#57534e] mb-4">
               or click to browse files
             </p>
 
             {/* Select Files Button */}
             <Button
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-[#f7433d] hover:bg-[#c8302a] text-white"
               onClick={(e) => {
                 e.stopPropagation();
                 handleSelectFiles();
@@ -165,7 +165,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
             />
 
             {/* File Info */}
-            <p className="text-xs text-gray-500 mt-3">
+            <p className="text-xs text-[#57534e] mt-3">
               Supported: {getFileTypeText()} • Max: {toolConfig.maxFileSize}MB
             </p>
           </div>
@@ -187,7 +187,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 ))}
               </ul>
               <Button 
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-[#f7433d] hover:bg-[#c8302a] text-white"
                 onClick={handleStartConversion}
                 disabled={isProcessing}
               >
@@ -206,27 +206,27 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           {/* Features */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t">
             <div className="text-center">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
-                <Shield className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 rounded-full bg-[#fdece9] flex items-center justify-center mx-auto mb-2">
+                <Shield className="w-4 h-4 text-[#c8302a]" />
               </div>
-              <h4 className="text-sm font-medium text-gray-900 mb-1">Secure</h4>
-              <p className="text-xs text-gray-600">Browser processing</p>
+              <h4 className="text-sm font-medium text-[#1c1917] mb-1">Secure</h4>
+              <p className="text-xs text-[#57534e]">Browser processing</p>
             </div>
 
             <div className="text-center">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
-                <Zap className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 rounded-full bg-[#fdece9] flex items-center justify-center mx-auto mb-2">
+                <Zap className="w-4 h-4 text-[#c8302a]" />
               </div>
-              <h4 className="text-sm font-medium text-gray-900 mb-1">Fast</h4>
-              <p className="text-xs text-gray-600">Lightning speed</p>
+              <h4 className="text-sm font-medium text-[#1c1917] mb-1">Fast</h4>
+              <p className="text-xs text-[#57534e]">Lightning speed</p>
             </div>
 
             <div className="text-center">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-2">
-                <Download className="w-4 h-4 text-blue-600" />
+              <div className="w-8 h-8 rounded-full bg-[#fdece9] flex items-center justify-center mx-auto mb-2">
+                <Download className="w-4 h-4 text-[#c8302a]" />
               </div>
-              <h4 className="text-sm font-medium text-gray-900 mb-1">Easy</h4>
-              <p className="text-xs text-gray-600">Instant download</p>
+              <h4 className="text-sm font-medium text-[#1c1917] mb-1">Easy</h4>
+              <p className="text-xs text-[#57534e]">Instant download</p>
             </div>
           </div>
         </div>

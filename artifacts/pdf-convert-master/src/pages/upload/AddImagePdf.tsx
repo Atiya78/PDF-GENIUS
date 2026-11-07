@@ -182,10 +182,10 @@ export function AddImagePdfUpload() {
             />
 
             {pages.length > 1 && (
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-[#57534e]">
                 Page
                 <select
-                  className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 bg-white"
+                  className="mt-1 w-full px-3 py-2 rounded-lg border border-[#e7e0d5] bg-white"
                   value={pageIndex}
                   onChange={(e) => setPageIndex(Number(e.target.value))}
                   data-testid="select-page"
@@ -199,7 +199,7 @@ export function AddImagePdfUpload() {
               </label>
             )}
 
-            <label className="flex items-center gap-2 text-sm text-gray-700">
+            <label className="flex items-center gap-2 text-sm text-[#57534e]">
               <input
                 type="checkbox"
                 checked={applyAll}
@@ -209,7 +209,7 @@ export function AddImagePdfUpload() {
               Add to all pages
             </label>
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[#8a837b]">
               Drag the image to move it, drag the corner handle to resize. The
               aspect ratio is preserved.
             </p>
@@ -225,7 +225,7 @@ export function AddImagePdfUpload() {
               <Button
                 onClick={apply}
                 disabled={saving || !imgBytes}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-[#f7433d] hover:bg-[#c8302a]"
                 data-testid="button-apply-image"
               >
                 {saving ? (
@@ -258,7 +258,7 @@ export function AddImagePdfUpload() {
                       draggable={false}
                     />
                     <div className="absolute inset-0 flex items-center justify-center bg-black/5">
-                      <span className="bg-white/90 text-gray-600 text-sm px-3 py-1.5 rounded-lg shadow">
+                      <span className="bg-white/90 text-[#57534e] text-sm px-3 py-1.5 rounded-lg shadow">
                         Choose an image to place
                       </span>
                     </div>

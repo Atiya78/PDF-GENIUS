@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { ToolDirectory } from "@/components/ToolDirectory";
 import { FeaturesSection } from "./sections/FeaturesSection";
 import { HeroSection } from "./sections/HeroSection";
@@ -7,6 +7,7 @@ import { APIDocumentationSection } from "./sections/APIDocumentationSection";
 import { useSeo } from "@/lib/useSeo";
 import { SITE_DESCRIPTION } from "@/config/siteCopy";
 import { PrivacyFilesSection } from "./sections/PrivacyFilesSection";
+import "@/styles/marketing.css";
 
 const EducationZoneSection = lazy(() =>
   import("@/components/education/EducationZoneSection").then((m) => ({ default: m.EducationZoneSection })),
@@ -37,17 +38,20 @@ export const Body = (): JSX.Element => {
     }],
   });
   return (
-    <div className="flex flex-col w-full relative overflow-x-hidden bg-white">
-      {/* Main content sections — each renders its own animated background */}
+    <div className="mkt-root relative flex w-full flex-col overflow-x-hidden pb-24">
       <HeroSection />
       <FeaturesSection />
-      <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
-        <EducationZoneSection />
-      </Suspense>
-      <PrivacyFilesSection />
-      <ToolDirectory />
-      <APIDocumentationSection />
       <TestimonialsSection />
+      <div className="pt-24">
+        <Suspense fallback={<div className="min-h-[420px]" aria-hidden="true" />}>
+          <EducationZoneSection />
+        </Suspense>
+      </div>
+      <PrivacyFilesSection />
+      <APIDocumentationSection />
+      <div className="pt-24">
+        <ToolDirectory />
+      </div>
     </div>
   );
 };

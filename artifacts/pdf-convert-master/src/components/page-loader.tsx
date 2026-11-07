@@ -15,7 +15,7 @@ export function PageLoader({
 }) {
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-gray-50"
+      className="min-h-[100dvh] flex items-center justify-center bg-[#faf7f2]"
       data-testid="page-loader"
     >
       <div className="text-center">
@@ -25,7 +25,7 @@ export function PageLoader({
           loop
           className="mx-auto"
         />
-        {label && <p className="text-gray-600 mt-2">{label}</p>}
+        {label && <p className="mt-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[#8a837b]" role="status">{label}</p>}
       </div>
     </div>
   );

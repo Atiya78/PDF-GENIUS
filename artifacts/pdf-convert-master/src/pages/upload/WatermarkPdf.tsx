@@ -248,11 +248,11 @@ export function WatermarkPdfUpload() {
         <div className="grid lg:grid-cols-[340px_1fr] gap-8">
           {/* Controls */}
           <div className="space-y-5">
-            <div className="flex rounded-lg border border-gray-200 overflow-hidden">
+            <div className="flex rounded-lg border border-[#e7e0d5] overflow-hidden">
               <button
                 onClick={() => setMode("text")}
                 className={`flex-1 py-2 text-sm font-medium flex items-center justify-center gap-1.5 ${
-                  mode === "text" ? "bg-blue-600 text-white" : "bg-white text-gray-600"
+                  mode === "text" ? "bg-[#f7433d] text-white" : "bg-white text-[#57534e]"
                 }`}
                 data-testid="tab-text"
               >
@@ -261,7 +261,7 @@ export function WatermarkPdfUpload() {
               <button
                 onClick={() => setMode("image")}
                 className={`flex-1 py-2 text-sm font-medium flex items-center justify-center gap-1.5 ${
-                  mode === "image" ? "bg-blue-600 text-white" : "bg-white text-gray-600"
+                  mode === "image" ? "bg-[#f7433d] text-white" : "bg-white text-[#57534e]"
                 }`}
                 data-testid="tab-image"
               >
@@ -271,19 +271,19 @@ export function WatermarkPdfUpload() {
 
             {mode === "text" ? (
               <>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-[#57534e]">
                   Watermark text
                   <input
-                    className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300"
+                    className="mt-1 w-full px-3 py-2 rounded-lg border border-[#e7e0d5]"
                     value={text}
                     onChange={(e) => setText(e.target.value)}
                     data-testid="input-watermark-text"
                   />
                 </label>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-[#57534e]">
                   Font
                   <select
-                    className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 bg-white"
+                    className="mt-1 w-full px-3 py-2 rounded-lg border border-[#e7e0d5] bg-white"
                     value={fontKey}
                     onChange={(e) => setFontKey(e.target.value)}
                     data-testid="select-font"
@@ -295,7 +295,7 @@ export function WatermarkPdfUpload() {
                     ))}
                   </select>
                 </label>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-[#57534e]">
                   Size: {fontSize}pt
                   <input
                     type="range"
@@ -307,7 +307,7 @@ export function WatermarkPdfUpload() {
                     data-testid="range-size"
                   />
                 </label>
-                <label className="flex items-center gap-3 text-sm font-medium text-gray-700">
+                <label className="flex items-center gap-3 text-sm font-medium text-[#57534e]">
                   Colour
                   <input
                     type="color"
@@ -336,7 +336,7 @@ export function WatermarkPdfUpload() {
                   onChange={onImagePicked}
                 />
                 {imgUrl && (
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className="block text-sm font-medium text-[#57534e]">
                     Size: {imgScale}% of page width
                     <input
                       type="range"
@@ -352,7 +352,7 @@ export function WatermarkPdfUpload() {
               </>
             )}
 
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-[#57534e]">
               Opacity: {Math.round(opacity * 100)}%
               <input
                 type="range"
@@ -364,7 +364,7 @@ export function WatermarkPdfUpload() {
                 data-testid="range-opacity"
               />
             </label>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-[#57534e]">
               Rotation: {rotation}°
               <input
                 type="range"
@@ -376,10 +376,10 @@ export function WatermarkPdfUpload() {
                 data-testid="range-rotation"
               />
             </label>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-[#57534e]">
               Layout
               <select
-                className="mt-1 w-full px-3 py-2 rounded-lg border border-gray-300 bg-white"
+                className="mt-1 w-full px-3 py-2 rounded-lg border border-[#e7e0d5] bg-white"
                 value={layout}
                 onChange={(e) => setLayout(e.target.value as "single" | "tiled")}
                 data-testid="select-layout"
@@ -400,7 +400,7 @@ export function WatermarkPdfUpload() {
               <Button
                 onClick={apply}
                 disabled={saving}
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 bg-[#f7433d] hover:bg-[#c8302a]"
                 data-testid="button-apply-watermark"
               >
                 {saving ? (
@@ -411,7 +411,7 @@ export function WatermarkPdfUpload() {
                 Apply &amp; download
               </Button>
             </div>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[#8a837b]">
               Applied to all {pages.length} page(s). Preview shows page 1.
             </p>
           </div>

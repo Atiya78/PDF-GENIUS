@@ -705,13 +705,13 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
 
       {/* Workflow Card — only after files are selected / converting / done */}
       {stage !== 'upload' && (
-      <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+      <div className="bg-[#fffdf9] rounded-[14px] border border-[#e7e0d5] shadow-[0_24px_48px_-36px_rgba(28,25,23,0.45)] overflow-hidden">
         
         {/* Progress Indicator */}
-        <div className="px-6 py-4 bg-gray-50 border-b">
+        <div className="px-6 py-4 bg-[#faf7f2] border-b">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-4">
-              <div className={`flex items-center space-x-2 ${stage === 'files-selected' ? 'text-blue-600' : stage === 'converting' ? 'text-blue-600' : stage === 'completed' ? 'text-green-600' : 'text-red-600'}`}>
+              <div className={`flex items-center space-x-2 ${stage === 'files-selected' ? 'text-[#c8302a]' : stage === 'converting' ? 'text-[#c8302a]' : stage === 'completed' ? 'text-green-600' : 'text-red-600'}`}>
                 {stage === 'files-selected' && <FileCheck className="w-4 h-4" />}
                 {stage === 'converting' && <ConverterStatusIcon status="processing" size={16} />}
                 {stage === 'completed' && <CheckCircle className="w-4 h-4" />}
@@ -720,7 +720,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
               </div>
             </div>
             {selectedFiles.length > 0 && (
-              <div className="text-sm text-gray-500">
+              <div className="text-sm text-[#57534e]">
                 {selectedFiles.length} file{selectedFiles.length !== 1 ? 's' : ''} selected
               </div>
             )}
@@ -740,10 +740,10 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
               {/* File Management Header */}
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900">
+                  <h3 className="text-xl font-semibold text-[#1c1917]">
                     {selectedFiles.length} File{selectedFiles.length !== 1 ? 's' : ''} Selected
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-[#57534e]">
                     {validFilesCount} ready • {selectedFiles.length - validFilesCount} with issues
                   </p>
                 </div>
@@ -785,7 +785,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
 
               {/* Add More Files Area */}
               {selectedFiles.length < maxFiles && (
-              <div className="border-2 border-dashed border-gray-200 rounded-lg p-4">
+              <div className="border-2 border-dashed border-[#e7e0d5] rounded-lg p-4">
                 <EnhancedUploadArea
                   acceptedFormats={acceptedFormats}
                   maxFileSize={effectiveMaxLabel}
@@ -810,7 +810,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
               {/* Password field — Lock PDF / Unlock PDF only */}
               {needsPassword && (
                 <div className="max-w-md mx-auto space-y-2">
-                  <label htmlFor="pdf-password" className="block text-sm font-medium text-gray-900">
+                  <label htmlFor="pdf-password" className="block text-sm font-medium text-[#1c1917]">
                     {toolType === 'lock-pdf' ? 'Set a password' : 'Enter the PDF password'}
                   </label>
                   <input
@@ -820,10 +820,10 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={toolType === 'lock-pdf' ? 'Choose a strong password' : 'Current PDF password'}
                     autoComplete={toolType === 'lock-pdf' ? 'new-password' : 'current-password'}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-[#f7433d] focus:outline-none focus:ring-2 focus:ring-[#f7433d]/20"
+                    className="w-full rounded-lg border border-[#e7e0d5] px-4 py-2.5 text-[#1c1917] focus:border-[#f7433d] focus:outline-none focus:ring-2 focus:ring-[#f7433d]/20"
                     data-testid="input-pdf-password"
                   />
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-[#57534e]">
                     {toolType === 'lock-pdf'
                       ? 'Anyone who opens this PDF will need this password. Keep it safe — it cannot be recovered.'
                       : 'We need the current password to remove protection from this PDF.'}
@@ -866,8 +866,8 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                 <ConverterStatusIcon status="processing" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">{actionLabels.progress} Files...</h3>
-                <p className="text-gray-600">Please wait while we process your files</p>
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">{actionLabels.progress} Files...</h3>
+                <p className="text-[#57534e]">Please wait while we process your files</p>
               </div>
               
               {/* File List During Conversion */}
@@ -901,18 +901,18 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
               <div>
                 {allFilesFailed ? (
                   <>
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                    <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">
                       {actionLabels.done} failed
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-[#57534e]">
                       We couldn&apos;t {actionLabels.base.toLowerCase()} your file
                       {failedFilesCount !== 1 ? 's' : ''}. See the details below.
                     </p>
                   </>
                 ) : (
                   <>
-                    <h3 className="text-2xl font-semibold text-gray-900 mb-2">Files {actionLabels.done}!</h3>
-                    <p className="text-gray-600">Your files have been successfully {actionLabels.done.toLowerCase()}</p>
+                    <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">Files {actionLabels.done}!</h3>
+                    <p className="text-[#57534e]">Your files have been successfully {actionLabels.done.toLowerCase()}</p>
                   </>
                 )}
               </div>
@@ -943,7 +943,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                   <Button
                     onClick={downloadAllFiles}
                     data-testid="button-download-all"
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                    className="bg-[#f7433d] hover:bg-[#c8302a] text-white px-8 py-3"
                   >
                     Download All Files
                   </Button>
@@ -967,9 +967,9 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                 const pct = ((f.file.size - out) / f.file.size) * 100;
                 const saved = pct > 0;
                 return (
-                  <div key={f.id} className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm">
-                    <p className="font-medium text-gray-900 truncate">{f.file.name}</p>
-                    <p className="text-gray-700">Original {formatMB(f.file.size)} to {formatMB(out)} output</p>
+                  <div key={f.id} className="rounded-xl border border-[#e7e0d5] bg-[#faf7f2] p-4 text-sm">
+                    <p className="font-medium text-[#1c1917] truncate">{f.file.name}</p>
+                    <p className="text-[#57534e]">Original {formatMB(f.file.size)} to {formatMB(out)} output</p>
                     <p className={saved ? 'text-green-700 font-semibold' : 'text-amber-700 font-semibold'}>
                       {saved ? `${pct.toFixed(1)}% smaller` : pct === 0 ? 'No size change' : `${Math.abs(pct).toFixed(1)}% larger - this file could not be reduced further`}
                     </p>
@@ -986,7 +986,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                 <ConverterStatusIcon status="error" size={88} />
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                <h3 className="text-2xl font-semibold text-[#1c1917] mb-2">
                   {authError ? 'Sign in required' : 'Conversion Failed'}
                 </h3>
                 <p className="text-red-600">{errorMessage}</p>
@@ -1002,7 +1002,7 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
               </div>
               <Button
                 onClick={resetWorkflow}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3"
+                className="bg-[#f7433d] hover:bg-[#c8302a] text-white px-8 py-3"
               >
                 Try Again
               </Button>
@@ -1023,19 +1023,19 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
         return (
           <Dialog open={levelModalOpen} onOpenChange={setLevelModalOpen}>
             <DialogContent className="sm:max-w-2xl">
-              <DialogTitle className="text-center text-3xl font-extrabold text-gray-900">
+              <DialogTitle className="text-center text-3xl font-extrabold text-[#1c1917]">
                 Compress Video
               </DialogTitle>
               <DialogDescription className="sr-only">
                 Select a compression level for your video
               </DialogDescription>
 
-              <div className="flex items-center justify-between border-b border-gray-200 pb-3 text-sm">
-                <span className="truncate pr-4 text-gray-500">{displayName}</span>
-                <span className="shrink-0 font-medium text-gray-900">{formatMB(totalBytes)}</span>
+              <div className="flex items-center justify-between border-b border-[#e7e0d5] pb-3 text-sm">
+                <span className="truncate pr-4 text-[#57534e]">{displayName}</span>
+                <span className="shrink-0 font-medium text-[#1c1917]">{formatMB(totalBytes)}</span>
               </div>
 
-              <p className="pt-1 text-sm font-medium text-gray-500">Select compression level:</p>
+              <p className="pt-1 text-sm font-medium text-[#57534e]">Select compression level:</p>
 
               <div className="grid gap-3 sm:grid-cols-3">
                 {VIDEO_LEVELS.map((lvl) => {
@@ -1049,20 +1049,20 @@ export const ConversionWorkflow: React.FC<ConversionWorkflowProps> = ({
                       className={`relative rounded-xl border p-4 text-left transition-colors ${
                         selected
                           ? 'border-[#f7433d] ring-1 ring-[#f7433d]/30'
-                          : 'border-gray-200 hover:border-gray-300'
+                          : 'border-[#e7e0d5] hover:border-[#e7e0d5]'
                       }`}
                     >
                       <span
                         className={`absolute right-3 top-3 flex h-5 w-5 items-center justify-center rounded-full border ${
-                          selected ? 'border-[#f7433d] bg-[#f7433d] text-white' : 'border-gray-300'
+                          selected ? 'border-[#f7433d] bg-[#f7433d] text-white' : 'border-[#e7e0d5]'
                         }`}
                       >
                         {selected && <Check className="h-3 w-3" strokeWidth={3} />}
                       </span>
-                      <h4 className="text-lg font-bold text-gray-900">{lvl.label}</h4>
-                      <p className="mt-1 text-xs text-gray-500">{lvl.sub}</p>
-                      <div className="mt-3 inline-block rounded-md bg-gray-100 px-2.5 py-1 text-sm text-gray-700">
-                        Final size <span className="font-bold text-gray-900">~{formatMB(totalBytes * lvl.ratio)}</span>
+                      <h4 className="text-lg font-semibold text-[#1c1917]">{lvl.label}</h4>
+                      <p className="mt-1 text-xs text-[#57534e]">{lvl.sub}</p>
+                      <div className="mt-3 inline-block rounded-md bg-[#f3eee6] px-2.5 py-1 text-sm text-[#57534e]">
+                        Final size <span className="font-semibold text-[#1c1917]">~{formatMB(totalBytes * lvl.ratio)}</span>
                       </div>
                     </button>
                   );

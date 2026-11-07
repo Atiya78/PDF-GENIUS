@@ -47,15 +47,15 @@ export function GuestRecentDownloads({
 
   return (
     <>
-    <div className="w-full max-w-4xl mx-auto mt-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-      <p className="text-sm font-semibold text-gray-900 mb-3">Your recent files</p>
+    <div className="w-full max-w-4xl mx-auto mt-6 rounded-2xl border border-[#e7e0d5] bg-white p-4 shadow-sm">
+      <p className="text-sm font-semibold text-[#1c1917] mb-3">Your recent files</p>
       <div className="space-y-2">
         {items.slice(0, 5).map((d) => (
           <div
             key={`${d.toolType}-${d.jobId}`}
-            className="flex items-center justify-between gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2"
+            className="flex items-center justify-between gap-3 rounded-xl border border-[#e7e0d5] bg-[#faf7f2] px-3 py-2"
           >
-            <span className="truncate text-sm text-gray-700">{d.fileName}</span>
+            <span className="truncate text-sm text-[#57534e]">{d.fileName}</span>
             <button
               type="button"
               onClick={() => onDownload(d)}

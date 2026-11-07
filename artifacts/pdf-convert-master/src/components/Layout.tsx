@@ -8,7 +8,7 @@ interface LayoutProps {
 
 export const Layout = ({ children }: LayoutProps): JSX.Element => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="desk-root min-h-[100dvh] flex flex-col">
       <NavigationSection />
       <main className="flex-1">
         {children}

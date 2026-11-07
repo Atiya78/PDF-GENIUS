@@ -1,0 +1,103 @@
+/* Tools area: index rows, working sheets, upload shell. Extends the desk palette. */
+.tl-root { background: var(--desk-paper); color: var(--desk-ink); }
+
+/* Index row: hairline-ruled, coral rule slides in from the left on hover */
+.tl-row {
+  position: relative; display: grid; grid-template-columns: 3rem minmax(0, 1fr) auto; gap: 1rem;
+  align-items: start; padding: 1.1rem 0.75rem 1.1rem 0.9rem; border-top: 1px solid var(--desk-line);
+  color: var(--desk-ink); transition: background-color 180ms var(--desk-ease); min-height: 44px;
+}
+.tl-row::before {
+  content: ""; position: absolute; left: 0; top: 0.9rem; bottom: 0.9rem; width: 2px; background: var(--desk-coral);
+  transform: scaleY(0); transform-origin: top; transition: transform 240ms var(--desk-ease);
+}
+.tl-row:hover:not([aria-disabled="true"]), .tl-row:focus-visible { background: var(--desk-sheet); }
+.tl-row:hover:not([aria-disabled="true"])::before, .tl-row:focus-visible::before { transform: scaleY(1); }
+.tl-row:focus-visible { outline: 2px solid var(--desk-ink); outline-offset: -2px; border-radius: 4px; }
+.tl-row .tl-arrow { transition: transform 200ms var(--desk-ease), color 200ms ease; color: var(--desk-ink-3); }
+.tl-row:hover .tl-arrow, .tl-row:focus-visible .tl-arrow { transform: translateX(3px); color: var(--desk-coral-deep); }
+.tl-row[aria-disabled="true"] { cursor: not-allowed; }
+.tl-row[aria-disabled="true"] .tl-title { color: var(--desk-ink-2); }
+.tl-row.tl-drag { background: var(--desk-coral-wash); }
+
+.tl-icon {
+  width: 3rem; height: 3rem; display: grid; place-items: center; border-radius: 10px;
+  background: var(--desk-sheet); border: 1px solid var(--desk-line); transition: transform 220ms var(--desk-ease);
+}
+.tl-row:hover .tl-icon { transform: translateY(-2px); }
+
+.tl-tag {
+  display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.1rem 0.45rem; border-radius: 4px;
+  font: 600 10px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.tl-tag-coral { background: var(--desk-coral-wash); color: var(--desk-coral-deep); }
+.tl-tag-amber { background: #fbf0d9; color: #7a5410; }
+
+/* Working sheet (active card) */
+.tl-sheet {
+  background: var(--desk-sheet); border: 1px solid var(--desk-line); border-radius: 14px; padding: 1.25rem;
+  box-shadow: 0 1px 0 rgba(28, 25, 23, 0.03), 0 24px 48px -36px rgba(28, 25, 23, 0.45);
+}
+.tl-file { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; border-radius: 10px; border: 1px solid var(--desk-line); background: #fff; }
+.tl-btn {
+  display: inline-flex; width: 100%; align-items: center; justify-content: center; gap: 0.5rem; height: 3rem;
+  border-radius: 10px; background: var(--desk-coral); color: #fff; font-weight: 600; font-size: 15px;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.16); transition: background-color 150ms ease, transform 150ms ease;
+}
+.tl-btn:hover:not(:disabled) { background: var(--desk-coral-deep); }
+.tl-btn:active:not(:disabled) { transform: translateY(1px); }
+.tl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.tl-btn:focus-visible, .tl-link:focus-visible, .tl-filter:focus-visible { outline: 2px solid var(--desk-ink); outline-offset: 2px; }
+.tl-link {
+  min-height: 44px; font-size: 13px; font-weight: 600; color: var(--desk-ink-2);
+  background: linear-gradient(var(--desk-coral), var(--desk-coral)) no-repeat left calc(100% - 12px) / 0 1.5px;
+  transition: background-size 220ms var(--desk-ease), color 150ms ease;
+}
+.tl-link:hover { color: var(--desk-ink); background-size: 100% 1.5px; }
+.tl-progress { height: 4px; border-radius: 999px; background: var(--desk-line); overflow: hidden; }
+.tl-progress > div { height: 100%; background: var(--desk-coral); transition: width 300ms ease; }
+.tl-range { accent-color: var(--desk-coral); }
+
+/* Category scroller */
+.tl-scroller { display: flex; gap: 0.25rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; scroll-behavior: smooth; }
+.tl-scroller::-webkit-scrollbar { display: none; }
+.tl-filter {
+  scroll-snap-align: start; flex-shrink: 0; position: relative; display: inline-flex; align-items: baseline; gap: 0.4rem;
+  min-height: 44px; padding: 0 0.85rem; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--desk-ink-2);
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.tl-filter:hover { color: var(--desk-ink); background: var(--desk-sheet); }
+.tl-filter-on { color: #fff; background: var(--desk-ink); }
+.tl-filter-on:hover { color: #fff; background: var(--desk-ink); }
+.tl-filter .tl-count { font: 500 11px ui-monospace, SFMono-Regular, Menlo, monospace; opacity: 0.65; }
+.tl-nav {
+  width: 44px; height: 44px; display: grid; place-items: center; border-radius: 9px; border: 1px solid var(--desk-line);
+  background: var(--desk-sheet); color: var(--desk-ink); transition: border-color 150ms ease;
+}
+.tl-nav:hover:not(:disabled) { border-color: var(--desk-ink); }
+.tl-nav:disabled { opacity: 0.35; }
+.tl-nav:focus-visible { outline: 2px solid var(--desk-ink); outline-offset: 2px; }
+
+/* Directory link list (home) */
+.tl-dir-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 48px;
+  border-top: 1px solid var(--desk-line); padding: 0 0.25rem; font-weight: 500; color: var(--desk-ink);
+}
+.tl-dir-link span:first-child {
+  background: linear-gradient(var(--desk-coral), var(--desk-coral)) no-repeat left bottom / 0 1.5px;
+  transition: background-size 240ms var(--desk-ease);
+}
+.tl-dir-link:hover span:first-child, .tl-dir-link:focus-visible span:first-child { background-size: 100% 1.5px; }
+.tl-dir-link svg { color: var(--desk-ink-3); transition: transform 200ms var(--desk-ease), color 150ms; }
+.tl-dir-link:hover svg { transform: translateX(3px); color: var(--desk-coral-deep); }
+.tl-dir-link:focus-visible { outline: 2px solid var(--desk-ink); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tl-row::before, .tl-row .tl-arrow, .tl-icon, .tl-link, .tl-dir-link span:first-child, .tl-dir-link svg, .tl-btn { transition: none; }
+  .tl-scroller { scroll-behavior: auto; }
+}
+
+/* On SEO landing pages the tool sits between the intro and the method/FAQ sections:
+   drop the full-viewport min-heights the standalone tool pages use, or a blank gap appears. */
+.tl-landing-body .min-h-screen,
+.tl-landing-body [class*="min-h-[100dvh]"] { min-height: 0 !important; }

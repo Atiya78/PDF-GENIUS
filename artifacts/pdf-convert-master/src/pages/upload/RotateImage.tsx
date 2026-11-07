@@ -123,8 +123,8 @@ export const RotateImageUpload = () => {
     <ImageToolShell
       title="Image Rotator"
       description="Rotate by 90° steps or any custom angle, flip horizontally or vertically, and preview live before you download or save to the server."
-      icon={<RotateCw className="w-8 h-8 text-blue-500" />}
-      iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+      icon={<RotateCw className="w-8 h-8 text-[#c8302a]" />}
+      iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
       hideHeader={!file}
     >
       {!file ? (
@@ -136,7 +136,7 @@ export const RotateImageUpload = () => {
         />
       ) : (
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 flex items-center justify-center min-h-[300px]">
+          <div className="rounded-xl border border-[#e7e0d5] dark:border-gray-700 bg-[#faf7f2] dark:bg-gray-900 p-4 flex items-center justify-center min-h-[300px]">
             <canvas
               ref={canvasRef}
               className="max-h-[380px] max-w-full object-contain"
@@ -218,14 +218,14 @@ export const RotateImageUpload = () => {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+            <div className="pt-3 border-t border-[#e7e0d5] dark:border-gray-700">
               <OutputActions getBlob={getBlob} filename={outName} />
             </div>
 
             <Button
               variant="ghost"
               onClick={reset}
-              className="text-gray-500"
+              className="text-[#57534e]"
               data-testid="button-reset"
             >
               <RefreshCw className="w-4 h-4 mr-2" />

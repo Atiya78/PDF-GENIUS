@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { authedFetch, getAuthError, AuthError } from "@/lib/authedFetch";
 import { downloadFromUrl } from "@/lib/download";
 import { useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
 import { AuthErrorAction } from "@/components/AuthErrorAction";
 import { toolConfigs, type ToolConfig } from "@/lib/toolConfig";
 import { useSeo } from "@/lib/useSeo";
@@ -15,11 +14,14 @@ import {
   FileText,
   SlidersHorizontal,
   Clock,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
+import "@/styles/tools.css";
 import { ConverterStatusIcon } from "@/components/converter-status-icon";
 import { PausedBadge } from "@/components/PausedBadge";
 import { UploadDropzone } from "@/components/upload/UploadDropzone";
-import { AnimatedBackground } from "@/components/ui/animated-background";
 import { ToolLottieIcon } from "@/components/tool-lottie-icon";
 import { OrderedFileList } from "@/components/OrderedFileList";
 import {
@@ -508,25 +510,24 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
   };
 
   const cardBase =
-    "w-full max-w-[290px] p-6 bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl shadow-lg transition-all duration-200";
-  const cardIdle = "h-[380px] hover:shadow-xl hover:scale-[1.02]";
-  const cardActive = "min-h-[380px] shadow-xl";
+    "tl-sheet w-full my-3 md:col-span-2";
+  const cardActive = "min-h-[280px]";
 
   // Compact header used in all non-idle stages
   const CompactHeader = (
     <div className="flex items-center gap-3 mb-4">
       <div
-        className={`w-11 h-11 flex items-center justify-center rounded-xl border ${toolConfig.iconBorderColor} ${toolConfig.iconBgColor} shadow-sm shrink-0`}
+        className={`tl-icon !h-11 !w-11 shrink-0`}
       >
         <ToolLottieIcon toolId={toolConfig.id} config={toolConfig} size={34} />
       </div>
-      <h3 className="text-base font-bold text-gray-900 leading-tight">
+      <h3 className="font-['Poppins'] text-base font-semibold text-[#1c1917] leading-tight">
         {toolConfig.title}
       </h3>
       {stage !== "converting" && (
         <button
           onClick={reset}
-          className="ml-auto text-gray-400 hover:text-gray-600 transition-colors"
+          className="ml-auto grid h-11 w-11 place-items-center rounded-lg text-[#8a837b] hover:bg-[#faf7f2] hover:text-[#1c1917] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1c1917]"
           aria-label="Close"
           data-testid={`button-close-${toolConfig.id}`}
         >
@@ -584,35 +585,28 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
               isNavigateTool ? setLocation(toolConfig.route!) : setUploadOpen(true);
             }
           }}
-          className={`${cardBase} ${cardIdle} ${isDisabled ? "opacity-70 cursor-not-allowed" : "cursor-pointer"}`}
+          onDragOver={(e) => {
+            if (isDisabled) return;
+            e.preventDefault();
+            setIsDragOver(true);
+          }}
+          onDragLeave={(e) => {
+            e.preventDefault();
+            setIsDragOver(false);
+          }}
+          onDrop={isDisabled ? undefined : handleDrop}
+          className={`tl-row ${isDragOver ? "tl-drag" : ""} ${isDisabled ? "" : "cursor-pointer"}`}
           data-testid={`card-tool-${toolConfig.id}`}
         >
-          <div
-            className={`flex flex-col h-full ${isDragOver ? "opacity-80" : ""}`}
-            onDragOver={(e) => {
-              if (isDisabled) return;
-              e.preventDefault();
-              setIsDragOver(true);
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              setIsDragOver(false);
-            }}
-            onDrop={isDisabled ? undefined : handleDrop}
-          >
-            <div className="flex justify-center mb-4">
-              <div
-                className={`w-16 h-16 p-1 flex items-center justify-center rounded-2xl border ${toolConfig.iconBorderColor} ${toolConfig.iconBgColor} shadow-md`}
-              >
-                <ToolLottieIcon toolId={toolConfig.id} config={toolConfig} size={52} />
-              </div>
-            </div>
-
-            <h3 className="text-lg font-bold text-gray-900 text-center mb-3 flex items-center justify-center gap-2">
+          <div className="tl-icon">
+            <ToolLottieIcon toolId={toolConfig.id} config={toolConfig} size={36} />
+          </div>
+          <div className="min-w-0">
+            <h3 className="tl-title flex flex-wrap items-center gap-2 font-['Poppins'] text-[16px] font-semibold leading-snug text-[#1c1917]">
               {toolConfig.title}
               {isComingSoon && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#f7433d]/10 text-[#f7433d] text-[10px] font-semibold px-2 py-0.5">
-                  <Clock className="w-3 h-3" />
+                <span className="tl-tag tl-tag-coral" data-testid={`hint-coming-soon-${toolConfig.id}`}>
+                  <Clock className="h-3 w-3" aria-hidden="true" />
                   Coming soon
                 </span>
               )}
@@ -620,46 +614,30 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
                 <PausedBadge testId={`badge-paused-${toolConfig.id}`} />
               )}
             </h3>
-
-            <p className="text-sm text-gray-600 text-center mb-4 flex-grow flex items-center justify-center px-2">
+            <p className="mt-1 text-[14px] leading-relaxed text-[#57534e]">
               {toolConfig.description}
             </p>
-
-            <div className="text-center mb-4">
-              <div className="text-xs text-gray-500 bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
-                <span className="font-medium">Accepts:</span> {formatList}
-              </div>
-              <div className="text-xs text-gray-400 mt-1">
-                Max: {toolConfig.maxFileSize}
-              </div>
-            </div>
-
-            {isComingSoon ? (
-              <div
-                className="w-full h-12 flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-[#f7433d]/30 text-sm font-semibold text-[#f7433d]"
-                data-testid={`hint-coming-soon-${toolConfig.id}`}
-              >
-                <Clock className="w-4 h-4" />
-                Coming soon
-              </div>
-            ) : isPaused ? (
-              <div
-                className="w-full h-12 flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-amber-400/50 text-sm font-semibold text-amber-600"
-                data-testid={`hint-paused-${toolConfig.id}`}
-              >
-                <Clock className="w-4 h-4" />
+            <p className="edu-mono mt-2 text-[11.5px] text-[#8a837b]">
+              <span className="sr-only">Accepts: </span>{formatList}
+              <span className="mx-1.5 text-[#c9bfb1]" aria-hidden="true">/</span>
+              max {toolConfig.maxFileSize}
+            </p>
+            {!isComingSoon && isPaused && (
+              <p className="mt-1 text-xs font-semibold text-[#7a5410]" data-testid={`hint-paused-${toolConfig.id}`}>
                 Temporarily unavailable
-              </div>
-            ) : (
-              <div
-                className="w-full h-12 flex items-center justify-center gap-2 rounded-full border-2 border-dashed border-gray-300 text-sm font-semibold text-gray-500"
-                data-testid={`hint-upload-${toolConfig.id}`}
-              >
-                <Upload className="w-4 h-4" />
-                Click to upload
-              </div>
+              </p>
+            )}
+            {!isComingSoon && !isPaused && (
+              <span className="sr-only" data-testid={`hint-upload-${toolConfig.id}`}>Click to upload</span>
             )}
           </div>
+          {isDisabled ? (
+            <Clock className="mt-1 h-4 w-4 text-[#b5aa9b]" aria-hidden="true" />
+          ) : isNavigateTool ? (
+            <ArrowRight className="tl-arrow mt-1 h-4 w-4" aria-hidden="true" />
+          ) : (
+            <Upload className="tl-arrow mt-1 h-4 w-4" aria-hidden="true" />
+          )}
         </div>
 
         {uploadDialog}
@@ -719,32 +697,32 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
         >
           <div
             className={`flex items-center gap-3 p-3 mb-4 rounded-xl border ${
-              isDragOver ? "border-blue-400 bg-blue-50" : "border-gray-200 bg-white"
+              isDragOver ? "border-[#f7433d] bg-[#fdece9]" : "border-[#e7e0d5] bg-white"
             }`}
           >
-            <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 shrink-0">
-              <FileText className="w-5 h-5 text-blue-600" />
+            <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#fdece9] shrink-0">
+              <FileText className="w-5 h-5 text-[#c8302a]" />
             </div>
             <div className="min-w-0 flex-1">
               <p
-                className="text-sm font-medium text-gray-900 truncate"
+                className="text-sm font-medium text-[#1c1917] truncate"
                 data-testid={`text-filename-${toolConfig.id}`}
               >
                 {file.name}
               </p>
-              <p className="text-xs text-gray-500">{formatBytes(file.size)}</p>
+              <p className="text-xs text-[#57534e]">{formatBytes(file.size)}</p>
             </div>
           </div>
 
           {needsFormatPicker && (
             <div className="mb-3">
-              <label className="block text-xs font-medium text-gray-600 mb-1">
+              <label className="block text-xs font-medium text-[#57534e] mb-1">
                 Convert to
               </label>
               <select
                 value={targetFormat}
                 onChange={(e) => setTargetFormat(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-10 px-3 rounded-lg border border-[#e7e0d5] bg-white text-sm text-[#1c1917] focus:outline-none focus:ring-2 focus:ring-[#f7433d]/30 focus:border-[#1c1917]"
                 data-testid={`select-format-${toolConfig.id}`}
               >
                 <option value="png">PNG</option>
@@ -762,12 +740,12 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
               <div className="flex items-center justify-between mb-1">
                 <label
                   htmlFor={`slider-compression-${toolConfig.id}`}
-                  className="text-xs font-medium text-gray-600"
+                  className="text-xs font-medium text-[#57534e]"
                 >
                   Compression level
                 </label>
                 <span
-                  className="text-xs font-semibold text-blue-600"
+                  className="text-xs font-semibold text-[#c8302a]"
                   data-testid={`text-compression-quality-${toolConfig.id}`}
                 >
                   Quality {compressionQuality}%
@@ -781,30 +759,30 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
                 step={5}
                 value={compressionQuality}
                 onChange={(e) => setCompressionQuality(Number(e.target.value))}
-                className="w-full accent-blue-600 cursor-pointer"
+                className="w-full tl-range cursor-pointer"
                 data-testid={`slider-compression-${toolConfig.id}`}
               />
-              <div className="flex justify-between text-[10px] text-gray-400 mt-1">
+              <div className="flex justify-between text-[10px] text-[#8a837b] mt-1">
                 <span>Smaller file</span>
                 <span>Higher quality</span>
               </div>
             </div>
           )}
 
-          <Button
+          <button
             onClick={startConversion}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition-all hover:shadow-xl mb-2"
+            className="tl-btn mb-1 h-12"
             data-testid={`button-convert-${toolConfig.id}`}
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             {needsFormatPicker
               ? `Convert to ${targetFormat.toUpperCase()}`
               : getActionLabel(toolConfig)}
-          </Button>
+          </button>
 
           <button
             onClick={() => inputRef.current?.click()}
-            className="text-xs text-gray-500 hover:text-blue-600 transition-colors py-1"
+            className="tl-link"
             data-testid={`button-change-${toolConfig.id}`}
           >
             Choose a different file
@@ -828,7 +806,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
         >
           <div
             className={`mb-3 max-h-[180px] overflow-y-auto pr-1 rounded-xl ${
-              isDragOver ? "ring-2 ring-blue-400" : ""
+              isDragOver ? "ring-2 ring-[#f7433d]" : ""
             }`}
           >
             <OrderedFileList
@@ -841,26 +819,26 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
           </div>
 
           <p
-            className="text-[11px] text-gray-500 text-center mb-3"
+            className="text-[11px] text-[#57534e] text-center mb-3"
             data-testid={`text-mergecount-${toolConfig.id}`}
           >
             {mergeFiles.length} file{mergeFiles.length === 1 ? "" : "s"} selected
             {mergeFiles.length < 2 ? " — add at least 2 to merge" : ""}
           </p>
 
-          <Button
+          <button
             onClick={startMerge}
             disabled={mergeFiles.length < 2}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition-all hover:shadow-xl mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="tl-btn mb-1 h-12"
             data-testid={`button-merge-${toolConfig.id}`}
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Merge PDFs
-          </Button>
+          </button>
 
           <button
             onClick={() => inputRef.current?.click()}
-            className="text-xs text-gray-500 hover:text-blue-600 transition-colors py-1"
+            className="tl-link"
             data-testid={`button-addmore-${toolConfig.id}`}
           >
             + Add more files
@@ -871,18 +849,18 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
       {/* READY (manual image-edit tools) */}
       {stage === "ready" && file && isManualEdit && (
         <div className="flex flex-col">
-          <div className="flex items-center gap-3 p-3 mb-4 rounded-xl border border-gray-200 bg-white">
-            <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 shrink-0">
-              <FileText className="w-5 h-5 text-blue-600" />
+          <div className="flex items-center gap-3 p-3 mb-4 rounded-xl border border-[#e7e0d5] bg-white">
+            <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#fdece9] shrink-0">
+              <FileText className="w-5 h-5 text-[#c8302a]" />
             </div>
             <div className="min-w-0 flex-1">
               <p
-                className="text-sm font-medium text-gray-900 truncate"
+                className="text-sm font-medium text-[#1c1917] truncate"
                 data-testid={`text-filename-${toolConfig.id}`}
               >
                 {file.name}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-[#57534e]">
                 {editImage
                   ? `${editImage.width} × ${editImage.height}px`
                   : formatBytes(file.size)}
@@ -890,18 +868,18 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
             </div>
           </div>
 
-          <Button
+          <button
             onClick={() => setModalOpen(true)}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition-all hover:shadow-xl mb-2"
+            className="tl-btn mb-1 h-12"
             data-testid={`button-edit-${toolConfig.id}`}
           >
             <SlidersHorizontal className="w-4 h-4 mr-2" />
             {getActionLabel(toolConfig)}
-          </Button>
+          </button>
 
           <button
             onClick={() => inputRef.current?.click()}
-            className="text-xs text-gray-500 hover:text-blue-600 transition-colors py-1"
+            className="tl-link"
             data-testid={`button-change-${toolConfig.id}`}
           >
             Choose a different file
@@ -913,22 +891,21 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
       {stage === "converting" && (
         <div className="flex flex-col items-center justify-center py-6">
           <ConverterStatusIcon status="processing" size={80} className="mb-3" />
-          <p className="text-sm font-medium text-gray-900 mb-1">
+          <p className="text-sm font-medium text-[#1c1917] mb-1">
             Converting your file…
           </p>
           {file && (
-            <p className="text-xs text-gray-500 truncate max-w-full px-4 mb-4">
+            <p className="text-xs text-[#57534e] truncate max-w-full px-4 mb-4">
               {file.name}
             </p>
           )}
-          <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mb-2">
+          <div className="tl-progress w-full mb-2">
             <div
-              className="h-full bg-blue-600 transition-all duration-300"
               style={{ width: `${progress}%` }}
               data-testid={`progress-${toolConfig.id}`}
             />
           </div>
-          <p className="text-xs text-gray-400">{Math.round(progress)}%</p>
+          <p className="edu-mono text-xs text-[#8a837b]">{Math.round(progress)}%</p>
         </div>
       )}
 
@@ -936,26 +913,26 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
       {stage === "done" && !isManualEdit && (
         <div className="flex flex-col items-center justify-center py-4">
           <ConverterStatusIcon status="success" size={80} className="mb-2" />
-          <p className="text-base font-bold text-gray-900 mb-1">Ready!</p>
+          <p className="font-['Poppins'] text-base font-semibold text-[#1c1917] mb-1">Ready!</p>
           <p
-            className="text-xs text-gray-500 text-center truncate max-w-full px-2 mb-5"
+            className="text-xs text-[#57534e] text-center truncate max-w-full px-2 mb-5"
             data-testid={`text-output-${toolConfig.id}`}
           >
             {outputName}
           </p>
 
-          <Button
+          <button
             onClick={handleDownload}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition-all hover:shadow-xl mb-2"
+            className="tl-btn mb-1 h-12"
             data-testid={`button-download-${toolConfig.id}`}
           >
             <Download className="w-4 h-4 mr-2" />
             Download
-          </Button>
+          </button>
 
           <button
             onClick={reset}
-            className="text-xs text-gray-500 hover:text-blue-600 transition-colors py-1"
+            className="tl-link"
             data-testid={`button-again-${toolConfig.id}`}
           >
             Convert another file
@@ -967,26 +944,26 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
       {stage === "done" && isManualEdit && (
         <div className="flex flex-col items-center justify-center py-4">
           <ConverterStatusIcon status="success" size={80} className="mb-2" />
-          <p className="text-base font-bold text-gray-900 mb-1">Ready!</p>
+          <p className="font-['Poppins'] text-base font-semibold text-[#1c1917] mb-1">Ready!</p>
           <p
-            className="text-xs text-gray-500 text-center truncate max-w-full px-2 mb-5"
+            className="text-xs text-[#57534e] text-center truncate max-w-full px-2 mb-5"
             data-testid={`text-output-${toolConfig.id}`}
           >
             {editImage ? `${editImage.width} × ${editImage.height}px` : ""}
           </p>
 
-          <Button
+          <button
             onClick={handleEditDownload}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition-all hover:shadow-xl mb-2"
+            className="tl-btn mb-1 h-12"
             data-testid={`button-download-${toolConfig.id}`}
           >
             <Download className="w-4 h-4 mr-2" />
             Download
-          </Button>
+          </button>
 
           <button
             onClick={() => setModalOpen(true)}
-            className="text-xs text-gray-500 hover:text-blue-600 transition-colors py-1"
+            className="tl-link"
             data-testid={`button-editagain-${toolConfig.id}`}
           >
             Edit again
@@ -994,7 +971,7 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
 
           <button
             onClick={reset}
-            className="text-xs text-gray-500 hover:text-blue-600 transition-colors py-1"
+            className="tl-link"
             data-testid={`button-again-${toolConfig.id}`}
           >
             Use another file
@@ -1006,11 +983,11 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
       {stage === "error" && (
         <div className="flex flex-col items-center justify-center py-4">
           <ConverterStatusIcon status="error" size={80} className="mb-2" />
-          <p className="text-base font-bold text-gray-900 mb-1">
+          <p className="font-['Poppins'] text-base font-semibold text-[#1c1917] mb-1">
             {authError ? "Sign in required" : "Something went wrong"}
           </p>
           <p
-            className="text-xs text-gray-500 text-center px-2 mb-3"
+            className="text-xs text-[#57534e] text-center px-2 mb-3"
             data-testid={`text-error-${toolConfig.id}`}
           >
             {error}
@@ -1026,14 +1003,14 @@ const ToolCard: React.FC<ToolCardProps> = ({ toolConfig }) => {
             </div>
           )}
 
-          <Button
+          <button
             onClick={() => inputRef.current?.click()}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-full shadow-lg transition-all hover:shadow-xl"
+            className="tl-btn h-12"
             data-testid={`button-retry-${toolConfig.id}`}
           >
             <Upload className="w-4 h-4 mr-2" />
             Try another file
-          </Button>
+          </button>
         </div>
       )}
     </div>
@@ -1098,40 +1075,84 @@ export const Tools: React.FC = () => {
       ? toolsData
       : toolsData.filter((tool) => tool.category === activeFilter);
 
+  const counts = filterButtons.reduce<Record<string, number>>((acc, name) => {
+    acc[name] = name === "All Tools" ? toolsData.length : toolsData.filter((t) => t.category === name).length;
+    return acc;
+  }, {});
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [edges, setEdges] = useState({ start: true, end: false });
+  const updateEdges = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setEdges({ start: el.scrollLeft <= 2, end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 });
+  };
+  useEffect(() => {
+    updateEdges();
+    window.addEventListener("resize", updateEdges);
+    return () => window.removeEventListener("resize", updateEdges);
+  }, []);
+  const scrollBy = (dir: number) => scrollerRef.current?.scrollBy({ left: dir * 240 });
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white">
-      <AnimatedBackground particleCount={14} className="opacity-50" />
-      {/* Filter Buttons */}
-      <div className="relative z-10 w-full py-8 px-4 sm:px-8 lg:px-20">
-        <div className="max-w-screen-2xl mx-auto">
-          <div className="flex justify-center gap-2 sm:gap-3 flex-wrap pb-8">
-            {filterButtons.map((buttonName, index) => (
-              <Button
+    <div className="tl-root min-h-[100dvh]">
+      <header className="border-b border-[#e7e0d5]">
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 pb-10 pt-10 sm:px-6 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-end lg:pb-12 lg:pt-14">
+          <div>
+            <p className="edu-eyebrow">Index</p>
+            <h1 className="mt-3 font-['Poppins'] text-[2.2rem] font-semibold leading-[1.05] tracking-[-0.03em] text-[#1c1917] sm:text-[2.8rem]" data-testid="text-tools-title">
+              Every tool
+            </h1>
+          </div>
+          <p className="max-w-xl text-[16px] leading-relaxed text-[#57534e]">
+            Convert, merge, split, compress, rotate, sign and OCR PDFs, plus resize, crop and convert images.
+            Pick a row to open it, or drop a file straight onto one. <span className="edu-mono text-[#1c1917]">{toolsData.length}</span> tools.
+          </p>
+        </div>
+      </header>
+
+      <div className="sticky top-0 z-20 border-b border-[#e7e0d5] bg-[#faf7f2]/95 backdrop-blur-[2px]">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-2 sm:px-6">
+          <div
+            ref={scrollerRef}
+            onScroll={updateEdges}
+            className="tl-scroller flex-1"
+            role="toolbar"
+            aria-label="Filter tools by category"
+          >
+            {filterButtons.filter((name) => counts[name] > 0).map((buttonName, index) => (
+              <button
                 key={index}
-                variant={activeFilter === buttonName ? "default" : "outline"}
-                className={`px-3 sm:px-6 py-2 sm:py-3 rounded-full font-medium text-sm sm:text-base ${
-                  activeFilter === buttonName
-                    ? "bg-blue-600 text-white shadow-lg hover:bg-blue-700"
-                    : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                }`}
+                type="button"
+                aria-pressed={activeFilter === buttonName}
+                className={`tl-filter ${activeFilter === buttonName ? "tl-filter-on" : ""}`}
                 onClick={() => setActiveFilter(buttonName)}
                 data-testid={`filter-${buttonName.replace(/\s+/g, "-").toLowerCase()}`}
               >
-                {buttonName}
-              </Button>
+                <span className="self-center">{buttonName}</span>
+                <span className="tl-count self-center">{counts[buttonName]}</span>
+              </button>
             ))}
+          </div>
+          <div className="hidden shrink-0 gap-1.5 sm:flex">
+            <button type="button" className="tl-nav" onClick={() => scrollBy(-1)} disabled={edges.start} aria-label="Scroll categories left">
+              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+            </button>
+            <button type="button" className="tl-nav" onClick={() => scrollBy(1)} disabled={edges.end} aria-label="Scroll categories right">
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Tools Grid */}
-      <div className="relative z-10 w-full px-4 sm:px-8 lg:px-20 pb-16">
-        <div className="max-w-screen-2xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 place-items-start justify-items-center">
-            {filteredTools.map((tool) => (
-              <ToolCard key={tool.id} toolConfig={tool} />
-            ))}
-          </div>
+      <div className="mx-auto max-w-6xl px-4 pb-24 pt-8 sm:px-6">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="font-['Poppins'] text-lg font-semibold text-[#1c1917]">{activeFilter}</h2>
+          <p className="edu-mono text-xs text-[#8a837b]">{filteredTools.length} listed</p>
+        </div>
+        <div className="grid border-b border-[#e7e0d5] md:grid-cols-2 md:gap-x-10">
+          {filteredTools.map((tool) => (
+            <ToolCard key={tool.id} toolConfig={tool} />
+          ))}
         </div>
       </div>
     </div>

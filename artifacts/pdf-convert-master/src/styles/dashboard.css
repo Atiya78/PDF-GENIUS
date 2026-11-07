@@ -1,0 +1,148 @@
+/* Signed-in dashboard + plan/credit purchase surfaces.
+   "Document desk" vocabulary: paper, ink, coral marking pen, ruled rows, mono figures.
+   .dash-root wraps dashboard pages; .dash-scope wraps shared purchase components. */
+
+.dash-root { background: var(--desk-paper); color: var(--desk-ink); }
+.dash-root ::selection { background: #fbd3cf; color: var(--desk-ink); }
+
+/* ---- Legacy utility remap (keeps markup intact, swaps the template palette) ---- */
+:is(.dash-root, .dash-scope) :is(.bg-gray-50) { background-color: var(--desk-paper); }
+:is(.dash-root, .dash-scope) :is(.bg-white) { background-color: var(--desk-sheet); }
+:is(.dash-root, .dash-scope) :is(.bg-gray-100, .bg-gray-200) { background-color: #f3ede4; }
+:is(.dash-root, .dash-scope) .bg-gray-900 { background-color: var(--desk-ink); }
+:is(.dash-root, .dash-scope) :is(.text-gray-900, .text-gray-800) { color: var(--desk-ink); }
+:is(.dash-root, .dash-scope) :is(.text-gray-700, .text-gray-600) { color: var(--desk-ink-2); }
+:is(.dash-root, .dash-scope) :is(.text-gray-500) { color: #6f6860; }
+:is(.dash-root, .dash-scope) :is(.text-gray-400, .text-gray-300) { color: var(--desk-ink-3); }
+:is(.dash-root, .dash-scope) :is(.border-gray-100, .border-gray-200) { border-color: var(--desk-line); }
+:is(.dash-root, .dash-scope) .border-gray-300 { border-color: #d9d0c3; }
+:is(.dash-root, .dash-scope) :is(.text-blue-600, .text-blue-700, .text-blue-900) { color: var(--desk-coral-deep); }
+:is(.dash-root, .dash-scope) .text-blue-100 { color: #fde2df; }
+:is(.dash-root, .dash-scope) :is(.bg-blue-600) { background-color: var(--desk-coral); }
+:is(.dash-root, .dash-scope) :is(.bg-blue-700, .hover\:bg-blue-700:hover) { background-color: var(--desk-coral-deep); }
+:is(.dash-root, .dash-scope) :is(.bg-blue-50, .bg-blue-100) { background-color: var(--desk-coral-wash); }
+:is(.dash-root, .dash-scope) :is(.from-blue-50) { --tw-gradient-from: var(--desk-sheet) var(--tw-gradient-from-position); --tw-gradient-stops: var(--tw-gradient-from), var(--desk-sheet) var(--tw-gradient-to-position); }
+:is(.dash-root, .dash-scope) :is(.border-blue-200, .border-blue-500, .border-blue-600) { border-color: var(--desk-coral); }
+:is(.dash-root, .dash-scope) :is(.ring-blue-200, .ring-blue-300, .ring-blue-500) { --tw-ring-color: rgba(247, 67, 61, 0.25); }
+:is(.dash-root, .dash-scope) :is(.text-green-600, .text-green-700) { color: var(--desk-sage); }
+:is(.dash-root, .dash-scope) :is(.bg-green-50, .bg-green-100) { background-color: #e8efe9; }
+:is(.dash-root, .dash-scope) .border-green-200 { border-color: #c5d6cc; }
+
+/* shadcn Card -> ruled sheet, one radius, no stacked shadows */
+:is(.dash-root, .dash-scope) .rounded-lg.border.bg-card,
+:is(.dash-root, .dash-scope) .rounded-xl.border.bg-card {
+  background: var(--desk-sheet);
+  border-color: var(--desk-line);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 rgba(28, 25, 23, 0.03);
+}
+:is(.dash-root, .dash-scope) :is(.shadow, .shadow-sm, .shadow-md, .shadow-lg, .hover\:shadow-sm:hover, .hover\:shadow-md:hover) {
+  box-shadow: 0 1px 0 rgba(28, 25, 23, 0.03);
+}
+:is(.dash-root, .dash-scope) h1, :is(.dash-root, .dash-scope) h2, :is(.dash-root, .dash-scope) h3 {
+  font-family: Poppins, ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: -0.015em;
+}
+:is(.dash-root, .dash-scope) :is(.text-2xl, .text-3xl).font-bold { font-weight: 600; font-variant-numeric: tabular-nums; }
+:is(.dash-root, .dash-scope) code, :is(.dash-root, .dash-scope) pre { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+:is(.dash-root, .dash-scope) a:focus-visible,
+:is(.dash-root, .dash-scope) button:focus-visible,
+:is(.dash-root, .dash-scope) [role="tab"]:focus-visible {
+  outline: 2px solid var(--desk-ink); outline-offset: 2px;
+}
+
+/* ---- Page head ---- */
+.dash-head { border-bottom: 1px solid var(--desk-line); }
+.dash-h1 {
+  font: 600 clamp(1.75rem, 1.2rem + 1.6vw, 2.35rem)/1.1 Poppins, ui-sans-serif, sans-serif;
+  letter-spacing: -0.025em; color: var(--desk-ink);
+}
+.dash-lede { color: var(--desk-ink-2); font-size: 15px; line-height: 1.6; max-width: 40rem; }
+
+/* ---- Sidebar ---- */
+.dash-side { border-color: var(--desk-line); background: var(--desk-paper); }
+.dash-nav-item {
+  position: relative; display: flex; align-items: center; gap: 0.75rem; width: 100%;
+  min-height: 44px; padding: 0.5rem 0.75rem; border-radius: 9px; text-align: left;
+  color: var(--desk-ink-2); font-size: 14px; font-weight: 500;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+.dash-nav-item::before {
+  content: ""; position: absolute; left: -0.5rem; top: 10px; bottom: 10px; width: 2px; border-radius: 2px;
+  background: var(--desk-coral); transform: scaleY(0); transition: transform 220ms var(--desk-ease);
+}
+.dash-nav-item:hover { color: var(--desk-ink); background: rgba(28, 25, 23, 0.035); }
+.dash-nav-item[aria-current="page"] { color: var(--desk-ink); background: var(--desk-sheet); box-shadow: inset 0 0 0 1px var(--desk-line); font-weight: 600; }
+.dash-nav-item[aria-current="page"]::before { transform: scaleY(1); }
+.dash-nav-item svg { color: var(--desk-ink-3); transition: color 150ms ease; }
+.dash-nav-item:hover svg, .dash-nav-item[aria-current="page"] svg { color: var(--desk-coral-deep); }
+.dash-nav-item:focus-visible { outline: 2px solid var(--desk-ink); outline-offset: 1px; }
+.dash-nav-scroll { scrollbar-width: none; }
+.dash-nav-scroll::-webkit-scrollbar { display: none; }
+
+/* ---- Ledger (stat strip) ---- */
+.dash-ledger { border-top: 1px solid var(--desk-ink); border-bottom: 1px solid var(--desk-line); }
+.dash-ledger > * + * { border-top: 1px solid var(--desk-line); }
+@media (min-width: 640px) {
+  .dash-ledger { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-ledger > * + * { border-top: 0; }
+  .dash-ledger > :nth-child(even) { border-left: 1px solid var(--desk-line); }
+  .dash-ledger > :nth-child(n + 3) { border-top: 1px solid var(--desk-line); }
+}
+@media (min-width: 1024px) {
+  .dash-ledger { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .dash-ledger > * + * { border-left: 1px solid var(--desk-line); border-top: 0 !important; }
+}
+.dash-figure { font: 600 1.85rem/1.1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; color: var(--desk-ink); }
+
+/* ---- Ruled rows with hover rule ---- */
+.dash-row {
+  position: relative; transition: background-color 150ms ease;
+}
+.dash-row::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--desk-coral);
+  transform: scaleY(0); transform-origin: top; transition: transform 220ms var(--desk-ease);
+}
+.dash-row:hover { background: rgba(255, 253, 249, 0.85); }
+.dash-row:hover::before, .dash-row:focus-within::before { transform: scaleY(1); }
+
+.dash-link { display: inline-flex; align-items: center; gap: 0.35rem; font-weight: 600; font-size: 14px; color: var(--desk-ink); background: linear-gradient(var(--desk-coral), var(--desk-coral)) left bottom / 0 1.5px no-repeat; padding-bottom: 1px; transition: background-size 240ms var(--desk-ease); min-height: 2rem; }
+.dash-link:hover { background-size: 100% 1.5px; }
+.dash-link svg { transition: transform 180ms var(--desk-ease); }
+.dash-link:hover svg { transform: translateX(2px); }
+
+.dash-icon-btn {
+  display: inline-grid; place-items: center; width: 2.5rem; height: 2.5rem; border-radius: 9px;
+  border: 1px solid var(--desk-line); background: var(--desk-sheet); color: var(--desk-ink-2);
+  transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.dash-icon-btn:hover:not(:disabled) { border-color: var(--desk-ink); color: var(--desk-ink); }
+.dash-icon-btn.is-danger:hover:not(:disabled) { border-color: var(--desk-coral); color: var(--desk-coral-deep); }
+.dash-icon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.dash-icon-btn:focus-visible { outline: 2px solid var(--desk-ink); outline-offset: 2px; }
+@media (max-width: 767px) { .dash-icon-btn { width: 44px; height: 44px; } }
+
+.dash-chip { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.15rem 0.5rem; border-radius: 6px; font: 600 11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--desk-line); color: var(--desk-ink-2); background: var(--desk-sheet); }
+.dash-chip.is-ok { color: var(--desk-sage); border-color: #c5d6cc; background: #eef3ef; }
+.dash-chip.is-bad { color: var(--desk-coral-deep); border-color: #f6c4c0; background: var(--desk-coral-wash); }
+
+/* Tool tile (most-used) */
+.dash-tool { transition: transform 200ms var(--desk-ease), border-color 150ms ease; }
+.dash-tool:hover { transform: translateY(-2px); border-color: #c9bfb1; }
+
+/* Skeleton */
+.dash-skel { background: linear-gradient(90deg, #efe8dd 0%, #f6f1e9 50%, #efe8dd 100%); background-size: 200% 100%; border-radius: 6px; animation: dash-shimmer 1.4s ease-in-out infinite; }
+@keyframes dash-shimmer { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+/* Header */
+.dash-header { background: rgba(250, 247, 242, 0.92); border-bottom: 1px solid var(--desk-line); }
+@supports (backdrop-filter: blur(8px)) { .dash-header { background: rgba(250, 247, 242, 0.82); backdrop-filter: blur(8px); } }
+.dash-plan-pill { display: inline-flex; align-items: center; gap: 0.5rem; height: 2.25rem; padding: 0 0.75rem; border-radius: 9px; border: 1px solid var(--desk-line); background: var(--desk-sheet); font-size: 13px; font-weight: 600; color: var(--desk-ink); transition: border-color 150ms ease; }
+.dash-plan-pill:hover { border-color: var(--desk-ink); }
+.dash-plan-pill .dot { width: 6px; height: 6px; border-radius: 9999px; background: var(--desk-sage); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-skel { animation: none; }
+  .dash-row::before, .dash-nav-item::before, .dash-tool, .dash-link, .dash-link svg { transition: none; }
+  .dash-tool:hover { transform: none; }
+}

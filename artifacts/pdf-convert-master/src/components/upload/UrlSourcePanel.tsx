@@ -23,7 +23,7 @@ export const UrlSourcePanel: React.FC<{
   const [touched, setTouched] = React.useState(false);
   const err = url ? validatePublicUrl(url) : null;
   return (
-    <div className="mx-auto mb-6 w-full max-w-xl space-y-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+    <div className="mx-auto mb-6 w-full max-w-xl space-y-4 rounded-2xl border border-[#e7e0d5] bg-white p-4 shadow-sm sm:p-5">
       <OptionGroup
         label="Source" value={mode} onChange={onMode} testIdPrefix="select-html-mode"
         options={[{ value: "file", label: "HTML file" }, { value: "url", label: "From URL" }]}
@@ -44,10 +44,10 @@ export const UrlSourcePanel: React.FC<{
               onChange={(e) => onUrl(e.target.value)} aria-invalid={touched && !!validatePublicUrl(url)} data-testid="input-html-url"
             />
             {(touched || err) && validatePublicUrl(url) && <p className="text-xs text-red-600" role="alert" data-testid="text-url-error">{validatePublicUrl(url)}</p>}
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-[#57534e]">
               Public http:// or https:// pages only. Pages that need JavaScript or a login may not render as expected. JavaScript is not run, and the result may differ from what your browser shows.
             </p>
-            <p className="text-xs text-gray-500">Hostnames are checked on the server when conversion starts. URL limits: 5 MB HTML, 2 MB per asset and 12 MB total.</p>
+            <p className="text-xs text-[#57534e]">Hostnames are checked on the server when conversion starts. URL limits: 5 MB HTML, 2 MB per asset and 12 MB total.</p>
             <Button type="submit" className="w-full bg-[#f7433d] text-white hover:bg-[#e03a35]" data-testid="button-use-url">
               <Link2 className="mr-2 h-4 w-4" />Continue with this URL
             </Button>

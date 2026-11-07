@@ -133,7 +133,7 @@ export function ResizeModal({
       <DialogContent className="sm:max-w-md" data-testid="modal-resize">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <Maximize2 className="w-5 h-5 text-blue-600" /> Resize Image
+            <Maximize2 className="w-5 h-5 text-[#c8302a]" /> Resize Image
           </DialogTitle>
           <DialogDescription>
             Current size {image.width} × {image.height}px. Enter a new size in pixels.
@@ -169,7 +169,7 @@ export function ResizeModal({
           <div className="flex items-center gap-3">
             <Switch checked={lock} onCheckedChange={setLock} id="resize-lock" data-testid="switch-lock-aspect" />
             <Label htmlFor="resize-lock" className="flex items-center gap-1.5 cursor-pointer">
-              {lock ? <Lock className="w-4 h-4 text-blue-600" /> : <Unlock className="w-4 h-4 text-gray-400" />}
+              {lock ? <Lock className="w-4 h-4 text-[#c8302a]" /> : <Unlock className="w-4 h-4 text-[#8a837b]" />}
               Lock aspect ratio
             </Label>
           </div>
@@ -177,7 +177,7 @@ export function ResizeModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={onCancel} data-testid="button-resize-cancel">Cancel</Button>
-          <Button onClick={apply} disabled={busy} className="bg-blue-600 hover:bg-blue-700 text-white" data-testid="button-resize-apply">
+          <Button onClick={apply} disabled={busy} className="bg-[#f7433d] hover:bg-[#c8302a] text-white" data-testid="button-resize-apply">
             Apply Resize
           </Button>
         </DialogFooter>
@@ -338,13 +338,13 @@ export function CropModal({
       <DialogContent className="max-w-3xl" data-testid="modal-crop">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <CropIcon className="w-5 h-5 text-blue-600" /> Crop Image
+            <CropIcon className="w-5 h-5 text-[#c8302a]" /> Crop Image
           </DialogTitle>
           <DialogDescription>Drag to select a region, or set exact pixel values below.</DialogDescription>
         </DialogHeader>
 
         <div className="grid md:grid-cols-3 gap-6 py-2">
-          <div className="md:col-span-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-3 flex items-center justify-center min-h-[280px]">
+          <div className="md:col-span-2 rounded-xl border border-[#e7e0d5] dark:border-gray-700 bg-[#faf7f2] dark:bg-gray-900 p-3 flex items-center justify-center min-h-[280px]">
             <ReactCrop
               crop={crop}
               onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -407,7 +407,7 @@ export function CropModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={onCancel} data-testid="button-crop-cancel">Cancel</Button>
-          <Button onClick={apply} disabled={busy} className="bg-blue-600 hover:bg-blue-700 text-white" data-testid="button-crop-apply">
+          <Button onClick={apply} disabled={busy} className="bg-[#f7433d] hover:bg-[#c8302a] text-white" data-testid="button-crop-apply">
             Apply Crop
           </Button>
         </DialogFooter>
@@ -511,13 +511,13 @@ export function RotateModal({
       <DialogContent className="max-w-2xl" data-testid="modal-rotate">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <RotateCw className="w-5 h-5 text-blue-600" /> Rotate Image
+            <RotateCw className="w-5 h-5 text-[#c8302a]" /> Rotate Image
           </DialogTitle>
           <DialogDescription>Use the slider for any angle, or the quick buttons for 90°/180°.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-5 py-2">
-          <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-3 flex items-center justify-center min-h-[260px]">
+          <div className="rounded-xl border border-[#e7e0d5] dark:border-gray-700 bg-[#faf7f2] dark:bg-gray-900 p-3 flex items-center justify-center min-h-[260px]">
             <canvas
               ref={canvasRef}
               className="max-w-full max-h-[360px] object-contain"
@@ -554,7 +554,7 @@ export function RotateModal({
                   className="w-20"
                   data-testid="input-rotate-angle"
                 />
-                <span className="text-sm text-gray-500">°</span>
+                <span className="text-sm text-[#57534e]">°</span>
               </div>
             </div>
             <Slider
@@ -570,7 +570,7 @@ export function RotateModal({
 
         <DialogFooter>
           <Button variant="outline" onClick={onCancel} data-testid="button-rotate-cancel">Cancel</Button>
-          <Button onClick={apply} disabled={busy || !loaded} className="bg-blue-600 hover:bg-blue-700 text-white" data-testid="button-rotate-apply">
+          <Button onClick={apply} disabled={busy || !loaded} className="bg-[#f7433d] hover:bg-[#c8302a] text-white" data-testid="button-rotate-apply">
             Apply Rotation
           </Button>
         </DialogFooter>
@@ -728,7 +728,7 @@ function SingleImageTool({ tool, title, description, actionLabel, icon }: ToolCo
       title={title}
       description={description}
       icon={icon}
-      iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+      iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
     >
       {!current ? (
         <ImageDropzone
@@ -740,14 +740,14 @@ function SingleImageTool({ tool, title, description, actionLabel, icon }: ToolCo
       ) : (
         <div className="space-y-6">
           {/* Preview */}
-          <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4 flex flex-col items-center justify-center min-h-[300px]">
+          <div className="rounded-xl border border-[#e7e0d5] dark:border-gray-700 bg-[#faf7f2] dark:bg-gray-900 p-4 flex flex-col items-center justify-center min-h-[300px]">
             <img
               src={current.url}
               alt="Working preview"
               className="max-h-[440px] max-w-full object-contain rounded"
               data-testid="img-preview"
             />
-            <p className="mt-3 text-sm text-gray-500 dark:text-gray-400" data-testid="text-image-meta">
+            <p className="mt-3 text-sm text-[#57534e] dark:text-[#8a837b]" data-testid="text-image-meta">
               {current.width} × {current.height}px • {formatBytes(current.blob.size)}
             </p>
           </div>
@@ -756,7 +756,7 @@ function SingleImageTool({ tool, title, description, actionLabel, icon }: ToolCo
           <div>
             <Button
               onClick={() => setOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-[#f7433d] hover:bg-[#c8302a] text-white"
               data-testid="button-open-tool"
             >
               {actionLabel}
@@ -765,11 +765,11 @@ function SingleImageTool({ tool, title, description, actionLabel, icon }: ToolCo
 
           {/* Applied operations */}
           {history.length > 0 && (
-            <div className="rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-3">
-              <div className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-200 mb-1.5">
-                <Layers className="w-4 h-4 text-blue-600" /> Applied edits
+            <div className="rounded-lg bg-[#faf7f2] dark:bg-gray-900 border border-[#e7e0d5] dark:border-gray-700 p-3">
+              <div className="flex items-center gap-2 text-sm font-medium text-[#57534e] dark:text-gray-200 mb-1.5">
+                <Layers className="w-4 h-4 text-[#c8302a]" /> Applied edits
               </div>
-              <ol className="text-sm text-gray-600 dark:text-gray-300 list-decimal list-inside space-y-0.5" data-testid="list-history">
+              <ol className="text-sm text-[#57534e] dark:text-gray-300 list-decimal list-inside space-y-0.5" data-testid="list-history">
                 {history.map((h, i) => (
                   <li key={i} data-testid={`text-history-${i}`}>{h}</li>
                 ))}
@@ -778,8 +778,8 @@ function SingleImageTool({ tool, title, description, actionLabel, icon }: ToolCo
           )}
 
           {/* Output actions */}
-          <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-gray-200 dark:border-gray-700">
-            <Button onClick={download} className="bg-blue-600 hover:bg-blue-700 text-white" data-testid="button-download">
+          <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[#e7e0d5] dark:border-gray-700">
+            <Button onClick={download} className="bg-[#f7433d] hover:bg-[#c8302a] text-white" data-testid="button-download">
               <Download className="w-4 h-4 mr-2" /> Download Image
             </Button>
             {history.length > 0 && (
@@ -787,7 +787,7 @@ function SingleImageTool({ tool, title, description, actionLabel, icon }: ToolCo
                 <RefreshCw className="w-4 h-4 mr-2" /> Revert to original
               </Button>
             )}
-            <Button variant="ghost" onClick={reset} className="text-gray-500" data-testid="button-new-image">
+            <Button variant="ghost" onClick={reset} className="text-[#57534e]" data-testid="button-new-image">
               Choose a different image
             </Button>
           </div>
@@ -815,7 +815,7 @@ export const ResizeImageTool = () => (
     title="Resize Image"
     description="Upload an image and set a new width and height. Lock the aspect ratio to keep proportions — all in your browser."
     actionLabel="Resize Image"
-    icon={<Maximize2 className="w-8 h-8 text-blue-500" />}
+    icon={<Maximize2 className="w-8 h-8 text-[#c8302a]" />}
   />
 );
 
@@ -825,7 +825,7 @@ export const CropImageTool = () => (
     title="Crop Image"
     description="Upload an image and trim it to a selection — drag the box or set exact pixel values, with optional aspect presets."
     actionLabel="Crop Image"
-    icon={<CropIcon className="w-8 h-8 text-blue-500" />}
+    icon={<CropIcon className="w-8 h-8 text-[#c8302a]" />}
   />
 );
 
@@ -835,6 +835,6 @@ export const RotateImageTool = () => (
     title="Rotate Image"
     description="Upload an image and rotate it to any angle with a live preview, or snap to 90° / 180° — all in your browser."
     actionLabel="Rotate Image"
-    icon={<RotateCw className="w-8 h-8 text-blue-500" />}
+    icon={<RotateCw className="w-8 h-8 text-[#c8302a]" />}
   />
 );

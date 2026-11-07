@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useLocation } from "wouter";
 import { requestPasswordReset } from "@/lib/profile";
-import { Mail, ArrowLeft, KeyRound } from "lucide-react";
+import { Mail, ArrowLeft, ArrowRight } from "lucide-react";
 import { useSeo } from "@/lib/useSeo";
+import { AuthShell, AuthMessage } from "@/components/AuthCard";
+
+export const RESET_STEPS = ["Your email", "Code and new password", "Sign in"];
 
 export const ForgotPassword: React.FC = () => {
   useSeo({ title: "Forgot Password", canonicalPath: "/forgot-password", noindex: true });
@@ -37,68 +37,41 @@ export const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8 space-y-8">
-          <div className="text-center space-y-4">
-            <div className="flex justify-center">
-              <div className="w-14 h-14 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center">
-                <KeyRound className="w-6 h-6 text-white" />
-              </div>
+    <AuthShell
+      eyebrow="Password reset"
+      heading={<>Get back into<br />your account.</>}
+      lede="We will email you a code. Enter it with a new password on the next screen."
+      steps={RESET_STEPS}
+      current={0}
+    >
+      <div className="auth-sheet">
+        <p className="edu-eyebrow">Step 1 of 3</p>
+        <h1 className="mt-2 font-['Poppins'] text-[1.65rem] font-semibold leading-tight tracking-[-0.02em] text-[#1c1917]">Forgot password?</h1>
+        <p className="mt-2 text-[15px] leading-relaxed text-[#57534e]">Enter your email and we'll send you a code to reset your password.</p>
+
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4" noValidate>
+          <div>
+            <label htmlFor="email" className="edu-label mb-1.5">Email address</label>
+            <div className="auth-field">
+              <Mail className="auth-ico" aria-hidden="true" />
+              <input id="email" type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} data-testid="input-forgot-email" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "Poppins, sans-serif" }}>
-              Forgot password?
-            </h1>
-            <p className="text-sm text-gray-600">
-              Enter your email and we'll send you a code to reset your password.
-            </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                Email Address
-              </Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-            </div>
+          {error && <AuthMessage kind="error" testId="text-error">{error}</AuthMessage>}
 
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-                <p className="text-sm text-red-600">{error}</p>
-              </div>
-            )}
+          <button type="submit" disabled={isSubmitting} className="edu-btn-primary group w-full" data-testid="button-send-reset">
+            {isSubmitting ? "Sending..." : <>Send reset code<ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" /></>}
+          </button>
+        </form>
 
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-medium shadow-lg disabled:opacity-50"
-            >
-              {isSubmitting ? "Sending..." : "Send reset code"}
-            </Button>
-
-            <div className="pt-4 border-t border-gray-100 text-center">
-              <button
-                type="button"
-                onClick={() => setLocation("/signin")}
-                className="inline-flex items-center text-sm text-blue-600 hover:text-blue-700 font-medium"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Sign In
-              </button>
-            </div>
-          </form>
+        <div className="mt-6 border-t border-[#efe8dd] pt-3">
+          <button type="button" onClick={() => setLocation("/signin")} className="auth-link text-sm" data-testid="link-back-signin">
+            <ArrowLeft className="auth-nudge auth-nudge-l h-4 w-4" aria-hidden="true" />
+            Back to Sign In
+          </button>
         </div>
       </div>
-    </div>
+    </AuthShell>
   );
 };

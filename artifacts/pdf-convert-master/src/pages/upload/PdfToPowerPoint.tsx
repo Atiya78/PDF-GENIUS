@@ -4,7 +4,7 @@ import { Presentation } from "lucide-react";
 
 export const PdfToPowerPointUpload: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-[#faf7f2] py-8">
       <ConversionWorkflow
         toolType="pdf-to-powerpoint"
         toolTitle="PDF to PowerPoint Converter"
@@ -12,8 +12,8 @@ export const PdfToPowerPointUpload: React.FC = () => {
         acceptedFormats={[".pdf"]}
         maxFileSize="50MB"
         outputFormat="PPTX"
-        toolIcon={<Presentation className="w-8 h-8 text-blue-500" />}
-        iconBg="bg-blue-50 border-blue-200"
+        toolIcon={<Presentation className="w-8 h-8 text-[#c8302a]" />}
+        iconBg="bg-[#fdece9] border-[#f5b5b0]"
       />
     </div>
   );

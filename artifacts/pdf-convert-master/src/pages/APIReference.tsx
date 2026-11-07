@@ -7,6 +7,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 
 import { useLocation } from "wouter";
+import { DashSidebar } from "@/components/dashboard/DashSidebar";
+import "@/styles/dashboard.css";
 import { Search, Home, BarChart3, Settings, Book, GitBranch, Wrench, Upload, Clock, ArrowUp, Copy, Check } from "lucide-react";
 import { ProcessingSpinner } from "@/components/processing-spinner";
 import { useSeo } from "@/lib/useSeo";
@@ -169,153 +171,10 @@ export const APIReference: React.FC<{ publicView?: boolean }> = ({ publicView = 
 
   return (
     
-      <div className="min-h-screen bg-gray-50">
+      <div className="dash-root min-h-[100dvh]">
         <div className="flex flex-col lg:flex-row">
           {/* Sidebar */}
-          {!publicView && <aside className="w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-gray-200 lg:min-h-screen">
-            <div className="p-4">
-              {/* Search */}
-              <div className="relative mb-6">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder="Search tools..."
-                  className="pl-10"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  data-testid="input-search-tools"
-                />
-              </div>
-
-              {/* Navigation */}
-              <nav className="space-y-2">
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start p-3"
-                  onClick={() => handleNavigation('/dashboard')}
-                >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                    <Home className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className="text-sm font-medium text-gray-700">Home</p>
-                    <p className="text-xs text-gray-500">Dashboard overview</p>
-                  </div>
-                </Button>
-
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start p-3"
-                  onClick={() => handleNavigation('/dashboard/usage')}
-                >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                    <BarChart3 className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className="text-sm font-medium text-gray-700">Total Usage</p>
-                    <p className="text-xs text-gray-500">Usage statistics</p>
-                  </div>
-                </Button>
-
-                <Button 
-                  variant="ghost" 
-                  className="w-full justify-start p-3"
-                  onClick={() => handleNavigation('/dashboard/api-setup')}
-                >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                    <Settings className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className="text-sm font-medium text-gray-700">API Setup</p>
-                    <p className="text-xs text-gray-500">Integration guides</p>
-                  </div>
-                </Button>
-
-                <Button className="w-full justify-start p-3 rounded-lg shadow-md">
-                  <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center mr-3">
-                    <Book className="w-5 h-5" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className="text-sm font-medium">API Reference</p>
-                    <p className="text-xs text-blue-100">Documentation</p>
-                  </div>
-                  <div className="w-2 h-2 rounded-full bg-white"></div>
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start p-3"
-                  onClick={() => handleNavigation('/dashboard/manage-plans')}
-                >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                    <GitBranch className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className="text-sm font-medium text-gray-700">View Plans</p>
-                    <p className="text-xs text-gray-500">Pricing and upgrades</p>
-                  </div>
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start p-3"
-                  onClick={() => handleNavigation('/dashboard/live-tools')}
-                >
-                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3">
-                    <Wrench className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className="text-sm font-medium text-gray-700">Live Tools</p>
-                    <p className="text-xs text-gray-500">PDF conversion tools</p>
-                  </div>
-                </Button>
-              </nav>
-
-              {/* Quick Actions */}
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                  Quick Actions
-                </h3>
-                <div className="space-y-2">
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={() => handleNavigation('/dashboard/live-tools')}
-                    data-testid="button-quick-upload"
-                  >
-                    <Upload className="w-5 h-5 mr-3 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">Upload PDF</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                    onClick={() => handleNavigation('/dashboard/usage')}
-                    data-testid="button-quick-history"
-                  >
-                    <Clock className="w-5 h-5 mr-3 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">View History</span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Upgrade Plan */}
-              <div className="mt-8 p-4 rounded-xl border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-50">
-                <div className="flex items-center mb-2">
-                  <ArrowUp className="w-4 h-4 text-blue-600 mr-2" />
-                  <h3 className="text-sm font-semibold text-blue-900">Upgrade Plan</h3>
-                </div>
-                <p className="text-xs text-blue-700 mb-3">
-                  Get unlimited conversions and advanced features
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full text-sm"
-                  onClick={() => handleNavigation('/dashboard/manage-plans')}
-                >
-                  View Plans
-                </Button>
-              </div>
-            </div>
-          </aside>}
+          {!publicView && <DashSidebar />}
 
           {/* Main Content */}
           <main className="min-w-0 flex-1 p-4 sm:p-6">

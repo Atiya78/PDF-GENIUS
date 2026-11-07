@@ -120,7 +120,7 @@ export function CropPdfUpload() {
       ) : (
         <div>
           <div className="flex flex-wrap items-center gap-3 mb-6">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-[#57534e]">
               Drag the handles to set the crop region. It will be applied to all{" "}
               {pages.length} page(s).
             </span>
@@ -137,7 +137,7 @@ export function CropPdfUpload() {
               size="sm"
               onClick={apply}
               disabled={saving}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-[#f7433d] hover:bg-[#c8302a]"
               data-testid="button-apply-crop"
             >
               {saving ? (
@@ -165,7 +165,7 @@ export function CropPdfUpload() {
               </ReactCrop>
             </div>
           </div>
-          <p className="text-center text-xs text-gray-400 mt-3">
+          <p className="text-center text-xs text-[#8a837b] mt-3">
             Preview shows page 1. The same crop is applied to every page.
           </p>
         </div>

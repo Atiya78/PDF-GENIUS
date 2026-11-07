@@ -13,7 +13,7 @@ export const SplitPdfUpload: React.FC = () => {
   const [n, setN] = useState(2);
   const zip = mode !== "extract";
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+    <div className="min-h-screen bg-[#faf7f2] dark:bg-gray-900 py-8">
       <ConversionWorkflow
         toolType="split-pdf"
         toolTitle="PDF Splitter"
@@ -24,7 +24,7 @@ export const SplitPdfUpload: React.FC = () => {
         outputFormat="Split PDF"
         outputLabel={zip ? "split PDF files" : "one PDF"}
         toolIcon={<ToolLottieIcon toolId="split-pdf" size={48} />}
-        iconBg="bg-blue-50 border-blue-200 dark:bg-blue-900 dark:border-blue-800"
+        iconBg="bg-[#fdece9] border-[#f5b5b0] dark:bg-[#c8302a] dark:border-[#c8302a]"
         canConvert={ok}
         useServerName
         extraOptions={(() => {

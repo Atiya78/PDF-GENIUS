@@ -29,9 +29,9 @@ export const ImageOutputOptions: React.FC<{
     {format === "jpg" || format === "webp" ? (
       <QualitySlider value={quality} onChange={onQuality} disabled={disabled} testId="input-quality" />
     ) : (
-      <p className="text-xs text-gray-500">{format.toUpperCase()} is not a lossy format here, so there is no quality setting.</p>
+      <p className="text-xs text-[#57534e]">{format.toUpperCase()} is not a lossy format here, so there is no quality setting.</p>
     )}
-    {note && <p className="text-xs text-gray-500">{note}</p>}
+    {note && <p className="text-xs text-[#57534e]">{note}</p>}
   </SettingsPanel>
 );
 
@@ -51,6 +51,6 @@ export const CompressLevelOptions: React.FC<{
         { value: "high", label: "High", hint: "Smallest file" },
       ]}
     />
-    <p className="text-xs text-gray-500">Results depend on the file. If it cannot be reduced, the size comparison shows that honestly.</p>
+    <p className="text-xs text-[#57534e]">Results depend on the file. If it cannot be reduced, the size comparison shows that honestly.</p>
   </SettingsPanel>
 );
