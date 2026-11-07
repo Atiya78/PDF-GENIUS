@@ -348,7 +348,7 @@ export function AuthCard({ mode }: { mode: Mode }) {
           ? `Welcome back, ${firstName}!`
           : "Welcome back!";
     return (
-      <div className="auth-root place-items-center p-6" data-testid="view-welcome">
+      <div className="auth-root auth-welcome place-items-center p-6" data-testid="view-welcome">
         <div className="flex flex-col items-center text-center">
           <AuthResultIcon kind={result === "signup-success" ? "signup" : "welcome"} size={300} loop={false} />
           <p className="edu-eyebrow mt-2">{result === "signup-success" ? "Account created" : "Signed in"}</p>

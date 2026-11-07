@@ -2,6 +2,7 @@
 .auth-root { min-height: 100dvh; background: var(--desk-paper, #faf7f2); color: var(--desk-ink, #1c1917); display: grid; }
 .auth-root ::selection { background: #fbd3cf; color: var(--desk-ink, #1c1917); }
 @media (min-width: 1024px) { .auth-root { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); } }
+.auth-root.auth-welcome { grid-template-columns: minmax(0, 1fr); place-items: center; }
 
 .auth-aside { position: relative; display: none; border-right: 1px solid var(--desk-line, #e7e0d5); background: #f4efe6; overflow: hidden; }
 @media (min-width: 1024px) { .auth-aside { display: flex; flex-direction: column; justify-content: space-between; padding: 2.5rem 3.5rem 2.5rem 4.5rem; } }
